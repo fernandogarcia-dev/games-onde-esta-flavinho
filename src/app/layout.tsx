@@ -14,23 +14,36 @@ const body = Manrope({
   subsets: ["latin"],
 });
 
+const SITE_URL = "https://cadeflavinho.com.br";
+const OG_IMAGE = {
+  url: "/og-share.jpg",
+  width: 1200,
+  height: 1200,
+  alt: "Cadê Flavinho? — ache ele na multidão",
+};
+
 export const metadata: Metadata = {
-  metadataBase: new URL("https://cadeflavinho.com.br"),
+  metadataBase: new URL(SITE_URL),
   title: "Cadê Flavinho?",
   description:
     "Jogo satírico: siga o rastro, marque o mapa e ache o Flavinho na multidão.",
+  alternates: {
+    canonical: SITE_URL,
+  },
   openGraph: {
+    type: "website",
+    locale: "pt_BR",
     title: "Cadê Flavinho?",
-    description: "Sumiu da agenda. Sobrou só o rastro.",
-    url: "https://cadeflavinho.com.br",
+    description: "Ache ele na multidão antes do relógio zerar.",
+    url: SITE_URL,
     siteName: "Cadê Flavinho",
-    images: ["/game/flavinho-sprite.jpg"],
+    images: [OG_IMAGE],
   },
   twitter: {
     card: "summary_large_image",
     title: "Cadê Flavinho?",
-    description: "Sumiu da agenda. Sobrou só o rastro.",
-    images: ["/game/flavinho-sprite.jpg"],
+    description: "Ache ele na multidão antes do relógio zerar.",
+    images: [OG_IMAGE.url],
   },
 };
 

@@ -43,9 +43,13 @@ export async function copyPixKey(): Promise<boolean> {
   }
 }
 
+/** Canonical site for share cards / WhatsApp / social — always the .com.br. */
+export const CANONICAL_SITE = "https://cadeflavinho.com.br";
+
 export function buildShareUrl(path = "/"): string {
-  if (typeof window === "undefined") return path;
-  return `${window.location.origin}${path}`;
+  const clean = path.startsWith("/") ? path : `/${path}`;
+  if (clean === "/") return CANONICAL_SITE;
+  return `${CANONICAL_SITE}${clean}`;
 }
 
 export function buildWhatsAppShare(text: string): string {
