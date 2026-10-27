@@ -55,9 +55,9 @@ export function CrowdScene({
     return () => mq.removeEventListener("change", apply);
   }, []);
 
-  // Desktop uses full flavinhoScale (~2× prior). On narrow screens, pull
-  // back a bit so twins don't eat the whole board while keeping readable size.
-  const mobileBoost = portrait ? 0.82 : 1;
+  // Desktop uses full flavinhoScale. On narrow screens, pull back so twins
+  // stay scannable without covering the whole board.
+  const mobileBoost = portrait ? 0.72 : 1;
   const scale =
     flavinhoScale *
     (lookTier === "easy"

@@ -35,19 +35,19 @@ function scene(
 
 /**
  * Waldo plates by visual family.
- * flavinhoScale is ~2× the previous desktop values so sprites match
- * background person height at feet yMax (see perspective.ts).
+ * Front-row scale tuned so sprites ≈ background person height at yMax
+ * (print calibration: ~2× the prior 0.24 band).
  *
  * Base counts sit near medium before GameApp ladder:
  * easy ~0.28x · medium ~0.78x · hard ~1.75x
  */
 const SCENE_BY_KEY: Record<SceneKey, SceneConfig> = {
-  rio: scene("/game/scene-rio-waldo.jpg", 64, 0.256),
-  miami: scene("/game/scene-miami-waldo.jpg", 66, 0.252),
-  paris: scene("/game/scene-paris-waldo.jpg", 72, 0.248),
-  plaza: scene("/game/scene-plaza-waldo.jpg", 70, 0.244),
-  sp: scene("/game/scene-sp-waldo.jpg", 70, 0.24),
-  dubai: scene("/game/scene-dubai-waldo.jpg", 74, 0.236),
+  rio: scene("/game/scene-rio-waldo.jpg", 64, 0.48),
+  miami: scene("/game/scene-miami-waldo.jpg", 66, 0.47),
+  paris: scene("/game/scene-paris-waldo.jpg", 72, 0.46),
+  plaza: scene("/game/scene-plaza-waldo.jpg", 70, 0.455),
+  sp: scene("/game/scene-sp-waldo.jpg", 70, 0.45),
+  dubai: scene("/game/scene-dubai-waldo.jpg", 74, 0.44),
 };
 
 export function sceneForKey(key: SceneKey): SceneConfig {

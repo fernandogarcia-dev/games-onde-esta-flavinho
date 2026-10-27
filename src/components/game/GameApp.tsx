@@ -91,8 +91,12 @@ export function GameApp() {
   const [boardError, setBoardError] = useState<string | null>(null);
   const [myRank, setMyRank] = useState<number | null>(null);
   const [newRecord, setNewRecord] = useState(false);
+  const [freshClue, setFreshClue] = useState<number | null>(null);
   const findDeadlineRef = useRef<number | null>(null);
   const foundLockRef = useRef(false);
+  const cluesPanelRef = useRef<HTMLDivElement | null>(null);
+  const freshClueRef = useRef<HTMLLIElement | null>(null);
+  const freshClueTimerRef = useRef<number | null>(null);
   const citiesTotal = cityCatalogSize(difficulty);
 
   const level: Level | null = run[levelIndex] ?? null;
@@ -205,6 +209,7 @@ export function GameApp() {
     setStreak(0);
     setLives(LIVES_BY_DIFFICULTY[diff]);
     setFeedback("");
+    setFreshClue(null);
     setShowHint(false);
     setElapsed(0);
     setRunning(true);
@@ -228,6 +233,21 @@ export function GameApp() {
     void refreshBoard();
   }
 
+  function focusNewClue(index: number) {
+    if (freshClueTimerRef.current != null) {
+      window.clearTimeout(freshClueTimerRef.current);
+    }
+    setFreshClue(index);
+    window.requestAnimationFrame(() => {
+      const target = freshClueRef.current ?? cluesPanelRef.current;
+      target?.scrollIntoView({ behavior: "smooth", block: "center" });
+    });
+    freshClueTimerRef.current = window.setTimeout(() => {
+      setFreshClue(null);
+      freshClueTimerRef.current = null;
+    }, 2800);
+  }
+
   function pickCity(id: CityId) {
     if (!level || !city) return;
     if (triedCities.includes(id)) return;
@@ -242,12 +262,12 @@ export function GameApp() {
       return;
     }
     setTriedCities((prev) => (prev.includes(id) ? prev : [...prev, id]));
+    const unlockedNew = clueIndex < level.clues.length - 1;
     const nextClue = Math.min(clueIndex + 1, level.clues.length - 1);
     const wrong = level.wrongHints[id] || "Rastro frio. Outra cidade.";
-    const clueNote =
-      clueIndex < level.clues.length - 1
-        ? ` Nova pista liberada (${nextClue + 1} de ${level.clues.length}).`
-        : ` As ${level.clues.length} pistas já estão na mesa — não tem mais.`;
+    const clueNote = unlockedNew
+      ? ` Nova pista liberada (${nextClue + 1} de ${level.clues.length}) — olha acima!`
+      : ` As ${level.clues.length} pistas já estão na mesa — não tem mais.`;
     setFeedback(wrong + clueNote);
     setScore((s) => Math.max(0, s - CITY_MISS_PENALTY));
     setLives((l) => {
@@ -260,6 +280,15 @@ export function GameApp() {
       return next;
     });
     setClueIndex(nextClue);
+    if (unlockedNew) focusNewClue(nextClue);
+    else {
+      window.requestAnimationFrame(() => {
+        cluesPanelRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      });
+    }
   }
 
   async function publishScore(total: number, name: string) {
@@ -446,11 +475,15 @@ export function GameApp() {
 
         {phase === "clues" && level && (
           <section className="animate-rise grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
-            <div className="rounded-3xl border-[3px] border-[var(--ink)] bg-[var(--paper)] p-5 shadow-[6px_6px_0_var(--ink)] sm:p-6">
+            <div
+              ref={cluesPanelRef}
+              className="rounded-3xl border-[3px] border-[var(--ink)] bg-[var(--paper)] p-5 shadow-[6px_6px_0_var(--ink)] sm:p-6"
+            >
               <div className="flex flex-wrap items-end justify-between gap-2">
                 <div>
                   <p className="text-sm font-bold uppercase tracking-[0.18em] text-[var(--brand)]">
-                    Pasta {levelIndex + 1}/{run.length} · {labelMode(difficulty)}
+                    Caçada {levelIndex + 1}/{run.length} ·{" "}
+                    {labelMode(difficulty)}
                   </p>
                   <h2 className="mt-2 font-[family-name:var(--font-display)] text-2xl text-[var(--ink)] sm:text-3xl">
                     {level.title}
@@ -486,19 +519,40 @@ export function GameApp() {
                 mesmo número de tentativas no mapa. A primeira já está aberta;
                 as outras liberam quando você erra uma cidade.
               </p>
+              {feedback && (
+                <p className="mt-4 rounded-xl bg-[var(--alert)]/10 px-4 py-3 text-sm font-medium text-[var(--alert)]">
+                  {feedback}
+                </p>
+              )}
+              {freshClue != null && (
+                <p className="mt-3 animate-pulse rounded-xl border-2 border-[var(--brand)] bg-[var(--brand)] px-4 py-2.5 text-center text-sm font-black uppercase tracking-wide text-white shadow-[3px_3px_0_var(--ink)]">
+                  Nova pista liberada · leia abaixo
+                </p>
+              )}
               <ul className="mt-4 space-y-3">
                 {level.clues.map((clue, i) => {
                   const unlocked = i <= clueIndex;
+                  const isFresh = freshClue === i;
                   return (
                     <li
                       key={`${level.id}-${i}`}
-                      className={`rounded-2xl border px-4 py-3 ${
-                        unlocked
-                          ? "border-[var(--ink)]/10 bg-[var(--sand)] text-[var(--ink)]"
-                          : "border-dashed border-[var(--ink)]/20 bg-white/50 text-[var(--muted)]"
+                      ref={isFresh ? freshClueRef : undefined}
+                      className={`rounded-2xl border px-4 py-3 transition ${
+                        isFresh
+                          ? "border-[var(--brand)] bg-[var(--brand)]/15 text-[var(--ink)] shadow-[4px_4px_0_var(--ink)] ring-2 ring-[var(--brand)] animate-pulse"
+                          : unlocked
+                            ? "border-[var(--ink)]/10 bg-[var(--sand)] text-[var(--ink)]"
+                            : "border-dashed border-[var(--ink)]/20 bg-white/50 text-[var(--muted)]"
                       }`}
                     >
-                      <span className="mr-2 text-xs font-bold uppercase text-[var(--muted)]">
+                      <span
+                        className={`mr-2 text-xs font-bold uppercase ${
+                          isFresh ? "text-[var(--brand)]" : "text-[var(--muted)]"
+                        }`}
+                      >
+                        {isFresh
+                          ? "Nova · "
+                          : ""}
                         Pista {i + 1} de {level.clues.length}
                       </span>
                       {unlocked
@@ -512,11 +566,6 @@ export function GameApp() {
                 <p className="mt-3 rounded-xl bg-[var(--brand)]/10 px-4 py-3 text-sm font-semibold text-[var(--brand)]">
                   Acabaram as pistas. Cruze as {level.clues.length} e marque no
                   mapa.
-                </p>
-              )}
-              {feedback && (
-                <p className="mt-4 rounded-xl bg-[var(--alert)]/10 px-4 py-3 text-sm font-medium text-[var(--alert)]">
-                  {feedback}
                 </p>
               )}
               <div className="mt-4 flex flex-wrap gap-2 text-sm font-semibold text-[var(--muted)]">
@@ -533,7 +582,7 @@ export function GameApp() {
                 Marque no mapa
               </h3>
               <p className="mt-1 text-xs text-[var(--muted)]">
-                Seis cidades desta pasta. Cidade errada fica bloqueada.
+                Seis cidades nesta rodada. Cidade errada fica bloqueada.
               </p>
               <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2">
                 {cityOptions.map((c) => {
@@ -564,7 +613,7 @@ export function GameApp() {
                         )}
                       </div>
                       <div className="text-xs text-[var(--muted)]">
-                        {tried ? "Opção descartada neste dossiê." : c.blurb}
+                        {tried ? "Já descartada nesta rodada." : c.blurb}
                       </div>
                     </button>
                   );
@@ -749,7 +798,7 @@ export function GameApp() {
                   <Button size="lg" onClick={nextLevel}>
                     {levelIndex >= run.length - 1
                       ? "Ver ranking / nova rodada"
-                      : "Próximo dossiê"}
+                      : "Continuar a caçada"}
                   </Button>
                   <Button variant="secondary" onClick={restartToMenu}>
                     Recomeçar
@@ -935,7 +984,7 @@ function Landing({
 
           <div className="mt-7 flex flex-wrap gap-3">
             <Button size="lg" onClick={onStart}>
-              Abrir o dossiê
+              Cadê ele? Vamos!
             </Button>
           </div>
           <p className="mt-4 text-sm text-[var(--muted)]">

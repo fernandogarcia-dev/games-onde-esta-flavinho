@@ -70,7 +70,7 @@ function episodeTitle(city: CityRecord): string {
   const titles = [
     `Sumiço em ${city.name}`,
     `Rastro em ${city.name}`,
-    `Dossiê ${city.name}`,
+    `Cadê ele em ${city.name}?`,
     `Pista quente: ${city.name}`,
   ];
   let h = 0;
