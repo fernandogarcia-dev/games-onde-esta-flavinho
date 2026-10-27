@@ -49,7 +49,6 @@ import {
 
 type Phase =
   | "landing"
-  | "briefing"
   | "clues"
   | "find"
   | "win"
@@ -183,7 +182,7 @@ export function GameApp() {
     rememberEpisode(dealt[0].id);
     setBest(getBestScore());
     setHintUnlocked(hasUnlockedHints());
-    setPhase("briefing");
+    setPhase("clues");
     setLevelIndex(0);
     setClueIndex(0);
     setTriedCities([]);
@@ -212,13 +211,6 @@ export function GameApp() {
     setNeedsName(false);
     stopFindTimer();
     void refreshBoard();
-  }
-
-  function goToClues() {
-    setPhase("clues");
-    setClueIndex(0);
-    setTriedCities([]);
-    setFeedback("");
   }
 
   function pickCity(id: CityId) {
@@ -331,7 +323,7 @@ export function GameApp() {
     setLastPerfect(false);
     setMyRank(null);
     setNewRecord(false);
-    setPhase("briefing");
+    setPhase("clues");
     setRunning(true);
   }
 
@@ -420,62 +412,41 @@ export function GameApp() {
           </div>
         )}
 
-        {phase === "briefing" && level && (
-          <section className="animate-rise mx-auto max-w-2xl rounded-3xl border-[3px] border-[var(--ink)] bg-[var(--paper)] p-6 shadow-[8px_8px_0_var(--ink)] sm:p-8">
-            <p className="text-sm font-bold uppercase tracking-[0.2em] text-[var(--brand)]">
-              Pasta carimbada · confidencial
-            </p>
-            <h1 className="mt-2 font-[family-name:var(--font-display)] text-3xl text-[var(--ink)] sm:text-4xl">
-              {level.title}
-            </h1>
-            <p className="mt-3 text-[var(--muted)]">
-              Cruze as pistas, feche a cidade e ache ele na multidão. No modo{" "}
-              {labelMode(difficulty)} você tem{" "}
-              <strong>{labelFindTime(difficulty)}</strong> — a caçada começa em{" "}
-              <strong>{FIND_SCORE_MAX.toLocaleString("pt-BR")}</strong> pts e
-              derrete com o relógio.
-            </p>
-            <div className="mt-5 flex flex-wrap gap-3 text-sm font-semibold">
-              <span className="rounded-lg bg-[var(--sand)] px-3 py-1.5">
-                Modo: {labelMode(difficulty)}
-              </span>
-              <span className="rounded-lg bg-[var(--sand)] px-3 py-1.5">
-                Timer: {labelFindTime(difficulty)}
-              </span>
-              <span className="rounded-lg bg-[var(--sand)] px-3 py-1.5">
-                Tentativas: {lives}
-              </span>
-              {streak > 0 && (
-                <span className="rounded-lg bg-[var(--accent)]/15 px-3 py-1.5 text-[var(--accent)]">
-                  Sequência 🔥 {streak}
-                </span>
-              )}
-            </div>
-            <div className="mt-6 flex flex-wrap gap-3">
-              <Button size="lg" onClick={goToClues}>
-                Abrir as pistas
-              </Button>
-            </div>
-          </section>
-        )}
-
         {phase === "clues" && level && (
           <section className="animate-rise grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
             <div className="rounded-3xl border-[3px] border-[var(--ink)] bg-[var(--paper)] p-5 shadow-[6px_6px_0_var(--ink)] sm:p-6">
               <div className="flex flex-wrap items-end justify-between gap-2">
                 <div>
                   <p className="text-sm font-bold uppercase tracking-[0.18em] text-[var(--brand)]">
-                    Recortes da noite
+                    Pasta {levelIndex + 1}/{run.length} · {labelMode(difficulty)}
                   </p>
-                  <h2 className="mt-2 font-[family-name:var(--font-display)] text-2xl text-[var(--ink)]">
-                    Qual cidade fecha o mapa?
+                  <h2 className="mt-2 font-[family-name:var(--font-display)] text-2xl text-[var(--ink)] sm:text-3xl">
+                    {level.title}
                   </h2>
+                  <p className="mt-1 text-sm text-[var(--muted)]">
+                    Cruze as pistas e marque a cidade. Depois:{" "}
+                    <strong>{labelFindTime(difficulty)}</strong> pra achar na
+                    multidão.
+                  </p>
                 </div>
                 <span className="rounded-full border border-[var(--ink)]/15 bg-[var(--sand)] px-3 py-1 text-xs font-bold text-[var(--ink)]">
                   {clueIndex + 1} de {level.clues.length} liberadas
                 </span>
               </div>
-              <p className="mt-2 text-sm text-[var(--muted)]">
+              <div className="mt-3 flex flex-wrap gap-2 text-xs font-semibold sm:text-sm">
+                <span className="rounded-lg bg-[var(--sand)] px-2.5 py-1">
+                  Timer {labelFindTime(difficulty)}
+                </span>
+                <span className="rounded-lg bg-[var(--sand)] px-2.5 py-1">
+                  Tentativas: {lives}
+                </span>
+                {streak > 0 && (
+                  <span className="rounded-lg bg-[var(--accent)]/15 px-2.5 py-1 text-[var(--accent)]">
+                    Sequência 🔥 {streak}
+                  </span>
+                )}
+              </div>
+              <p className="mt-3 text-sm text-[var(--muted)]">
                 Este dossiê tem só <strong>{level.clues.length} pistas</strong>.
                 A primeira já está aberta; as outras liberam quando você erra
                 uma cidade.
@@ -569,41 +540,28 @@ export function GameApp() {
         )}
 
         {phase === "find" && level && city && (
-          <section className="animate-rise space-y-4">
+          <section className="animate-rise space-y-2.5 sm:space-y-4">
             <div
-              className={`flex flex-wrap items-center justify-between gap-3 rounded-2xl border-2 px-4 py-3 ${
+              className={`flex items-center justify-between gap-2 rounded-2xl border-2 px-3 py-2 sm:gap-3 sm:px-4 sm:py-3 ${
                 urgent
                   ? "timer-urgent border-[var(--alert)] bg-[var(--alert)]/10"
                   : "border-[var(--ink)] bg-[var(--paper)] shadow-[4px_4px_0_var(--ink)]"
               }`}
             >
               <div>
-                <p className="text-[10px] font-bold uppercase tracking-wide text-[var(--muted)]">
-                  Tempo · pontos na mesa
+                <p className="text-[9px] font-bold uppercase tracking-wide text-[var(--muted)] sm:text-[10px]">
+                  Tempo
                 </p>
                 <p
-                  className={`font-[family-name:var(--font-display)] text-3xl tabular-nums ${
+                  className={`font-[family-name:var(--font-display)] text-2xl tabular-nums sm:text-3xl ${
                     urgent ? "text-[var(--alert)]" : "text-[var(--ink)]"
                   }`}
                 >
                   {formatClock(findRemaining)}
                 </p>
               </div>
-              <div className="text-right">
-                <p className="text-[10px] font-bold uppercase tracking-wide text-[var(--muted)]">
-                  Se achar agora
-                </p>
-                <p className="font-[family-name:var(--font-display)] text-3xl tabular-nums text-[var(--brand)]">
-                  +{liveFindPoints.toLocaleString("pt-BR")}
-                </p>
-                {streak > 0 && (
-                  <p className="text-xs font-semibold text-[var(--accent)]">
-                    sequência 🔥 x{streak + 1} no próximo achado
-                  </p>
-                )}
-              </div>
-              <div className="w-full sm:w-48">
-                <div className="h-2 overflow-hidden rounded-full bg-[var(--sand)]">
+              <div className="min-w-0 flex-1 px-1 sm:px-3">
+                <div className="h-1.5 overflow-hidden rounded-full bg-[var(--sand)] sm:h-2">
                   <div
                     className={`h-full transition-[width] duration-200 ${
                       urgent ? "bg-[var(--alert)]" : "bg-[var(--brand)]"
@@ -613,42 +571,46 @@ export function GameApp() {
                     }}
                   />
                 </div>
+                <p className="mt-0.5 truncate text-[10px] text-[var(--muted)] sm:text-xs">
+                  Multidão · {city.name} · errados {misses}
+                </p>
+              </div>
+              <div className="text-right">
+                <p className="text-[9px] font-bold uppercase tracking-wide text-[var(--muted)] sm:text-[10px]">
+                  Agora
+                </p>
+                <p className="font-[family-name:var(--font-display)] text-2xl tabular-nums text-[var(--brand)] sm:text-3xl">
+                  +{liveFindPoints.toLocaleString("pt-BR")}
+                </p>
               </div>
             </div>
 
-            <div className="flex flex-wrap items-end justify-between gap-3">
-              <div>
-                <p className="text-sm font-bold uppercase tracking-[0.18em] text-[var(--brand)]">
-                  Multidão · {city.name}
-                </p>
-                <h2 className="font-[family-name:var(--font-display)] text-3xl text-[var(--ink)]">
-                  Ele está aí. Ache.
-                </h2>
-                <p className="text-sm text-[var(--muted)]">
-                  Cliques errados: {misses} · Total:{" "}
-                  {score.toLocaleString("pt-BR")} pts
-                </p>
-              </div>
-              <div className="flex flex-wrap items-center gap-3">
-                <div className="flex items-center gap-2 rounded-2xl border-2 border-[var(--ink)] bg-[var(--paper)] px-2 py-1.5 shadow-[3px_3px_0_var(--ink)]">
-                  <Image
-                    src="/game/disguises/real.png"
-                    alt="Referência do Flavinho sem disfarce"
-                    width={48}
-                    height={72}
-                    className="h-14 w-auto object-contain"
-                    unoptimized
-                  />
-                  <div className="pr-1">
-                    <p className="text-[10px] font-bold uppercase tracking-wide text-[var(--muted)]">
-                      Procurado · sem disfarce
-                    </p>
-                    <p className="text-sm font-black text-[var(--ink)]">Flavinho</p>
-                    <p className="text-[11px] text-[var(--muted)]">
-                      blazer azul, sem chapéu
-                    </p>
-                  </div>
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex min-w-0 items-center gap-2 rounded-2xl border-2 border-[var(--ink)] bg-[var(--paper)] px-2 py-1 shadow-[3px_3px_0_var(--ink)]">
+                <Image
+                  src="/game/disguises/real.png"
+                  alt="Referência do Flavinho sem disfarce"
+                  width={40}
+                  height={60}
+                  className="h-10 w-auto object-contain sm:h-14"
+                  unoptimized
+                />
+                <div className="min-w-0 pr-1">
+                  <p className="text-[9px] font-bold uppercase tracking-wide text-[var(--muted)] sm:text-[10px]">
+                    Sem disfarce
+                  </p>
+                  <p className="truncate text-sm font-black text-[var(--ink)]">
+                    Flavinho
+                  </p>
+                  <p className="hidden text-[11px] text-[var(--muted)] sm:block">
+                    blazer azul, sem chapéu
+                  </p>
                 </div>
+              </div>
+              <div className="flex shrink-0 items-center gap-2">
+                <span className="hidden text-xs font-semibold text-[var(--muted)] sm:inline">
+                  {score.toLocaleString("pt-BR")} pts
+                </span>
                 <Button variant="secondary" size="sm" onClick={unlockVisualHint}>
                   {showHint ? "Dica ativa" : "Pedir dica"}
                 </Button>
@@ -666,7 +628,6 @@ export function GameApp() {
               showHint={showHint}
               disabled={!findActive}
             />
-
           </section>
         )}
 

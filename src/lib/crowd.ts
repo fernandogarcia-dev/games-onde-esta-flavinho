@@ -95,13 +95,15 @@ export function clampInside(
 function tooClose(
   x: number,
   y: number,
-  placed: { x: number; y: number }[],
+  placed: { x: number; y: number; r: number }[],
   minDist: number,
 ) {
   for (const p of placed) {
     const dx = p.x - x;
-    const dy = (p.y - y) * 0.85;
-    if (dx * dx + dy * dy < minDist * minDist) return true;
+    // Vertical overlap looks worse on portrait boards — weight it higher.
+    const dy = (p.y - y) * 1.15;
+    const need = Math.max(minDist, (p.r + minDist) * 0.55);
+    if (dx * dx + dy * dy < need * need) return true;
   }
   return false;
 }
@@ -115,33 +117,50 @@ export function buildCrowd(
   opts?: { mobileBoost?: number },
 ): CrowdItem[] {
   const mobileBoost = opts?.mobileBoost ?? 1;
-  const rand = mulberry32(hashSeed(`${seed}:crowd-v3`));
+  const rand = mulberry32(hashSeed(`${seed}:crowd-v4`));
   const items: CrowdItem[] = [];
   const xMin = ground.xMin ?? 8;
   const xMax = ground.xMax ?? 92;
   const yMin = ground.yMin ?? 12;
   const yMax = ground.yMax ?? 88;
   const flavinhoIndex = Math.floor(rand() * crowdCount);
-  const placed: { x: number; y: number }[] = [];
-  const minDist = Math.max(4.5, 11 / Math.sqrt(Math.max(crowdCount, 1)));
+  const placed: { x: number; y: number; r: number }[] = [];
+
+  // Separation scales with sprite size so big mobile tokens don't pile up.
+  const sample = spriteBox(flavinhoScale, "decoy", mobileBoost);
+  const sizeAwareMin = Math.max(
+    sample.widthPct * 0.72,
+    sample.heightPct * 0.42,
+  );
+  const densityMin = 9.5 / Math.sqrt(Math.max(crowdCount, 1));
+  const minDist = Math.max(sizeAwareMin, densityMin);
 
   for (let i = 0; i < crowdCount; i++) {
     const isFlavinho = i === flavinhoIndex;
     const scale =
       flavinhoScale *
-      (isFlavinho ? 1.02 + rand() * 0.12 : 0.82 + rand() * 0.38);
+      (isFlavinho ? 1.02 + rand() * 0.1 : 0.78 + rand() * 0.32);
     const kind: CrowdItem["kind"] = isFlavinho ? "flavinho" : "decoy";
     const { widthPct, heightPct } = spriteBox(scale, kind, mobileBoost);
+    const radius = Math.max(widthPct, heightPct) * 0.38;
 
     let x = 50;
     let y = 50;
     let ok = false;
-    for (let attempt = 0; attempt < 60; attempt++) {
-      const rawX = xMin + rand() * (xMax - xMin);
-      const rawY = yMin + rand() * (yMax - yMin);
-      // Extra scatter: sometimes cluster edges, sometimes center voids
-      const jitterX = (rand() - 0.5) * 6;
-      const jitterY = (rand() - 0.5) * 6;
+    for (let attempt = 0; attempt < 90; attempt++) {
+      // Bias early attempts toward a loose grid so the board fills evenly.
+      const cols = Math.max(3, Math.ceil(Math.sqrt(crowdCount * 1.1)));
+      const rows = Math.max(3, Math.ceil(crowdCount / cols));
+      const cell = i % (cols * rows);
+      const col = cell % cols;
+      const row = Math.floor(cell / cols);
+      const gridX = xMin + ((col + 0.35 + rand() * 0.3) / cols) * (xMax - xMin);
+      const gridY = yMin + ((row + 0.35 + rand() * 0.3) / rows) * (yMax - yMin);
+      const useGrid = attempt < 40;
+      const rawX = useGrid ? gridX : xMin + rand() * (xMax - xMin);
+      const rawY = useGrid ? gridY : yMin + rand() * (yMax - yMin);
+      const jitterX = (rand() - 0.5) * (useGrid ? 4 : 8);
+      const jitterY = (rand() - 0.5) * (useGrid ? 4 : 8);
       const c = clampInside(
         rawX + jitterX,
         rawY + jitterY,
@@ -150,22 +169,21 @@ export function buildCrowd(
       );
       x = c.x;
       y = c.y;
-      if (!tooClose(x, y, placed, minDist * (0.7 + rand() * 0.6))) {
+      const relax = attempt > 55 ? 0.78 : 0.92;
+      if (!tooClose(x, y, placed, minDist * relax)) {
         ok = true;
         break;
       }
     }
     if (!ok) {
-      const c = clampInside(
-        xMin + rand() * (xMax - xMin),
-        yMin + rand() * (yMax - yMin),
-        widthPct,
-        heightPct,
-      );
+      // Last resort: park on the emptiest-looking edge instead of the center.
+      const edgeX = rand() > 0.5 ? xMin + rand() * 12 : xMax - rand() * 12;
+      const edgeY = yMin + rand() * (yMax - yMin);
+      const c = clampInside(edgeX, edgeY, widthPct, heightPct);
       x = c.x;
       y = c.y;
     }
-    placed.push({ x, y });
+    placed.push({ x, y, r: radius });
 
     items.push({
       id: `${seed}-p-${i}`,
@@ -190,7 +208,7 @@ export function buildCrowd(
     items[j].z = zi;
   }
 
-  const propCount = Math.max(3, Math.floor(crowdCount / 14));
+  const propCount = Math.max(2, Math.floor(crowdCount / 16));
   for (let i = 0; i < propCount; i++) {
     const scale = flavinhoScale * (0.5 + rand() * 0.35);
     const { widthPct, heightPct } = spriteBox(scale, "prop", mobileBoost);

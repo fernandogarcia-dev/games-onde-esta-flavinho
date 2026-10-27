@@ -47,17 +47,24 @@ export function CrowdScene({
     return () => mq.removeEventListener("change", apply);
   }, []);
 
-  // Taller board + bigger / fewer tokens on phones so faces stay readable.
-  const mobileBoost = portrait ? 1.55 : 1;
-  const scale = flavinhoScale * (portrait ? 1.35 : 1);
+  // Portrait: fewer + slightly larger tokens, not mega-sprites that pile up.
+  const mobileBoost = portrait ? 1.18 : 1;
+  const scale = flavinhoScale * (portrait ? 1.08 : 1);
   const count = portrait
-    ? Math.max(22, Math.floor(crowdCount * 0.72))
+    ? Math.max(14, Math.floor(crowdCount * 0.42))
     : crowdCount;
 
-  const items = useMemo(
-    () => buildCrowd(seed, count, scale, ground, { mobileBoost }),
-    [seed, count, scale, ground, mobileBoost],
-  );
+  const items = useMemo(() => {
+    const band = portrait
+      ? {
+          yMin: Math.max(10, ground.yMin - 2),
+          yMax: Math.min(90, ground.yMax + 2),
+          xMin: Math.max(6, (ground.xMin ?? 10) - 2),
+          xMax: Math.min(94, (ground.xMax ?? 90) + 2),
+        }
+      : ground;
+    return buildCrowd(seed, count, scale, band, { mobileBoost });
+  }, [seed, count, scale, ground, mobileBoost, portrait]);
   const [missFlash, setMissFlash] = useState<{ x: number; y: number } | null>(
     null,
   );
@@ -84,7 +91,7 @@ export function CrowdScene({
       style={{
         aspectRatio: portrait ? "3 / 4" : "16 / 10",
         backgroundColor: "#d7d2c8",
-        maxHeight: portrait ? "min(78dvh, 720px)" : undefined,
+        maxHeight: portrait ? "min(68dvh, 640px)" : undefined,
       }}
       onClick={handleBoardClick}
       role="img"
@@ -179,7 +186,7 @@ export function CrowdScene({
         </div>
       )}
 
-      <div className="pointer-events-none absolute left-3 top-3 z-[5001] rounded-lg bg-[var(--ink)]/80 px-2.5 py-1 text-xs font-semibold text-white backdrop-blur-sm">
+      <div className="pointer-events-none absolute left-2 top-2 z-[5001] max-w-[85%] rounded-lg bg-[var(--ink)]/80 px-2 py-1 text-[11px] font-semibold text-white backdrop-blur-sm sm:left-3 sm:top-3 sm:text-xs">
         Ache o SEM disfarce. O resto é camuflagem.
       </div>
     </div>
