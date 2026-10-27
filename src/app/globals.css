@@ -1,16 +1,16 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f3efe4;
-  --foreground: #14213d;
-  --ink: #14213d;
-  --paper: #fffdf7;
-  --sand: #efe6d2;
-  --brand: #f4d35e;
-  --accent: #e85d04;
+  --background: #e8edf5;
+  --foreground: #0b1320;
+  --ink: #0b1320;
+  --paper: #f7f9fc;
+  --sand: #dce3ef;
+  --brand: #ff3d6e;
+  --accent: #00b7c7;
   --pix: #00a868;
-  --alert: #d62828;
-  --muted: #5c677d;
+  --alert: #e11d48;
+  --muted: #5a6a82;
 }
 
 @theme inline {
@@ -21,17 +21,20 @@
 }
 
 body {
-  background: var(--background);
+  background:
+    radial-gradient(1200px 600px at 10% -10%, rgba(255, 61, 110, 0.16), transparent 55%),
+    radial-gradient(900px 500px at 100% 0%, rgba(0, 183, 199, 0.14), transparent 50%),
+    linear-gradient(180deg, #dfe7f3 0%, var(--background) 40%, #f2f5fa 100%);
   color: var(--foreground);
   font-family: var(--font-body), ui-sans-serif, system-ui, sans-serif;
 }
 
 .map-grid {
   background-image:
-    linear-gradient(rgba(20, 33, 61, 0.35) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(20, 33, 61, 0.35) 1px, transparent 1px);
-  background-size: 48px 48px;
-  mask-image: radial-gradient(circle at center, black, transparent 85%);
+    linear-gradient(rgba(11, 19, 32, 0.28) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(11, 19, 32, 0.28) 1px, transparent 1px);
+  background-size: 42px 42px;
+  mask-image: radial-gradient(circle at center, black, transparent 80%);
 }
 
 @keyframes rise {

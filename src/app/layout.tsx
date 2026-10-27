@@ -1,32 +1,31 @@
 import type { Metadata } from "next";
-import { Bangers, Nunito } from "next/font/google";
+import { Archivo_Black, Manrope } from "next/font/google";
 import "./globals.css";
 
-const display = Bangers({
+const display = Archivo_Black({
   variable: "--font-display",
   subsets: ["latin"],
   weight: "400",
 });
 
-const body = Nunito({
+const body = Manrope({
   variable: "--font-body",
   subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
-  title: "Onde Está Flavinho? | Jogo satírico",
+  title: "Onde Está Flavinho?",
   description:
-    "Pistas estilo Carmem Sandiego + caça na multidão estilo Wally. Ache o Flavinho, compartilhe e apoie com PIX.",
+    "Jogo satírico: siga o rastro, marque o mapa e ache o Flavinho na multidão.",
   openGraph: {
     title: "Onde Está Flavinho?",
-    description:
-      "Jogo meme: descubra a cidade e ache o Flavinho na multidão cartoon.",
+    description: "Sumiu da agenda. Sobrou só o rastro.",
     images: ["/game/flavinho-sprite.jpg"],
   },
   twitter: {
     card: "summary_large_image",
     title: "Onde Está Flavinho?",
-    description: "Jogo meme viral. Ache o Flavinho.",
+    description: "Sumiu da agenda. Sobrou só o rastro.",
     images: ["/game/flavinho-sprite.jpg"],
   },
 };

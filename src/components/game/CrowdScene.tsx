@@ -153,7 +153,7 @@ export function CrowdScene({
       )}
 
       <div className="pointer-events-none absolute left-3 top-3 rounded-lg bg-[var(--ink)]/75 px-2.5 py-1 text-xs font-semibold text-white backdrop-blur-sm">
-        Toque nele. Cuidado com os sósias.
+        Toque nele. A multidão mente.
       </div>
     </div>
   );

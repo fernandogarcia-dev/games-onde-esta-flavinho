@@ -75,7 +75,7 @@ export const LEVELS: Level[] = [
     difficulty: "easy",
     clues: [
       "Última pista: alguém pediu água de coco e perguntou se o sinal da TV aberta pegava bem.",
-      "Uma testemunha viu um polo amarelo-verde passando perto de guarda-sóis listrados.",
+      "Uma testemunha viu um blazer azul-marinho passando perto de guarda-sóis listrados.",
       "O informante jura: 'não é Planalto. É praia. E tem Cristo no fundo da selfie.'",
     ],
     wrongHints: {
@@ -101,7 +101,7 @@ export const LEVELS: Level[] = [
     clues: [
       "Alguém pediu café com leite e perguntou o horário da próxima 'agenda reservada'.",
       "Pista sonora: sapato no piso de mármore e eco de corredor longo.",
-      "Um estagiário murmurou: 'vi um polo amarelo perto de um prédio que parece nave espacial'.",
+      "Um estagiário murmurou: 'vi um blazer azul perto de um prédio que parece nave espacial'.",
     ],
     wrongHints: {
       brasilia: "",

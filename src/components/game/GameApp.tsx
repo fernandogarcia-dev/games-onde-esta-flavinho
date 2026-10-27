@@ -74,12 +74,12 @@ export function GameApp() {
 
   function pickCity(id: CityId) {
     if (id === level.correctCity) {
-      setFeedback(`Pista confirmada: ${city.name}! Agora ache ele na multidão.`);
+      setFeedback(`Mapa fechou em ${city.name}. Agora é olho vivo na multidão.`);
       setScore((s) => s + 250);
       setPhase("find");
       return;
     }
-    const wrong = level.wrongHints[id] || "Pista fria. Tenta outra cidade.";
+    const wrong = level.wrongHints[id] || "Rastro frio. Outra cidade.";
     setFeedback(wrong);
     setScore((s) => Math.max(0, s - 80));
     setLives((l) => {
@@ -141,10 +141,9 @@ export function GameApp() {
   return (
     <div className="relative min-h-full">
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute -left-20 top-10 h-64 w-64 rounded-full bg-[var(--brand)]/30 blur-3xl" />
-        <div className="absolute right-0 top-40 h-72 w-72 rounded-full bg-[var(--accent)]/25 blur-3xl" />
-        <div className="absolute bottom-0 left-1/3 h-56 w-56 rounded-full bg-[var(--pix)]/15 blur-3xl" />
-        <div className="map-grid absolute inset-0 opacity-[0.07]" />
+        <div className="absolute -left-20 top-10 h-64 w-64 rounded-full bg-[var(--brand)]/20 blur-3xl" />
+        <div className="absolute right-0 top-40 h-72 w-72 rounded-full bg-[var(--accent)]/20 blur-3xl" />
+        <div className="map-grid absolute inset-0 opacity-[0.06]" />
       </div>
 
       <header className="relative z-10 mx-auto flex w-full max-w-5xl items-center justify-between gap-3 px-4 py-4 sm:px-6">
@@ -165,7 +164,7 @@ export function GameApp() {
             </div>
           )}
           <Button variant="money" size="sm" onClick={() => setShowPix((v) => !v)}>
-            PIX
+            Apoiar
           </Button>
         </div>
       </header>
@@ -181,30 +180,30 @@ export function GameApp() {
 
         {phase === "briefing" && (
           <section className="animate-rise mx-auto max-w-2xl rounded-3xl border-[3px] border-[var(--ink)] bg-[var(--paper)] p-6 shadow-[8px_8px_0_var(--ink)] sm:p-8">
-            <p className="text-sm font-bold uppercase tracking-[0.2em] text-[var(--accent)]">
-              Agência Satírica de Localização
+            <p className="text-sm font-bold uppercase tracking-[0.2em] text-[var(--brand)]">
+              Pasta carimbada · confidencial
             </p>
             <h1 className="mt-2 font-[family-name:var(--font-display)] text-3xl text-[var(--ink)] sm:text-4xl">
               {level.title}
             </h1>
             <p className="mt-3 text-[var(--muted)]">
-              Estilo Carmem Sandiego: use as pistas e marque a cidade. Se acertar,
-              vira modo Wally: ache o Flavinho na multidão cartoon.
+              Três recortes chegaram na mesa. Cruze as pistas, chute a cidade e,
+              se o mapa fechar, ele ainda tem que aparecer no meio da multidão.
             </p>
             <div className="mt-5 flex flex-wrap gap-3 text-sm font-semibold">
               <span className="rounded-lg bg-[var(--sand)] px-3 py-1.5">
-                Dificuldade: {labelDifficulty(level.difficulty)}
+                Temperatura: {labelDifficulty(level.difficulty)}
               </span>
               <span className="rounded-lg bg-[var(--sand)] px-3 py-1.5">
-                Vidas: {lives}
+                Tentativas: {lives}
               </span>
             </div>
             <div className="mt-6 flex flex-wrap gap-3">
               <Button size="lg" onClick={goToClues}>
-                Receber pistas
+                Abrir as pistas
               </Button>
               <Button variant="secondary" onClick={() => setShowPix(true)}>
-                Apoiar com PIX
+                Mandar um café
               </Button>
             </div>
           </section>
@@ -213,11 +212,11 @@ export function GameApp() {
         {phase === "clues" && (
           <section className="animate-rise grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
             <div className="rounded-3xl border-[3px] border-[var(--ink)] bg-[var(--paper)] p-5 shadow-[6px_6px_0_var(--ink)] sm:p-6">
-              <p className="text-sm font-bold uppercase tracking-[0.18em] text-[var(--accent)]">
-                Pasta de pistas
+              <p className="text-sm font-bold uppercase tracking-[0.18em] text-[var(--brand)]">
+                Recortes da noite
               </p>
               <h2 className="mt-2 font-[family-name:var(--font-display)] text-2xl text-[var(--ink)]">
-                Onde ele foi?
+                Qual cidade fecha o mapa?
               </h2>
               <ul className="mt-4 space-y-3">
                 {level.clues.slice(0, clueIndex + 1).map((clue, i) => (
@@ -226,7 +225,7 @@ export function GameApp() {
                     className="rounded-2xl border border-[var(--ink)]/10 bg-[var(--sand)] px-4 py-3 text-[var(--ink)]"
                   >
                     <span className="mr-2 text-xs font-bold uppercase text-[var(--muted)]">
-                      Pista {i + 1}
+                      Recorte {i + 1}
                     </span>
                     {clue}
                   </li>
@@ -238,7 +237,7 @@ export function GameApp() {
                 </p>
               )}
               <div className="mt-4 flex flex-wrap gap-2 text-sm font-semibold text-[var(--muted)]">
-                <span>Vidas: {lives}</span>
+                <span>Tentativas: {lives}</span>
                 <span>·</span>
                 <span>{score} pts</span>
               </div>
@@ -246,7 +245,7 @@ export function GameApp() {
 
             <div className="rounded-3xl border-[3px] border-[var(--ink)] bg-[var(--paper)] p-5 shadow-[6px_6px_0_var(--ink)] sm:p-6">
               <h3 className="font-[family-name:var(--font-display)] text-xl text-[var(--ink)]">
-                Escolha a cidade
+                Marque no mapa
               </h3>
               <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2">
                 {CITIES.map((c) => (
@@ -254,7 +253,7 @@ export function GameApp() {
                     key={c.id}
                     type="button"
                     onClick={() => pickCity(c.id)}
-                    className="rounded-2xl border-2 border-[var(--ink)] bg-white px-3 py-3 text-left transition hover:-translate-y-0.5 hover:bg-[var(--brand)]/40"
+                    className="rounded-2xl border-2 border-[var(--ink)] bg-white px-3 py-3 text-left transition hover:-translate-y-0.5 hover:bg-[var(--brand)]/15"
                   >
                     <div className="font-bold text-[var(--ink)]">
                       {c.name}
@@ -274,25 +273,25 @@ export function GameApp() {
           <section className="animate-rise space-y-4">
             <div className="flex flex-wrap items-end justify-between gap-3">
               <div>
-                <p className="text-sm font-bold uppercase tracking-[0.18em] text-[var(--accent)]">
-                  Modo Wally · {city.name}
+                <p className="text-sm font-bold uppercase tracking-[0.18em] text-[var(--brand)]">
+                  Multidão · {city.name}
                 </p>
                 <h2 className="font-[family-name:var(--font-display)] text-3xl text-[var(--ink)]">
-                  Ache o Flavinho
+                  Ele está aí. Ache.
                 </h2>
                 <p className="text-sm text-[var(--muted)]">
-                  Erros: {misses} · Ele está de polo amarelo-verde.
+                  Cliques errados: {misses} · Procure o blazer azul-marinho.
                 </p>
               </div>
               <div className="flex flex-wrap gap-2">
                 <Button variant="secondary" size="sm" onClick={unlockVisualHint}>
-                  {showHint ? "Dica ativa" : "Comprar dica"}
+                  {showHint ? "Dica ativa" : "Pedir dica"}
                 </Button>
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={() => {
-                    const text = `To ajudando a achar o Flavinho em ${city.name}: ${buildShareUrl()}`;
+                    const text = `To no rastro do Flavinho em ${city.name}: ${buildShareUrl()}`;
                     window.open(
                       buildWhatsAppShare(text),
                       "_blank",
@@ -300,7 +299,7 @@ export function GameApp() {
                     );
                   }}
                 >
-                  Compartilhar
+                  Mandar no Zap
                 </Button>
               </div>
             </div>
@@ -337,21 +336,23 @@ export function GameApp() {
               className="mx-auto rounded-xl border-2 border-[var(--ink)] object-cover"
             />
             <h2 className="mt-4 font-[family-name:var(--font-display)] text-4xl text-[var(--ink)]">
-              Achou o Flavinho!
+              Pegou o rastro
             </h2>
             <p className="mt-2 text-[var(--muted)]">
-              Em {city.name}. Pontuação: <strong>{score}</strong> · Recorde:{" "}
+              Local: {city.name}. Pontuação: <strong>{score}</strong> · Recorde:{" "}
               <strong>{best}</strong>
             </p>
             <div className="mt-6 flex flex-wrap justify-center gap-3">
               <Button size="lg" onClick={nextLevel}>
-                {levelIndex >= LEVELS.length - 1 ? "Jogar de novo" : "Próximo episódio"}
+                {levelIndex >= LEVELS.length - 1
+                  ? "Recomeçar a caçada"
+                  : "Próximo dossiê"}
               </Button>
               <Button variant="secondary" onClick={shareWin}>
-                Mandar no Zap
+                Estourar no Zap
               </Button>
               <Button variant="money" onClick={() => setShowPix(true)}>
-                Celebrar com PIX
+                Café via PIX
               </Button>
             </div>
             {showPix && (
@@ -365,15 +366,16 @@ export function GameApp() {
         {phase === "fail-city" && (
           <section className="animate-rise mx-auto max-w-xl rounded-3xl border-[3px] border-[var(--ink)] bg-[var(--paper)] p-6 text-center shadow-[8px_8px_0_var(--ink)]">
             <h2 className="font-[family-name:var(--font-display)] text-3xl text-[var(--ink)]">
-              Pista fria demais
+              Rastro apagado
             </h2>
             <p className="mt-2 text-[var(--muted)]">
-              Suas vidas acabaram nesse episódio. Flavinho escapou dessa vez.
+              Acabaram as tentativas. Ele trocou de cidade enquanto você
+              hesitava.
             </p>
             <div className="mt-6 flex flex-wrap justify-center gap-3">
-              <Button onClick={startGame}>Tentar de novo</Button>
+              <Button onClick={startGame}>Reabrir o dossiê</Button>
               <Button variant="money" onClick={() => setShowPix(true)}>
-                Financiar a busca
+                Mandar um café
               </Button>
             </div>
           </section>
@@ -387,8 +389,8 @@ export function GameApp() {
       </main>
 
       <footer className="relative z-10 border-t border-[var(--ink)]/10 px-4 py-6 text-center text-xs text-[var(--muted)]">
-        Jogo satírico / meme. Não é notícia, denúncia nem afiliação política.
-        Feito pra viralizar enquanto a hashtag ainda esquenta.
+        Sátira / humor. Não é notícia, denúncia, campanha eleitoral nem afiliação
+        partidária. Apoio via PIX é voluntário.
       </footer>
     </div>
   );
@@ -411,39 +413,41 @@ function Landing({
           alt=""
           fill
           priority
-          className="object-cover opacity-35"
+          className="object-cover opacity-30"
           sizes="100vw"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-[var(--paper)] via-[var(--paper)]/90 to-[var(--paper)]/35" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[var(--paper)] via-[var(--paper)]/92 to-[var(--paper)]/30" />
       </div>
 
       <div className="relative grid items-center gap-8 px-6 py-10 sm:px-10 sm:py-14 lg:grid-cols-[1.15fr_0.85fr]">
         <div className="animate-rise">
-          <p className="text-sm font-bold uppercase tracking-[0.25em] text-[var(--accent)]">
-            Edição especial · meme ao vivo
+          <p className="text-sm font-bold uppercase tracking-[0.25em] text-[var(--brand)]">
+            Boletim relâmpago · sumiço confirmado
           </p>
           <h1 className="mt-3 max-w-xl font-[family-name:var(--font-display)] text-5xl leading-[0.95] text-[var(--ink)] sm:text-6xl md:text-7xl">
             Onde Está Flavinho?
           </h1>
           <p className="mt-4 max-w-md text-lg text-[var(--muted)]">
-            Pistas estilo Carmem Sandiego. Quando você acerta a cidade, vira caça
-            na multidão estilo Wally.
+            Ele saiu da agenda. Sobrou um blazer azul, seis cidades possíveis e
+            uma multidão que não colabora.
           </p>
           <div className="mt-7 flex flex-wrap gap-3">
             <Button size="lg" onClick={onStart}>
-              Começar a busca
+              Abrir o dossiê
             </Button>
-            <Button variant="money" size="lg" onClick={onPix}>
-              Apoiar com PIX
+            <Button variant="secondary" size="lg" onClick={onPix}>
+              Mandar um café
             </Button>
           </div>
           <p className="mt-4 text-sm text-[var(--muted)]">
-            {best > 0 ? `Seu recorde: ${best} pts` : "6 episódios · monetização PIX pronta"}
+            {best > 0
+              ? `Seu recorde: ${best} pts`
+              : "6 dossiês. Sem tutorial. Sem misericórdia."}
           </p>
         </div>
 
         <div className="animate-float relative mx-auto w-full max-w-xs">
-          <div className="absolute -inset-3 rounded-[2rem] bg-[var(--brand)]/50 blur-xl" />
+          <div className="absolute -inset-3 rounded-[2rem] bg-[var(--brand)]/35 blur-xl" />
           <Image
             src="/game/flavinho-sprite.jpg"
             alt="Caricatura cartoon do Flavinho"
@@ -452,8 +456,8 @@ function Landing({
             priority
             className="relative mx-auto rounded-[1.5rem] border-[3px] border-[var(--ink)] object-cover shadow-[8px_8px_0_var(--ink)]"
           />
-          <div className="absolute -bottom-3 -right-2 rotate-[-6deg] rounded-xl border-2 border-[var(--ink)] bg-[var(--brand)] px-3 py-1.5 text-sm font-black text-[var(--ink)] shadow-[3px_3px_0_var(--ink)]">
-            PROCURADO
+          <div className="absolute -bottom-3 -right-2 rotate-[-6deg] rounded-xl border-2 border-[var(--ink)] bg-[var(--brand)] px-3 py-1.5 text-sm font-black text-white shadow-[3px_3px_0_var(--ink)]">
+            FORA DO RADAR
           </div>
         </div>
       </div>
@@ -462,9 +466,9 @@ function Landing({
 }
 
 function labelDifficulty(d: Level["difficulty"]) {
-  if (d === "easy") return "Fácil";
-  if (d === "medium") return "Média";
-  return "Difícil";
+  if (d === "easy") return "morna";
+  if (d === "medium") return "quente";
+  return "escaldante";
 }
 
 function formatTime(total: number) {

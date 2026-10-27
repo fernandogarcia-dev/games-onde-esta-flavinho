@@ -47,10 +47,14 @@ export function PixPanel({
       <div className="flex items-start justify-between gap-3">
         <div>
           <p className="font-[family-name:var(--font-display)] text-lg text-[var(--ink)]">
-            {mode === "hint" ? `Destravar dica · ${HINT_PRICE_LABEL}` : "Apoie o caça"}
+            {mode === "hint"
+              ? `Dica opcional · ${HINT_PRICE_LABEL}`
+              : "Apoio voluntário"}
           </p>
           <p className="mt-1 text-sm text-[var(--muted)]">
-            PIX instantâneo. Sem login. Sem enrolação.
+            {mode === "hint"
+              ? "Valor sugerido. Sem obrigação. Sem sorteio."
+              : "Café pro criador. Sem obrigação, sem recompensa prometida."}
           </p>
         </div>
         <span className="rounded-full bg-[var(--pix)] px-2.5 py-1 text-xs font-bold uppercase tracking-wide text-white">
@@ -58,7 +62,7 @@ export function PixPanel({
         </span>
       </div>
 
-      {!compact && (
+      {!compact && mode === "support" && (
         <div className="mt-3 flex flex-wrap gap-2">
           {SUPPORT_PRESETS.map((value) => (
             <span
@@ -97,10 +101,15 @@ export function PixPanel({
             onClick={handleConfirmPaid}
             disabled={confirmed}
           >
-            {confirmed ? "Dica liberada" : "Já paguei · liberar dica"}
+            {confirmed ? "Dica liberada" : "Já enviei · liberar dica"}
           </Button>
         )}
       </div>
+
+      <p className="mt-3 text-[11px] leading-relaxed text-[var(--muted)]">
+        Apoio voluntário entre adultos. Não é doação a instituição, rifa, aposta
+        nem campanha eleitoral. O jogo continua jogável de graça.
+      </p>
     </div>
   );
 }

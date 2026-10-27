@@ -1,12 +1,21 @@
 # Onde Está Flavinho?
 
-Jogo satírico / meme no estilo **Carmem Sandiego + Onde está Wally**.
+Jogo satírico / meme: siga o rastro, marque a cidade, ache ele na multidão.
 
-1. Você recebe pistas e escolhe a cidade.
-2. Se acertar, entra no modo multidão e precisa clicar no Flavinho.
-3. PIX na cara pra dicas e apoio (monetização rápida).
+1. Recortes e pistas levam a uma cidade.
+2. Se o mapa fechar, ele ainda está escondido na multidão.
+3. Apoio voluntário via PIX (opcional). Dicas também.
 
-> Conteúdo de humor/meme. Não é notícia, denúncia nem afiliação política.
+> Humor/sátira. Não é notícia, denúncia, campanha eleitoral nem afiliação política.
+
+## PIX e legalidade (resumo prático)
+
+Isso **não** é aconselhamento jurídico. Em linhas gerais, no Brasil:
+
+- **Apoio voluntário / “café” via PIX** pra conteúdo de humor costuma ser tratado como liberalidade entre adultos, desde que não se finja ser instituição de caridade, rifa, aposta ou doação eleitoral.
+- O jogo deve continuar **jogável de graça** (o app já é).
+- Se o volume crescer, fale com contador (declaração IR / possível MEI) e, se quiser blindagem, com advogado (sátira política + responsabilidade civil).
+- Evite: sorteio sem autorização, prometer prêmio, se passar por ONG, ou cobrar como se fosse serviço essencial sem entrega clara.
 
 ## Rodar local
 

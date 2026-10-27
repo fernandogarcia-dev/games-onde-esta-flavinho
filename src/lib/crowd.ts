@@ -60,7 +60,7 @@ export function buildCrowd(
         ? flavinhoScale
         : 0.045 + depth * 0.07 + rand() * 0.02,
       hue: Math.floor(rand() * 360),
-      shirt: isFlavinho ? "#f5d547" : SHIRTS[Math.floor(rand() * SHIRTS.length)],
+      shirt: isFlavinho ? "#1e3a5f" : SHIRTS[Math.floor(rand() * SHIRTS.length)],
       hair: HAIRS[Math.floor(rand() * HAIRS.length)],
       facing: rand() > 0.5 ? 1 : -1,
       isFlavinho,
