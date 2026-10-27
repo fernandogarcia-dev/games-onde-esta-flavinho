@@ -293,25 +293,25 @@ export function GameApp() {
                   Ele está aí. Ache.
                 </h2>
                 <p className="text-sm text-[var(--muted)]">
-                  Cliques errados: {misses} · Vista de cima. Sem truque de altura.
+                  Cliques errados: {misses} · Dezenas de disfarces. Um só é o real.
                 </p>
               </div>
               <div className="flex flex-wrap items-center gap-3">
                 <div className="flex items-center gap-2 rounded-2xl border-2 border-[var(--ink)] bg-[var(--paper)] px-2 py-1.5 shadow-[3px_3px_0_var(--ink)]">
                   <Image
-                    src="/game/chars/chr-flavinho.png"
-                    alt="Referência do Flavinho"
-                    width={44}
-                    height={70}
-                    className="h-14 w-auto object-contain"
+                    src="/game/disguises/real-suit.png"
+                    alt="Referência do Flavinho sem disfarce"
+                    width={52}
+                    height={64}
+                    className="h-14 w-12 rounded-md object-cover border border-black/20"
                     unoptimized
                   />
                   <div className="pr-1">
                     <p className="text-[10px] font-bold uppercase tracking-wide text-[var(--muted)]">
-                      Procurado
+                      Procurado · sem disfarce
                     </p>
                     <p className="text-sm font-black text-[var(--ink)]">Flavinho</p>
-                    <p className="text-[11px] text-[var(--muted)]">blazer azul-marinho</p>
+                    <p className="text-[11px] text-[var(--muted)]">terno escuro, sem óculos/chapéu</p>
                   </div>
                 </div>
                 <Button variant="secondary" size="sm" onClick={unlockVisualHint}>
@@ -360,7 +360,7 @@ export function GameApp() {
         {phase === "win" && city && (
           <section className="animate-rise mx-auto max-w-xl rounded-3xl border-[3px] border-[var(--ink)] bg-[var(--paper)] p-6 text-center shadow-[8px_8px_0_var(--ink)] sm:p-8">
             <Image
-              src="/game/flavinho-sprite.jpg"
+              src="/game/disguises/real-suit.png"
               alt="Flavinho encontrado"
               width={140}
               height={170}
@@ -482,15 +482,15 @@ function Landing({
         <div className="animate-float relative mx-auto w-full max-w-xs">
           <div className="absolute -inset-3 rounded-[2rem] bg-[var(--brand)]/35 blur-xl" />
           <Image
-            src="/game/flavinho-sprite.jpg"
-            alt="Caricatura cartoon do Flavinho"
+            src="/game/disguises/real-suit.png"
+            alt="Retrato do Flavinho"
             width={420}
             height={520}
             priority
             className="relative mx-auto rounded-[1.5rem] border-[3px] border-[var(--ink)] object-cover shadow-[8px_8px_0_var(--ink)]"
           />
           <div className="absolute -bottom-3 -right-2 rotate-[-6deg] rounded-xl border-2 border-[var(--ink)] bg-[var(--brand)] px-3 py-1.5 text-sm font-black text-white shadow-[3px_3px_0_var(--ink)]">
-            FORA DO RADAR
+            SEM DISFARCE
           </div>
         </div>
       </div>

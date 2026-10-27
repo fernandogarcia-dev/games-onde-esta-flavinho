@@ -63,7 +63,7 @@ export function CrowdScene({
   return (
     <div
       className="relative w-full overflow-hidden rounded-2xl border-[3px] border-[var(--ink)] shadow-[6px_6px_0_var(--ink)] select-none touch-manipulation"
-      style={{ aspectRatio: "16 / 10", backgroundColor: "#9ec8e0" }}
+      style={{ aspectRatio: "16 / 10", backgroundColor: "#d7d2c8" }}
       onClick={handleBoardClick}
       role="img"
       aria-label="Cena lotada. Encontre o Flavinho."
@@ -80,9 +80,10 @@ export function CrowdScene({
       {items.map((item) => {
         const widthPct = Math.max(
           item.scale * 100,
-          item.kind === "prop" ? 3.5 : 4.2,
+          item.kind === "prop" ? 3.2 : 7.2,
         );
-        const heightPct = widthPct * (item.kind === "prop" ? 1.1 : 1.6);
+        // Mugshot cards (Herald style) are near-portrait, not full-body.
+        const heightPct = widthPct * (item.kind === "prop" ? 1.05 : 1.22);
         const style = {
           left: `${item.x}%`,
           top: `${item.y}%`,
@@ -120,7 +121,7 @@ export function CrowdScene({
                 alt="Flavinho"
                 width={200}
                 height={320}
-                className="relative h-full w-full object-contain pointer-events-none"
+                className="relative h-full w-full rounded-md border border-black/20 object-cover pointer-events-none shadow-[2px_2px_0_rgba(0,0,0,0.25)]"
                 draggable={false}
                 unoptimized
               />
@@ -139,9 +140,9 @@ export function CrowdScene({
             <Image
               src={item.src}
               alt=""
-              width={180}
-              height={280}
-              className="relative h-full w-full object-contain"
+              width={160}
+              height={200}
+              className="relative h-full w-full rounded-md border border-black/15 object-cover shadow-[2px_2px_0_rgba(0,0,0,0.2)]"
               draggable={false}
               unoptimized
             />
@@ -158,8 +159,8 @@ export function CrowdScene({
         </div>
       )}
 
-      <div className="pointer-events-none absolute left-3 top-3 z-[5001] rounded-lg bg-[var(--ink)]/75 px-2.5 py-1 text-xs font-semibold text-white backdrop-blur-sm">
-        Toque nele. A multidão mente.
+      <div className="pointer-events-none absolute left-3 top-3 z-[5001] rounded-lg bg-[var(--ink)]/80 px-2.5 py-1 text-xs font-semibold text-white backdrop-blur-sm">
+        Ache o SEM disfarce. O resto é camuflagem.
       </div>
     </div>
   );
