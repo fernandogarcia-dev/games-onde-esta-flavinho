@@ -1,5 +1,19 @@
+import { pickCityClues, resolveClueTier } from "@/lib/city-clues";
 import { LEVELS, type Level } from "@/lib/levels";
 import type { Difficulty } from "@/lib/types";
+
+/** Attach famous city traits matched to the game difficulty. */
+export function withCityClues(level: Level, gameDifficulty: Difficulty): Level {
+  const tier = resolveClueTier(gameDifficulty, level.difficulty);
+  return {
+    ...level,
+    clues: pickCityClues(
+      level.correctCity,
+      tier,
+      `${level.id}:${gameDifficulty}`,
+    ),
+  };
+}
 
 const STORAGE_RECENT = "flavinho_recent_episodes";
 const STORAGE_DECK = "flavinho_active_deck";
@@ -87,7 +101,7 @@ export function dealNewRun(
     STORAGE_DECK,
     diversified.map((l) => l.id),
   );
-  return diversified;
+  return diversified.map((l) => withCityClues(l, difficulty));
 }
 
 export function episodeCatalogSize() {

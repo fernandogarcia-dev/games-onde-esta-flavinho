@@ -424,9 +424,9 @@ export function GameApp() {
                     {level.title}
                   </h2>
                   <p className="mt-1 text-sm text-[var(--muted)]">
-                    Cruze as pistas e marque a cidade. Depois:{" "}
-                    <strong>{labelFindTime(difficulty)}</strong> pra achar na
-                    multidão.
+                    São características famosas da cidade — modo{" "}
+                    <strong>{labelMode(difficulty)}</strong>. Depois:{" "}
+                    <strong>{labelFindTime(difficulty)}</strong> na multidão.
                   </p>
                 </div>
                 <span className="rounded-full border border-[var(--ink)]/15 bg-[var(--sand)] px-3 py-1 text-xs font-bold text-[var(--ink)]">
@@ -434,6 +434,9 @@ export function GameApp() {
                 </span>
               </div>
               <div className="mt-3 flex flex-wrap gap-2 text-xs font-semibold sm:text-sm">
+                <span className="rounded-lg bg-[var(--sand)] px-2.5 py-1">
+                  Pistas {labelClueTier(difficulty, level.difficulty)}
+                </span>
                 <span className="rounded-lg bg-[var(--sand)] px-2.5 py-1">
                   Timer {labelFindTime(difficulty)}
                 </span>
@@ -447,9 +450,9 @@ export function GameApp() {
                 )}
               </div>
               <p className="mt-3 text-sm text-[var(--muted)]">
-                Este dossiê tem só <strong>{level.clues.length} pistas</strong>.
-                A primeira já está aberta; as outras liberam quando você erra
-                uma cidade.
+                Só <strong>{level.clues.length} pistas</strong> no total — cada
+                uma é um traço conhecido do destino. A primeira já está aberta;
+                as outras liberam quando você erra uma cidade.
               </p>
               <ul className="mt-4 space-y-3">
                 {level.clues.map((clue, i) => {
@@ -906,4 +909,14 @@ function labelMode(d: Difficulty) {
   if (d === "medium") return "Médio";
   if (d === "hard") return "Difícil";
   return "Surpresa";
+}
+
+function labelClueTier(
+  game: Difficulty,
+  episode: "easy" | "medium" | "hard",
+) {
+  const tier = game === "mix" ? episode : game;
+  if (tier === "easy") return "fáceis";
+  if (tier === "hard") return "difíceis";
+  return "médias";
 }
