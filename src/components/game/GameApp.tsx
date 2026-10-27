@@ -1,0 +1,476 @@
+"use client";
+
+import Image from "next/image";
+import { useEffect, useMemo, useState } from "react";
+import { Button } from "@/components/ui/Button";
+import { CrowdScene } from "@/components/game/CrowdScene";
+import { PixPanel } from "@/components/game/PixPanel";
+import {
+  CITIES,
+  LEVELS,
+  getCity,
+  type CityId,
+  type Level,
+} from "@/lib/levels";
+import {
+  buildShareUrl,
+  buildWhatsAppShare,
+  getBestScore,
+  hasUnlockedHints,
+  saveBestScore,
+} from "@/lib/monetization";
+
+type Phase = "landing" | "briefing" | "clues" | "find" | "win" | "fail-city";
+
+export function GameApp() {
+  const [phase, setPhase] = useState<Phase>("landing");
+  const [levelIndex, setLevelIndex] = useState(0);
+  const [clueIndex, setClueIndex] = useState(0);
+  const [score, setScore] = useState(1000);
+  const [misses, setMisses] = useState(0);
+  const [lives, setLives] = useState(3);
+  const [feedback, setFeedback] = useState("");
+  const [showHint, setShowHint] = useState(false);
+  const [hintUnlocked, setHintUnlocked] = useState(false);
+  const [best, setBest] = useState(0);
+  const [showPix, setShowPix] = useState(false);
+  const [elapsed, setElapsed] = useState(0);
+  const [running, setRunning] = useState(false);
+
+  const level: Level = LEVELS[levelIndex];
+  const city = getCity(level.correctCity);
+
+  useEffect(() => {
+    if (!running) return;
+    const id = window.setInterval(() => setElapsed((e) => e + 1), 1000);
+    return () => window.clearInterval(id);
+  }, [running]);
+
+  const progressLabel = useMemo(
+    () => `${levelIndex + 1} / ${LEVELS.length}`,
+    [levelIndex],
+  );
+
+  function startGame() {
+    setBest(getBestScore());
+    setHintUnlocked(hasUnlockedHints());
+    setPhase("briefing");
+    setLevelIndex(0);
+    setClueIndex(0);
+    setScore(1000);
+    setMisses(0);
+    setLives(3);
+    setFeedback("");
+    setShowHint(false);
+    setElapsed(0);
+    setRunning(true);
+  }
+
+  function goToClues() {
+    setPhase("clues");
+    setClueIndex(0);
+    setFeedback("");
+  }
+
+  function pickCity(id: CityId) {
+    if (id === level.correctCity) {
+      setFeedback(`Pista confirmada: ${city.name}! Agora ache ele na multidão.`);
+      setScore((s) => s + 250);
+      setPhase("find");
+      return;
+    }
+    const wrong = level.wrongHints[id] || "Pista fria. Tenta outra cidade.";
+    setFeedback(wrong);
+    setScore((s) => Math.max(0, s - 80));
+    setLives((l) => {
+      const next = l - 1;
+      if (next <= 0) {
+        setPhase("fail-city");
+        setRunning(false);
+      }
+      return next;
+    });
+    setClueIndex((c) => Math.min(c + 1, level.clues.length - 1));
+  }
+
+  function onFound() {
+    const bonus = Math.max(50, 400 - misses * 40);
+    const nextScore = score + bonus;
+    setScore(nextScore);
+    setRunning(false);
+    saveBestScore(nextScore);
+    setBest(getBestScore());
+    setPhase("win");
+  }
+
+  function onMiss() {
+    setMisses((m) => m + 1);
+    setScore((s) => Math.max(0, s - 25));
+  }
+
+  function nextLevel() {
+    if (levelIndex >= LEVELS.length - 1) {
+      setPhase("landing");
+      setRunning(false);
+      return;
+    }
+    setLevelIndex((i) => i + 1);
+    setClueIndex(0);
+    setMisses(0);
+    setLives(3);
+    setFeedback("");
+    setShowHint(false);
+    setPhase("briefing");
+    setRunning(true);
+  }
+
+  function shareWin() {
+    const text = `${level.shareLine}\nPontuação: ${score}\n${buildShareUrl()}`;
+    const url = buildWhatsAppShare(text);
+    window.open(url, "_blank", "noopener,noreferrer");
+  }
+
+  function unlockVisualHint() {
+    if (hintUnlocked) {
+      setShowHint(true);
+      return;
+    }
+    setShowPix(true);
+  }
+
+  return (
+    <div className="relative min-h-full">
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="absolute -left-20 top-10 h-64 w-64 rounded-full bg-[var(--brand)]/30 blur-3xl" />
+        <div className="absolute right-0 top-40 h-72 w-72 rounded-full bg-[var(--accent)]/25 blur-3xl" />
+        <div className="absolute bottom-0 left-1/3 h-56 w-56 rounded-full bg-[var(--pix)]/15 blur-3xl" />
+        <div className="map-grid absolute inset-0 opacity-[0.07]" />
+      </div>
+
+      <header className="relative z-10 mx-auto flex w-full max-w-5xl items-center justify-between gap-3 px-4 py-4 sm:px-6">
+        <button
+          type="button"
+          className="font-[family-name:var(--font-display)] text-xl tracking-wide text-[var(--ink)] sm:text-2xl"
+          onClick={() => {
+            setPhase("landing");
+            setRunning(false);
+          }}
+        >
+          Onde Está Flavinho?
+        </button>
+        <div className="flex items-center gap-2">
+          {phase !== "landing" && (
+            <div className="hidden rounded-full border border-[var(--ink)]/15 bg-white/70 px-3 py-1 text-xs font-semibold text-[var(--ink)] sm:block">
+              Ep {progressLabel} · {score} pts · {formatTime(elapsed)}
+            </div>
+          )}
+          <Button variant="money" size="sm" onClick={() => setShowPix((v) => !v)}>
+            PIX
+          </Button>
+        </div>
+      </header>
+
+      <main className="relative z-10 mx-auto w-full max-w-5xl px-4 pb-16 sm:px-6">
+        {phase === "landing" && (
+          <Landing
+            best={best}
+            onStart={startGame}
+            onPix={() => setShowPix(true)}
+          />
+        )}
+
+        {phase === "briefing" && (
+          <section className="animate-rise mx-auto max-w-2xl rounded-3xl border-[3px] border-[var(--ink)] bg-[var(--paper)] p-6 shadow-[8px_8px_0_var(--ink)] sm:p-8">
+            <p className="text-sm font-bold uppercase tracking-[0.2em] text-[var(--accent)]">
+              Agência Satírica de Localização
+            </p>
+            <h1 className="mt-2 font-[family-name:var(--font-display)] text-3xl text-[var(--ink)] sm:text-4xl">
+              {level.title}
+            </h1>
+            <p className="mt-3 text-[var(--muted)]">
+              Estilo Carmem Sandiego: use as pistas e marque a cidade. Se acertar,
+              vira modo Wally: ache o Flavinho na multidão cartoon.
+            </p>
+            <div className="mt-5 flex flex-wrap gap-3 text-sm font-semibold">
+              <span className="rounded-lg bg-[var(--sand)] px-3 py-1.5">
+                Dificuldade: {labelDifficulty(level.difficulty)}
+              </span>
+              <span className="rounded-lg bg-[var(--sand)] px-3 py-1.5">
+                Vidas: {lives}
+              </span>
+            </div>
+            <div className="mt-6 flex flex-wrap gap-3">
+              <Button size="lg" onClick={goToClues}>
+                Receber pistas
+              </Button>
+              <Button variant="secondary" onClick={() => setShowPix(true)}>
+                Apoiar com PIX
+              </Button>
+            </div>
+          </section>
+        )}
+
+        {phase === "clues" && (
+          <section className="animate-rise grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
+            <div className="rounded-3xl border-[3px] border-[var(--ink)] bg-[var(--paper)] p-5 shadow-[6px_6px_0_var(--ink)] sm:p-6">
+              <p className="text-sm font-bold uppercase tracking-[0.18em] text-[var(--accent)]">
+                Pasta de pistas
+              </p>
+              <h2 className="mt-2 font-[family-name:var(--font-display)] text-2xl text-[var(--ink)]">
+                Onde ele foi?
+              </h2>
+              <ul className="mt-4 space-y-3">
+                {level.clues.slice(0, clueIndex + 1).map((clue, i) => (
+                  <li
+                    key={clue}
+                    className="rounded-2xl border border-[var(--ink)]/10 bg-[var(--sand)] px-4 py-3 text-[var(--ink)]"
+                  >
+                    <span className="mr-2 text-xs font-bold uppercase text-[var(--muted)]">
+                      Pista {i + 1}
+                    </span>
+                    {clue}
+                  </li>
+                ))}
+              </ul>
+              {feedback && (
+                <p className="mt-4 rounded-xl bg-[var(--alert)]/10 px-4 py-3 text-sm font-medium text-[var(--alert)]">
+                  {feedback}
+                </p>
+              )}
+              <div className="mt-4 flex flex-wrap gap-2 text-sm font-semibold text-[var(--muted)]">
+                <span>Vidas: {lives}</span>
+                <span>·</span>
+                <span>{score} pts</span>
+              </div>
+            </div>
+
+            <div className="rounded-3xl border-[3px] border-[var(--ink)] bg-[var(--paper)] p-5 shadow-[6px_6px_0_var(--ink)] sm:p-6">
+              <h3 className="font-[family-name:var(--font-display)] text-xl text-[var(--ink)]">
+                Escolha a cidade
+              </h3>
+              <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2">
+                {CITIES.map((c) => (
+                  <button
+                    key={c.id}
+                    type="button"
+                    onClick={() => pickCity(c.id)}
+                    className="rounded-2xl border-2 border-[var(--ink)] bg-white px-3 py-3 text-left transition hover:-translate-y-0.5 hover:bg-[var(--brand)]/40"
+                  >
+                    <div className="font-bold text-[var(--ink)]">
+                      {c.name}
+                      <span className="ml-1 text-xs font-semibold text-[var(--muted)]">
+                        · {c.country}
+                      </span>
+                    </div>
+                    <div className="text-xs text-[var(--muted)]">{c.blurb}</div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {phase === "find" && (
+          <section className="animate-rise space-y-4">
+            <div className="flex flex-wrap items-end justify-between gap-3">
+              <div>
+                <p className="text-sm font-bold uppercase tracking-[0.18em] text-[var(--accent)]">
+                  Modo Wally · {city.name}
+                </p>
+                <h2 className="font-[family-name:var(--font-display)] text-3xl text-[var(--ink)]">
+                  Ache o Flavinho
+                </h2>
+                <p className="text-sm text-[var(--muted)]">
+                  Erros: {misses} · Ele está de polo amarelo-verde.
+                </p>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <Button variant="secondary" size="sm" onClick={unlockVisualHint}>
+                  {showHint ? "Dica ativa" : "Comprar dica"}
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    const text = `To ajudando a achar o Flavinho em ${city.name}: ${buildShareUrl()}`;
+                    window.open(
+                      buildWhatsAppShare(text),
+                      "_blank",
+                      "noopener,noreferrer",
+                    );
+                  }}
+                >
+                  Compartilhar
+                </Button>
+              </div>
+            </div>
+
+            <CrowdScene
+              seed={level.id}
+              background={level.scene.background}
+              crowdCount={level.scene.crowdCount}
+              flavinhoScale={level.scene.flavinhoScale}
+              onFound={onFound}
+              onMiss={onMiss}
+              showHint={showHint}
+            />
+
+            {showPix && (
+              <PixPanel
+                mode="hint"
+                onHintUnlocked={() => {
+                  setHintUnlocked(true);
+                  setShowHint(true);
+                }}
+              />
+            )}
+          </section>
+        )}
+
+        {phase === "win" && (
+          <section className="animate-rise mx-auto max-w-xl rounded-3xl border-[3px] border-[var(--ink)] bg-[var(--paper)] p-6 text-center shadow-[8px_8px_0_var(--ink)] sm:p-8">
+            <Image
+              src="/game/flavinho-sprite.jpg"
+              alt="Flavinho encontrado"
+              width={140}
+              height={170}
+              className="mx-auto rounded-xl border-2 border-[var(--ink)] object-cover"
+            />
+            <h2 className="mt-4 font-[family-name:var(--font-display)] text-4xl text-[var(--ink)]">
+              Achou o Flavinho!
+            </h2>
+            <p className="mt-2 text-[var(--muted)]">
+              Em {city.name}. Pontuação: <strong>{score}</strong> · Recorde:{" "}
+              <strong>{best}</strong>
+            </p>
+            <div className="mt-6 flex flex-wrap justify-center gap-3">
+              <Button size="lg" onClick={nextLevel}>
+                {levelIndex >= LEVELS.length - 1 ? "Jogar de novo" : "Próximo episódio"}
+              </Button>
+              <Button variant="secondary" onClick={shareWin}>
+                Mandar no Zap
+              </Button>
+              <Button variant="money" onClick={() => setShowPix(true)}>
+                Celebrar com PIX
+              </Button>
+            </div>
+            {showPix && (
+              <div className="mt-5 text-left">
+                <PixPanel />
+              </div>
+            )}
+          </section>
+        )}
+
+        {phase === "fail-city" && (
+          <section className="animate-rise mx-auto max-w-xl rounded-3xl border-[3px] border-[var(--ink)] bg-[var(--paper)] p-6 text-center shadow-[8px_8px_0_var(--ink)]">
+            <h2 className="font-[family-name:var(--font-display)] text-3xl text-[var(--ink)]">
+              Pista fria demais
+            </h2>
+            <p className="mt-2 text-[var(--muted)]">
+              Suas vidas acabaram nesse episódio. Flavinho escapou dessa vez.
+            </p>
+            <div className="mt-6 flex flex-wrap justify-center gap-3">
+              <Button onClick={startGame}>Tentar de novo</Button>
+              <Button variant="money" onClick={() => setShowPix(true)}>
+                Financiar a busca
+              </Button>
+            </div>
+          </section>
+        )}
+
+        {showPix && phase !== "find" && phase !== "win" && (
+          <div className="mx-auto mt-8 max-w-xl">
+            <PixPanel />
+          </div>
+        )}
+      </main>
+
+      <footer className="relative z-10 border-t border-[var(--ink)]/10 px-4 py-6 text-center text-xs text-[var(--muted)]">
+        Jogo satírico / meme. Não é notícia, denúncia nem afiliação política.
+        Feito pra viralizar enquanto a hashtag ainda esquenta.
+      </footer>
+    </div>
+  );
+}
+
+function Landing({
+  best,
+  onStart,
+  onPix,
+}: {
+  best: number;
+  onStart: () => void;
+  onPix: () => void;
+}) {
+  return (
+    <section className="relative overflow-hidden rounded-[2rem] border-[3px] border-[var(--ink)] bg-[var(--paper)] shadow-[10px_10px_0_var(--ink)]">
+      <div className="absolute inset-0">
+        <Image
+          src="/game/scene-rio-bg.jpg"
+          alt=""
+          fill
+          priority
+          className="object-cover opacity-35"
+          sizes="100vw"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-[var(--paper)] via-[var(--paper)]/90 to-[var(--paper)]/35" />
+      </div>
+
+      <div className="relative grid items-center gap-8 px-6 py-10 sm:px-10 sm:py-14 lg:grid-cols-[1.15fr_0.85fr]">
+        <div className="animate-rise">
+          <p className="text-sm font-bold uppercase tracking-[0.25em] text-[var(--accent)]">
+            Edição especial · meme ao vivo
+          </p>
+          <h1 className="mt-3 max-w-xl font-[family-name:var(--font-display)] text-5xl leading-[0.95] text-[var(--ink)] sm:text-6xl md:text-7xl">
+            Onde Está Flavinho?
+          </h1>
+          <p className="mt-4 max-w-md text-lg text-[var(--muted)]">
+            Pistas estilo Carmem Sandiego. Quando você acerta a cidade, vira caça
+            na multidão estilo Wally.
+          </p>
+          <div className="mt-7 flex flex-wrap gap-3">
+            <Button size="lg" onClick={onStart}>
+              Começar a busca
+            </Button>
+            <Button variant="money" size="lg" onClick={onPix}>
+              Apoiar com PIX
+            </Button>
+          </div>
+          <p className="mt-4 text-sm text-[var(--muted)]">
+            {best > 0 ? `Seu recorde: ${best} pts` : "6 episódios · monetização PIX pronta"}
+          </p>
+        </div>
+
+        <div className="animate-float relative mx-auto w-full max-w-xs">
+          <div className="absolute -inset-3 rounded-[2rem] bg-[var(--brand)]/50 blur-xl" />
+          <Image
+            src="/game/flavinho-sprite.jpg"
+            alt="Caricatura cartoon do Flavinho"
+            width={420}
+            height={520}
+            priority
+            className="relative mx-auto rounded-[1.5rem] border-[3px] border-[var(--ink)] object-cover shadow-[8px_8px_0_var(--ink)]"
+          />
+          <div className="absolute -bottom-3 -right-2 rotate-[-6deg] rounded-xl border-2 border-[var(--ink)] bg-[var(--brand)] px-3 py-1.5 text-sm font-black text-[var(--ink)] shadow-[3px_3px_0_var(--ink)]">
+            PROCURADO
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function labelDifficulty(d: Level["difficulty"]) {
+  if (d === "easy") return "Fácil";
+  if (d === "medium") return "Média";
+  return "Difícil";
+}
+
+function formatTime(total: number) {
+  const m = Math.floor(total / 60)
+    .toString()
+    .padStart(2, "0");
+  const s = (total % 60).toString().padStart(2, "0");
+  return `${m}:${s}`;
+}
