@@ -1,5 +1,6 @@
 "use client";
 
+import { ShareBar } from "@/components/game/ShareBar";
 import type { RankEntry } from "@/lib/ranking";
 
 export function Leaderboard({
@@ -8,12 +9,14 @@ export function Leaderboard({
   highlight,
   compact = false,
   error,
+  shareText,
 }: {
   entries: RankEntry[];
   global: boolean;
   highlight?: string;
   compact?: boolean;
   error?: string | null;
+  shareText?: string;
 }) {
   const top = entries.slice(0, compact ? 5 : 10);
   const me = highlight?.trim().toLowerCase() || "";
@@ -83,6 +86,16 @@ export function Leaderboard({
             );
           })}
         </ol>
+      )}
+
+      {shareText && (
+        <div className="mt-4 border-t border-[var(--ink)]/10 pt-4">
+          <ShareBar
+            text={shareText}
+            label="Desafia no ranking"
+            compact
+          />
+        </div>
       )}
     </div>
   );

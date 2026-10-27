@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/Button";
 import { CrowdScene } from "@/components/game/CrowdScene";
 import { Leaderboard } from "@/components/game/Leaderboard";
 import { PixModal } from "@/components/game/PixModal";
+import { ShareBar } from "@/components/game/ShareBar";
 import {
   cityCatalogSize,
   dealNewRun,
@@ -40,12 +41,15 @@ import {
   PERFECT_FIND_BONUS,
 } from "@/lib/scoring";
 import {
-  buildShareUrl,
-  buildWhatsAppShare,
   getBestScore,
   hasUnlockedHints,
   saveBestScore,
 } from "@/lib/monetization";
+import {
+  buildInviteText,
+  buildRankText,
+  buildResultText,
+} from "@/lib/share";
 
 type Phase =
   | "landing"
@@ -83,6 +87,7 @@ export function GameApp() {
   const [findRemaining, setFindRemaining] = useState(0);
   const [findActive, setFindActive] = useState(false);
   const [lastFindBonus, setLastFindBonus] = useState(0);
+  const [lastFindSec, setLastFindSec] = useState(0);
   const [lastPerfect, setLastPerfect] = useState(false);
   const [playerName, setPlayerNameState] = useState("");
   const [nameDraft, setNameDraft] = useState("");
@@ -195,6 +200,7 @@ export function GameApp() {
     setElapsed(0);
     setRunning(true);
     setLastFindBonus(0);
+    setLastFindSec(0);
     setLastPerfect(false);
     setNeedsName(false);
     setMyRank(null);
@@ -270,6 +276,7 @@ export function GameApp() {
     stopFindTimer();
     setStreak(nextStreak);
     setLastFindBonus(gained);
+    setLastFindSec(Math.max(0, findLimit - remaining));
     setLastPerfect(perfect);
     setScore(nextScore);
     setRunning(false);
@@ -320,6 +327,7 @@ export function GameApp() {
     setFeedback("");
     setShowHint(false);
     setLastFindBonus(0);
+    setLastFindSec(0);
     setLastPerfect(false);
     setMyRank(null);
     setNewRecord(false);
@@ -327,12 +335,24 @@ export function GameApp() {
     setRunning(true);
   }
 
-  function shareWin() {
-    if (!level) return;
-    const who = playerName ? `${playerName} · ` : "";
-    const text = `${level.shareLine}\n${who}${score.toLocaleString("pt-BR")} pts\n${buildShareUrl()}`;
-    window.open(buildWhatsAppShare(text), "_blank", "noopener,noreferrer");
-  }
+  const inviteShareText = buildInviteText();
+  const resultShareText = buildResultText({
+    shareLine: level?.shareLine,
+    playerName: playerName || nameDraft,
+    cityName: city?.name,
+    score,
+    elapsedSec: elapsed,
+    findSec: lastFindSec > 0 ? lastFindSec : undefined,
+    difficulty,
+    rank: myRank,
+    won: phase === "win",
+  });
+  const rankShareText = buildRankText({
+    playerName: playerName || nameDraft,
+    score: Math.max(score, best),
+    rank: myRank,
+    best,
+  });
 
   function unlockVisualHint() {
     if (hintUnlocked) {
@@ -400,6 +420,7 @@ export function GameApp() {
               playerName={playerName}
               topScore={board[0]?.score ?? 0}
               topName={board[0]?.name ?? ""}
+              shareText={inviteShareText}
               onDifficultyChange={setDifficulty}
               onStart={() => startGame(difficulty)}
             />
@@ -408,6 +429,7 @@ export function GameApp() {
               global={boardGlobal}
               highlight={playerName}
               error={boardError}
+              shareText={rankShareText}
             />
           </div>
         )}
@@ -664,6 +686,17 @@ export function GameApp() {
               <p className="mt-1 font-[family-name:var(--font-display)] text-3xl text-[var(--ink)]">
                 Total {score.toLocaleString("pt-BR")} pts
               </p>
+              <p className="mt-1 text-sm text-[var(--muted)]">
+                Achado em{" "}
+                <strong className="text-[var(--ink)]">
+                  {formatClock(lastFindSec)}
+                </strong>
+                {" · "}
+                corrida{" "}
+                <strong className="text-[var(--ink)]">
+                  {formatClock(elapsed)}
+                </strong>
+              </p>
               {myRank != null && (
                 <p className="mt-1 text-sm font-semibold text-[var(--accent)]">
                   Você está em #{myRank} no ranking
@@ -707,15 +740,20 @@ export function GameApp() {
                       ? "Ver ranking / nova rodada"
                       : "Próximo dossiê"}
                   </Button>
-                  <Button variant="secondary" onClick={shareWin}>
-                    Estourar no Zap
-                  </Button>
                   <Button variant="secondary" onClick={restartToMenu}>
                     Recomeçar
                   </Button>
                 </div>
               )}
 
+              <div className="mt-5 border-t border-[var(--ink)]/10 pt-4">
+                <ShareBar
+                  text={resultShareText}
+                  label="Estourar o tempo nas redes"
+                  align="center"
+                  compact
+                />
+              </div>
             </div>
             <Leaderboard
               entries={board}
@@ -723,6 +761,7 @@ export function GameApp() {
               highlight={playerName || nameDraft}
               compact
               error={boardError}
+              shareText={rankShareText}
             />
           </section>
         )}
@@ -738,13 +777,22 @@ export function GameApp() {
                 : "Acabaram as tentativas no mapa. Ele trocou de cidade enquanto você hesitava."}
             </p>
             <p className="mt-3 font-semibold text-[var(--ink)]">
-              Pontuação da corrida: {score.toLocaleString("pt-BR")}
+              Pontuação da corrida: {score.toLocaleString("pt-BR")} ·{" "}
+              {formatClock(elapsed)}
             </p>
             <div className="mt-6 flex flex-wrap justify-center gap-3">
               <Button onClick={() => startGame(difficulty)}>Tentar de novo</Button>
               <Button variant="secondary" onClick={restartToMenu}>
                 Recomeçar
               </Button>
+            </div>
+            <div className="mt-5 border-t border-[var(--ink)]/10 pt-4">
+              <ShareBar
+                text={resultShareText}
+                label="Desafia alguém nas redes"
+                align="center"
+                compact
+              />
             </div>
           </section>
         )}
@@ -776,6 +824,7 @@ function Landing({
   playerName,
   topScore,
   topName,
+  shareText,
   onDifficultyChange,
   onStart,
 }: {
@@ -786,6 +835,7 @@ function Landing({
   playerName: string;
   topScore: number;
   topName: string;
+  shareText: string;
   onDifficultyChange: (d: Difficulty) => void;
   onStart: () => void;
 }) {
@@ -882,6 +932,13 @@ function Landing({
               ? `Seu recorde: ${best.toLocaleString("pt-BR")} pts · ${catalogSize} dossiês · ${citiesTotal} cidades`
               : `${catalogSize} dossiês. Cada achado começa com ${FIND_SCORE_MAX.toLocaleString("pt-BR")} pts no relógio.`}
           </p>
+          <div className="mt-5">
+            <ShareBar
+              text={shareText}
+              label="Chama a galera"
+              compact
+            />
+          </div>
         </div>
 
         <div className="animate-float relative mx-auto w-full max-w-xs">
