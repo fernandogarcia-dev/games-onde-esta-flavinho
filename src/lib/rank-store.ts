@@ -1,39 +1,13 @@
 import type { RankEntry } from "@/lib/ranking";
+import { getSupabaseAdmin, supabaseConfigured } from "@/lib/supabase";
 
-const KEY = "flavinho:leaderboard";
 const MAX = 50;
 
-type MemoryStore = { entries: RankEntry[] };
-
-function memory(): MemoryStore {
-  const g = globalThis as typeof globalThis & { __flavinhoRank?: MemoryStore };
-  if (!g.__flavinhoRank) g.__flavinhoRank = { entries: [] };
-  return g.__flavinhoRank;
-}
-
-function upstashConfigured() {
-  return Boolean(
-    process.env.UPSTASH_REDIS_REST_URL?.trim() &&
-      process.env.UPSTASH_REDIS_REST_TOKEN?.trim(),
-  );
-}
-
-async function redisCommand(args: (string | number)[]): Promise<unknown> {
-  const url = process.env.UPSTASH_REDIS_REST_URL!.trim();
-  const token = process.env.UPSTASH_REDIS_REST_TOKEN!.trim();
-  const res = await fetch(url, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(args),
-    cache: "no-store",
-  });
-  if (!res.ok) throw new Error(`Upstash ${res.status}`);
-  const data = (await res.json()) as { result?: unknown };
-  return data.result;
-}
+type Row = {
+  name: string;
+  score: number;
+  updated_at: string;
+};
 
 function sortBoard(entries: RankEntry[]): RankEntry[] {
   return [...entries]
@@ -41,47 +15,82 @@ function sortBoard(entries: RankEntry[]): RankEntry[] {
     .slice(0, MAX);
 }
 
+function rowsToEntries(rows: Row[]): RankEntry[] {
+  return sortBoard(
+    rows.map((r) => ({
+      name: r.name,
+      score: r.score,
+      at: new Date(r.updated_at).getTime() || Date.now(),
+    })),
+  );
+}
+
 export function isGlobalRankEnabled() {
-  return upstashConfigured();
+  return supabaseConfigured();
 }
 
 export async function listRanks(): Promise<RankEntry[]> {
-  if (upstashConfigured()) {
-    try {
-      const raw = await redisCommand(["GET", KEY]);
-      if (typeof raw === "string" && raw) {
-        const parsed = JSON.parse(raw) as RankEntry[];
-        if (Array.isArray(parsed)) return sortBoard(parsed);
-      }
-      return [];
-    } catch {
-      return sortBoard(memory().entries);
-    }
+  const sb = getSupabaseAdmin();
+  if (!sb) return [];
+
+  const { data, error } = await sb
+    .from("leaderboard")
+    .select("name, score, updated_at")
+    .order("score", { ascending: false })
+    .order("updated_at", { ascending: true })
+    .limit(MAX);
+
+  if (error) {
+    console.error("[rank] list", error.message);
+    throw new Error(error.message);
   }
-  return sortBoard(memory().entries);
+  return rowsToEntries((data || []) as Row[]);
 }
 
 export async function upsertRank(
   name: string,
   score: number,
 ): Promise<{ entries: RankEntry[]; rank: number }> {
-  const clean = name.trim().slice(0, 16);
-  const entries = await listRanks();
-  const others = entries.filter((e) => e.name.toLowerCase() !== clean.toLowerCase());
-  const prev = entries.find((e) => e.name.toLowerCase() === clean.toLowerCase());
-  const best = Math.max(score, prev?.score ?? 0);
-  const next = sortBoard([...others, { name: clean, score: best, at: Date.now() }]);
-
-  if (upstashConfigured()) {
-    try {
-      await redisCommand(["SET", KEY, JSON.stringify(next)]);
-    } catch {
-      memory().entries = next;
-    }
-  } else {
-    memory().entries = next;
+  const sb = getSupabaseAdmin();
+  if (!sb) {
+    throw new Error("Supabase não configurado");
   }
 
-  const rank = next.findIndex((e) => e.name.toLowerCase() === clean.toLowerCase()) + 1;
-  return { entries: next, rank: rank || next.length };
+  const clean = name.trim().slice(0, 16);
+  const nameKey = clean.toLowerCase();
+
+  const { data: existing, error: readErr } = await sb
+    .from("leaderboard")
+    .select("name, score, updated_at")
+    .eq("name_key", nameKey)
+    .maybeSingle();
+
+  if (readErr) {
+    console.error("[rank] read", readErr.message);
+    throw new Error(readErr.message);
+  }
+
+  const prevScore = existing?.score ?? 0;
+  const best = Math.max(score, prevScore);
+
+  const { error: upsertErr } = await sb.from("leaderboard").upsert(
+    {
+      name: clean,
+      name_key: nameKey,
+      score: best,
+      updated_at: new Date().toISOString(),
+    },
+    { onConflict: "name_key" },
+  );
+
+  if (upsertErr) {
+    console.error("[rank] upsert", upsertErr.message);
+    throw new Error(upsertErr.message);
+  }
+
+  const entries = await listRanks();
+  const rank =
+    entries.findIndex((e) => e.name.toLowerCase() === nameKey) + 1 ||
+    entries.length;
+  return { entries, rank };
 }

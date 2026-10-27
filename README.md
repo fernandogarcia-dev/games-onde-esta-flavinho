@@ -36,9 +36,21 @@ Abra [http://127.0.0.1:43127](http://127.0.0.1:43127).
 4. Deploy
 5. Domains → Add `cadeflavinho.com.br` (+ `www` se quiser)
 
-### Ranking global (Upstash)
+### Ranking global (Supabase)
 
-Marketplace → **Upstash Redis** (free) → conecta ao projeto → redeploy.
+Projeto: **CadeFlavinho** → `https://elpxkbcnaexbkyynclaf.supabase.co`
+
+1. No Supabase → **SQL Editor** → cole e rode `supabase/migrations/001_leaderboard.sql`
+2. **Project Settings → API** → copie:
+   - `anon` `public` → `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+   - `service_role` → `SUPABASE_SERVICE_ROLE_KEY` (só server / Vercel env — nunca no browser)
+3. Na Vercel (e no `.env.local`):
+   - `NEXT_PUBLIC_SUPABASE_URL=https://elpxkbcnaexbkyynclaf.supabase.co`
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY=...`
+   - `SUPABASE_SERVICE_ROLE_KEY=...`
+4. Redeploy
+
+A API `/api/rank` grava/lê a tabela `leaderboard` (nome + pontuação). É ranking **mundial**, não por aparelho.
 
 ## DNS no Registro.br (`cadeflavinho.com.br`)
 

@@ -7,11 +7,13 @@ export function Leaderboard({
   global,
   highlight,
   compact = false,
+  error,
 }: {
   entries: RankEntry[];
   global: boolean;
   highlight?: string;
   compact?: boolean;
+  error?: string | null;
 }) {
   const top = entries.slice(0, compact ? 5 : 10);
   const me = highlight?.trim().toLowerCase() || "";
@@ -25,7 +27,7 @@ export function Leaderboard({
       <div className="flex items-end justify-between gap-2">
         <div>
           <p className="text-xs font-bold uppercase tracking-[0.18em] text-[var(--brand)]">
-            {global ? "Ranking mundial" : "Ranking deste aparelho"}
+            Ranking mundial
           </p>
           <h3 className="font-[family-name:var(--font-display)] text-2xl text-[var(--ink)]">
             Caçadores de Flavinho
@@ -36,9 +38,13 @@ export function Leaderboard({
         </span>
       </div>
 
-      {top.length === 0 ? (
+      {error ? (
+        <p className="mt-4 text-sm text-[var(--alert)]">{error}</p>
+      ) : top.length === 0 ? (
         <p className="mt-4 text-sm text-[var(--muted)]">
-          Ninguém no placar ainda. Achou o rastro? Entra na história.
+          {global
+            ? "Ninguém no placar ainda. Achou o rastro? Entra na história."
+            : "Ranking global ainda não conectou. Confira as chaves do Supabase."}
         </p>
       ) : (
         <ol className="mt-4 space-y-2">
@@ -77,12 +83,6 @@ export function Leaderboard({
             );
           })}
         </ol>
-      )}
-
-      {!global && (
-        <p className="mt-3 text-[11px] text-[var(--muted)]">
-          Conecte Upstash Redis na Vercel pra virar ranking global de verdade.
-        </p>
       )}
     </div>
   );

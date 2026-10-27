@@ -59,30 +59,37 @@ export function upsertLocalBoard(name: string, score: number): RankEntry[] {
 export async function fetchLeaderboard(): Promise<{
   entries: RankEntry[];
   global: boolean;
+  error?: string;
 }> {
   try {
     const res = await fetch("/api/rank", { cache: "no-store" });
-    if (!res.ok) throw new Error("rank fetch failed");
     const data = (await res.json()) as {
       entries?: RankEntry[];
       global?: boolean;
+      error?: string;
     };
     const remote = Array.isArray(data.entries) ? data.entries : [];
-    if (remote.length > 0 || data.global) {
-      return { entries: remote, global: Boolean(data.global) };
-    }
+    return {
+      entries: remote,
+      global: Boolean(data.global),
+      error: data.error,
+    };
   } catch {
-    /* fall through to local */
+    return {
+      entries: [],
+      global: false,
+      error: "Não deu pra carregar o ranking mundial.",
+    };
   }
-  return { entries: readLocalBoard(), global: false };
 }
 
 export async function submitScore(
   name: string,
   score: number,
-): Promise<{ entries: RankEntry[]; rank: number; global: boolean }> {
+): Promise<{ entries: RankEntry[]; rank: number; global: boolean; error?: string }> {
   const clean = sanitizeName(name);
-  const local = upsertLocalBoard(clean, score);
+  // espelho local só como cache visual; a fonte da verdade é o Supabase
+  upsertLocalBoard(clean, score);
 
   try {
     const res = await fetch("/api/rank", {
@@ -90,27 +97,36 @@ export async function submitScore(
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name: clean, score }),
     });
-    if (res.ok) {
-      const data = (await res.json()) as {
-        entries?: RankEntry[];
-        rank?: number;
-        global?: boolean;
-      };
-      const entries = Array.isArray(data.entries) ? data.entries : local;
-      const rank =
-        typeof data.rank === "number"
-          ? data.rank
-          : entries.findIndex((e) => e.name.toLowerCase() === clean.toLowerCase()) + 1;
+    const data = (await res.json()) as {
+      entries?: RankEntry[];
+      rank?: number;
+      global?: boolean;
+      error?: string;
+    };
+    if (!res.ok) {
       return {
-        entries,
-        rank: rank > 0 ? rank : local.findIndex((e) => e.name.toLowerCase() === clean.toLowerCase()) + 1,
+        entries: readLocalBoard(),
+        rank: 0,
         global: Boolean(data.global),
+        error: data.error || "Falha ao gravar no ranking mundial",
       };
     }
+    const entries = Array.isArray(data.entries) ? data.entries : [];
+    const rank =
+      typeof data.rank === "number"
+        ? data.rank
+        : entries.findIndex((e) => e.name.toLowerCase() === clean.toLowerCase()) + 1;
+    return {
+      entries,
+      rank: rank > 0 ? rank : 0,
+      global: true,
+    };
   } catch {
-    /* local only */
+    return {
+      entries: readLocalBoard(),
+      rank: 0,
+      global: false,
+      error: "Falha de rede no ranking mundial",
+    };
   }
-
-  const rank = local.findIndex((e) => e.name.toLowerCase() === clean.toLowerCase()) + 1;
-  return { entries: local, rank: rank || local.length, global: false };
 }

@@ -7,14 +7,41 @@ import {
 } from "@/lib/rank-store";
 
 export async function GET() {
-  const entries = await listRanks();
-  return NextResponse.json({
-    entries: entries.slice(0, 20),
-    global: isGlobalRankEnabled(),
-  });
+  if (!isGlobalRankEnabled()) {
+    return NextResponse.json(
+      {
+        entries: [],
+        global: false,
+        error:
+          "Supabase sem API key. Defina SUPABASE_SERVICE_ROLE_KEY (e rode o SQL da migration).",
+      },
+      { status: 503 },
+    );
+  }
+
+  try {
+    const entries = await listRanks();
+    return NextResponse.json({
+      entries: entries.slice(0, 20),
+      global: true,
+    });
+  } catch (e) {
+    const message = e instanceof Error ? e.message : "Falha no ranking";
+    return NextResponse.json(
+      { entries: [], global: true, error: message },
+      { status: 500 },
+    );
+  }
 }
 
 export async function POST(req: Request) {
+  if (!isGlobalRankEnabled()) {
+    return NextResponse.json(
+      { error: "Supabase não configurado" },
+      { status: 503 },
+    );
+  }
+
   let body: { name?: string; score?: number };
   try {
     body = (await req.json()) as { name?: string; score?: number };
@@ -32,10 +59,15 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Pontuação inválida" }, { status: 400 });
   }
 
-  const { entries, rank } = await upsertRank(name, score);
-  return NextResponse.json({
-    entries: entries.slice(0, 20),
-    rank,
-    global: isGlobalRankEnabled(),
-  });
+  try {
+    const { entries, rank } = await upsertRank(name, score);
+    return NextResponse.json({
+      entries: entries.slice(0, 20),
+      rank,
+      global: true,
+    });
+  } catch (e) {
+    const message = e instanceof Error ? e.message : "Falha ao gravar";
+    return NextResponse.json({ error: message, global: true }, { status: 500 });
+  }
 }

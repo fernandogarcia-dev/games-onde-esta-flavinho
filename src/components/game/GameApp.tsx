@@ -89,6 +89,7 @@ export function GameApp() {
   const [needsName, setNeedsName] = useState(false);
   const [board, setBoard] = useState<RankEntry[]>([]);
   const [boardGlobal, setBoardGlobal] = useState(false);
+  const [boardError, setBoardError] = useState<string | null>(null);
   const [myRank, setMyRank] = useState<number | null>(null);
   const [newRecord, setNewRecord] = useState(false);
   const findDeadlineRef = useRef<number | null>(null);
@@ -155,9 +156,10 @@ export function GameApp() {
   );
 
   async function refreshBoard() {
-    const { entries, global } = await fetchLeaderboard();
+    const { entries, global, error } = await fetchLeaderboard();
     setBoard(entries);
     setBoardGlobal(global);
+    setBoardError(error || null);
   }
 
   function startFindTimer() {
@@ -247,7 +249,8 @@ export function GameApp() {
     const result = await submitScore(name, total);
     setBoard(result.entries);
     setBoardGlobal(result.global);
-    setMyRank(result.rank);
+    setBoardError(result.error || null);
+    setMyRank(result.rank > 0 ? result.rank : null);
   }
 
   async function onFound() {
@@ -401,6 +404,7 @@ export function GameApp() {
               entries={board}
               global={boardGlobal}
               highlight={playerName}
+              error={boardError}
             />
           </div>
         )}
@@ -699,6 +703,7 @@ export function GameApp() {
               global={boardGlobal}
               highlight={playerName || nameDraft}
               compact
+              error={boardError}
             />
           </section>
         )}
