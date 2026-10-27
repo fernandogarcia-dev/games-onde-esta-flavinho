@@ -78,6 +78,16 @@ Se a Vercel pedir um registro de verificação (TXT ou CNAME `_vercel`), copie e
 
 Propagação: minutos a algumas horas.
 
+## Dificuldade e cidades
+
+| Modo | Cidades no mapa | Observação |
+|---|---|---|
+| Fácil | 24 | países distintos |
+| Médio | 56 | pode repetir país em países grandes |
+| Difícil / Surpresa | 124 | países podem ou não se repetir |
+
+Pistas usam marcas famosas e reconhecíveis (nunca charadas).
+
 ## Pontuação e timer
 
 | Modo | Tempo pra achar | Pontos na mesa |

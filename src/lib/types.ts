@@ -1,21 +1,3 @@
-export type CityId =
-  | "brasilia"
-  | "rio"
-  | "saopaulo"
-  | "miami"
-  | "paris"
-  | "dubai"
-  | "salvador"
-  | "belohorizonte"
-  | "curitiba"
-  | "recife"
-  | "buenosaires"
-  | "lisboa"
-  | "londres"
-  | "novayork"
-  | "barcelona"
-  | "roma"
-  | "cancun"
-  | "toquio";
+export type CityId = string;
 
 export type Difficulty = "easy" | "medium" | "hard" | "mix";

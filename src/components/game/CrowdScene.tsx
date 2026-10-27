@@ -55,21 +55,22 @@ export function CrowdScene({
     return () => mq.removeEventListener("change", apply);
   }, []);
 
-  // Global size nudge by difficulty — perspective curve stays the same.
-  const mobileBoost = portrait ? 1.04 : 1;
+  // Desktop uses full flavinhoScale (~2× prior). On narrow screens, pull
+  // back a bit so twins don't eat the whole board while keeping readable size.
+  const mobileBoost = portrait ? 0.82 : 1;
   const scale =
     flavinhoScale *
     (lookTier === "easy"
       ? portrait
-        ? 1.12
-        : 1.18
+        ? 1.06
+        : 1.12
       : lookTier === "hard"
         ? portrait
-          ? 0.9
+          ? 0.88
           : 0.96
         : portrait
-          ? 1
-          : 1.04);
+          ? 0.96
+          : 1.02);
   const count = portrait
     ? Math.max(
         lookTier === "easy" ? 14 : lookTier === "hard" ? 32 : 22,

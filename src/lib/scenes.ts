@@ -1,5 +1,9 @@
+import {
+  CITY_CATALOG,
+  type CityId,
+  type SceneKey,
+} from "@/lib/city-catalog";
 import { PERSPECTIVE_GROUND } from "@/lib/perspective";
-import type { CityId } from "@/lib/types";
 
 export type SceneConfig = {
   background: string;
@@ -30,34 +34,32 @@ function scene(
 }
 
 /**
- * Perspective Waldo plates (authored ~16:9/16:10).
- * All share the same ground band from @/lib/perspective.
+ * Waldo plates by visual family.
+ * flavinhoScale is ~2× the previous desktop values so sprites match
+ * background person height at feet yMax (see perspective.ts).
  *
  * Base counts sit near medium before GameApp ladder:
  * easy ~0.28x · medium ~0.78x · hard ~1.75x
  */
-export const CITY_SCENES: Record<CityId, SceneConfig> = {
-  // Beach / orla plates — front scale ≈ background person height at feet yMax
-  rio: scene("/game/scene-rio-waldo.jpg", 64, 0.128),
-  salvador: scene("/game/scene-rio-waldo.jpg", 62, 0.128),
-  recife: scene("/game/scene-rio-waldo.jpg", 64, 0.126),
-  cancun: scene("/game/scene-miami-waldo.jpg", 64, 0.128),
-  miami: scene("/game/scene-miami-waldo.jpg", 66, 0.126),
-
-  // European / plaza plates
-  paris: scene("/game/scene-paris-waldo.jpg", 72, 0.124),
-  lisboa: scene("/game/scene-paris-waldo.jpg", 68, 0.124),
-  barcelona: scene("/game/scene-paris-waldo.jpg", 70, 0.124),
-  roma: scene("/game/scene-plaza-waldo.jpg", 68, 0.124),
-  buenosaires: scene("/game/scene-plaza-waldo.jpg", 70, 0.122),
-  londres: scene("/game/scene-plaza-waldo.jpg", 72, 0.122),
-
-  // Big-city / modern plates
-  saopaulo: scene("/game/scene-sp-waldo.jpg", 70, 0.12),
-  novayork: scene("/game/scene-sp-waldo.jpg", 76, 0.118),
-  curitiba: scene("/game/scene-sp-waldo.jpg", 66, 0.122),
-  belohorizonte: scene("/game/scene-plaza-waldo.jpg", 64, 0.124),
-  brasilia: scene("/game/scene-plaza-waldo.jpg", 66, 0.124),
-  dubai: scene("/game/scene-dubai-waldo.jpg", 74, 0.118),
-  toquio: scene("/game/scene-dubai-waldo.jpg", 76, 0.116),
+const SCENE_BY_KEY: Record<SceneKey, SceneConfig> = {
+  rio: scene("/game/scene-rio-waldo.jpg", 64, 0.256),
+  miami: scene("/game/scene-miami-waldo.jpg", 66, 0.252),
+  paris: scene("/game/scene-paris-waldo.jpg", 72, 0.248),
+  plaza: scene("/game/scene-plaza-waldo.jpg", 70, 0.244),
+  sp: scene("/game/scene-sp-waldo.jpg", 70, 0.24),
+  dubai: scene("/game/scene-dubai-waldo.jpg", 74, 0.236),
 };
+
+export function sceneForKey(key: SceneKey): SceneConfig {
+  return SCENE_BY_KEY[key];
+}
+
+export function sceneForCity(cityId: CityId): SceneConfig {
+  const hit = CITY_CATALOG.find((c) => c.id === cityId);
+  return sceneForKey(hit?.sceneKey ?? "plaza");
+}
+
+/** @deprecated Prefer sceneForCity — kept for any leftover imports. */
+export const CITY_SCENES: Record<string, SceneConfig> = Object.fromEntries(
+  CITY_CATALOG.map((c) => [c.id, sceneForKey(c.sceneKey)]),
+);

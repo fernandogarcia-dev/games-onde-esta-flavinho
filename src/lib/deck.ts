@@ -1,3 +1,4 @@
+import { cityCatalogSizeFor } from "@/lib/city-catalog";
 import {
   clueCountForLives,
   pickCityClues,
@@ -121,10 +122,11 @@ export function dealNewRun(
   return diversified.map((l) => withCityClues(l, difficulty));
 }
 
-export function episodeCatalogSize() {
-  return LEVELS.length;
+export function episodeCatalogSize(difficulty: Difficulty = "mix") {
+  if (difficulty === "mix") return LEVELS.length;
+  return poolForDifficulty(difficulty).length;
 }
 
-export function cityCatalogSize() {
-  return new Set(LEVELS.map((l) => l.correctCity)).size;
+export function cityCatalogSize(difficulty: Difficulty = "mix") {
+  return cityCatalogSizeFor(difficulty);
 }

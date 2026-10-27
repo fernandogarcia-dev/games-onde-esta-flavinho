@@ -10,7 +10,6 @@ import { ShareBar } from "@/components/game/ShareBar";
 import {
   cityCatalogSize,
   dealNewRun,
-  episodeCatalogSize,
   LIVES_BY_DIFFICULTY,
   rememberEpisode,
 } from "@/lib/deck";
@@ -94,8 +93,7 @@ export function GameApp() {
   const [newRecord, setNewRecord] = useState(false);
   const findDeadlineRef = useRef<number | null>(null);
   const foundLockRef = useRef(false);
-  const catalogSize = episodeCatalogSize();
-  const citiesTotal = cityCatalogSize();
+  const citiesTotal = cityCatalogSize(difficulty);
 
   const level: Level | null = run[levelIndex] ?? null;
   const city = level ? getCity(level.correctCity) : null;
@@ -107,6 +105,7 @@ export function GameApp() {
     return pickCityOptions(
       level.correctCity,
       `${level.id}-${levelIndex}-${difficulty}`,
+      difficulty,
     );
   }, [level, levelIndex, difficulty]);
 
@@ -418,7 +417,6 @@ export function GameApp() {
           <div className="space-y-6">
             <Landing
               best={best}
-              catalogSize={catalogSize}
               citiesTotal={citiesTotal}
               difficulty={difficulty}
               playerName={playerName}
@@ -823,7 +821,6 @@ export function GameApp() {
 
 function Landing({
   best,
-  catalogSize,
   citiesTotal,
   difficulty,
   playerName,
@@ -834,7 +831,6 @@ function Landing({
   onStart,
 }: {
   best: number;
-  catalogSize: number;
   citiesTotal: number;
   difficulty: Difficulty;
   playerName: string;
@@ -848,19 +844,19 @@ function Landing({
     {
       id: "easy",
       label: "Fácil",
-      hint: `5 min · ${FIND_SCORE_MAX.toLocaleString("pt-BR")} pts`,
+      hint: "24 cidades · 5 vidas",
     },
     {
       id: "medium",
       label: "Médio",
-      hint: `3 min · ${FIND_SCORE_MAX.toLocaleString("pt-BR")} pts`,
+      hint: "56 cidades · 3 vidas",
     },
     {
       id: "hard",
       label: "Difícil",
-      hint: `1 min · ${FIND_SCORE_MAX.toLocaleString("pt-BR")} pts`,
+      hint: "124 cidades · 2 vidas",
     },
-    { id: "mix", label: "Surpresa", hint: "3 min · mistura tudo" },
+    { id: "mix", label: "Surpresa", hint: "124 cidades · mistura" },
   ];
 
   return (
@@ -934,8 +930,8 @@ function Landing({
           </div>
           <p className="mt-4 text-sm text-[var(--muted)]">
             {best > 0
-              ? `Seu recorde: ${best.toLocaleString("pt-BR")} pts · ${catalogSize} dossiês · ${citiesTotal} cidades`
-              : `${catalogSize} dossiês. Cada achado começa com ${FIND_SCORE_MAX.toLocaleString("pt-BR")} pts no relógio.`}
+              ? `Seu recorde: ${best.toLocaleString("pt-BR")} pts · modo ${labelMode(difficulty)}: ${citiesTotal} cidades`
+              : `Modo ${labelMode(difficulty)}: ${citiesTotal} cidades no mapa. Cada achado começa com ${FIND_SCORE_MAX.toLocaleString("pt-BR")} pts no relógio.`}
           </p>
           <div className="mt-5">
             <ShareBar
