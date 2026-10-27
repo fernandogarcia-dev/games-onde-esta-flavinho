@@ -1,8 +1,8 @@
 export const PIX_KEY =
-  process.env.NEXT_PUBLIC_PIX_KEY?.trim() || "COLOQUE_SUA_CHAVE_PIX_AQUI";
+  process.env.NEXT_PUBLIC_PIX_KEY?.trim() || "cadeflavinho@gmail.com";
 
 export const PIX_NAME =
-  process.env.NEXT_PUBLIC_PIX_NAME?.trim() || "Onde Está Flavinho";
+  process.env.NEXT_PUBLIC_PIX_NAME?.trim() || "Cadê Flavinho";
 
 export const HINT_PRICE_LABEL = "R$ 2";
 export const SUPPORT_PRESETS = ["R$ 3", "R$ 5", "R$ 10", "R$ 25"] as const;

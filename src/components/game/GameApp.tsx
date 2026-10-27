@@ -5,7 +5,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { CrowdScene } from "@/components/game/CrowdScene";
 import { Leaderboard } from "@/components/game/Leaderboard";
-import { PixPanel } from "@/components/game/PixPanel";
+import { PixModal } from "@/components/game/PixModal";
 import {
   cityCatalogSize,
   dealNewRun,
@@ -352,7 +352,7 @@ export function GameApp() {
           className="font-[family-name:var(--font-display)] text-xl tracking-wide text-[var(--ink)] sm:text-2xl"
           onClick={restartToMenu}
         >
-          Onde Está Flavinho?
+          Cadê Flavinho?
         </button>
         <div className="flex items-center gap-2">
           {phase !== "landing" && (
@@ -396,7 +396,6 @@ export function GameApp() {
               topName={board[0]?.name ?? ""}
               onDifficultyChange={setDifficulty}
               onStart={() => startGame(difficulty)}
-              onPix={() => setShowPix(true)}
             />
             <Leaderboard
               entries={board}
@@ -440,9 +439,6 @@ export function GameApp() {
             <div className="mt-6 flex flex-wrap gap-3">
               <Button size="lg" onClick={goToClues}>
                 Abrir as pistas
-              </Button>
-              <Button variant="secondary" onClick={() => setShowPix(true)}>
-                Mandar um café
               </Button>
             </div>
           </section>
@@ -612,15 +608,6 @@ export function GameApp() {
               disabled={!findActive}
             />
 
-            {showPix && (
-              <PixPanel
-                mode="hint"
-                onHintUnlocked={() => {
-                  setHintUnlocked(true);
-                  setShowHint(true);
-                }}
-              />
-            )}
           </section>
         )}
 
@@ -706,11 +693,6 @@ export function GameApp() {
                 </div>
               )}
 
-              {showPix && (
-                <div className="mt-5 text-left">
-                  <PixPanel />
-                </div>
-              )}
             </div>
             <Leaderboard
               entries={board}
@@ -739,19 +721,20 @@ export function GameApp() {
               <Button variant="secondary" onClick={restartToMenu}>
                 Recomeçar
               </Button>
-              <Button variant="money" onClick={() => setShowPix(true)}>
-                Mandar um café
-              </Button>
             </div>
           </section>
         )}
-
-        {showPix && phase !== "find" && phase !== "win" && (
-          <div className="mx-auto mt-8 max-w-xl">
-            <PixPanel />
-          </div>
-        )}
       </main>
+
+      <PixModal
+        open={showPix}
+        onClose={() => setShowPix(false)}
+        mode={phase === "find" ? "hint" : "support"}
+        onHintUnlocked={() => {
+          setHintUnlocked(true);
+          setShowHint(true);
+        }}
+      />
 
       <footer className="relative z-10 border-t border-[var(--ink)]/10 px-4 py-6 text-center text-xs text-[var(--muted)]">
         Sátira / humor. Não é notícia, denúncia, campanha eleitoral nem afiliação
@@ -771,7 +754,6 @@ function Landing({
   topName,
   onDifficultyChange,
   onStart,
-  onPix,
 }: {
   best: number;
   catalogSize: number;
@@ -782,7 +764,6 @@ function Landing({
   topName: string;
   onDifficultyChange: (d: Difficulty) => void;
   onStart: () => void;
-  onPix: () => void;
 }) {
   const modes: { id: Difficulty; label: string; hint: string }[] = [
     {
@@ -823,7 +804,7 @@ function Landing({
             Boletim relâmpago · sumiço confirmado
           </p>
           <h1 className="mt-3 max-w-xl font-[family-name:var(--font-display)] text-5xl leading-[0.95] text-[var(--ink)] sm:text-6xl md:text-7xl">
-            Onde Está Flavinho?
+            Cadê Flavinho?
           </h1>
           <p className="mt-4 max-w-md text-lg text-[var(--muted)]">
             {playerName ? `E aí, ${playerName}. ` : ""}
@@ -870,9 +851,6 @@ function Landing({
           <div className="mt-7 flex flex-wrap gap-3">
             <Button size="lg" onClick={onStart}>
               Abrir o dossiê
-            </Button>
-            <Button variant="secondary" size="lg" onClick={onPix}>
-              Mandar um café
             </Button>
           </div>
           <p className="mt-4 text-sm text-[var(--muted)]">

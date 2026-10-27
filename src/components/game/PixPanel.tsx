@@ -24,7 +24,8 @@ export function PixPanel({
 }: Props) {
   const [copied, setCopied] = useState(false);
   const [confirmed, setConfirmed] = useState(false);
-  const isPlaceholder = PIX_KEY.includes("COLOQUE_SUA");
+  const isPlaceholder =
+    !PIX_KEY || PIX_KEY.includes("COLOQUE_SUA") || PIX_KEY.includes("sua-chave");
 
   async function handleCopy() {
     const ok = await copyPixKey();
