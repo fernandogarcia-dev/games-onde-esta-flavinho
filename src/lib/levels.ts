@@ -19,7 +19,7 @@ export type EpisodeSeed = {
 };
 
 export type Level = EpisodeSeed & {
-  clues: [string, string, string];
+  clues: string[];
   wrongHints: Record<CityId, string>;
   scene: SceneConfig;
 };
@@ -686,7 +686,7 @@ export const EPISODE_SEEDS: EpisodeSeed[] = [
 
 export const LEVELS: Level[] = EPISODE_SEEDS.map((seed) => ({
   ...seed,
-  clues: ["", "", ""] as [string, string, string],
+  clues: [] as string[],
   wrongHints: buildWrongHints(seed.correctCity),
   scene: CITY_SCENES[seed.correctCity],
 }));

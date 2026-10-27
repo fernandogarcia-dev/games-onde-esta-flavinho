@@ -54,11 +54,30 @@ export function CrowdScene({
     return () => mq.removeEventListener("change", apply);
   }, []);
 
-  // Portrait keeps density; shrink tokens instead of gutting the crowd.
-  const mobileBoost = portrait ? 1.06 : 1;
-  const scale = flavinhoScale * (portrait ? 0.92 : 1);
+  // Portrait: keep the difficulty ladder, just slightly fewer / smaller.
+  const mobileBoost =
+    lookTier === "easy" ? (portrait ? 1.2 : 1.12) : portrait ? 1.05 : 1;
+  const scale =
+    flavinhoScale *
+    (lookTier === "easy"
+      ? portrait
+        ? 1.15
+        : 1.22
+      : lookTier === "hard"
+        ? portrait
+          ? 0.88
+          : 0.95
+        : portrait
+          ? 0.98
+          : 1.05);
   const count = portrait
-    ? Math.max(28, Math.floor(crowdCount * 0.78))
+    ? Math.max(
+        lookTier === "easy" ? 14 : lookTier === "hard" ? 32 : 22,
+        Math.floor(
+          crowdCount *
+            (lookTier === "easy" ? 0.85 : lookTier === "hard" ? 0.8 : 0.82),
+        ),
+      )
     : crowdCount;
 
   const items = useMemo(() => {
@@ -118,7 +137,7 @@ export function CrowdScene({
           item.scale,
           item.kind,
           mobileBoost,
-          lookTier === "hard" ? 3.4 : lookTier === "medium" ? 4.2 : 5.2,
+          lookTier === "hard" ? 3.3 : lookTier === "medium" ? 4.6 : 6.4,
         );
         const style = {
           left: `${item.x}%`,

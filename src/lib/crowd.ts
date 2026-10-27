@@ -145,7 +145,7 @@ function decoyLook(
   return { src: pickFrom(disguisePoolFor(tier), rand) };
 }
 
-/** How packed the board gets — Waldo energy. */
+/** How packed the board gets — clear ladder easy → medium → hard. */
 export function densityFor(tier: LookTier): {
   overlap: number;
   rows: number;
@@ -154,12 +154,15 @@ export function densityFor(tier: LookTier): {
   baseMin: number;
 } {
   if (tier === "hard") {
-    return { overlap: 0.32, rows: 9, depthMin: 0.52, depthMax: 1.05, baseMin: 3.4 };
+    // Sea of twins, heavy overlap.
+    return { overlap: 0.3, rows: 9, depthMin: 0.5, depthMax: 1.02, baseMin: 3.3 };
   }
   if (tier === "medium") {
-    return { overlap: 0.5, rows: 7, depthMin: 0.58, depthMax: 1.1, baseMin: 4.2 };
+    // Busy but readable — between easy air and hard chaos.
+    return { overlap: 0.58, rows: 6, depthMin: 0.62, depthMax: 1.12, baseMin: 4.6 };
   }
-  return { overlap: 0.72, rows: 5, depthMin: 0.68, depthMax: 1.18, baseMin: 5.2 };
+  // Easy: sparse, bigger tokens, room to breathe.
+  return { overlap: 0.95, rows: 3, depthMin: 0.85, depthMax: 1.28, baseMin: 6.4 };
 }
 
 /** Percent size used by CrowdScene (must stay in sync). */

@@ -449,17 +449,24 @@ export function resolveClueTier(
   return gameDifficulty;
 }
 
-/** Three distinct famous traits for the city at the chosen difficulty. */
+/** How many city clues the player can actually use before lives run out. */
+export function clueCountForLives(lives: number): number {
+  return Math.max(1, Math.min(3, lives));
+}
+
+/** Distinct famous traits — count matches available city attempts. */
 export function pickCityClues(
   city: CityId,
   tier: ClueTier,
   salt: string,
-): [string, string, string] {
+  count = 3,
+): string[] {
+  const want = Math.max(1, Math.min(5, count));
   const pool = [...CITY_CLUES[city][tier]];
-  const rand = mulberry32(hashSalt(`${salt}:${city}:${tier}:clues-v1`));
+  const rand = mulberry32(hashSalt(`${salt}:${city}:${tier}:clues-v2:${want}`));
   for (let i = pool.length - 1; i > 0; i--) {
     const j = Math.floor(rand() * (i + 1));
     [pool[i], pool[j]] = [pool[j], pool[i]];
   }
-  return [pool[0], pool[1], pool[2]];
+  return pool.slice(0, want);
 }

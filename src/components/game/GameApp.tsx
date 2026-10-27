@@ -11,6 +11,7 @@ import {
   cityCatalogSize,
   dealNewRun,
   episodeCatalogSize,
+  LIVES_BY_DIFFICULTY,
   rememberEpisode,
 } from "@/lib/deck";
 import {
@@ -59,13 +60,6 @@ type Phase =
   | "win"
   | "fail-city"
   | "fail-time";
-
-const LIVES_BY_DIFFICULTY: Record<Difficulty, number> = {
-  easy: 5,
-  medium: 3,
-  hard: 2,
-  mix: 3,
-};
 
 export function GameApp() {
   const [phase, setPhase] = useState<Phase>("landing");
@@ -125,12 +119,12 @@ export function GameApp() {
   );
 
   const crowdCount = useMemo(() => {
-    if (!level) return 72;
+    if (!level) return 56;
     const base = level.scene.crowdCount;
-    // Waldo packing follows the visual tier (mix uses each dossier's tier).
-    if (lookTier === "easy") return Math.max(36, Math.floor(base * 0.55));
-    if (lookTier === "hard") return Math.floor(base * 1.85);
-    return base;
+    // Balanced ladder: easy readable → medium busy → hard sea of twins.
+    if (lookTier === "easy") return Math.max(18, Math.floor(base * 0.28));
+    if (lookTier === "hard") return Math.floor(base * 1.75);
+    return Math.floor(base * 0.78);
   }, [level, lookTier]);
 
   useEffect(() => {
@@ -482,8 +476,8 @@ export function GameApp() {
                 )}
               </div>
               <p className="mt-3 text-sm text-[var(--muted)]">
-                Só <strong>{level.clues.length} pistas</strong> no total — cada
-                uma é um traço conhecido do destino. A primeira já está aberta;
+                Este modo tem <strong>{level.clues.length} pistas</strong> — o
+                mesmo número de tentativas no mapa. A primeira já está aberta;
                 as outras liberam quando você erra uma cidade.
               </p>
               <ul className="mt-4 space-y-3">
@@ -510,8 +504,8 @@ export function GameApp() {
               </ul>
               {clueIndex >= level.clues.length - 1 && (
                 <p className="mt-3 rounded-xl bg-[var(--brand)]/10 px-4 py-3 text-sm font-semibold text-[var(--brand)]">
-                  Acabaram as pistas. Não existe uma quarta — cruze as{" "}
-                  {level.clues.length} e marque no mapa.
+                  Acabaram as pistas. Cruze as {level.clues.length} e marque no
+                  mapa.
                 </p>
               )}
               {feedback && (

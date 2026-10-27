@@ -1,16 +1,33 @@
-import { pickCityClues, resolveClueTier } from "@/lib/city-clues";
+import {
+  clueCountForLives,
+  pickCityClues,
+  resolveClueTier,
+} from "@/lib/city-clues";
 import { LEVELS, type Level } from "@/lib/levels";
 import type { Difficulty } from "@/lib/types";
 
-/** Attach famous city traits matched to the game difficulty. */
+/** Lives per game mode — keep in sync with GameApp. */
+export const LIVES_BY_DIFFICULTY: Record<Difficulty, number> = {
+  easy: 5,
+  medium: 3,
+  hard: 2,
+  mix: 3,
+};
+
+/** Attach famous city traits matched to the game difficulty + lives. */
 export function withCityClues(level: Level, gameDifficulty: Difficulty): Level {
   const tier = resolveClueTier(gameDifficulty, level.difficulty);
+  const lives =
+    gameDifficulty === "mix"
+      ? LIVES_BY_DIFFICULTY[level.difficulty]
+      : LIVES_BY_DIFFICULTY[gameDifficulty];
   return {
     ...level,
     clues: pickCityClues(
       level.correctCity,
       tier,
       `${level.id}:${gameDifficulty}`,
+      clueCountForLives(lives),
     ),
   };
 }

@@ -27,26 +27,26 @@ function scene(
 }
 
 /**
- * Base counts are for medium. GameApp multiplies by difficulty.
- * Scale is intentionally small so hard mode can pack a sea of twins.
+ * Base counts sit near medium before GameApp applies the ladder:
+ * easy ~0.28x, medium ~0.78x, hard ~1.75x.
  */
 export const CITY_SCENES: Record<CityId, SceneConfig> = {
-  rio: scene("/game/scene-rio-waldo.jpg", 72, 0.058),
-  brasilia: scene("/game/scene-plaza-waldo.jpg", 74, 0.056),
-  saopaulo: scene("/game/scene-plaza-waldo.jpg", 78, 0.055),
-  miami: scene("/game/scene-rio-waldo.jpg", 74, 0.056),
-  paris: scene("/game/scene-plaza-waldo.jpg", 80, 0.054),
-  dubai: scene("/game/scene-plaza-waldo.jpg", 82, 0.052),
-  salvador: scene("/game/scene-rio-waldo.jpg", 70, 0.057),
-  belohorizonte: scene("/game/scene-plaza-waldo.jpg", 72, 0.056),
-  curitiba: scene("/game/scene-plaza-waldo.jpg", 74, 0.055),
-  recife: scene("/game/scene-rio-waldo.jpg", 72, 0.056),
-  buenosaires: scene("/game/scene-plaza-waldo.jpg", 78, 0.054),
-  lisboa: scene("/game/scene-plaza-waldo.jpg", 76, 0.055),
-  londres: scene("/game/scene-plaza-waldo.jpg", 80, 0.053),
-  novayork: scene("/game/scene-plaza-waldo.jpg", 84, 0.052),
-  barcelona: scene("/game/scene-plaza-waldo.jpg", 78, 0.054),
-  roma: scene("/game/scene-plaza-waldo.jpg", 76, 0.055),
-  cancun: scene("/game/scene-rio-waldo.jpg", 72, 0.057),
-  toquio: scene("/game/scene-plaza-waldo.jpg", 84, 0.051),
+  rio: scene("/game/scene-rio-waldo.jpg", 64, 0.062),
+  brasilia: scene("/game/scene-plaza-waldo.jpg", 66, 0.06),
+  saopaulo: scene("/game/scene-plaza-waldo.jpg", 70, 0.058),
+  miami: scene("/game/scene-rio-waldo.jpg", 66, 0.06),
+  paris: scene("/game/scene-plaza-waldo.jpg", 72, 0.057),
+  dubai: scene("/game/scene-plaza-waldo.jpg", 74, 0.055),
+  salvador: scene("/game/scene-rio-waldo.jpg", 62, 0.061),
+  belohorizonte: scene("/game/scene-plaza-waldo.jpg", 64, 0.06),
+  curitiba: scene("/game/scene-plaza-waldo.jpg", 66, 0.059),
+  recife: scene("/game/scene-rio-waldo.jpg", 64, 0.06),
+  buenosaires: scene("/game/scene-plaza-waldo.jpg", 70, 0.057),
+  lisboa: scene("/game/scene-plaza-waldo.jpg", 68, 0.058),
+  londres: scene("/game/scene-plaza-waldo.jpg", 72, 0.056),
+  novayork: scene("/game/scene-plaza-waldo.jpg", 76, 0.054),
+  barcelona: scene("/game/scene-plaza-waldo.jpg", 70, 0.057),
+  roma: scene("/game/scene-plaza-waldo.jpg", 68, 0.058),
+  cancun: scene("/game/scene-rio-waldo.jpg", 64, 0.061),
+  toquio: scene("/game/scene-plaza-waldo.jpg", 76, 0.053),
 };
