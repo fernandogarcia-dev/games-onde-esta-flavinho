@@ -64,7 +64,7 @@ export function GameApp() {
     setClueIndex(0);
     setScore(1000);
     setMisses(0);
-    setLives(3);
+    setLives(6);
     setFeedback("");
     setShowHint(false);
     setElapsed(0);
@@ -125,7 +125,7 @@ export function GameApp() {
     setLevelIndex(next);
     setClueIndex(0);
     setMisses(0);
-    setLives(3);
+    setLives(6);
     setFeedback("");
     setShowHint(false);
     setPhase("briefing");
@@ -299,11 +299,11 @@ export function GameApp() {
               <div className="flex flex-wrap items-center gap-3">
                 <div className="flex items-center gap-2 rounded-2xl border-2 border-[var(--ink)] bg-[var(--paper)] px-2 py-1.5 shadow-[3px_3px_0_var(--ink)]">
                   <Image
-                    src="/game/disguises/real-suit.png"
+                    src="/game/disguises/real.png"
                     alt="Referência do Flavinho sem disfarce"
-                    width={52}
-                    height={64}
-                    className="h-14 w-12 rounded-md object-cover border border-black/20"
+                    width={48}
+                    height={72}
+                    className="h-14 w-auto object-contain"
                     unoptimized
                   />
                   <div className="pr-1">
@@ -311,7 +311,7 @@ export function GameApp() {
                       Procurado · sem disfarce
                     </p>
                     <p className="text-sm font-black text-[var(--ink)]">Flavinho</p>
-                    <p className="text-[11px] text-[var(--muted)]">terno escuro, sem óculos/chapéu</p>
+                    <p className="text-[11px] text-[var(--muted)]">blazer azul, sem chapéu</p>
                   </div>
                 </div>
                 <Button variant="secondary" size="sm" onClick={unlockVisualHint}>
@@ -360,11 +360,12 @@ export function GameApp() {
         {phase === "win" && city && (
           <section className="animate-rise mx-auto max-w-xl rounded-3xl border-[3px] border-[var(--ink)] bg-[var(--paper)] p-6 text-center shadow-[8px_8px_0_var(--ink)] sm:p-8">
             <Image
-              src="/game/disguises/real-suit.png"
+              src="/game/disguises/real.png"
               alt="Flavinho encontrado"
               width={140}
-              height={170}
-              className="mx-auto rounded-xl border-2 border-[var(--ink)] object-cover"
+              height={200}
+              className="mx-auto object-contain"
+              unoptimized
             />
             <h2 className="mt-4 font-[family-name:var(--font-display)] text-4xl text-[var(--ink)]">
               Pegou o rastro
@@ -482,12 +483,13 @@ function Landing({
         <div className="animate-float relative mx-auto w-full max-w-xs">
           <div className="absolute -inset-3 rounded-[2rem] bg-[var(--brand)]/35 blur-xl" />
           <Image
-            src="/game/disguises/real-suit.png"
+            src="/game/disguises/real.png"
             alt="Retrato do Flavinho"
             width={420}
             height={520}
             priority
-            className="relative mx-auto rounded-[1.5rem] border-[3px] border-[var(--ink)] object-cover shadow-[8px_8px_0_var(--ink)]"
+            className="relative mx-auto rounded-[1.5rem] border-[3px] border-[var(--ink)] bg-[var(--sand)] object-contain p-3 shadow-[8px_8px_0_var(--ink)]"
+            unoptimized
           />
           <div className="absolute -bottom-3 -right-2 rotate-[-6deg] rounded-xl border-2 border-[var(--ink)] bg-[var(--brand)] px-3 py-1.5 text-sm font-black text-white shadow-[3px_3px_0_var(--ink)]">
             SEM DISFARCE

@@ -80,10 +80,9 @@ export function CrowdScene({
       {items.map((item) => {
         const widthPct = Math.max(
           item.scale * 100,
-          item.kind === "prop" ? 3.2 : 7.2,
+          item.kind === "prop" ? 3.2 : 5.5,
         );
-        // Mugshot cards (Herald style) are near-portrait, not full-body.
-        const heightPct = widthPct * (item.kind === "prop" ? 1.05 : 1.22);
+        const heightPct = widthPct * (item.kind === "prop" ? 1.05 : 1.55);
         const style = {
           left: `${item.x}%`,
           top: `${item.y}%`,
@@ -121,7 +120,7 @@ export function CrowdScene({
                 alt="Flavinho"
                 width={200}
                 height={320}
-                className="relative h-full w-full rounded-md border border-black/20 object-cover pointer-events-none shadow-[2px_2px_0_rgba(0,0,0,0.25)]"
+                className="relative h-full w-full object-contain pointer-events-none drop-shadow-[1px_2px_0_rgba(0,0,0,0.25)]"
                 draggable={false}
                 unoptimized
               />
@@ -141,8 +140,8 @@ export function CrowdScene({
               src={item.src}
               alt=""
               width={160}
-              height={200}
-              className="relative h-full w-full rounded-md border border-black/15 object-cover shadow-[2px_2px_0_rgba(0,0,0,0.2)]"
+              height={260}
+              className="relative h-full w-full object-contain drop-shadow-[1px_2px_0_rgba(0,0,0,0.2)]"
               draggable={false}
               unoptimized
             />

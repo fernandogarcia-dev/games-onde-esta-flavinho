@@ -16,10 +16,10 @@ export type GroundBand = {
   xMax?: number;
 };
 
-/** The real (undisguised) Flavinho — what the player must click. */
-export const FLAVINHO_SRC = "/game/disguises/real-suit.png";
+/** Undisguised Flavinho — the click target. Original art, not cropped from references. */
+export const FLAVINHO_SRC = "/game/disguises/real.png";
 
-/** Same face, many disguises — distractors in the crowd. */
+/** Original satirical disguise variants of the same character. */
 export const DISGUISE_SRCS = [
   "/game/disguises/hoodie.png",
   "/game/disguises/trucker.png",
@@ -27,14 +27,17 @@ export const DISGUISE_SRCS = [
   "/game/disguises/beanie.png",
   "/game/disguises/scarf.png",
   "/game/disguises/hippie.png",
-  "/game/disguises/ears.png",
   "/game/disguises/sideburns.png",
   "/game/disguises/blonde.png",
   "/game/disguises/flute.png",
   "/game/disguises/biker.png",
-  "/game/disguises/plumber.png",
-  "/game/disguises/bald-green.png",
+  "/game/disguises/bald.png",
   "/game/disguises/rasta.png",
+  "/game/disguises/gag.png",
+  "/game/disguises/chef.png",
+  "/game/disguises/fan.png",
+  "/game/disguises/doctor.png",
+  "/game/disguises/worker.png",
 ] as const;
 
 export const PROP_SRCS = [
@@ -62,14 +65,14 @@ function hashSeed(seed: string) {
   return h >>> 0;
 }
 
-/** Scatter mugshot cards on a flat board (Herald-style disguises). */
+/** Scatter original disguise sprites on a flat board. */
 export function buildCrowd(
   seed: string,
   crowdCount: number,
   flavinhoScale: number,
   ground: GroundBand,
 ): CrowdItem[] {
-  const rand = mulberry32(hashSeed(seed + ":disguises"));
+  const rand = mulberry32(hashSeed(seed + ":orig-disguises"));
   const items: CrowdItem[] = [];
   const xMin = ground.xMin ?? 6;
   const xMax = ground.xMax ?? 94;
@@ -77,7 +80,7 @@ export function buildCrowd(
   const yMax = ground.yMax ?? 90;
   const flavinhoIndex = Math.floor(rand() * crowdCount);
 
-  const cols = Math.ceil(Math.sqrt(crowdCount * 1.2));
+  const cols = Math.ceil(Math.sqrt(crowdCount * 1.25));
   const rows = Math.ceil(crowdCount / cols);
 
   for (let i = 0; i < crowdCount; i++) {
@@ -85,10 +88,10 @@ export function buildCrowd(
     const row = Math.floor(i / cols);
     const cellW = (xMax - xMin) / cols;
     const cellH = (yMax - yMin) / Math.max(rows, 1);
-    const x = xMin + col * cellW + cellW * (0.18 + rand() * 0.64);
-    const y = yMin + row * cellH + cellH * (0.18 + rand() * 0.64);
+    const x = xMin + col * cellW + cellW * (0.2 + rand() * 0.6);
+    const y = yMin + row * cellH + cellH * (0.2 + rand() * 0.6);
     const isFlavinho = i === flavinhoIndex;
-    const scale = flavinhoScale * (0.92 + rand() * 0.16);
+    const scale = flavinhoScale * (0.9 + rand() * 0.18);
 
     items.push({
       id: `${seed}-p-${i}`,
@@ -99,13 +102,12 @@ export function buildCrowd(
       x,
       y,
       scale,
-      facing: 1, // mugshots stay upright
+      facing: rand() > 0.5 ? 1 : -1,
       z: y + rand() * 0.01,
     });
   }
 
-  // A few props only — disguises are the main confusion
-  const propCount = Math.max(3, Math.floor(crowdCount / 14));
+  const propCount = Math.max(4, Math.floor(crowdCount / 12));
   for (let i = 0; i < propCount; i++) {
     items.push({
       id: `${seed}-prop-${i}`,
@@ -113,7 +115,7 @@ export function buildCrowd(
       src: PROP_SRCS[Math.floor(rand() * PROP_SRCS.length)],
       x: xMin + rand() * (xMax - xMin),
       y: yMin + rand() * (yMax - yMin),
-      scale: flavinhoScale * (0.55 + rand() * 0.25),
+      scale: flavinhoScale * (0.55 + rand() * 0.3),
       facing: 1,
       z: 0,
     });
