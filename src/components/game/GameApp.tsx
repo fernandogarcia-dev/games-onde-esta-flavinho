@@ -69,6 +69,7 @@ export function GameApp() {
   const [run, setRun] = useState<Level[]>([]);
   const [levelIndex, setLevelIndex] = useState(0);
   const [clueIndex, setClueIndex] = useState(0);
+  const [triedCities, setTriedCities] = useState<CityId[]>([]);
   const [score, setScore] = useState(0);
   const [misses, setMisses] = useState(0);
   const [lives, setLives] = useState(3);
@@ -185,6 +186,7 @@ export function GameApp() {
     setPhase("briefing");
     setLevelIndex(0);
     setClueIndex(0);
+    setTriedCities([]);
     setScore(0);
     setMisses(0);
     setStreak(0);
@@ -215,11 +217,13 @@ export function GameApp() {
   function goToClues() {
     setPhase("clues");
     setClueIndex(0);
+    setTriedCities([]);
     setFeedback("");
   }
 
   function pickCity(id: CityId) {
     if (!level || !city) return;
+    if (triedCities.includes(id)) return;
     if (id === level.correctCity) {
       setFeedback(
         `Mapa fechou em ${city.name}. Relógio ligado: ${labelFindTime(difficulty)} pra achar.`,
@@ -230,8 +234,14 @@ export function GameApp() {
       startFindTimer();
       return;
     }
+    setTriedCities((prev) => (prev.includes(id) ? prev : [...prev, id]));
+    const nextClue = Math.min(clueIndex + 1, level.clues.length - 1);
     const wrong = level.wrongHints[id] || "Rastro frio. Outra cidade.";
-    setFeedback(wrong);
+    const clueNote =
+      clueIndex < level.clues.length - 1
+        ? ` Nova pista liberada (${nextClue + 1} de ${level.clues.length}).`
+        : ` As ${level.clues.length} pistas já estão na mesa — não tem mais.`;
+    setFeedback(wrong + clueNote);
     setScore((s) => Math.max(0, s - CITY_MISS_PENALTY));
     setLives((l) => {
       const next = l - 1;
@@ -242,7 +252,7 @@ export function GameApp() {
       }
       return next;
     });
-    setClueIndex((c) => Math.min(c + 1, level.clues.length - 1));
+    setClueIndex(nextClue);
   }
 
   async function publishScore(total: number, name: string) {
@@ -312,6 +322,7 @@ export function GameApp() {
     rememberEpisode(run[next].id);
     setLevelIndex(next);
     setClueIndex(0);
+    setTriedCities([]);
     setMisses(0);
     setLives(LIVES_BY_DIFFICULTY[difficulty]);
     setFeedback("");
@@ -451,32 +462,59 @@ export function GameApp() {
         {phase === "clues" && level && (
           <section className="animate-rise grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
             <div className="rounded-3xl border-[3px] border-[var(--ink)] bg-[var(--paper)] p-5 shadow-[6px_6px_0_var(--ink)] sm:p-6">
-              <p className="text-sm font-bold uppercase tracking-[0.18em] text-[var(--brand)]">
-                Recortes da noite
+              <div className="flex flex-wrap items-end justify-between gap-2">
+                <div>
+                  <p className="text-sm font-bold uppercase tracking-[0.18em] text-[var(--brand)]">
+                    Recortes da noite
+                  </p>
+                  <h2 className="mt-2 font-[family-name:var(--font-display)] text-2xl text-[var(--ink)]">
+                    Qual cidade fecha o mapa?
+                  </h2>
+                </div>
+                <span className="rounded-full border border-[var(--ink)]/15 bg-[var(--sand)] px-3 py-1 text-xs font-bold text-[var(--ink)]">
+                  {clueIndex + 1} de {level.clues.length} liberadas
+                </span>
+              </div>
+              <p className="mt-2 text-sm text-[var(--muted)]">
+                Este dossiê tem só <strong>{level.clues.length} pistas</strong>.
+                A primeira já está aberta; as outras liberam quando você erra
+                uma cidade.
               </p>
-              <h2 className="mt-2 font-[family-name:var(--font-display)] text-2xl text-[var(--ink)]">
-                Qual cidade fecha o mapa?
-              </h2>
               <ul className="mt-4 space-y-3">
-                {level.clues.slice(0, clueIndex + 1).map((clue, i) => (
-                  <li
-                    key={`${level.id}-${i}`}
-                    className="rounded-2xl border border-[var(--ink)]/10 bg-[var(--sand)] px-4 py-3 text-[var(--ink)]"
-                  >
-                    <span className="mr-2 text-xs font-bold uppercase text-[var(--muted)]">
-                      Recorte {i + 1}
-                    </span>
-                    {clue}
-                  </li>
-                ))}
+                {level.clues.map((clue, i) => {
+                  const unlocked = i <= clueIndex;
+                  return (
+                    <li
+                      key={`${level.id}-${i}`}
+                      className={`rounded-2xl border px-4 py-3 ${
+                        unlocked
+                          ? "border-[var(--ink)]/10 bg-[var(--sand)] text-[var(--ink)]"
+                          : "border-dashed border-[var(--ink)]/20 bg-white/50 text-[var(--muted)]"
+                      }`}
+                    >
+                      <span className="mr-2 text-xs font-bold uppercase text-[var(--muted)]">
+                        Pista {i + 1} de {level.clues.length}
+                      </span>
+                      {unlocked
+                        ? clue
+                        : "Bloqueada — erra uma cidade para liberar."}
+                    </li>
+                  );
+                })}
               </ul>
+              {clueIndex >= level.clues.length - 1 && (
+                <p className="mt-3 rounded-xl bg-[var(--brand)]/10 px-4 py-3 text-sm font-semibold text-[var(--brand)]">
+                  Acabaram as pistas. Não existe uma quarta — cruze as{" "}
+                  {level.clues.length} e marque no mapa.
+                </p>
+              )}
               {feedback && (
                 <p className="mt-4 rounded-xl bg-[var(--alert)]/10 px-4 py-3 text-sm font-medium text-[var(--alert)]">
                   {feedback}
                 </p>
               )}
               <div className="mt-4 flex flex-wrap gap-2 text-sm font-semibold text-[var(--muted)]">
-                <span>Tentativas: {lives}</span>
+                <span>Tentativas restantes: {lives}</span>
                 <span>·</span>
                 <span className="text-[var(--brand)]">
                   {score.toLocaleString("pt-BR")} pts
@@ -489,25 +527,42 @@ export function GameApp() {
                 Marque no mapa
               </h3>
               <p className="mt-1 text-xs text-[var(--muted)]">
-                Seis cidades desta pasta (muda a cada dossiê).
+                Seis cidades desta pasta. Cidade errada fica bloqueada.
               </p>
               <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2">
-                {cityOptions.map((c) => (
-                  <button
-                    key={c.id}
-                    type="button"
-                    onClick={() => pickCity(c.id)}
-                    className="rounded-2xl border-2 border-[var(--ink)] bg-white px-3 py-3 text-left transition hover:-translate-y-0.5 hover:bg-[var(--brand)]/15"
-                  >
-                    <div className="font-bold text-[var(--ink)]">
-                      {c.name}
-                      <span className="ml-1 text-xs font-semibold text-[var(--muted)]">
-                        · {c.country}
-                      </span>
-                    </div>
-                    <div className="text-xs text-[var(--muted)]">{c.blurb}</div>
-                  </button>
-                ))}
+                {cityOptions.map((c) => {
+                  const tried = triedCities.includes(c.id);
+                  return (
+                    <button
+                      key={c.id}
+                      type="button"
+                      disabled={tried}
+                      onClick={() => pickCity(c.id)}
+                      className={`rounded-2xl border-2 px-3 py-3 text-left transition ${
+                        tried
+                          ? "cursor-not-allowed border-[var(--ink)]/20 bg-[var(--sand)]/70 opacity-55"
+                          : "border-[var(--ink)] bg-white hover:-translate-y-0.5 hover:bg-[var(--brand)]/15"
+                      }`}
+                    >
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="font-bold text-[var(--ink)]">
+                          {c.name}
+                          <span className="ml-1 text-xs font-semibold text-[var(--muted)]">
+                            · {c.country}
+                          </span>
+                        </div>
+                        {tried && (
+                          <span className="shrink-0 rounded-md bg-[var(--alert)]/15 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-[var(--alert)]">
+                            Já tentou
+                          </span>
+                        )}
+                      </div>
+                      <div className="text-xs text-[var(--muted)]">
+                        {tried ? "Opção descartada neste dossiê." : c.blurb}
+                      </div>
+                    </button>
+                  );
+                })}
               </div>
             </div>
           </section>
