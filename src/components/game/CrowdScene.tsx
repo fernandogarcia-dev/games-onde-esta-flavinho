@@ -138,7 +138,7 @@ export function CrowdScene({
           alt="Flavinho"
           width={120}
           height={150}
-          className="h-full w-full rounded-md object-contain drop-shadow-md pointer-events-none"
+          className="h-full w-full object-contain drop-shadow-[0_2px_2px_rgba(0,0,0,0.35)] pointer-events-none mix-blend-multiply"
           draggable={false}
         />
       </button>
