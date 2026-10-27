@@ -122,23 +122,26 @@ function disguisePoolFor(tier: LookTier): readonly string[] {
   return [...DISGUISE_WILD, ...DISGUISE_WILD, ...DISGUISE_MID];
 }
 
+/**
+ * Decoys may reuse the same disguise — never the undisguised real.png.
+ * Hard/medium can tint disguises so twins feel similar without cloning the target.
+ */
 function decoyLook(
   tier: LookTier,
   rand: () => number,
 ): { src: string; filter?: string } {
-  if (tier === "hard" && rand() < 0.45) {
-    return {
-      src: FLAVINHO_SRC,
-      filter: pickFrom(NEAR_CLONE_FILTERS, rand),
-    };
+  const src = pickFrom(disguisePoolFor(tier), rand);
+  if (src === FLAVINHO_SRC) {
+    // Belt-and-suspenders: disguise pools must never include the target art.
+    return { src: pickFrom(DISGUISE_WILD, rand) };
   }
-  if (tier === "medium" && rand() < 0.16) {
-    return {
-      src: FLAVINHO_SRC,
-      filter: pickFrom(NEAR_CLONE_FILTERS, rand),
-    };
+  if (tier === "hard" && rand() < 0.4) {
+    return { src, filter: pickFrom(NEAR_CLONE_FILTERS, rand) };
   }
-  return { src: pickFrom(disguisePoolFor(tier), rand) };
+  if (tier === "medium" && rand() < 0.18) {
+    return { src, filter: pickFrom(NEAR_CLONE_FILTERS, rand) };
+  }
+  return { src };
 }
 
 /** Packing density only — size always comes from Y perspective. */
@@ -235,13 +238,14 @@ export function buildCrowd(
   const mobileBoost = opts?.mobileBoost ?? 1;
   const lookTier = opts?.lookTier ?? "medium";
   const dens = densityFor(lookTier);
-  const rand = mulberry32(hashSeed(`${seed}:crowd-v8-feet:${lookTier}`));
+  const rand = mulberry32(hashSeed(`${seed}:crowd-v9-unique:${lookTier}`));
   const items: CrowdItem[] = [];
   const xMin = ground.xMin ?? PERSPECTIVE.xMin;
   const xMax = ground.xMax ?? PERSPECTIVE.xMax;
   const yMin = ground.yMin ?? PERSPECTIVE.yMin;
   const yMax = ground.yMax ?? PERSPECTIVE.yMax;
-  const flavinhoIndex = Math.floor(rand() * crowdCount);
+  // Exactly one clickable target — never clone real.png on decoys.
+  const flavinhoIndex = Math.floor(rand() * Math.max(1, crowdCount));
   const placed: { x: number; y: number; r: number }[] = [];
   const rows = dens.rows;
 
@@ -327,6 +331,27 @@ export function buildCrowd(
       z: y + rand() * 0.02,
       filter: look.filter,
     });
+  }
+
+  // Invariant: one unique undisguised Flavinho — rewrite any leaked clones.
+  let sawTarget = false;
+  for (const item of items) {
+    if (item.kind === "flavinho") {
+      item.src = FLAVINHO_SRC;
+      item.filter = undefined;
+      sawTarget = true;
+      continue;
+    }
+    if (item.src === FLAVINHO_SRC) {
+      item.src = pickFrom(DISGUISE_WILD, rand);
+      item.filter = undefined;
+    }
+  }
+  if (!sawTarget && items.length > 0) {
+    const rescue = items.find((it) => it.kind !== "prop") ?? items[0];
+    rescue.kind = "flavinho";
+    rescue.src = FLAVINHO_SRC;
+    rescue.filter = undefined;
   }
 
   const propFactor = lookTier === "hard" ? 10 : lookTier === "medium" ? 12 : 14;
