@@ -16,10 +16,9 @@ export type GroundBand = {
   xMax?: number;
 };
 
-/** Undisguised Flavinho — the click target. Original art, not cropped from references. */
+/** Undisguised Flavinho — the click target. */
 export const FLAVINHO_SRC = "/game/disguises/real.png";
 
-/** Original satirical disguise variants of the same character. */
 export const DISGUISE_SRCS = [
   "/game/disguises/hoodie.png",
   "/game/disguises/trucker.png",
@@ -65,37 +64,112 @@ function hashSeed(seed: string) {
   return h >>> 0;
 }
 
-/** Scatter original disguise sprites on a flat board. */
+/** Percent size used by CrowdScene (must stay in sync). */
+export function spriteBox(
+  scale: number,
+  kind: CrowdItem["kind"],
+  mobileBoost = 1,
+) {
+  const baseMin = kind === "prop" ? 3.2 : 5.8;
+  const widthPct = Math.max(scale * 100 * mobileBoost, baseMin * mobileBoost);
+  const heightPct = widthPct * (kind === "prop" ? 1.05 : 1.55);
+  return { widthPct, heightPct };
+}
+
+/** Keep the full sprite inside the board (centered with translate -50/-50). */
+export function clampInside(
+  x: number,
+  y: number,
+  widthPct: number,
+  heightPct: number,
+  pad = 0.8,
+) {
+  const halfW = widthPct / 2;
+  const halfH = heightPct / 2;
+  return {
+    x: Math.min(100 - halfW - pad, Math.max(halfW + pad, x)),
+    y: Math.min(100 - halfH - pad, Math.max(halfH + pad, y)),
+  };
+}
+
+function tooClose(
+  x: number,
+  y: number,
+  placed: { x: number; y: number }[],
+  minDist: number,
+) {
+  for (const p of placed) {
+    const dx = p.x - x;
+    const dy = (p.y - y) * 0.85;
+    if (dx * dx + dy * dy < minDist * minDist) return true;
+  }
+  return false;
+}
+
+/** Scatter disguise sprites fully inside a flat board, with real randomness. */
 export function buildCrowd(
   seed: string,
   crowdCount: number,
   flavinhoScale: number,
   ground: GroundBand,
+  opts?: { mobileBoost?: number },
 ): CrowdItem[] {
-  const rand = mulberry32(hashSeed(seed + ":orig-disguises"));
+  const mobileBoost = opts?.mobileBoost ?? 1;
+  const rand = mulberry32(hashSeed(`${seed}:crowd-v3`));
   const items: CrowdItem[] = [];
-  const xMin = ground.xMin ?? 6;
-  const xMax = ground.xMax ?? 94;
-  const yMin = ground.yMin ?? 10;
-  const yMax = ground.yMax ?? 90;
+  const xMin = ground.xMin ?? 8;
+  const xMax = ground.xMax ?? 92;
+  const yMin = ground.yMin ?? 12;
+  const yMax = ground.yMax ?? 88;
   const flavinhoIndex = Math.floor(rand() * crowdCount);
-
-  const cols = Math.ceil(Math.sqrt(crowdCount * 1.25));
-  const rows = Math.ceil(crowdCount / cols);
+  const placed: { x: number; y: number }[] = [];
+  const minDist = Math.max(4.5, 11 / Math.sqrt(Math.max(crowdCount, 1)));
 
   for (let i = 0; i < crowdCount; i++) {
-    const col = i % cols;
-    const row = Math.floor(i / cols);
-    const cellW = (xMax - xMin) / cols;
-    const cellH = (yMax - yMin) / Math.max(rows, 1);
-    const x = xMin + col * cellW + cellW * (0.2 + rand() * 0.6);
-    const y = yMin + row * cellH + cellH * (0.2 + rand() * 0.6);
     const isFlavinho = i === flavinhoIndex;
-    const scale = flavinhoScale * (0.9 + rand() * 0.18);
+    const scale =
+      flavinhoScale *
+      (isFlavinho ? 1.02 + rand() * 0.12 : 0.82 + rand() * 0.38);
+    const kind: CrowdItem["kind"] = isFlavinho ? "flavinho" : "decoy";
+    const { widthPct, heightPct } = spriteBox(scale, kind, mobileBoost);
+
+    let x = 50;
+    let y = 50;
+    let ok = false;
+    for (let attempt = 0; attempt < 60; attempt++) {
+      const rawX = xMin + rand() * (xMax - xMin);
+      const rawY = yMin + rand() * (yMax - yMin);
+      // Extra scatter: sometimes cluster edges, sometimes center voids
+      const jitterX = (rand() - 0.5) * 6;
+      const jitterY = (rand() - 0.5) * 6;
+      const c = clampInside(
+        rawX + jitterX,
+        rawY + jitterY,
+        widthPct,
+        heightPct,
+      );
+      x = c.x;
+      y = c.y;
+      if (!tooClose(x, y, placed, minDist * (0.7 + rand() * 0.6))) {
+        ok = true;
+        break;
+      }
+    }
+    if (!ok) {
+      const c = clampInside(
+        xMin + rand() * (xMax - xMin),
+        yMin + rand() * (yMax - yMin),
+        widthPct,
+        heightPct,
+      );
+      x = c.x;
+      y = c.y;
+    }
+    placed.push({ x, y });
 
     items.push({
       id: `${seed}-p-${i}`,
-      kind: isFlavinho ? "flavinho" : "decoy",
+      kind,
       src: isFlavinho
         ? FLAVINHO_SRC
         : DISGUISE_SRCS[Math.floor(rand() * DISGUISE_SRCS.length)],
@@ -103,21 +177,38 @@ export function buildCrowd(
       y,
       scale,
       facing: rand() > 0.5 ? 1 : -1,
-      z: y + rand() * 0.01,
+      z: y + rand() * 0.02,
     });
   }
 
-  const propCount = Math.max(4, Math.floor(crowdCount / 12));
+  // Shuffle draw order a bit so Flavinho isn't predictable mid-list by z alone
+  for (let i = items.length - 1; i > 0; i--) {
+    if (rand() > 0.55) continue;
+    const j = Math.floor(rand() * (i + 1));
+    const zi = items[i].z;
+    items[i].z = items[j].z;
+    items[j].z = zi;
+  }
+
+  const propCount = Math.max(3, Math.floor(crowdCount / 14));
   for (let i = 0; i < propCount; i++) {
+    const scale = flavinhoScale * (0.5 + rand() * 0.35);
+    const { widthPct, heightPct } = spriteBox(scale, "prop", mobileBoost);
+    const c = clampInside(
+      xMin + rand() * (xMax - xMin),
+      yMin + rand() * (yMax - yMin),
+      widthPct,
+      heightPct,
+    );
     items.push({
       id: `${seed}-prop-${i}`,
       kind: "prop",
       src: PROP_SRCS[Math.floor(rand() * PROP_SRCS.length)],
-      x: xMin + rand() * (xMax - xMin),
-      y: yMin + rand() * (yMax - yMin),
-      scale: flavinhoScale * (0.55 + rand() * 0.3),
+      x: c.x,
+      y: c.y,
+      scale,
       facing: 1,
-      z: 0,
+      z: c.y * 0.4,
     });
   }
 

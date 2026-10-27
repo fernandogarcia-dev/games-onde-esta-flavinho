@@ -2,11 +2,12 @@
 
 import Image from "next/image";
 import {
+  useEffect,
   useMemo,
   useState,
   type MouseEvent as ReactMouseEvent,
 } from "react";
-import { buildCrowd } from "@/lib/crowd";
+import { buildCrowd, spriteBox } from "@/lib/crowd";
 
 type Props = {
   seed: string;
@@ -36,9 +37,26 @@ export function CrowdScene({
   showHint,
   disabled,
 }: Props) {
+  const [portrait, setPortrait] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 640px)");
+    const apply = () => setPortrait(mq.matches);
+    apply();
+    mq.addEventListener("change", apply);
+    return () => mq.removeEventListener("change", apply);
+  }, []);
+
+  // Taller board + bigger / fewer tokens on phones so faces stay readable.
+  const mobileBoost = portrait ? 1.55 : 1;
+  const scale = flavinhoScale * (portrait ? 1.35 : 1);
+  const count = portrait
+    ? Math.max(22, Math.floor(crowdCount * 0.72))
+    : crowdCount;
+
   const items = useMemo(
-    () => buildCrowd(seed, crowdCount, flavinhoScale, ground),
-    [seed, crowdCount, flavinhoScale, ground],
+    () => buildCrowd(seed, count, scale, ground, { mobileBoost }),
+    [seed, count, scale, ground, mobileBoost],
   );
   const [missFlash, setMissFlash] = useState<{ x: number; y: number } | null>(
     null,
@@ -62,8 +80,12 @@ export function CrowdScene({
 
   return (
     <div
-      className="relative w-full overflow-hidden rounded-2xl border-[3px] border-[var(--ink)] shadow-[6px_6px_0_var(--ink)] select-none touch-manipulation"
-      style={{ aspectRatio: "16 / 10", backgroundColor: "#d7d2c8" }}
+      className="relative mx-auto w-full max-w-5xl overflow-hidden rounded-2xl border-[3px] border-[var(--ink)] shadow-[6px_6px_0_var(--ink)] select-none touch-manipulation"
+      style={{
+        aspectRatio: portrait ? "3 / 4" : "16 / 10",
+        backgroundColor: "#d7d2c8",
+        maxHeight: portrait ? "min(78dvh, 720px)" : undefined,
+      }}
       onClick={handleBoardClick}
       role="img"
       aria-label="Cena lotada. Encontre o Flavinho."
@@ -78,18 +100,17 @@ export function CrowdScene({
       />
 
       {items.map((item) => {
-        const widthPct = Math.max(
-          item.scale * 100,
-          item.kind === "prop" ? 3.2 : 5.5,
+        const { widthPct, heightPct } = spriteBox(
+          item.scale,
+          item.kind,
+          mobileBoost,
         );
-        const heightPct = widthPct * (item.kind === "prop" ? 1.05 : 1.55);
         const style = {
           left: `${item.x}%`,
           top: `${item.y}%`,
           width: `${widthPct}%`,
           height: `${heightPct}%`,
           zIndex: Math.round(item.z * 10),
-          // Flat board: center tokens on the tile so nothing "floats" in perspective.
           transform: `translate(-50%, -50%) scaleX(${item.facing})`,
         } as const;
 

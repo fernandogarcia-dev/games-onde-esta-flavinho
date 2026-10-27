@@ -46,24 +46,78 @@ export const CITIES: City[] = [
 ];
 
 const GENERIC_WRONG: Record<CityId, string[]> = {
-  brasilia: ["Cheira a Planalto demais.", "Cerrado planejado? Pista fria."],
-  rio: ["Orla carioca não fecha.", "Cristo no fundo? Não é o caso."],
-  saopaulo: ["Paulista e garoa não batem.", "SP aponta outro lado."],
-  salvador: ["Pelourinho não assina essa pista.", "Axé ficou pra outra hora."],
-  belohorizonte: ["Pão de queijo não salva essa pista.", "BH não fecha o mapa."],
-  curitiba: ["Frio curitibano? Pista fria mesmo.", "Jardim botânico não aparece aqui."],
-  recife: ["Pontes do Recife não batem.", "Frevo ficou pra depois."],
-  miami: ["Boardwalk pastel? Não.", "Miami não fecha o mapa."],
-  novayork: ["Big Apple demais pra essa pista.", "NY não assina esse áudio."],
-  cancun: ["Turquesa mexicano? Pista fria.", "All-inclusive não aparece."],
-  buenosaires: ["Tango e bife? Não é aqui.", "Portenho demais pra essa pista."],
-  lisboa: ["Elétrico e nata? Pista fria.", "Lisboa não fecha."],
-  londres: ["Chuva inglesa não bate.", "Londres aponta outro lado."],
-  paris: ["Croissant e torre? Depois.", "Paris não assina."],
-  barcelona: ["Gaudí não aparece nessa pista.", "Barcelona ficou frio."],
-  roma: ["Fontana e gelato? Não.", "Roma não fecha o mapa."],
-  dubai: ["Neon do Golfo? Pista fria.", "Dubai não fecha."],
-  toquio: ["Neon japonês não bate.", "Tóquio aponta outro lado."],
+  brasilia: [
+    "Isso cheira a Planalto demais — o rastro não fecha em Brasília.",
+    "Cerrado planejado e corredor de mármore? Pista fria para cá.",
+  ],
+  rio: [
+    "Orla carioca não fecha com essas pistas.",
+    "Cristo no fundo não combina com o que chegou na mesa.",
+  ],
+  saopaulo: [
+    "Paulista e garoa não batem com o restante do dossiê.",
+    "São Paulo aponta para outro lado do mapa.",
+  ],
+  salvador: [
+    "O Pelourinho não assina essa pista.",
+    "Axé e ladeira colorida ficaram para outra pasta.",
+  ],
+  belohorizonte: [
+    "Pão de queijo não salva essa combinação de pistas.",
+    "Belo Horizonte não fecha o mapa desta vez.",
+  ],
+  curitiba: [
+    "Frio curitibano e tubo de ônibus? Pista fria mesmo.",
+    "O jardim botânico não aparece em nenhum recorte.",
+  ],
+  recife: [
+    "As pontes do Recife não batem com o áudio.",
+    "Frevo e Marco Zero ficaram para depois.",
+  ],
+  miami: [
+    "Boardwalk pastel e dólar no caixa? Não é aqui.",
+    "Miami não fecha o mapa deste dossiê.",
+  ],
+  novayork: [
+    "Big Apple demais para o que as pistas mostram.",
+    "Nova York não assina esse áudio.",
+  ],
+  cancun: [
+    "Água turquesa mexicana? Pista fria.",
+    "All-inclusive e pulseira de resort não aparecem aqui.",
+  ],
+  buenosaires: [
+    "Tango e bife de chorizo? Não é este o destino.",
+    "O espanhol portenho não combina com a pasta.",
+  ],
+  lisboa: [
+    "Elétrico amarelo e pastel de nata? Pista fria.",
+    "Lisboa não fecha com o restante das pistas.",
+  ],
+  londres: [
+    "Chuva inglesa e Tube não batem com o dossiê.",
+    "Londres aponta para outro lado do mapa.",
+  ],
+  paris: [
+    "Croissant e Torre Eiffel ficam para outra hora.",
+    "Paris não assina essas pistas.",
+  ],
+  barcelona: [
+    "Gaudí e tapas não aparecem nesse recorte.",
+    "Barcelona ficou frio demais para este rastro.",
+  ],
+  roma: [
+    "Fontana e gelato não fecham com o restante.",
+    "Roma não é o destino desta pasta.",
+  ],
+  dubai: [
+    "Néon do Golfo e marina espelhada? Pista fria.",
+    "Dubai não fecha o mapa deste dossiê.",
+  ],
+  toquio: [
+    "Néon japonês e Shibuya não batem com as pistas.",
+    "Tóquio aponta para outro lado do mapa.",
+  ],
 };
 
 function buildWrongHints(correct: CityId): Record<CityId, string> {
@@ -89,9 +143,9 @@ export const EPISODE_SEEDS: EpisodeSeed[] = [
     correctCity: "rio",
     difficulty: "easy",
     clues: [
-      "Pediu água de coco e perguntou se a TV aberta pegava bem.",
-      "Blazer azul passou perto de guarda-sóis listrados.",
-      "Selfie borrada: Cristo no fundo, areia nos sapatos.",
+      "Na orla, ele pediu água de coco e perguntou se a TV aberta pegava bem na areia.",
+      "Uma testemunha viu o blazer azul passando entre guarda-sóis listrados.",
+      "Na selfie borrada aparece o Cristo ao fundo e areia nos sapatos sociais."
     ],
     shareLine: "Achei o Flavinho no Rio!",
   },
@@ -101,9 +155,9 @@ export const EPISODE_SEEDS: EpisodeSeed[] = [
     correctCity: "rio",
     difficulty: "medium",
     clues: [
-      "Áudio: 'sobe que a vista vale mais que a CPI'.",
-      "Comprou bilhete e sumiu no meio de turistas de chapéu.",
-      "Informante: 'não é SP. Tem bondinho e brisa salgada'.",
+      "Num áudio vazado ele diz: sobe que a vista vale mais do que qualquer CPI.",
+      "Comprou bilhete do bondinho e sumiu no meio de turistas de chapéu.",
+      "O informante jurou: não é São Paulo; tem bondinho e brisa salgada."
     ],
     shareLine: "Flavinho no Rio, de novo.",
   },
@@ -113,9 +167,9 @@ export const EPISODE_SEEDS: EpisodeSeed[] = [
     correctCity: "rio",
     difficulty: "easy",
     clues: [
-      "Alguém viu um blazer no meio de sunga e cooler.",
-      "Pediu mate e perguntou se 'o clima esfriou'.",
-      "Hashtag local: orla lotada, zero Planalto.",
+      "Alguém viu um blazer azul no meio de sungas e coolers no Posto Nove.",
+      "Ele pediu mate gelado e perguntou, rindo, se o clima político tinha esfriado.",
+      "Nas redes locais só aparece orla lotada — nenhum sinal de Planalto."
     ],
     shareLine: "Flavinho no Posto Nove?!",
   },
@@ -125,9 +179,9 @@ export const EPISODE_SEEDS: EpisodeSeed[] = [
     correctCity: "rio",
     difficulty: "medium",
     clues: [
-      "Música ao vivo, arcos ao fundo, blazer no meio da roda.",
-      "Pediu chope e pediu pra ninguém filmar a cara.",
-      "Testemunha: 'carioca, mas tentando parecer turista'.",
+      "Na Lapa tinha música ao vivo, os Arcos ao fundo e um blazer no meio da roda.",
+      "Pediu um chope e pediu, baixo, para ninguém filmar o rosto dele.",
+      "A testemunha descreveu: carioca tentando parecer turista despistado."
     ],
     shareLine: "Achei o Flavinho na Lapa",
   },
@@ -137,9 +191,9 @@ export const EPISODE_SEEDS: EpisodeSeed[] = [
     correctCity: "rio",
     difficulty: "hard",
     clues: [
-      "Comprou passagem de última hora com cara de 'só indo'.",
-      "Vento na baía, skyline de costas, blazer amarrotado.",
-      "Mensagem: 'me acha do outro lado da água'.",
+      "Comprou passagem da barca para Niterói na última hora, com cara de quem só quer atravessar.",
+      "No convés ventava na baía; o skyline do Rio ficava para trás e o blazer estava amarrotado.",
+      "Mandou mensagem pedindo para alguém achá-lo do outro lado da água."
     ],
     shareLine: "Flavinho cruzando a baía",
   },
@@ -149,9 +203,9 @@ export const EPISODE_SEEDS: EpisodeSeed[] = [
     correctCity: "rio",
     difficulty: "medium",
     clues: [
-      "Grito de torcida e um blazer no meio da galera.",
-      "Pediu hot dog e perguntou o placar errado de propósito.",
-      "Não era estádio de Brasília. Era Maraca lotado.",
+      "No meio da torcida do Maracanã, um blazer azul destoa da galera de camisa.",
+      "Pediu hot dog e perguntou o placar errado de propósito para mudar de assunto.",
+      "Não era estádio de Brasília: era o Maraca lotado, com gritaria e confete."
     ],
     shareLine: "Flavinho no Maracanã",
   },
@@ -161,9 +215,9 @@ export const EPISODE_SEEDS: EpisodeSeed[] = [
     correctCity: "rio",
     difficulty: "hard",
     clues: [
-      "Fila interminável, selfie stick, blazer suando.",
-      "Comentário: 'a vista tapa qualquer manchete'.",
-      "Cartão postal com oceano dos dois lados.",
+      "Entrou na fila interminável do Pão de Açúcar com selfie stick e blazer suando.",
+      "Comentou com alguém na fila que a vista tapa qualquer manchete ruim.",
+      "O cartão postal que mandou mostra oceano dos dois lados da baía."
     ],
     shareLine: "Flavinho no Pão de Açúcar",
   },
@@ -173,9 +227,9 @@ export const EPISODE_SEEDS: EpisodeSeed[] = [
     correctCity: "rio",
     difficulty: "easy",
     clues: [
-      "Barganhou um chinelo e um chapéu de palha.",
-      "Vendedor jurou: 'esse de blazer não é daqui, mas tá se esforçando'.",
-      "Cheiro de sol, areia e água de coco no ar.",
+      "Na feirinha de artesanato barganhou chinelo e um chapéu de palha.",
+      "O vendedor jurou: esse de blazer não é daqui, mas está se esforçando para parecer.",
+      "No ar misturavam cheiro de sol, areia e água de coco."
     ],
     shareLine: "Flavinho na feirinha do Rio",
   },
@@ -187,9 +241,9 @@ export const EPISODE_SEEDS: EpisodeSeed[] = [
     correctCity: "brasilia",
     difficulty: "medium",
     clues: [
-      "Café com leite e pergunta sobre 'agenda reservada'.",
-      "Sapato no mármore, eco de corredor longo.",
-      "Blazer azul perto de prédio que parece nave espacial.",
+      "Pediu café com leite num corredor e perguntou pela agenda reservada do dia.",
+      "Os sapatos ecoavam no mármore de um corredor comprido demais para ser rua comum.",
+      "O blazer azul apareceu perto de um prédio branco que parece nave espacial."
     ],
     shareLine: "Flavinho em Brasília",
   },
@@ -199,9 +253,9 @@ export const EPISODE_SEEDS: EpisodeSeed[] = [
     correctCity: "brasilia",
     difficulty: "easy",
     clues: [
-      "Caminhou num gramado largo demais pra ser carioca.",
-      "Pediu Uber e o motorista falou 'setor hoteleiro'.",
-      "Céu seco, modernismo e zero orla.",
+      "Caminhou por um gramado largo demais para ser calçadão carioca.",
+      "No Uber, o motorista falou em setor hoteleiro e ele só assentiu.",
+      "O céu estava seco, a arquitetura modernista, e não havia orla nenhuma."
     ],
     shareLine: "Flavinho no Eixo",
   },
@@ -211,9 +265,9 @@ export const EPISODE_SEEDS: EpisodeSeed[] = [
     correctCity: "brasilia",
     difficulty: "hard",
     clues: [
-      "Foto vazada: duas cúpulas brancas ao fundo.",
-      "Segurança perguntou credencial. Ele sorriu e sumiu.",
-      "Áudio: 'aqui todo mundo finge que não me viu'.",
+      "Uma foto vazada mostra duas cúpulas brancas bem atrás dele.",
+      "A segurança pediu credencial; ele sorriu sem responder e sumiu no fluxo.",
+      "No áudio ele murmura que ali todo mundo finge que não o viu."
     ],
     shareLine: "Flavinho no Congresso",
   },
@@ -223,9 +277,9 @@ export const EPISODE_SEEDS: EpisodeSeed[] = [
     correctCity: "brasilia",
     difficulty: "medium",
     clues: [
-      "Alugou bike e pediu rota 'sem jornalista'.",
-      "Pôr do sol no lago, blazer no guidão.",
-      "Não é marina de Dubai. É cerrado com água.",
+      "Alugou uma bike e pediu uma rota pelo lago sem passar por jornalista.",
+      "No pôr do sol do Paranoá, o blazer ficou pendurado no guidão.",
+      "Não era marina de Dubai: era cerrado com água espelhada."
     ],
     shareLine: "Flavinho no Paranoá",
   },
@@ -235,9 +289,9 @@ export const EPISODE_SEEDS: EpisodeSeed[] = [
     correctCity: "brasilia",
     difficulty: "medium",
     clues: [
-      "Bar de superquadra, conversa baixa, blazer no canto.",
-      "Pediu porção e pediu nota fiscal no nome de outra pessoa.",
-      "Cidade planejada demais pra ser improvisada no Rio.",
+      "Num bar de superquadra da Asa Sul, o blazer ficou no canto com a conversa baixa.",
+      "Pediu uma porção e pediu a nota fiscal no nome de outra pessoa.",
+      "A cidade planejada demais para ser um improviso de rua no Rio."
     ],
     shareLine: "Flavinho na Asa Sul",
   },
@@ -247,9 +301,9 @@ export const EPISODE_SEEDS: EpisodeSeed[] = [
     correctCity: "brasilia",
     difficulty: "easy",
     clues: [
-      "Embarque doméstico, óculos escuros, pressa fingida.",
+      "No embarque doméstico de Brasília, usava óculos escuros e pressa fingida.",
       "Comprou chiclete e perguntou o portão errado de propósito.",
-      "Painel: voos pra todo canto. Ele não pegou nenhum... ainda.",
+      "O painel mostrava voos para todo canto; ele ainda não pegou nenhum."
     ],
     shareLine: "Flavinho no aeroporto de BSB",
   },
@@ -259,9 +313,9 @@ export const EPISODE_SEEDS: EpisodeSeed[] = [
     correctCity: "brasilia",
     difficulty: "hard",
     clues: [
-      "Mirante seco, vento no Cerrado, blazer batendo.",
-      "Turista perguntou: 'isso aqui é o Congresso?' Ele só riu.",
-      "Vista 360 de cidade que parece desenho técnico.",
+      "No mirante da Torre de TV, o vento do Cerrado batia no blazer.",
+      "Um turista perguntou se aquilo era o Congresso; ele só riu e afastou.",
+      "A vista em 360 graus mostra uma cidade que parece desenho técnico."
     ],
     shareLine: "Flavinho na Torre de TV",
   },
@@ -271,9 +325,9 @@ export const EPISODE_SEEDS: EpisodeSeed[] = [
     correctCity: "brasilia",
     difficulty: "easy",
     clues: [
-      "Comprou pastel e sumiu entre barracas.",
-      "Alguém gritou 'doutor!' e ele acelerou o passo.",
-      "Brasília de domingo: feira, sol e disfarce fraco.",
+      "Na Feira da Torre comprou pastel e sumiu entre as barracas.",
+      "Alguém gritou doutor e ele acelerou o passo sem olhar para trás.",
+      "Era Brasília de domingo: feira, sol forte e disfarce fraco."
     ],
     shareLine: "Flavinho na feira de Brasília",
   },
@@ -285,9 +339,9 @@ export const EPISODE_SEEDS: EpisodeSeed[] = [
     correctCity: "saopaulo",
     difficulty: "medium",
     clues: [
-      "Sumiu atrás de um mar de guarda-chuvas cinza.",
-      "Reclamou do trânsito na Paulista num áudio vazado.",
-      "Reflexo de prédios no asfalto molhado.",
+      "Sumiu atrás de um mar de guarda-chuvas cinza na Paulista.",
+      "Num áudio vazado ele reclama do trânsito da Avenida Paulista.",
+      "O asfalto molhado refletia os prédios altos sob a garoa."
     ],
     shareLine: "Flavinho na Paulista",
   },
@@ -297,21 +351,21 @@ export const EPISODE_SEEDS: EpisodeSeed[] = [
     correctCity: "saopaulo",
     difficulty: "hard",
     clues: [
-      "Embarcou no metrô com cara de quem nunca pega metrô.",
-      "Segurou o teto e evitou contato visual com todo mundo.",
-      "Estação lotada, anúncio incompreensível, blazer apertado.",
+      "Embarcou no metrô com cara de quem quase nunca pega metrô.",
+      "Segurou a barra do teto e evitou contato visual com todo mundo.",
+      "A estação lotada anunciava algo incompreensível enquanto o blazer apertava nos ombros."
     ],
     shareLine: "Flavinho no metrô de SP",
   },
   {
-    id: "sp- Liberdade",
+    id: "sp-liberdade",
     title: "Neon na Liberdade",
     correctCity: "saopaulo",
     difficulty: "medium",
     clues: [
-      "Comprou pastel chinês e pediu pra embrulhar 'discreto'.",
-      "Lanternas vermelhas, multidões, blazer no meio.",
-      "Não era Paris. Era Liberdade num sábado.",
+      "Na Liberdade comprou pastel chinês e pediu para embrulhar de forma discreta.",
+      "Lanternas vermelhas, multidões e o blazer azul no meio do fluxo.",
+      "Não era Paris: era o bairro da Liberdade num sábado à tarde."
     ],
     shareLine: "Flavinho na Liberdade",
   },
@@ -321,9 +375,9 @@ export const EPISODE_SEEDS: EpisodeSeed[] = [
     correctCity: "saopaulo",
     difficulty: "easy",
     clues: [
-      "Passou embaixo do MASP fingindo olhar arte.",
-      "Alguém reconheceu o blazer. Ele cruzou a faixa correndo.",
-      "Paulista, museu vermelho, trânsito eterno.",
+      "Passou embaixo do vão do MASP fingindo olhar a exposição.",
+      "Alguém reconheceu o blazer e ele cruzou a faixa de pedestres correndo.",
+      "Paulista, museu vermelho e o trânsito eterno de São Paulo."
     ],
     shareLine: "Flavinho no MASP",
   },
@@ -333,9 +387,9 @@ export const EPISODE_SEEDS: EpisodeSeed[] = [
     correctCity: "saopaulo",
     difficulty: "medium",
     clues: [
-      "Pediu mortadela no pão e olhou demais pro celular.",
-      "Cheiro de tempero, teto alto, blazer no balcão.",
-      "SP clássica. Nada de orla, nada de Planalto.",
+      "No Mercado Municipal pediu mortadela no pão e olhou demais para o celular.",
+      "Cheiro de tempero, teto alto e o blazer encostado no balcão.",
+      "São Paulo clássica: nada de orla e nada de Planalto."
     ],
     shareLine: "Flavinho no Mercadão",
   },
@@ -345,9 +399,9 @@ export const EPISODE_SEEDS: EpisodeSeed[] = [
     correctCity: "saopaulo",
     difficulty: "easy",
     clues: [
-      "Trotou no parque com fone e cara de 'não sou eu'.",
-      "Parou pra foto com o lago... e cancelou a foto.",
-      "Cidade cinza ao redor, verde no meio.",
+      "Trotou no Ibirapuera de fone no ouvido e cara de quem não quer ser visto.",
+      "Parou para uma foto com o lago e cancelou a foto na hora.",
+      "Ao redor, cidade cinza; no meio do parque, um pedaço de verde."
     ],
     shareLine: "Flavinho no Ibirapuera",
   },
@@ -357,9 +411,9 @@ export const EPISODE_SEEDS: EpisodeSeed[] = [
     correctCity: "saopaulo",
     difficulty: "hard",
     clues: [
-      "Lista VIP, nome falso, blazer na fila.",
-      "Skyline de concreto e néon laranja.",
-      "Alguém sussurrou: 'esse aí sumiu dos trending topics'.",
+      "Tentou entrar num rooftop com lista VIP, nome falso e blazer na fila.",
+      "Do terraço dava para ver um skyline de concreto e néon laranja.",
+      "Alguém sussurrou que aquele ali tinha sumido dos trending topics."
     ],
     shareLine: "Flavinho no rooftop de SP",
   },
@@ -369,9 +423,9 @@ export const EPISODE_SEEDS: EpisodeSeed[] = [
     correctCity: "saopaulo",
     difficulty: "medium",
     clues: [
-      "Folheou capa de revista e colocou de volta depressa demais.",
-      "Chuva fina, calçada estreita, blazer pingando.",
-      "Cidade que não dorme e não perdoa selfie.",
+      "Folheou a capa de uma revista na banca e colocou de volta depressa demais.",
+      "Chovia fino, a calçada era estreita e o blazer pingava água.",
+      "Uma cidade que não dorme e não perdoa selfie mal tirada."
     ],
     shareLine: "Flavinho numa banca em SP",
   },
@@ -383,9 +437,9 @@ export const EPISODE_SEEDS: EpisodeSeed[] = [
     correctCity: "miami",
     difficulty: "hard",
     clues: [
-      "Motel pastel, inglês com sotaque e suco verde caro.",
-      "Story com palmeira e legenda 'só um dia'.",
-      "Boardwalk com ar de novela, não Europa.",
+      "Parou num motel pastel, falou inglês com sotaque e pediu um suco verde caro.",
+      "No story aparece uma palmeira com a legenda dizendo que é só um dia.",
+      "O boardwalk tem ar de novela americana, não de Europa."
     ],
     shareLine: "Flavinho em Miami",
   },
@@ -395,9 +449,9 @@ export const EPISODE_SEEDS: EpisodeSeed[] = [
     correctCity: "miami",
     difficulty: "medium",
     clues: [
-      "Carros antigos pastel, blazer no meio de shorts.",
-      "Pediu iced coffee e pagou em dólar.",
-      "Art déco demais pra ser Copacabana.",
+      "Na Ocean Drive, carros antigos pastel contrastavam com o blazer no meio dos shorts.",
+      "Pediu iced coffee e pagou em dólar sem hesitar.",
+      "O art déco da rua é forte demais para confundir com Copacabana."
     ],
     shareLine: "Flavinho na Ocean Drive",
   },
@@ -407,9 +461,9 @@ export const EPISODE_SEEDS: EpisodeSeed[] = [
     correctCity: "miami",
     difficulty: "easy",
     clues: [
-      "Entrou no ar-condicionado como quem entra em bunker.",
-      "Comprou óculos e perguntou se aceitava PIX. Não aceitava.",
-      "Inglês no caixa, sotaque no troco.",
+      "Entrou no shopping gelado como quem entra num bunker contra o calor.",
+      "Comprou óculos escuros e perguntou se aceitavam PIX; o caixa disse que não.",
+      "No caixa o inglês era limpo; no troco escapou um sotaque brasileiro."
     ],
     shareLine: "Flavinho no shopping de Miami",
   },
@@ -419,9 +473,9 @@ export const EPISODE_SEEDS: EpisodeSeed[] = [
     correctCity: "miami",
     difficulty: "hard",
     clues: [
-      "Olhou iates como quem compara agenda.",
-      "Alguém falou 'south beach' e ele fingiu não ouvir.",
-      "Sol forte, pastel nos prédios, zero Cristo Redentor.",
+      "Ficou olhando os iates na marina como quem compara agendas secretas.",
+      "Alguém falou South Beach e ele fingiu que não tinha ouvido.",
+      "Sol forte, prédios pastel e nenhum Cristo Redentor no horizonte."
     ],
     shareLine: "Flavinho na marina de Miami",
   },
@@ -431,9 +485,9 @@ export const EPISODE_SEEDS: EpisodeSeed[] = [
     correctCity: "miami",
     difficulty: "medium",
     clues: [
-      "Abacate no prato, blazer na cadeira, mesa na calçada.",
-      "Garçom: 'where you from?' Resposta evasiva.",
-      "Florida no cardápio. Brasil na cara.",
+      "No brunch tinha abacate no prato, blazer na cadeira e mesa na calçada.",
+      "O garçom perguntou where you from e a resposta dele foi bem evasiva.",
+      "O cardápio era da Flórida; a cara ainda era do Brasil."
     ],
     shareLine: "Flavinho no brunch",
   },
@@ -443,9 +497,9 @@ export const EPISODE_SEEDS: EpisodeSeed[] = [
     correctCity: "miami",
     difficulty: "hard",
     clues: [
-      "Fila de clube, lista fake, blazer ainda no corpo.",
-      "DJ alto demais pra ouvir manchete.",
-      "Não era Dubai. Era Miami tentando ser Dubai.",
+      "Na fila do clube depois das onze, a lista era falsa e o blazer continuava no corpo.",
+      "O DJ tocava alto demais para qualquer um ouvir manchete.",
+      "Não era Dubai: era Miami tentando parecer Dubai."
     ],
     shareLine: "Flavinho na noite de Miami",
   },
@@ -455,9 +509,9 @@ export const EPISODE_SEEDS: EpisodeSeed[] = [
     correctCity: "miami",
     difficulty: "easy",
     clues: [
-      "Motorista brasileiro reconheceu o blazer e mudou de assunto.",
-      "GPS falando inglês, rádio em espanhol.",
-      "Destino: 'anywhere quiet'.",
+      "O motorista brasileiro do Uber reconheceu o blazer e mudou de assunto na hora.",
+      "O GPS falava inglês e o rádio tocava em espanhol.",
+      "Como destino ele só pediu anywhere quiet."
     ],
     shareLine: "Flavinho de Uber em Miami",
   },
@@ -467,9 +521,9 @@ export const EPISODE_SEEDS: EpisodeSeed[] = [
     correctCity: "miami",
     difficulty: "medium",
     clues: [
-      "Alugou cadeira, não tirou o blazer, surreal.",
-      "Pediu água de coco... em inglês.",
-      "Areia clara, prédios pastel, zero Pão de Açúcar.",
+      "Alugou cadeira de praia e, surreal, não tirou o blazer.",
+      "Pediu água de coco, mas pediu em inglês.",
+      "Areia clara, prédios pastel e nenhum Pão de Açúcar ao fundo."
     ],
     shareLine: "Flavinho na praia de Miami",
   },
@@ -481,9 +535,9 @@ export const EPISODE_SEEDS: EpisodeSeed[] = [
     correctCity: "paris",
     difficulty: "hard",
     clues: [
-      "Café e croissant. Recusou pagar em real.",
-      "Selfie borrada com torre metálica longe.",
-      "'Aqui ninguém me reconhece... eu acho.'",
+      "Num café de calçada pediu café e croissant e recusou pagar em real.",
+      "A selfie borrada mostra uma torre metálica bem longe atrás dele.",
+      "Ele murmurou que ali ninguém o reconhece — pelo menos ele acha."
     ],
     shareLine: "Flavinho em Paris",
   },
@@ -493,9 +547,9 @@ export const EPISODE_SEEDS: EpisodeSeed[] = [
     correctCity: "paris",
     difficulty: "medium",
     clues: [
-      "Olhou o mapa do metrô de cabeça torta.",
-      "Bilhete amassado, blazer no horário de pico.",
-      "Francês no alto-falante, pânico educado no rosto.",
+      "Olhou o mapa do metrô parisiense de cabeça torta, perdido entre as linhas.",
+      "O bilhete estava amassado e o blazer apertado no horário de pico.",
+      "O alto-falante falava francês e o pânico no rosto dele era bem educado."
     ],
     shareLine: "Flavinho no metrô de Paris",
   },
@@ -505,9 +559,9 @@ export const EPISODE_SEEDS: EpisodeSeed[] = [
     correctCity: "paris",
     difficulty: "easy",
     clues: [
-      "Andou na margem fingindo ser poeta.",
-      "Livros usados, pontes de pedra, blazer ao vento.",
-      "Não era Paranoá. Era Sena com pose.",
+      "Andou na beira do Sena fingindo pose de poeta distraído.",
+      "Havia sebos de livros, pontes de pedra e o blazer ao vento.",
+      "Não era o Paranoá: era o Sena com muita pose."
     ],
     shareLine: "Flavinho no Sena",
   },
@@ -517,9 +571,9 @@ export const EPISODE_SEEDS: EpisodeSeed[] = [
     correctCity: "paris",
     difficulty: "hard",
     clues: [
-      "Entrou na fila e saiu três vezes.",
-      "Comprou ímã de geladeira e se arrependeu.",
-      "Pirâmide de vidro ao fundo. Blazer no meio.",
+      "Entrou na fila do Louvre e saiu dela três vezes sem explicar.",
+      "Comprou um ímã de geladeira e se arrependeu no mesmo instante.",
+      "A pirâmide de vidro ficava ao fundo e o blazer no meio da multidão."
     ],
     shareLine: "Flavinho no Louvre",
   },
@@ -529,9 +583,9 @@ export const EPISODE_SEEDS: EpisodeSeed[] = [
     correctCity: "paris",
     difficulty: "medium",
     clues: [
-      "Torre piscando de hora em hora, multidão aplaudindo.",
-      "Ele só olhava o celular e a saída.",
-      "Europa óbvia demais. Disfarce fraco demais.",
+      "A Torre Eiffel piscava de hora em hora e a multidão aplaudia.",
+      "Ele só olhava o celular e a melhor saída da praça.",
+      "Europa óbvia demais e disfarce fraco demais para quem quer sumir."
     ],
     shareLine: "Flavinho sob a Torre Eiffel",
   },
@@ -541,9 +595,9 @@ export const EPISODE_SEEDS: EpisodeSeed[] = [
     correctCity: "paris",
     difficulty: "easy",
     clues: [
-      "Primeiro da fila do pão. Último a sorrir.",
-      "Pediu 'um desse' apontando pro croissant.",
-      "Amanhecer cinza, calçada molhada, blazer limpo.",
+      "Foi o primeiro da fila do pão às sete da manhã e o último a sorrir.",
+      "Apontou para o croissant e pediu um desse, sem acertar o nome em francês.",
+      "O amanhecer estava cinza, a calçada molhada e o blazer ainda limpo."
     ],
     shareLine: "Flavinho na padaria parisiense",
   },
@@ -553,9 +607,9 @@ export const EPISODE_SEEDS: EpisodeSeed[] = [
     correctCity: "paris",
     difficulty: "hard",
     clues: [
-      "Proibiram flash. Ele agradeceu baixo.",
-      "Passou rápido demais pelas salas famosas.",
-      "Saiu perguntando onde pegar Uber... em Paris.",
+      "No museu proibiram flash e ele agradeceu baixinho, aliviado.",
+      "Passou rápido demais pelas salas mais famosas, sem parar para ver.",
+      "Na saída perguntou onde pegar Uber — ainda em Paris."
     ],
     shareLine: "Flavinho no museu",
   },
@@ -565,9 +619,9 @@ export const EPISODE_SEEDS: EpisodeSeed[] = [
     correctCity: "paris",
     difficulty: "medium",
     clues: [
-      "Olhou os cadeados e murmurou 'isso não ia rolar no Senado'.",
-      "Turistas beijando, ele só atravessando.",
-      "Rio urbano, pedra velha, zero calçadão carioca.",
+      "Olhou os cadeados da ponte e murmurou que isso não ia rolar no Senado.",
+      "Enquanto os turistas se beijavam, ele só atravessava sem olhar.",
+      "Rio urbano, pedra velha e nenhum calçadão carioca à vista."
     ],
     shareLine: "Flavinho na ponte de Paris",
   },
@@ -579,9 +633,9 @@ export const EPISODE_SEEDS: EpisodeSeed[] = [
     correctCity: "dubai",
     difficulty: "hard",
     clues: [
-      "Noite, ar-condicionado lendário.",
-      "Marina espelhada, skyline de videogame.",
-      "'Me encontra depois do pôr do sol, perto da água.'",
+      "À noite o ar-condicionado era tão forte que parecia outro clima.",
+      "A marina espelhava um skyline de videogame sobre a água.",
+      "Mandou recado: me encontra depois do pôr do sol, perto da água."
     ],
     shareLine: "Flavinho em Dubai",
   },
@@ -591,9 +645,9 @@ export const EPISODE_SEEDS: EpisodeSeed[] = [
     correctCity: "dubai",
     difficulty: "medium",
     clues: [
-      "Andou no shopping como quem foge da temperatura lá fora.",
-      "Fonte dançante, vitrine de relógio, blazer intacto.",
-      "Árabe no anúncio, inglês no caixa, sumiço no meio.",
+      "Andou no shopping enorme como quem foge do calor lá fora.",
+      "Passou pela fonte dançante e pela vitrine de relógios com o blazer intacto.",
+      "O anúncio falava árabe, o caixa falava inglês e ele sumiu no meio do fluxo."
     ],
     shareLine: "Flavinho no mall de Dubai",
   },
@@ -603,9 +657,9 @@ export const EPISODE_SEEDS: EpisodeSeed[] = [
     correctCity: "dubai",
     difficulty: "hard",
     clues: [
-      "Recusou o iate duas vezes. Aceitou a foto zero vezes.",
-      "Água verde-azulada, prédio torto ao fundo.",
-      "Não era Miami pastel. Era Golfo neon.",
+      "Recusou o convite para o iate duas vezes e não aceitou tirar foto nenhuma.",
+      "A água era verde-azulada e um prédio torto aparecia ao fundo.",
+      "Não era o pastel de Miami: era o Golfo com néon."
     ],
     shareLine: "Flavinho no iate? Quase.",
   },
@@ -615,9 +669,9 @@ export const EPISODE_SEEDS: EpisodeSeed[] = [
     correctCity: "dubai",
     difficulty: "medium",
     clues: [
-      "Passou rápido demais pelas joias.",
-      "Vendedor ofereceu chá. Ele pediu a saída.",
-      "Mercado antigo, ar-condicionado moderno, blazer no labirinto.",
+      "Passou rápido demais pelas bancas de joias do souk.",
+      "O vendedor ofereceu chá e ele só pediu o caminho da saída.",
+      "Mercado antigo, ar-condicionado moderno e o blazer perdido no labirinto."
     ],
     shareLine: "Flavinho no souk",
   },
@@ -627,9 +681,9 @@ export const EPISODE_SEEDS: EpisodeSeed[] = [
     correctCity: "dubai",
     difficulty: "easy",
     clues: [
-      "Areia no sapato social. Combinação estranha.",
-      "Pôr do sol no deserto, selfie negada.",
-      "Guia falou 'smile!' Ele fingiu tosse.",
+      "Voltou do passeio com areia no sapato social — combinação estranha.",
+      "No pôr do sol do deserto alguém pediu selfie e ele negou na hora.",
+      "O guia falou smile e ele fingiu uma tosse para escapar."
     ],
     shareLine: "Flavinho no deserto",
   },
@@ -639,9 +693,9 @@ export const EPISODE_SEEDS: EpisodeSeed[] = [
     correctCity: "dubai",
     difficulty: "medium",
     clues: [
-      "Multidão filmando água dançando.",
-      "Ele filmou a saída de emergência.",
-      "Lago artificial, arranha-céus, zero garoa paulista.",
+      "A multidão filmava a água dançando no show das fontes.",
+      "Ele, no meio da festa, filmava a saída de emergência.",
+      "Lago artificial, arranha-céus e nenhuma garoa paulista."
     ],
     shareLine: "Flavinho nas fontes de Dubai",
   },
@@ -651,9 +705,9 @@ export const EPISODE_SEEDS: EpisodeSeed[] = [
     correctCity: "dubai",
     difficulty: "easy",
     clues: [
-      "Duty free absurdo, blazer no tapete rolante.",
-      "Olhou voos pra 'qualquer lugar mais quieto'.",
-      "Aeroporto que parece cidade. Ele parecia escala.",
+      "No duty free absurdo, o blazer deslizava no tapete rolante.",
+      "Ficou olhando voos para qualquer lugar mais quieto.",
+      "O aeroporto parece uma cidade inteira; ele parecia só uma escala."
     ],
     shareLine: "Flavinho em escala em Dubai",
   },
@@ -663,9 +717,9 @@ export const EPISODE_SEEDS: EpisodeSeed[] = [
     correctCity: "dubai",
     difficulty: "hard",
     clues: [
-      "Mirante com moldura gigante sobre a cidade.",
-      "Vento seco, vista cara, blazer teimoso.",
-      "Cartão postal do Golfo. Rastro quente.",
+      "Subiu num mirante com moldura gigante aberta sobre a cidade.",
+      "O vento era seco, a vista era cara e o blazer seguia teimoso no calor.",
+      "Era cartão postal do Golfo — e o rastro dele estava quente."
     ],
     shareLine: "Flavinho no mirante de Dubai",
   },
@@ -677,9 +731,9 @@ export const EPISODE_SEEDS: EpisodeSeed[] = [
     correctCity: "salvador",
     difficulty: "easy",
     clues: [
-      "Subiu ladeira colorida com blazer suando.",
-      "Pediu acarajé e pediu pra não postar.",
-      "Tambor ao longe. Não era Rio.",
+      "Subiu a ladeira colorida do Pelourinho com o blazer suando nas costas.",
+      "Pediu acarajé e pediu, sério, para ninguém postar a foto.",
+      "Ao longe batia um tambor; claramente não era o Rio."
     ],
     shareLine: "Flavinho em Salvador",
   },
@@ -689,9 +743,9 @@ export const EPISODE_SEEDS: EpisodeSeed[] = [
     correctCity: "salvador",
     difficulty: "medium",
     clues: [
-      "Desceu de elevador urbano com vista pra baía.",
-      "Comprou foto polaroid e rasgou depois.",
-      "Bahia óbvia. Disfarce fraco.",
+      "Desceu o Elevador Lacerda com a vista da baía se abrindo embaixo.",
+      "Comprou uma polaroid turística e rasgou a foto logo depois.",
+      "Bahia óbvia demais e disfarce fraco demais."
     ],
     shareLine: "Flavinho no Elevador Lacerda",
   },
@@ -701,9 +755,9 @@ export const EPISODE_SEEDS: EpisodeSeed[] = [
     correctCity: "salvador",
     difficulty: "hard",
     clues: [
-      "Farol ao fundo, pôr do sol lotado.",
-      "Alguém gritou 'ô meu rei' e ele acelerou.",
-      "Atlantico baiano, zero Cristo Redentor.",
+      "No Farol da Barra o pôr do sol estava lotado e o farol ia ficando atrás.",
+      "Alguém gritou ô meu rei e ele acelerou o passo na hora.",
+      "Era o Atlântico baiano, sem Cristo Redentor no fundo."
     ],
     shareLine: "Flavinho no Farol da Barra",
   },
@@ -715,9 +769,9 @@ export const EPISODE_SEEDS: EpisodeSeed[] = [
     correctCity: "belohorizonte",
     difficulty: "easy",
     clues: [
-      "Pediu pão de queijo e café com leite.",
-      "Mineiro no balcão reconheceu o blazer e fingiu demência.",
-      "Serra ao fundo. Nada de orla.",
+      "Na padaria pediu pão de queijo e café com leite sem pensar duas vezes.",
+      "O mineiro do balcão reconheceu o blazer e fingiu que não tinha visto.",
+      "Tinha serra ao fundo e nenhuma orla à vista."
     ],
     shareLine: "Flavinho em BH",
   },
@@ -727,9 +781,9 @@ export const EPISODE_SEEDS: EpisodeSeed[] = [
     correctCity: "belohorizonte",
     difficulty: "medium",
     clues: [
-      "Domingo na Praça da Liberdade, barraca e sol.",
-      "Comprou bijuteria e sumiu entre famílias.",
-      "BH clássica. Sem neon de Dubai.",
+      "Num domingo na Praça da Liberdade misturou-se às barracas e ao sol.",
+      "Comprou uma bijuteria barata e sumiu entre as famílias passeando.",
+      "BH clássica, sem nenhum néon de Dubai."
     ],
     shareLine: "Flavinho na Liberdade (BH)",
   },
@@ -741,9 +795,9 @@ export const EPISODE_SEEDS: EpisodeSeed[] = [
     correctCity: "curitiba",
     difficulty: "easy",
     clues: [
-      "Casaco por cima do blazer. Sinais de Paraná.",
-      "Foto na estufa de vidro, cancelada na hora.",
-      "Frio demais pra ser Salvador.",
+      "Colocou casaco por cima do blazer — sinal claro de frio paranaense.",
+      "Quase tirou foto na estufa de vidro do Jardim Botânico e cancelou na hora.",
+      "Estava frio demais para ser Salvador."
     ],
     shareLine: "Flavinho em Curitiba",
   },
@@ -753,9 +807,9 @@ export const EPISODE_SEEDS: EpisodeSeed[] = [
     correctCity: "curitiba",
     difficulty: "medium",
     clues: [
-      "Entrou num tubo de estação de ônibus biarticulado.",
-      "Pegou cartão transporte no nome errado.",
-      "Organização curitibana. Zero caos carioca.",
+      "Entrou no tubo de uma estação de ônibus biarticulado em Curitiba.",
+      "Pegou o cartão de transporte no nome errado e fingiu naturalidade.",
+      "Organização curitibana, bem longe do caos carioca."
     ],
     shareLine: "Flavinho no transporte de Curitiba",
   },
@@ -767,9 +821,9 @@ export const EPISODE_SEEDS: EpisodeSeed[] = [
     correctCity: "recife",
     difficulty: "medium",
     clues: [
-      "Atravessou ponte com cheiro de maré.",
-      "Pediu tapioca e olhou demais pro celular.",
-      "Recife antigo. Frevo longe, blazer perto.",
+      "Atravessou uma ponte do Recife com cheiro de maré subindo do mangue.",
+      "Pediu tapioca e olhou demais para o celular enquanto comia.",
+      "Recife Antigo à vista, frevo ao longe e blazer bem perto."
     ],
     shareLine: "Flavinho no Recife",
   },
@@ -779,9 +833,9 @@ export const EPISODE_SEEDS: EpisodeSeed[] = [
     correctCity: "recife",
     difficulty: "hard",
     clues: [
-      "Palco vazio, praça aberta, vento do porto.",
-      "Alguém vendeu cordel com a cara dele. Ele negou.",
-      "Nordeste urbano. Sem Paulista.",
+      "No Marco Zero o palco estava vazio, a praça aberta e o vento vinha do porto.",
+      "Alguém tentou vender um cordel com a cara dele; ele negou ser o personagem.",
+      "Nordeste urbano, sem nenhum traço da Paulista."
     ],
     shareLine: "Flavinho no Marco Zero",
   },
@@ -793,9 +847,9 @@ export const EPISODE_SEEDS: EpisodeSeed[] = [
     correctCity: "buenosaires",
     difficulty: "medium",
     clues: [
-      "Passou por milonga e recusou dançar.",
-      "Pediu bife de chorizo e pagou em peso.",
-      "Espanhol portenho. Não era Miami.",
+      "Passou por uma milonga em Buenos Aires e recusou o convite para dançar.",
+      "Pediu bife de chorizo e pagou em pesos argentinos.",
+      "O espanhol era portenho; claramente não era Miami."
     ],
     shareLine: "Flavinho em Buenos Aires",
   },
@@ -805,9 +859,9 @@ export const EPISODE_SEEDS: EpisodeSeed[] = [
     correctCity: "buenosaires",
     difficulty: "easy",
     clues: [
-      "Casas coloridas, turistas, blazer no meio.",
-      "Selfie com bandeira argentina... apagada.",
-      "Caminito lotado. Rastro óbvio.",
+      "No Caminito, entre casas coloridas e turistas, o blazer azul destoa no meio.",
+      "Quase tirou selfie com a bandeira argentina e apagou a foto em seguida.",
+      "La Boca lotada deixou o rastro dele óbvio demais."
     ],
     shareLine: "Flavinho em La Boca",
   },
@@ -819,9 +873,9 @@ export const EPISODE_SEEDS: EpisodeSeed[] = [
     correctCity: "lisboa",
     difficulty: "easy",
     clues: [
-      "Subiu no elétrico amarelo lotado.",
-      "Pediu pastel de nata e um espresso.",
-      "Lisboa de cartão postal. Blazer amarrotado.",
+      "Subiu no elétrico amarelo lotado que sobe as ladeiras de Lisboa.",
+      "Pediu pastel de nata e um espresso sem enrolação.",
+      "Lisboa de cartão postal e o blazer já amarrotado pelo dia."
     ],
     shareLine: "Flavinho em Lisboa",
   },
@@ -831,9 +885,9 @@ export const EPISODE_SEEDS: EpisodeSeed[] = [
     correctCity: "lisboa",
     difficulty: "hard",
     clues: [
-      "Fila eterna de pastel. Ele desistiu no meio.",
-      "Tejo ao fundo, torre de pedra.",
-      "Portugal. Real brasileiro não passou no caixa.",
+      "Entrou na fila eterna dos pastéis de Belém e desistiu no meio do caminho.",
+      "Ao fundo ficavam o Tejo e a torre de pedra.",
+      "Estava em Portugal: real brasileiro não passou no caixa."
     ],
     shareLine: "Flavinho em Belém",
   },
@@ -845,9 +899,9 @@ export const EPISODE_SEEDS: EpisodeSeed[] = [
     correctCity: "londres",
     difficulty: "medium",
     clues: [
-      "Desceu no Tube com cara de quem odeia fila.",
-      "Comprou umbrella barato sob chuva fina.",
-      "Inglês no alto-falante. Blazer molhado.",
+      "Desceu no Tube com cara de quem odeia fila e anúncio em inglês.",
+      "Comprou um guarda-chuva barato no meio da chuva fina.",
+      "O alto-falante falava inglês e o blazer já estava molhado."
     ],
     shareLine: "Flavinho em Londres",
   },
@@ -857,9 +911,9 @@ export const EPISODE_SEEDS: EpisodeSeed[] = [
     correctCity: "londres",
     difficulty: "hard",
     clues: [
-      "Pose quase feita. Foto cancelada.",
-      "Ônibus vermelho passou na frente.",
-      "Tâmisa cinza. Nada de marina neon.",
+      "Quase fez pose na Tower Bridge e cancelou a foto no último segundo.",
+      "Um ônibus vermelho passou na frente bem na hora do clique.",
+      "O Tâmisa estava cinza; nenhuma marina neon à vista."
     ],
     shareLine: "Flavinho na Tower Bridge",
   },
@@ -871,9 +925,9 @@ export const EPISODE_SEEDS: EpisodeSeed[] = [
     correctCity: "novayork",
     difficulty: "hard",
     clues: [
-      "Olhou o mapa do subway de cabeça pra baixo.",
-      "Pediu coffee to go e sumiu na multidãos.",
-      "NY em rush hour. Zero disfarce bom.",
+      "Olhou o mapa do subway de cabeça para baixo e fingiu que entendia.",
+      "Pediu um coffee to go e sumiu na multidão do rush.",
+      "Nova York no horário de pico não perdoa disfarce fraco."
     ],
     shareLine: "Flavinho em Nova York",
   },
@@ -883,9 +937,9 @@ export const EPISODE_SEEDS: EpisodeSeed[] = [
     correctCity: "novayork",
     difficulty: "medium",
     clues: [
-      "Sentou num banco e fingiu ler jornal.",
-      "Carruagem passou. Ele não olhou.",
-      "Manhattan verde no meio do caos.",
+      "Sentou num banco do Central Park e fingiu ler um jornal antigo.",
+      "Uma carruagem passou e ele nem levantou o olhar.",
+      "Um pedaço de Manhattan verde no meio do caos de concreto."
     ],
     shareLine: "Flavinho no Central Park",
   },
@@ -897,9 +951,9 @@ export const EPISODE_SEEDS: EpisodeSeed[] = [
     correctCity: "barcelona",
     difficulty: "medium",
     clues: [
-      "Olhou a fachada e desistiu da fila.",
-      "Pediu tapas e pagou em euro.",
-      "Catalunha óbvia. Blazer no sol.",
+      "Olhou a fachada da Sagrada Família e desistiu da fila enorme.",
+      "Pediu tapas num bar perto e pagou em euro.",
+      "Catalunha óbvia e o blazer pegando sol na calçada."
     ],
     shareLine: "Flavinho em Barcelona",
   },
@@ -909,9 +963,9 @@ export const EPISODE_SEEDS: EpisodeSeed[] = [
     correctCity: "barcelona",
     difficulty: "easy",
     clues: [
-      "Areia europeia, sem Cristo no fundo.",
-      "Pediu sangria e pediu a conta rápido.",
-      "Mediterrâneo. Não era Copacabana.",
+      "Na Barceloneta a areia é europeia e não tem Cristo nenhum no fundo.",
+      "Pediu sangria e pediu a conta depressa, sem demorar na mesa.",
+      "Mediterrâneo à frente — definitivamente não era Copacabana."
     ],
     shareLine: "Flavinho na Barceloneta",
   },
@@ -923,9 +977,9 @@ export const EPISODE_SEEDS: EpisodeSeed[] = [
     correctCity: "roma",
     difficulty: "easy",
     clues: [
-      "Jogou moeda e pediu pra ninguém filmar.",
-      "Gelato na mão, blazer no ombro.",
-      "Fontana lotada. Italiano no ar.",
+      "Jogou uma moeda na Fontana di Trevi e pediu para ninguém filmar.",
+      "Segurava um gelato numa mão e o blazer no ombro.",
+      "A fonte estava lotada e o italiano enchia o ar ao redor."
     ],
     shareLine: "Flavinho em Roma",
   },
@@ -935,9 +989,9 @@ export const EPISODE_SEEDS: EpisodeSeed[] = [
     correctCity: "roma",
     difficulty: "hard",
     clues: [
-      "Quase tirou foto com gladiador de mentira.",
-      "Desistiu. Saiu andando rápido.",
-      "Ruína romana. Zero Dubai.",
+      "Quase tirou foto com um gladiador de fantasia na porta do Coliseu.",
+      "Desistiu no meio do gesto e saiu andando rápido.",
+      "Ruína romana clássica, sem nenhum traço de Dubai."
     ],
     shareLine: "Flavinho no Coliseu",
   },
@@ -949,9 +1003,9 @@ export const EPISODE_SEEDS: EpisodeSeed[] = [
     correctCity: "cancun",
     difficulty: "easy",
     clues: [
-      "Pulseira de resort, blazer no buffet.",
-      "Pediu margarita e olhou a saída.",
-      "Turquesa mexicano. Espanhol de aeroporto.",
+      "No resort all-inclusive a pulseira colorida contrastava com o blazer no buffet.",
+      "Pediu uma margarita e já olhava a saída enquanto bebia.",
+      "Água turquesa mexicana e espanhol de aeroporto no balcão."
     ],
     shareLine: "Flavinho em Cancún",
   },
@@ -961,9 +1015,9 @@ export const EPISODE_SEEDS: EpisodeSeed[] = [
     correctCity: "cancun",
     difficulty: "medium",
     clues: [
-      "Subiu pirâmide pequena e desceu arrependido.",
-      "Guia falou em espanhol. Ele sorriu mudo.",
-      "Quintana Roo. Não era Roma.",
+      "Subiu uma pirâmide pequena sob o sol e desceu arrependido da ideia.",
+      "O guia falou em espanhol e ele só sorriu, sem responder.",
+      "Estava em Quintana Roo — claramente não era Roma."
     ],
     shareLine: "Flavinho nas ruínas perto de Cancún",
   },
@@ -975,9 +1029,9 @@ export const EPISODE_SEEDS: EpisodeSeed[] = [
     correctCity: "toquio",
     difficulty: "hard",
     clues: [
-      "Atravessou com a maré humana e quase voltou.",
-      "Comprou chá em máquina e se perdeu.",
-      "Neon japonês. Zero português no ar.",
+      "Atravessou a faixa de Shibuya com a maré humana e quase voltou no meio.",
+      "Comprou chá numa máquina de venda e se perdeu na saída da estação.",
+      "Néon japonês por todo lado e nenhum português no ar."
     ],
     shareLine: "Flavinho em Shibuya",
   },
@@ -987,9 +1041,9 @@ export const EPISODE_SEEDS: EpisodeSeed[] = [
     correctCity: "toquio",
     difficulty: "medium",
     clues: [
-      "Passou pelo portão vermelho sem bater foto.",
-      "Comprou amulete e guardou no bolso do blazer.",
-      "Tóquio tradicional. Rastro quieto.",
+      "Passou pelo portão vermelho de Asakusa sem bater foto nenhuma.",
+      "Comprou um amulete e guardou no bolso interno do blazer.",
+      "Tóquio tradicional, rastro quieto e passo apressado."
     ],
     shareLine: "Flavinho em Asakusa",
   },

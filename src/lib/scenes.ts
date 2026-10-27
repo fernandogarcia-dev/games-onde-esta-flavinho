@@ -7,11 +7,12 @@ export type SceneConfig = {
   ground: { yMin: number; yMax: number; xMin?: number; xMax?: number };
 };
 
+/** Safe inset so centered sprites never clip outside the board. */
 const FLAT = {
-  yMin: 8,
-  yMax: 92,
-  xMin: 5,
-  xMax: 95,
+  yMin: 14,
+  yMax: 86,
+  xMin: 10,
+  xMax: 90,
 };
 
 function scene(
