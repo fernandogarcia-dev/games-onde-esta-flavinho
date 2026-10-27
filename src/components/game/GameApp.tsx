@@ -407,14 +407,14 @@ function Landing({
 }) {
   return (
     <section className="relative overflow-hidden rounded-[2rem] border-[3px] border-[var(--ink)] bg-[var(--paper)] shadow-[10px_10px_0_var(--ink)]">
-      <div className="absolute inset-0">
+      <div className="pointer-events-none absolute inset-0">
         <Image
-          src="/game/scene-rio-bg.jpg"
+          src="/game/scene-rio-cartoon.jpg"
           alt=""
           fill
           priority
           className="object-cover opacity-30"
-          sizes="100vw"
+          sizes="(max-width: 768px) 100vw, 960px"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-[var(--paper)] via-[var(--paper)]/92 to-[var(--paper)]/30" />
       </div>
