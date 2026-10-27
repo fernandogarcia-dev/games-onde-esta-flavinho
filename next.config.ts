@@ -13,8 +13,6 @@ const nextConfig: NextConfig = {
     "*.cursorapi.com",
     "**.cursorapi.com",
   ],
-  cacheComponents: true,
-  partialPrefetching: true,
   turbopack: {
     rules: {
       "*.css": {

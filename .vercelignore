@@ -1,0 +1,7 @@
+agent-tools
+.next
+.git
+*.mp4
+*.webp
+scripts
+tsconfig.tsbuildinfo
