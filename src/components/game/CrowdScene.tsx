@@ -7,7 +7,12 @@ import {
   useState,
   type MouseEvent as ReactMouseEvent,
 } from "react";
-import { buildCrowd, spriteBox } from "@/lib/crowd";
+import {
+  buildCrowd,
+  lookTip,
+  spriteBox,
+  type LookTier,
+} from "@/lib/crowd";
 
 type Props = {
   seed: string;
@@ -20,6 +25,7 @@ type Props = {
     xMin?: number;
     xMax?: number;
   };
+  lookTier?: LookTier;
   onFound: () => void;
   onMiss: () => void;
   showHint: boolean;
@@ -32,6 +38,7 @@ export function CrowdScene({
   crowdCount,
   flavinhoScale,
   ground,
+  lookTier = "medium",
   onFound,
   onMiss,
   showHint,
@@ -63,8 +70,8 @@ export function CrowdScene({
           xMax: Math.min(94, (ground.xMax ?? 90) + 2),
         }
       : ground;
-    return buildCrowd(seed, count, scale, band, { mobileBoost });
-  }, [seed, count, scale, ground, mobileBoost, portrait]);
+    return buildCrowd(seed, count, scale, band, { mobileBoost, lookTier });
+  }, [seed, count, scale, ground, mobileBoost, portrait, lookTier]);
   const [missFlash, setMissFlash] = useState<{ x: number; y: number } | null>(
     null,
   );
@@ -119,6 +126,7 @@ export function CrowdScene({
           height: `${heightPct}%`,
           zIndex: Math.round(item.z * 10),
           transform: `translate(-50%, -50%) scaleX(${item.facing})`,
+          filter: item.filter,
         } as const;
 
         const shadow = (
@@ -187,7 +195,7 @@ export function CrowdScene({
       )}
 
       <div className="pointer-events-none absolute left-2 top-2 z-[5001] max-w-[85%] rounded-lg bg-[var(--ink)]/80 px-2 py-1 text-[11px] font-semibold text-white backdrop-blur-sm sm:left-3 sm:top-3 sm:text-xs">
-        Ache o SEM disfarce. O resto é camuflagem.
+        {lookTip(lookTier)}
       </div>
     </div>
   );

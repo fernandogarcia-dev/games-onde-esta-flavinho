@@ -45,6 +45,7 @@ import {
   hasUnlockedHints,
   saveBestScore,
 } from "@/lib/monetization";
+import { resolveClueTier } from "@/lib/city-clues";
 import {
   buildInviteText,
   buildRankText,
@@ -648,6 +649,7 @@ export function GameApp() {
               crowdCount={crowdCount}
               flavinhoScale={level.scene.flavinhoScale}
               ground={level.scene.ground}
+              lookTier={resolveClueTier(difficulty, level.difficulty)}
               onFound={() => void onFound()}
               onMiss={onMiss}
               showHint={showHint}
