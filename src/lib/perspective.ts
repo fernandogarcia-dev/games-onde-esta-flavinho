@@ -1,30 +1,33 @@
 /**
  * Shared perspective contract for every city plate.
  *
- * All Waldo backgrounds must be drawn / cropped so the crowd stands
- * between yMin→yMax (percent of the board). Sprites use the same curve:
- *   y near horizon  → ~backRatio of front size
- *   y near bottom   → full front size
+ * Plates are authored so walkable feet sit between yMin→yMax.
+ * Sprite Y is the FEET position (anchor bottom-center), not the torso.
  *
- * Board aspect: prefer 16:10 desktop / 3:4 portrait crop of the same art.
+ * Size follows a vanish-point model:
+ *   scale ∝ (y - vanishY) / (yMax - vanishY)
+ * so mid-ground shrinks smoothly instead of jumping in tiers.
  */
 
 export const PERSPECTIVE = {
-  /** Back of the walkable crowd (near vanishing / horizon). */
-  yMin: 24,
-  /** Front of the walkable crowd (closest to camera). */
-  yMax: 90,
-  xMin: 3,
-  xMax: 97,
+  /** Horizon / vanishing line (above the furthest feet). */
+  vanishY: 16,
+  /** Furthest walkable feet (back of plaza crowd). */
+  yMin: 36,
+  /** Closest walkable feet (foreground). */
+  yMax: 93,
+  xMin: 4,
+  xMax: 96,
   /**
-   * Size at the back relative to the front.
-   * ~0.2 matches the drawn people shrinking toward the horizon.
+   * Soft clamp so the back never goes below this fraction of front size.
+   * Vanish math usually lands ~0.27–0.35 on our plates.
    */
-  backRatio: 0.2,
+  backFloor: 0.26,
+  /** Front reference = 1. */
   frontRatio: 1,
-  /** Tiny floor so sprites stay clickable / visible, without killing depth. */
-  minWidthPct: 1.15,
-  propMinWidthPct: 1.4,
+  /** Minimum rendered width (% of board) — keep tiny so depth survives. */
+  minWidthPct: 0.95,
+  propMinWidthPct: 1.1,
 } as const;
 
 export type PerspectiveGround = {
@@ -32,6 +35,8 @@ export type PerspectiveGround = {
   yMax: number;
   xMin?: number;
   xMax?: number;
+  /** Optional per-plate vanish override. */
+  vanishY?: number;
 };
 
 export const PERSPECTIVE_GROUND: PerspectiveGround = {
@@ -39,9 +44,10 @@ export const PERSPECTIVE_GROUND: PerspectiveGround = {
   yMax: PERSPECTIVE.yMax,
   xMin: PERSPECTIVE.xMin,
   xMax: PERSPECTIVE.xMax,
+  vanishY: PERSPECTIVE.vanishY,
 };
 
-/** 0 at horizon/back → 1 at foreground. */
+/** 0 at back feet → 1 at front feet. */
 export function depthT(
   y: number,
   yMin: number = PERSPECTIVE.yMin,
@@ -52,23 +58,25 @@ export function depthT(
 }
 
 /**
- * Smoothstep keeps mid-ground from jumping in size.
- * Back sprites stay clearly smaller than front ones.
+ * Vanish-point foreshortening in screen space.
+ * Linear in distance-from-horizon → smooth sizes, no tier jumps.
  */
 export function depthRatio(
   y: number,
   yMin: number = PERSPECTIVE.yMin,
   yMax: number = PERSPECTIVE.yMax,
+  vanishY: number = PERSPECTIVE.vanishY,
 ): number {
-  const t = depthT(y, yMin, yMax);
-  const eased = t * t * (3 - 2 * t);
-  return (
-    PERSPECTIVE.backRatio +
-    (PERSPECTIVE.frontRatio - PERSPECTIVE.backRatio) * eased
-  );
+  const frontDist = Math.max(1, yMax - vanishY);
+  const raw = (y - vanishY) / frontDist;
+  const atBack = (yMin - vanishY) / frontDist;
+  // Normalize so front = 1 and back ≈ backFloor (stable across plates).
+  const norm = (raw - atBack) / Math.max(0.0001, 1 - atBack);
+  const t = Math.max(0, Math.min(1, norm));
+  return PERSPECTIVE.backFloor + (PERSPECTIVE.frontRatio - PERSPECTIVE.backFloor) * t;
 }
 
-/** Absolute sprite scale factor for a given depth Y. */
+/** Absolute sprite scale for feet at Y. */
 export function scaleAtDepth(
   y: number,
   flavinhoScale: number,
@@ -76,5 +84,6 @@ export function scaleAtDepth(
 ): number {
   const yMin: number = ground?.yMin ?? PERSPECTIVE.yMin;
   const yMax: number = ground?.yMax ?? PERSPECTIVE.yMax;
-  return flavinhoScale * depthRatio(y, yMin, yMax);
+  const vanishY: number = ground?.vanishY ?? PERSPECTIVE.vanishY;
+  return flavinhoScale * depthRatio(y, yMin, yMax, vanishY);
 }

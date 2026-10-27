@@ -139,20 +139,22 @@ export function CrowdScene({
           item.kind,
           mobileBoost,
         );
+        // Y is FEET on the ground plane — anchor bottom-center into perspective.
         const style = {
           left: `${item.x}%`,
           top: `${item.y}%`,
           width: `${widthPct}%`,
           height: `${heightPct}%`,
           zIndex: Math.round(item.z * 10),
-          transform: `translate(-50%, -50%) scaleX(${item.facing})`,
+          transform: `translate(-50%, -100%) scaleX(${item.facing})`,
           filter: item.filter,
+          transformOrigin: "50% 100%",
         } as const;
 
         const shadow = (
           <span
             aria-hidden
-            className="pointer-events-none absolute left-1/2 top-[78%] h-[12%] w-[70%] -translate-x-1/2 rounded-[50%] bg-black/20 blur-[1.5px]"
+            className="pointer-events-none absolute bottom-[-2%] left-1/2 h-[8%] w-[55%] -translate-x-1/2 rounded-[50%] bg-black/25 blur-[1.5px]"
           />
         );
 

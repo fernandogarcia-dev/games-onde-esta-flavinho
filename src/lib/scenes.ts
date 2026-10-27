@@ -37,27 +37,27 @@ function scene(
  * easy ~0.28x · medium ~0.78x · hard ~1.75x
  */
 export const CITY_SCENES: Record<CityId, SceneConfig> = {
-  // Beach / orla plates
-  rio: scene("/game/scene-rio-waldo.jpg", 64, 0.11),
-  salvador: scene("/game/scene-rio-waldo.jpg", 62, 0.11),
-  recife: scene("/game/scene-rio-waldo.jpg", 64, 0.108),
-  cancun: scene("/game/scene-miami-waldo.jpg", 64, 0.11),
-  miami: scene("/game/scene-miami-waldo.jpg", 66, 0.108),
+  // Beach / orla plates — front scale ≈ background person height at feet yMax
+  rio: scene("/game/scene-rio-waldo.jpg", 64, 0.128),
+  salvador: scene("/game/scene-rio-waldo.jpg", 62, 0.128),
+  recife: scene("/game/scene-rio-waldo.jpg", 64, 0.126),
+  cancun: scene("/game/scene-miami-waldo.jpg", 64, 0.128),
+  miami: scene("/game/scene-miami-waldo.jpg", 66, 0.126),
 
   // European / plaza plates
-  paris: scene("/game/scene-paris-waldo.jpg", 72, 0.105),
-  lisboa: scene("/game/scene-paris-waldo.jpg", 68, 0.106),
-  barcelona: scene("/game/scene-paris-waldo.jpg", 70, 0.105),
-  roma: scene("/game/scene-plaza-waldo.jpg", 68, 0.106),
-  buenosaires: scene("/game/scene-plaza-waldo.jpg", 70, 0.105),
-  londres: scene("/game/scene-plaza-waldo.jpg", 72, 0.104),
+  paris: scene("/game/scene-paris-waldo.jpg", 72, 0.124),
+  lisboa: scene("/game/scene-paris-waldo.jpg", 68, 0.124),
+  barcelona: scene("/game/scene-paris-waldo.jpg", 70, 0.124),
+  roma: scene("/game/scene-plaza-waldo.jpg", 68, 0.124),
+  buenosaires: scene("/game/scene-plaza-waldo.jpg", 70, 0.122),
+  londres: scene("/game/scene-plaza-waldo.jpg", 72, 0.122),
 
   // Big-city / modern plates
-  saopaulo: scene("/game/scene-sp-waldo.jpg", 70, 0.104),
-  novayork: scene("/game/scene-sp-waldo.jpg", 76, 0.1),
-  curitiba: scene("/game/scene-sp-waldo.jpg", 66, 0.106),
-  belohorizonte: scene("/game/scene-plaza-waldo.jpg", 64, 0.107),
-  brasilia: scene("/game/scene-plaza-waldo.jpg", 66, 0.107),
-  dubai: scene("/game/scene-dubai-waldo.jpg", 74, 0.1),
-  toquio: scene("/game/scene-dubai-waldo.jpg", 76, 0.098),
+  saopaulo: scene("/game/scene-sp-waldo.jpg", 70, 0.12),
+  novayork: scene("/game/scene-sp-waldo.jpg", 76, 0.118),
+  curitiba: scene("/game/scene-sp-waldo.jpg", 66, 0.122),
+  belohorizonte: scene("/game/scene-plaza-waldo.jpg", 64, 0.124),
+  brasilia: scene("/game/scene-plaza-waldo.jpg", 66, 0.124),
+  dubai: scene("/game/scene-dubai-waldo.jpg", 74, 0.118),
+  toquio: scene("/game/scene-dubai-waldo.jpg", 76, 0.116),
 };

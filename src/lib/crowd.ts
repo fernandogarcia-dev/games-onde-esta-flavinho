@@ -152,14 +152,14 @@ export function densityFor(tier: LookTier): {
 }
 
 function twinJitter(tier: LookTier, isFlavinho: boolean, rand: () => number) {
-  // Tiny only — must never overpower perspective depth.
+  // Keep microscopic — depth Y owns the size, jitter must not invent tiers.
   if (tier === "hard") {
-    return isFlavinho ? 1 + rand() * 0.02 : 0.97 + rand() * 0.05;
+    return isFlavinho ? 1 : 0.985 + rand() * 0.03;
   }
   if (tier === "medium") {
-    return isFlavinho ? 1.01 + rand() * 0.04 : 0.94 + rand() * 0.1;
+    return isFlavinho ? 1.01 : 0.97 + rand() * 0.05;
   }
-  return isFlavinho ? 1.03 + rand() * 0.06 : 0.9 + rand() * 0.16;
+  return isFlavinho ? 1.02 : 0.94 + rand() * 0.1;
 }
 
 /**
@@ -178,18 +178,26 @@ export function spriteBox(
   return { widthPct, heightPct };
 }
 
+/**
+ * Clamp with FEET as the anchor (y = ground contact).
+ * Sprite extends upward by heightPct from the feet.
+ */
 export function clampInside(
   x: number,
   y: number,
   widthPct: number,
   heightPct: number,
+  ground?: GroundBand,
   pad = 0.35,
 ) {
   const halfW = widthPct / 2;
-  const halfH = heightPct / 2;
+  const yMin = ground?.yMin ?? PERSPECTIVE.yMin;
+  const yMax = ground?.yMax ?? PERSPECTIVE.yMax;
+  // Keep most of the body on-canvas; tiny head clip at the far back is OK.
+  const minFeet = Math.max(yMin, heightPct * 0.12 + pad);
   return {
     x: Math.min(100 - halfW - pad, Math.max(halfW + pad, x)),
-    y: Math.min(100 - halfH - pad, Math.max(halfH + pad, y)),
+    y: Math.min(yMax, Math.max(minFeet, y)),
   };
 }
 
@@ -214,8 +222,8 @@ export function lookTip(tier: LookTier): string {
 }
 
 /**
- * Place sprites on perspective rows, then lock scale to final Y
- * so foreshortening always matches the plate.
+ * Place sprites on perspective rows. Y = feet on the ground plane.
+ * Final scale is locked from that feet Y (vanish-point curve).
  */
 export function buildCrowd(
   seed: string,
@@ -227,7 +235,7 @@ export function buildCrowd(
   const mobileBoost = opts?.mobileBoost ?? 1;
   const lookTier = opts?.lookTier ?? "medium";
   const dens = densityFor(lookTier);
-  const rand = mulberry32(hashSeed(`${seed}:crowd-v7-persp:${lookTier}`));
+  const rand = mulberry32(hashSeed(`${seed}:crowd-v8-feet:${lookTier}`));
   const items: CrowdItem[] = [];
   const xMin = ground.xMin ?? PERSPECTIVE.xMin;
   const xMax = ground.xMax ?? PERSPECTIVE.xMax;
@@ -239,40 +247,37 @@ export function buildCrowd(
 
   for (let i = 0; i < crowdCount; i++) {
     const isFlavinho = i === flavinhoIndex;
+    // Spread across depth more evenly (avoid carpet only at the front).
     const row = isFlavinho
-      ? Math.min(rows - 1, Math.floor(rows * (0.35 + rand() * 0.5)))
-      : Math.floor(rand() * rows);
+      ? Math.min(rows - 1, Math.floor(rows * (0.3 + rand() * 0.55)))
+      : i % rows;
+    const jitterOnce = twinJitter(lookTier, isFlavinho, rand);
+    const kind: CrowdItem["kind"] = isFlavinho ? "flavinho" : "decoy";
 
     const rowY =
-      yMin + ((row + 0.45 + (rand() - 0.5) * 0.3) / rows) * (yMax - yMin);
-
-    // Provisional scale from row depth for collision sizing.
-    let scale =
-      scaleAtDepth(rowY, flavinhoScale, ground) *
-      twinJitter(lookTier, isFlavinho, rand);
-    const kind: CrowdItem["kind"] = isFlavinho ? "flavinho" : "decoy";
-    let box = spriteBox(scale, kind, mobileBoost);
+      yMin + ((row + 0.4 + rand() * 0.2) / rows) * (yMax - yMin);
 
     let x = 50;
     let y = rowY;
+    let scale = scaleAtDepth(rowY, flavinhoScale, ground) * jitterOnce;
+    let box = spriteBox(scale, kind, mobileBoost);
     let ok = false;
+
     for (let attempt = 0; attempt < 70; attempt++) {
       const slots = Math.max(8, Math.ceil(crowdCount / rows));
       const slot = (i + attempt * 3) % slots;
       const rawX =
         xMin +
-        ((slot + 0.2 + rand() * 0.6) / slots) * (xMax - xMin) +
-        (rand() - 0.5) * (lookTier === "hard" ? 9 : 5);
-      const rawY = rowY + (rand() - 0.5) * (lookTier === "hard" ? 6 : 4);
-      // Re-scale to candidate Y before clamping so back sprites stay small.
-      scale =
-        scaleAtDepth(rawY, flavinhoScale, ground) *
-        twinJitter(lookTier, isFlavinho, rand);
+        ((slot + 0.15 + rand() * 0.7) / slots) * (xMax - xMin) +
+        (rand() - 0.5) * (lookTier === "hard" ? 7 : 4);
+      const rawY = rowY + (rand() - 0.5) * (lookTier === "hard" ? 4.5 : 3);
+      scale = scaleAtDepth(rawY, flavinhoScale, ground) * jitterOnce;
       box = spriteBox(scale, kind, mobileBoost);
-      const c = clampInside(rawX, rawY, box.widthPct, box.heightPct);
+      const c = clampInside(rawX, rawY, box.widthPct, box.heightPct, ground);
       x = c.x;
       y = c.y;
-      const minDist = Math.max(box.widthPct * dens.overlap, 1.6);
+      // Collision uses feet distance; scale with local width.
+      const minDist = Math.max(box.widthPct * dens.overlap, 1.4);
       const relax = attempt > 40 ? 0.72 : 1;
       if (!tooClose(x, y, placed, minDist * relax)) {
         ok = true;
@@ -280,26 +285,23 @@ export function buildCrowd(
       }
     }
     if (!ok) {
-      const rawY = rowY + (rand() - 0.5) * 3;
-      scale =
-        scaleAtDepth(rawY, flavinhoScale, ground) *
-        twinJitter(lookTier, isFlavinho, rand);
+      scale = scaleAtDepth(rowY, flavinhoScale, ground) * jitterOnce;
       box = spriteBox(scale, kind, mobileBoost);
       const c = clampInside(
         xMin + rand() * (xMax - xMin),
-        rawY,
+        rowY,
         box.widthPct,
         box.heightPct,
+        ground,
       );
       x = c.x;
       y = c.y;
     }
 
-    // Final lock: size is a pure function of settled Y (+ tiny twin jitter).
-    const jitter = twinJitter(lookTier, isFlavinho, rand);
-    scale = scaleAtDepth(y, flavinhoScale, ground) * jitter;
+    // Hard lock: size is ONLY f(feetY) × one jitter sampled above.
+    scale = scaleAtDepth(y, flavinhoScale, ground) * jitterOnce;
     box = spriteBox(scale, kind, mobileBoost);
-    placed.push({ x, y, r: Math.max(box.widthPct, box.heightPct) * 0.32 });
+    placed.push({ x, y, r: Math.max(box.widthPct, box.heightPct) * 0.3 });
 
     const look = isFlavinho
       ? { src: FLAVINHO_SRC as string, filter: undefined as string | undefined }
@@ -332,12 +334,18 @@ export function buildCrowd(
   for (let i = 0; i < propCount; i++) {
     const row = Math.floor(rand() * rows);
     const rowY =
-      yMin + ((row + 0.5 + (rand() - 0.5) * 0.25) / rows) * (yMax - yMin);
-    const rawX = xMin + rand() * (xMax - xMin);
-    let scale = scaleAtDepth(rowY, flavinhoScale, ground) * (0.42 + rand() * 0.3);
+      yMin + ((row + 0.5 + (rand() - 0.5) * 0.2) / rows) * (yMax - yMin);
+    const propJitter = 0.4 + rand() * 0.28;
+    let scale = scaleAtDepth(rowY, flavinhoScale, ground) * propJitter;
     let box = spriteBox(scale, "prop", mobileBoost);
-    const c = clampInside(rawX, rowY, box.widthPct, box.heightPct);
-    scale = scaleAtDepth(c.y, flavinhoScale, ground) * (0.42 + rand() * 0.3);
+    const c = clampInside(
+      xMin + rand() * (xMax - xMin),
+      rowY,
+      box.widthPct,
+      box.heightPct,
+      ground,
+    );
+    scale = scaleAtDepth(c.y, flavinhoScale, ground) * propJitter;
     items.push({
       id: `${seed}-prop-${i}`,
       kind: "prop",
