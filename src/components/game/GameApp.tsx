@@ -5,9 +5,9 @@ import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { CrowdScene } from "@/components/game/CrowdScene";
 import { PixPanel } from "@/components/game/PixPanel";
+import { dealNewRun, episodeCatalogSize, rememberEpisode } from "@/lib/deck";
 import {
   CITIES,
-  LEVELS,
   getCity,
   type CityId,
   type Level,
@@ -24,6 +24,7 @@ type Phase = "landing" | "briefing" | "clues" | "find" | "win" | "fail-city";
 
 export function GameApp() {
   const [phase, setPhase] = useState<Phase>("landing");
+  const [run, setRun] = useState<Level[]>([]);
   const [levelIndex, setLevelIndex] = useState(0);
   const [clueIndex, setClueIndex] = useState(0);
   const [score, setScore] = useState(1000);
@@ -36,9 +37,10 @@ export function GameApp() {
   const [showPix, setShowPix] = useState(false);
   const [elapsed, setElapsed] = useState(0);
   const [running, setRunning] = useState(false);
+  const catalogSize = episodeCatalogSize();
 
-  const level: Level = LEVELS[levelIndex];
-  const city = getCity(level.correctCity);
+  const level: Level | null = run[levelIndex] ?? null;
+  const city = level ? getCity(level.correctCity) : null;
 
   useEffect(() => {
     if (!running) return;
@@ -47,11 +49,14 @@ export function GameApp() {
   }, [running]);
 
   const progressLabel = useMemo(
-    () => `${levelIndex + 1} / ${LEVELS.length}`,
-    [levelIndex],
+    () => (run.length ? `${levelIndex + 1} / ${run.length}` : "—"),
+    [levelIndex, run.length],
   );
 
   function startGame() {
+    const dealt = dealNewRun(6);
+    setRun(dealt);
+    rememberEpisode(dealt[0].id);
     setBest(getBestScore());
     setHintUnlocked(hasUnlockedHints());
     setPhase("briefing");
@@ -73,6 +78,7 @@ export function GameApp() {
   }
 
   function pickCity(id: CityId) {
+    if (!level || !city) return;
     if (id === level.correctCity) {
       setFeedback(`Mapa fechou em ${city.name}. Agora é olho vivo na multidão.`);
       setScore((s) => s + 250);
@@ -109,12 +115,14 @@ export function GameApp() {
   }
 
   function nextLevel() {
-    if (levelIndex >= LEVELS.length - 1) {
+    if (levelIndex >= run.length - 1) {
       setPhase("landing");
       setRunning(false);
       return;
     }
-    setLevelIndex((i) => i + 1);
+    const next = levelIndex + 1;
+    rememberEpisode(run[next].id);
+    setLevelIndex(next);
     setClueIndex(0);
     setMisses(0);
     setLives(3);
@@ -125,6 +133,7 @@ export function GameApp() {
   }
 
   function shareWin() {
+    if (!level) return;
     const text = `${level.shareLine}\nPontuação: ${score}\n${buildShareUrl()}`;
     const url = buildWhatsAppShare(text);
     window.open(url, "_blank", "noopener,noreferrer");
@@ -173,12 +182,13 @@ export function GameApp() {
         {phase === "landing" && (
           <Landing
             best={best}
+            catalogSize={catalogSize}
             onStart={startGame}
             onPix={() => setShowPix(true)}
           />
         )}
 
-        {phase === "briefing" && (
+        {phase === "briefing" && level && (
           <section className="animate-rise mx-auto max-w-2xl rounded-3xl border-[3px] border-[var(--ink)] bg-[var(--paper)] p-6 shadow-[8px_8px_0_var(--ink)] sm:p-8">
             <p className="text-sm font-bold uppercase tracking-[0.2em] text-[var(--brand)]">
               Pasta carimbada · confidencial
@@ -197,6 +207,9 @@ export function GameApp() {
               <span className="rounded-lg bg-[var(--sand)] px-3 py-1.5">
                 Tentativas: {lives}
               </span>
+              <span className="rounded-lg bg-[var(--sand)] px-3 py-1.5">
+                Dossiê {progressLabel} desta rodada
+              </span>
             </div>
             <div className="mt-6 flex flex-wrap gap-3">
               <Button size="lg" onClick={goToClues}>
@@ -209,7 +222,7 @@ export function GameApp() {
           </section>
         )}
 
-        {phase === "clues" && (
+        {phase === "clues" && level && (
           <section className="animate-rise grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
             <div className="rounded-3xl border-[3px] border-[var(--ink)] bg-[var(--paper)] p-5 shadow-[6px_6px_0_var(--ink)] sm:p-6">
               <p className="text-sm font-bold uppercase tracking-[0.18em] text-[var(--brand)]">
@@ -221,7 +234,7 @@ export function GameApp() {
               <ul className="mt-4 space-y-3">
                 {level.clues.slice(0, clueIndex + 1).map((clue, i) => (
                   <li
-                    key={clue}
+                    key={`${level.id}-${i}`}
                     className="rounded-2xl border border-[var(--ink)]/10 bg-[var(--sand)] px-4 py-3 text-[var(--ink)]"
                   >
                     <span className="mr-2 text-xs font-bold uppercase text-[var(--muted)]">
@@ -269,7 +282,7 @@ export function GameApp() {
           </section>
         )}
 
-        {phase === "find" && (
+        {phase === "find" && level && city && (
           <section className="animate-rise space-y-4">
             <div className="flex flex-wrap items-end justify-between gap-3">
               <div>
@@ -280,10 +293,27 @@ export function GameApp() {
                   Ele está aí. Ache.
                 </h2>
                 <p className="text-sm text-[var(--muted)]">
-                  Cliques errados: {misses} · Procure o blazer azul-marinho.
+                  Cliques errados: {misses} · Vista de cima. Sem truque de altura.
                 </p>
               </div>
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap items-center gap-3">
+                <div className="flex items-center gap-2 rounded-2xl border-2 border-[var(--ink)] bg-[var(--paper)] px-2 py-1.5 shadow-[3px_3px_0_var(--ink)]">
+                  <Image
+                    src="/game/chars/chr-flavinho.png"
+                    alt="Referência do Flavinho"
+                    width={44}
+                    height={70}
+                    className="h-14 w-auto object-contain"
+                    unoptimized
+                  />
+                  <div className="pr-1">
+                    <p className="text-[10px] font-bold uppercase tracking-wide text-[var(--muted)]">
+                      Procurado
+                    </p>
+                    <p className="text-sm font-black text-[var(--ink)]">Flavinho</p>
+                    <p className="text-[11px] text-[var(--muted)]">blazer azul-marinho</p>
+                  </div>
+                </div>
                 <Button variant="secondary" size="sm" onClick={unlockVisualHint}>
                   {showHint ? "Dica ativa" : "Pedir dica"}
                 </Button>
@@ -305,7 +335,7 @@ export function GameApp() {
             </div>
 
             <CrowdScene
-              seed={level.id}
+              seed={`${level.id}-${levelIndex}`}
               background={level.scene.background}
               crowdCount={level.scene.crowdCount}
               flavinhoScale={level.scene.flavinhoScale}
@@ -327,7 +357,7 @@ export function GameApp() {
           </section>
         )}
 
-        {phase === "win" && (
+        {phase === "win" && city && (
           <section className="animate-rise mx-auto max-w-xl rounded-3xl border-[3px] border-[var(--ink)] bg-[var(--paper)] p-6 text-center shadow-[8px_8px_0_var(--ink)] sm:p-8">
             <Image
               src="/game/flavinho-sprite.jpg"
@@ -345,8 +375,8 @@ export function GameApp() {
             </p>
             <div className="mt-6 flex flex-wrap justify-center gap-3">
               <Button size="lg" onClick={nextLevel}>
-                {levelIndex >= LEVELS.length - 1
-                  ? "Recomeçar a caçada"
+                {levelIndex >= run.length - 1
+                  ? "Nova rodada (outros dossiês)"
                   : "Próximo dossiê"}
               </Button>
               <Button variant="secondary" onClick={shareWin}>
@@ -399,10 +429,12 @@ export function GameApp() {
 
 function Landing({
   best,
+  catalogSize,
   onStart,
   onPix,
 }: {
   best: number;
+  catalogSize: number;
   onStart: () => void;
   onPix: () => void;
 }) {
@@ -410,7 +442,7 @@ function Landing({
     <section className="relative overflow-hidden rounded-[2rem] border-[3px] border-[var(--ink)] bg-[var(--paper)] shadow-[10px_10px_0_var(--ink)]">
       <div className="pointer-events-none absolute inset-0">
         <Image
-          src="/game/scene-rio-cartoon.jpg"
+          src="/game/scene-rio-flat.jpg"
           alt=""
           fill
           priority
@@ -442,8 +474,8 @@ function Landing({
           </div>
           <p className="mt-4 text-sm text-[var(--muted)]">
             {best > 0
-              ? `Seu recorde: ${best} pts`
-              : "6 dossiês. Sem tutorial. Sem misericórdia."}
+              ? `Seu recorde: ${best} pts · ${catalogSize} dossiês no arquivo`
+              : `${catalogSize} dossiês no arquivo. Cada rodada embaralha 6.`}
           </p>
         </div>
 

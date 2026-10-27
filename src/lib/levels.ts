@@ -1,10 +1,7 @@
-export type CityId =
-  | "brasilia"
-  | "rio"
-  | "saopaulo"
-  | "miami"
-  | "paris"
-  | "dubai";
+import { CITY_SCENES, type SceneConfig } from "@/lib/scenes";
+import type { CityId } from "@/lib/types";
+
+export type { CityId };
 
 export type City = {
   id: CityId;
@@ -13,21 +10,18 @@ export type City = {
   blurb: string;
 };
 
-export type Level = {
+export type EpisodeSeed = {
   id: string;
   title: string;
   correctCity: CityId;
   difficulty: "easy" | "medium" | "hard";
-  clues: string[];
-  wrongHints: Record<CityId, string>;
-  scene: {
-    background: string;
-    crowdCount: number;
-    flavinhoScale: number;
-    /** Percent band where feet can stand (keeps crowd on the ground). */
-    ground: { yMin: number; yMax: number; xMin?: number; xMax?: number };
-  };
+  clues: [string, string, string];
   shareLine: string;
+};
+
+export type Level = EpisodeSeed & {
+  wrongHints: Record<CityId, string>;
+  scene: SceneConfig;
 };
 
 export const CITIES: City[] = [
@@ -69,165 +63,662 @@ export const CITIES: City[] = [
   },
 ];
 
-export const LEVELS: Level[] = [
+const CITY_NAMES: Record<CityId, string> = {
+  brasilia: "Brasília",
+  rio: "Rio",
+  saopaulo: "São Paulo",
+  miami: "Miami",
+  paris: "Paris",
+  dubai: "Dubai",
+};
+
+const GENERIC_WRONG: Record<CityId, string[]> = {
+  brasilia: [
+    "Cheira a Planalto demais pra essa pista.",
+    "Brasília não fecha com esse recorte.",
+    "Cerrado planejado? Pista fria.",
+  ],
+  rio: [
+    "Orla carioca não combina com essa evidência.",
+    "Cristo no fundo? Não é o caso.",
+    "Água de coco e calçadão ficaram pra outra hora.",
+  ],
+  saopaulo: [
+    "Paulista e garoa não batem com isso.",
+    "SP é caos vertical. Essa pista aponta outro lado.",
+    "Guarda-chuva cinza? Não é aqui.",
+  ],
+  miami: [
+    "Boardwalk pastel? Pista fria.",
+    "Inglês com sotaque tropical não aparece aqui.",
+    "Miami não fecha o mapa.",
+  ],
+  paris: [
+    "Croissant e torre de ferro ficaram pra depois.",
+    "Paris não assina essa pista.",
+    "Café europeu? Não é o rastro.",
+  ],
+  dubai: [
+    "Neon de marina não é essa vibe.",
+    "Golfo chic? Pista fria.",
+    "Dubai não fecha com esse áudio.",
+  ],
+};
+
+function buildWrongHints(correct: CityId): Record<CityId, string> {
+  const out = {} as Record<CityId, string>;
+  for (const id of Object.keys(CITY_NAMES) as CityId[]) {
+    if (id === correct) {
+      out[id] = "";
+      continue;
+    }
+    const pool = GENERIC_WRONG[id];
+    out[id] = pool[(correct.length + id.length) % pool.length];
+  }
+  return out;
+}
+
+/** Dozens of dossiers. Same city can appear in many different stories. */
+export const EPISODE_SEEDS: EpisodeSeed[] = [
+  // Rio
   {
-    id: "ep1-rio",
-    title: "Episódio 1: Sumiço na orla",
+    id: "rio-coco-tv",
+    title: "Sumiço na orla",
     correctCity: "rio",
     difficulty: "easy",
     clues: [
-      "Última pista: alguém pediu água de coco e perguntou se o sinal da TV aberta pegava bem.",
-      "Uma testemunha viu um blazer azul-marinho passando perto de guarda-sóis listrados.",
-      "O informante jura: 'não é Planalto. É praia. E tem Cristo no fundo da selfie.'",
+      "Pediu água de coco e perguntou se a TV aberta pegava bem.",
+      "Blazer azul passou perto de guarda-sóis listrados.",
+      "Selfie borrada: Cristo no fundo, areia nos sapatos.",
     ],
-    wrongHints: {
-      brasilia: "Brasília é seca demais pra essa pista de coco.",
-      rio: "",
-      saopaulo: "Em SP chove, mas a pista fala em orla.",
-      miami: "Miami tem praia, mas a pista cheira a Cristo Redentor.",
-      paris: "Paris não combina com água de coco.",
-      dubai: "Dubai brilha à noite, mas a pista é de sol e areia carioca.",
-    },
-    scene: {
-      background: "/game/scene-rio-cartoon.jpg",
-      crowdCount: 48,
-      flavinhoScale: 0.085,
-      ground: { yMin: 62, yMax: 94, xMin: 2, xMax: 72 },
-    },
-    shareLine: "Achei o Flavinho no Rio no Onde Está Flavinho?!",
+    shareLine: "Achei o Flavinho no Rio!",
   },
   {
-    id: "ep2-brasilia",
-    title: "Episódio 2: Fantasma do Planalto",
+    id: "rio-bondinho",
+    title: "Sinal no bondinho",
+    correctCity: "rio",
+    difficulty: "medium",
+    clues: [
+      "Áudio: 'sobe que a vista vale mais que a CPI'.",
+      "Comprou bilhete e sumiu no meio de turistas de chapéu.",
+      "Informante: 'não é SP. Tem bondinho e brisa salgada'.",
+    ],
+    shareLine: "Flavinho no Rio, de novo.",
+  },
+  {
+    id: "rio-posto9",
+    title: "Posto Nove sem aviso",
+    correctCity: "rio",
+    difficulty: "easy",
+    clues: [
+      "Alguém viu um blazer no meio de sunga e cooler.",
+      "Pediu mate e perguntou se 'o clima esfriou'.",
+      "Hashtag local: orla lotada, zero Planalto.",
+    ],
+    shareLine: "Flavinho no Posto Nove?!",
+  },
+  {
+    id: "rio-lapa",
+    title: "Eco na Lapa",
+    correctCity: "rio",
+    difficulty: "medium",
+    clues: [
+      "Música ao vivo, arcos ao fundo, blazer no meio da roda.",
+      "Pediu chope e pediu pra ninguém filmar a cara.",
+      "Testemunha: 'carioca, mas tentando parecer turista'.",
+    ],
+    shareLine: "Achei o Flavinho na Lapa",
+  },
+  {
+    id: "rio-barco",
+    title: "Barca pra Niterói",
+    correctCity: "rio",
+    difficulty: "hard",
+    clues: [
+      "Comprou passagem de última hora com cara de 'só indo'.",
+      "Vento na baía, skyline de costas, blazer amarrotado.",
+      "Mensagem: 'me acha do outro lado da água'.",
+    ],
+    shareLine: "Flavinho cruzando a baía",
+  },
+  {
+    id: "rio-maracana",
+    title: "Fora de jogo",
+    correctCity: "rio",
+    difficulty: "medium",
+    clues: [
+      "Grito de torcida e um blazer no meio da galera.",
+      "Pediu hot dog e perguntou o placar errado de propósito.",
+      "Não era estádio de Brasília. Era Maraca lotado.",
+    ],
+    shareLine: "Flavinho no Maracanã",
+  },
+  {
+    id: "rio-sugarloaf",
+    title: "Fila do Pão de Açúcar",
+    correctCity: "rio",
+    difficulty: "hard",
+    clues: [
+      "Fila interminável, selfie stick, blazer suando.",
+      "Comentário: 'a vista tapa qualquer manchete'.",
+      "Cartão postal com oceano dos dois lados.",
+    ],
+    shareLine: "Flavinho no Pão de Açúcar",
+  },
+  {
+    id: "rio-feira",
+    title: "Feira de artesanato",
+    correctCity: "rio",
+    difficulty: "easy",
+    clues: [
+      "Barganhou um chinelo e um chapéu de palha.",
+      "Vendedor jurou: 'esse de blazer não é daqui, mas tá se esforçando'.",
+      "Cheiro de sol, areia e água de coco no ar.",
+    ],
+    shareLine: "Flavinho na feirinha do Rio",
+  },
+
+  // Brasília
+  {
+    id: "bsb-planalto",
+    title: "Fantasma do Planalto",
     correctCity: "brasilia",
     difficulty: "medium",
     clues: [
-      "Alguém pediu café com leite e perguntou o horário da próxima 'agenda reservada'.",
-      "Pista sonora: sapato no piso de mármore e eco de corredor longo.",
-      "Um estagiário murmurou: 'vi um blazer azul perto de um prédio que parece nave espacial'.",
+      "Café com leite e pergunta sobre 'agenda reservada'.",
+      "Sapato no mármore, eco de corredor longo.",
+      "Blazer azul perto de prédio que parece nave espacial.",
     ],
-    wrongHints: {
-      brasilia: "",
-      rio: "Rio é praia. Aqui a pista é mármore e corredor.",
-      saopaulo: "SP é caos vertical, não modernismo espacial.",
-      miami: "Miami não tem Planalto.",
-      paris: "Paris tem museu, não nave-palácio.",
-      dubai: "Dubai é marina, não Cerrado planejado.",
-    },
-    scene: {
-      background: "/game/scene-brasilia-cartoon.jpg",
-      crowdCount: 52,
-      flavinhoScale: 0.08,
-      ground: { yMin: 55, yMax: 94, xMin: 4, xMax: 96 },
-    },
-    shareLine: "Flavinho tava em Brasília o tempo todo 😭",
+    shareLine: "Flavinho em Brasília",
   },
   {
-    id: "ep3-sp",
-    title: "Episódio 3: Camuflagem na garoa",
+    id: "bsb-eixo",
+    title: "Eixo Monumental",
+    correctCity: "brasilia",
+    difficulty: "easy",
+    clues: [
+      "Caminhou num gramado largo demais pra ser carioca.",
+      "Pediu Uber e o motorista falou 'setor hoteleiro'.",
+      "Céu seco, modernismo e zero orla.",
+    ],
+    shareLine: "Flavinho no Eixo",
+  },
+  {
+    id: "bsb-congresso",
+    title: "Sombra das cúpulas",
+    correctCity: "brasilia",
+    difficulty: "hard",
+    clues: [
+      "Foto vazada: duas cúpulas brancas ao fundo.",
+      "Segurança perguntou credencial. Ele sorriu e sumiu.",
+      "Áudio: 'aqui todo mundo finge que não me viu'.",
+    ],
+    shareLine: "Flavinho no Congresso",
+  },
+  {
+    id: "bsb-lago",
+    title: "Volta no Paranoá",
+    correctCity: "brasilia",
+    difficulty: "medium",
+    clues: [
+      "Alugou bike e pediu rota 'sem jornalista'.",
+      "Pôr do sol no lago, blazer no guidão.",
+      "Não é marina de Dubai. É cerrado com água.",
+    ],
+    shareLine: "Flavinho no Paranoá",
+  },
+  {
+    id: "bsb-asa",
+    title: "Asa Sul depois das 22",
+    correctCity: "brasilia",
+    difficulty: "medium",
+    clues: [
+      "Bar de superquadra, conversa baixa, blazer no canto.",
+      "Pediu porção e pediu nota fiscal no nome de outra pessoa.",
+      "Cidade planejada demais pra ser improvisada no Rio.",
+    ],
+    shareLine: "Flavinho na Asa Sul",
+  },
+  {
+    id: "bsb-aeroporto",
+    title: "Conexão em BSB",
+    correctCity: "brasilia",
+    difficulty: "easy",
+    clues: [
+      "Embarque doméstico, óculos escuros, pressa fingida.",
+      "Comprou chiclete e perguntou o portão errado de propósito.",
+      "Painel: voos pra todo canto. Ele não pegou nenhum... ainda.",
+    ],
+    shareLine: "Flavinho no aeroporto de BSB",
+  },
+  {
+    id: "bsb-tv-torre",
+    title: "Torre de TV",
+    correctCity: "brasilia",
+    difficulty: "hard",
+    clues: [
+      "Mirante seco, vento no Cerrado, blazer batendo.",
+      "Turista perguntou: 'isso aqui é o Congresso?' Ele só riu.",
+      "Vista 360 de cidade que parece desenho técnico.",
+    ],
+    shareLine: "Flavinho na Torre de TV",
+  },
+  {
+    id: "bsb-feira",
+    title: "Feira da Torre",
+    correctCity: "brasilia",
+    difficulty: "easy",
+    clues: [
+      "Comprou pastel e sumiu entre barracas.",
+      "Alguém gritou 'doutor!' e ele acelerou o passo.",
+      "Brasília de domingo: feira, sol e disfarce fraco.",
+    ],
+    shareLine: "Flavinho na feira de Brasília",
+  },
+
+  // São Paulo
+  {
+    id: "sp-garoa",
+    title: "Camuflagem na garoa",
     correctCity: "saopaulo",
     difficulty: "medium",
     clues: [
-      "Testemunha: 'ele sumiu atrás de um mar de guarda-chuvas cinza'.",
-      "Áudio vazado: alguém reclamando de trânsito na Paulista.",
-      "Pista visual: reflexo de predinhos no asfalto molhado.",
+      "Sumiu atrás de um mar de guarda-chuvas cinza.",
+      "Reclamou do trânsito na Paulista num áudio vazado.",
+      "Reflexo de prédios no asfalto molhado.",
     ],
-    wrongHints: {
-      brasilia: "Brasília quase não tem essa garoa dramática.",
-      rio: "Rio molhado existe, mas a pista cita Paulista.",
-      saopaulo: "",
-      miami: "Miami raramente pede tanta capa de chuva.",
-      paris: "Paris chove, mas não é Paulista.",
-      dubai: "Dubai quase não conhece garoa.",
-    },
-    scene: {
-      background: "/game/scene-sp-cartoon.jpg",
-      crowdCount: 56,
-      flavinhoScale: 0.078,
-      ground: { yMin: 58, yMax: 95, xMin: 4, xMax: 96 },
-    },
-    shareLine: "Achei o Flavinho na Paulista (de guarda-chuva)!",
+    shareLine: "Flavinho na Paulista",
   },
   {
-    id: "ep4-miami",
-    title: "Episódio 4: Escala tropical",
+    id: "sp-metro",
+    title: "Linha vermelha",
+    correctCity: "saopaulo",
+    difficulty: "hard",
+    clues: [
+      "Embarcou no metrô com cara de quem nunca pega metrô.",
+      "Segurou o teto e evitou contato visual com todo mundo.",
+      "Estação lotada, anúncio incompreensível, blazer apertado.",
+    ],
+    shareLine: "Flavinho no metrô de SP",
+  },
+  {
+    id: "sp- Liberdade",
+    title: "Neon na Liberdade",
+    correctCity: "saopaulo",
+    difficulty: "medium",
+    clues: [
+      "Comprou pastel chinês e pediu pra embrulhar 'discreto'.",
+      "Lanternas vermelhas, multidões, blazer no meio.",
+      "Não era Paris. Era Liberdade num sábado.",
+    ],
+    shareLine: "Flavinho na Liberdade",
+  },
+  {
+    id: "sp-masp",
+    title: "Vão livre",
+    correctCity: "saopaulo",
+    difficulty: "easy",
+    clues: [
+      "Passou embaixo do MASP fingindo olhar arte.",
+      "Alguém reconheceu o blazer. Ele cruzou a faixa correndo.",
+      "Paulista, museu vermelho, trânsito eterno.",
+    ],
+    shareLine: "Flavinho no MASP",
+  },
+  {
+    id: "sp-mercado",
+    title: "Mercado Municipal",
+    correctCity: "saopaulo",
+    difficulty: "medium",
+    clues: [
+      "Pediu mortadela no pão e olhou demais pro celular.",
+      "Cheiro de tempero, teto alto, blazer no balcão.",
+      "SP clássica. Nada de orla, nada de Planalto.",
+    ],
+    shareLine: "Flavinho no Mercadão",
+  },
+  {
+    id: "sp-ibirapuera",
+    title: "Volta no Ibirapuera",
+    correctCity: "saopaulo",
+    difficulty: "easy",
+    clues: [
+      "Trotou no parque com fone e cara de 'não sou eu'.",
+      "Parou pra foto com o lago... e cancelou a foto.",
+      "Cidade cinza ao redor, verde no meio.",
+    ],
+    shareLine: "Flavinho no Ibirapuera",
+  },
+  {
+    id: "sp-rooftop",
+    title: "Rooftop sem convite",
+    correctCity: "saopaulo",
+    difficulty: "hard",
+    clues: [
+      "Lista VIP, nome falso, blazer na fila.",
+      "Skyline de concreto e néon laranja.",
+      "Alguém sussurrou: 'esse aí sumiu dos trending topics'.",
+    ],
+    shareLine: "Flavinho no rooftop de SP",
+  },
+  {
+    id: "sp-feira-livros",
+    title: "Banca de revista",
+    correctCity: "saopaulo",
+    difficulty: "medium",
+    clues: [
+      "Folheou capa de revista e colocou de volta depressa demais.",
+      "Chuva fina, calçada estreita, blazer pingando.",
+      "Cidade que não dorme e não perdoa selfie.",
+    ],
+    shareLine: "Flavinho numa banca em SP",
+  },
+
+  // Miami
+  {
+    id: "mia-boardwalk",
+    title: "Escala tropical",
     correctCity: "miami",
     difficulty: "hard",
     clues: [
-      "Cartão-postal: motel pastel, inglês com sotaque e suco verde caro.",
-      "Alguém postou story com palmeira e legenda 'só um dia'.",
-      "Informante internacional: 'não é Europa. É Boardwalk com ar de novela'.",
+      "Motel pastel, inglês com sotaque e suco verde caro.",
+      "Story com palmeira e legenda 'só um dia'.",
+      "Boardwalk com ar de novela, não Europa.",
     ],
-    wrongHints: {
-      brasilia: "Brasília não tem boardwalk pastel.",
-      rio: "Rio é brasileiro demais pra essa pista em inglês.",
-      saopaulo: "SP não é motel pastel à beira-mar.",
-      miami: "",
-      paris: "Paris não é tropical boardwalk.",
-      dubai: "Dubai é deserto chic, não motel pastel.",
-    },
-    scene: {
-      background: "/game/scene-miami-cartoon.jpg",
-      crowdCount: 58,
-      flavinhoScale: 0.075,
-      ground: { yMin: 60, yMax: 94, xMin: 3, xMax: 78 },
-    },
-    shareLine: "Flavinho em Miami no jogo Onde Está Flavinho",
+    shareLine: "Flavinho em Miami",
   },
   {
-    id: "ep5-paris",
-    title: "Episódio 5: Café e disfarce",
+    id: "mia-ocean",
+    title: "Ocean Drive",
+    correctCity: "miami",
+    difficulty: "medium",
+    clues: [
+      "Carros antigos pastel, blazer no meio de shorts.",
+      "Pediu iced coffee e pagou em dólar.",
+      "Art déco demais pra ser Copacabana.",
+    ],
+    shareLine: "Flavinho na Ocean Drive",
+  },
+  {
+    id: "mia-mall",
+    title: "Shopping com ar gelado",
+    correctCity: "miami",
+    difficulty: "easy",
+    clues: [
+      "Entrou no ar-condicionado como quem entra em bunker.",
+      "Comprou óculos e perguntou se aceitava PIX. Não aceitava.",
+      "Inglês no caixa, sotaque no troco.",
+    ],
+    shareLine: "Flavinho no shopping de Miami",
+  },
+  {
+    id: "mia-marina",
+    title: "Marina florida",
+    correctCity: "miami",
+    difficulty: "hard",
+    clues: [
+      "Olhou iates como quem compara agenda.",
+      "Alguém falou 'south beach' e ele fingiu não ouvir.",
+      "Sol forte, pastel nos prédios, zero Cristo Redentor.",
+    ],
+    shareLine: "Flavinho na marina de Miami",
+  },
+  {
+    id: "mia-brunch",
+    title: "Brunch sem Instagram",
+    correctCity: "miami",
+    difficulty: "medium",
+    clues: [
+      "Abacate no prato, blazer na cadeira, mesa na calçada.",
+      "Garçom: 'where you from?' Resposta evasiva.",
+      "Florida no cardápio. Brasil na cara.",
+    ],
+    shareLine: "Flavinho no brunch",
+  },
+  {
+    id: "mia-night",
+    title: "Neon depois das 23",
+    correctCity: "miami",
+    difficulty: "hard",
+    clues: [
+      "Fila de clube, lista fake, blazer ainda no corpo.",
+      "DJ alto demais pra ouvir manchete.",
+      "Não era Dubai. Era Miami tentando ser Dubai.",
+    ],
+    shareLine: "Flavinho na noite de Miami",
+  },
+  {
+    id: "mia-uber",
+    title: "Uber com sotaque",
+    correctCity: "miami",
+    difficulty: "easy",
+    clues: [
+      "Motorista brasileiro reconheceu o blazer e mudou de assunto.",
+      "GPS falando inglês, rádio em espanhol.",
+      "Destino: 'anywhere quiet'.",
+    ],
+    shareLine: "Flavinho de Uber em Miami",
+  },
+  {
+    id: "mia-beach",
+    title: "Toalha alugada",
+    correctCity: "miami",
+    difficulty: "medium",
+    clues: [
+      "Alugou cadeira, não tirou o blazer, surreal.",
+      "Pediu água de coco... em inglês.",
+      "Areia clara, prédios pastel, zero Pão de Açúcar.",
+    ],
+    shareLine: "Flavinho na praia de Miami",
+  },
+
+  // Paris
+  {
+    id: "par-cafe",
+    title: "Café e disfarce",
     correctCity: "paris",
     difficulty: "hard",
     clues: [
-      "Pedido: café e croissant. Recusou a conta em real.",
-      "Selfie borrada com uma torre metálica bem longe.",
-      "Frase ouvida: 'aqui ninguém me reconhece... eu acho'.",
+      "Café e croissant. Recusou pagar em real.",
+      "Selfie borrada com torre metálica longe.",
+      "'Aqui ninguém me reconhece... eu acho.'",
     ],
-    wrongHints: {
-      brasilia: "Brasília não serve esse croissant com torre.",
-      rio: "Rio tem Cristo, não torre de ferro.",
-      saopaulo: "SP tem café, mas a torre denuncia Europa.",
-      miami: "Miami não esconde uma torre assim.",
-      paris: "",
-      dubai: "Dubai tem torre, mas a pista cheira a café parisiense.",
-    },
-    scene: {
-      background: "/game/scene-paris-cartoon.jpg",
-      crowdCount: 60,
-      flavinhoScale: 0.072,
-      ground: { yMin: 58, yMax: 95, xMin: 4, xMax: 96 },
-    },
-    shareLine: "Flavinho em Paris?! Onde Está Flavinho é viciante",
+    shareLine: "Flavinho em Paris",
   },
   {
-    id: "ep6-dubai",
-    title: "Episódio 6: Neon no deserto",
+    id: "par-metro",
+    title: "Métro linha quem?",
+    correctCity: "paris",
+    difficulty: "medium",
+    clues: [
+      "Olhou o mapa do metrô de cabeça torta.",
+      "Bilhete amassado, blazer no horário de pico.",
+      "Francês no alto-falante, pânico educado no rosto.",
+    ],
+    shareLine: "Flavinho no metrô de Paris",
+  },
+  {
+    id: "par-seine",
+    title: "Beira do Sena",
+    correctCity: "paris",
+    difficulty: "easy",
+    clues: [
+      "Andou na margem fingindo ser poeta.",
+      "Livros usados, pontes de pedra, blazer ao vento.",
+      "Não era Paranoá. Era Sena com pose.",
+    ],
+    shareLine: "Flavinho no Sena",
+  },
+  {
+    id: "par-louvre",
+    title: "Fila do Louvre",
+    correctCity: "paris",
+    difficulty: "hard",
+    clues: [
+      "Entrou na fila e saiu três vezes.",
+      "Comprou ímã de geladeira e se arrependeu.",
+      "Pirâmide de vidro ao fundo. Blazer no meio.",
+    ],
+    shareLine: "Flavinho no Louvre",
+  },
+  {
+    id: "par-night",
+    title: "Luzes da torre",
+    correctCity: "paris",
+    difficulty: "medium",
+    clues: [
+      "Torre piscando de hora em hora, multidão aplaudindo.",
+      "Ele só olhava o celular e a saída.",
+      "Europa óbvia demais. Disfarce fraco demais.",
+    ],
+    shareLine: "Flavinho sob a Torre Eiffel",
+  },
+  {
+    id: "par-bakery",
+    title: "Padaria das 7h",
+    correctCity: "paris",
+    difficulty: "easy",
+    clues: [
+      "Primeiro da fila do pão. Último a sorrir.",
+      "Pediu 'um desse' apontando pro croissant.",
+      "Amanhecer cinza, calçada molhada, blazer limpo.",
+    ],
+    shareLine: "Flavinho na padaria parisiense",
+  },
+  {
+    id: "par-museum",
+    title: "Museu sem selfie",
+    correctCity: "paris",
+    difficulty: "hard",
+    clues: [
+      "Proibiram flash. Ele agradeceu baixo.",
+      "Passou rápido demais pelas salas famosas.",
+      "Saiu perguntando onde pegar Uber... em Paris.",
+    ],
+    shareLine: "Flavinho no museu",
+  },
+  {
+    id: "par-bridge",
+    title: "Cadeados da ponte",
+    correctCity: "paris",
+    difficulty: "medium",
+    clues: [
+      "Olhou os cadeados e murmurou 'isso não ia rolar no Senado'.",
+      "Turistas beijando, ele só atravessando.",
+      "Rio urbano, pedra velha, zero calçadão carioca.",
+    ],
+    shareLine: "Flavinho na ponte de Paris",
+  },
+
+  // Dubai
+  {
+    id: "dxb-neon",
+    title: "Neon no deserto",
     correctCity: "dubai",
     difficulty: "hard",
     clues: [
-      "Horário: noite. Temperatura: ar-condicionado lendário.",
-      "Pista: marina espelhada e skyline que parece videogame.",
-      "Último áudio: 'me encontra depois do pôr do sol, perto da água'.",
+      "Noite, ar-condicionado lendário.",
+      "Marina espelhada, skyline de videogame.",
+      "'Me encontra depois do pôr do sol, perto da água.'",
     ],
-    wrongHints: {
-      brasilia: "Brasília de noite não é marina de videogame.",
-      rio: "Rio tem orla, mas a pista é skyline neon.",
-      saopaulo: "SP brilha, mas não é marina do Golfo.",
-      miami: "Miami é mais pastel do que neon de deserto.",
-      paris: "Paris não tem essa marina de videogame.",
-      dubai: "",
-    },
-    scene: {
-      background: "/game/scene-dubai-cartoon.jpg",
-      crowdCount: 62,
-      flavinhoScale: 0.07,
-      ground: { yMin: 58, yMax: 95, xMin: 4, xMax: 96 },
-    },
-    shareLine: "Final: Flavinho em Dubai. Joga Onde Está Flavinho!",
+    shareLine: "Flavinho em Dubai",
+  },
+  {
+    id: "dxb-mall",
+    title: "Mall infinito",
+    correctCity: "dubai",
+    difficulty: "medium",
+    clues: [
+      "Andou no shopping como quem foge da temperatura lá fora.",
+      "Fonte dançante, vitrine de relógio, blazer intacto.",
+      "Árabe no anúncio, inglês no caixa, sumiço no meio.",
+    ],
+    shareLine: "Flavinho no mall de Dubai",
+  },
+  {
+    id: "dxb-yacht",
+    title: "Convite pro iate",
+    correctCity: "dubai",
+    difficulty: "hard",
+    clues: [
+      "Recusou o iate duas vezes. Aceitou a foto zero vezes.",
+      "Água verde-azulada, prédio torto ao fundo.",
+      "Não era Miami pastel. Era Golfo neon.",
+    ],
+    shareLine: "Flavinho no iate? Quase.",
+  },
+  {
+    id: "dxb-souk",
+    title: "Souk de ouro",
+    correctCity: "dubai",
+    difficulty: "medium",
+    clues: [
+      "Passou rápido demais pelas joias.",
+      "Vendedor ofereceu chá. Ele pediu a saída.",
+      "Mercado antigo, ar-condicionado moderno, blazer no labirinto.",
+    ],
+    shareLine: "Flavinho no souk",
+  },
+  {
+    id: "dxb-desert",
+    title: "Safari de fim de tarde",
+    correctCity: "dubai",
+    difficulty: "easy",
+    clues: [
+      "Areia no sapato social. Combinação estranha.",
+      "Pôr do sol no deserto, selfie negada.",
+      "Guia falou 'smile!' Ele fingiu tosse.",
+    ],
+    shareLine: "Flavinho no deserto",
+  },
+  {
+    id: "dxb-fountain",
+    title: "Show das fontes",
+    correctCity: "dubai",
+    difficulty: "medium",
+    clues: [
+      "Multidão filmando água dançando.",
+      "Ele filmou a saída de emergência.",
+      "Lago artificial, arranha-céus, zero garoa paulista.",
+    ],
+    shareLine: "Flavinho nas fontes de Dubai",
+  },
+  {
+    id: "dxb-airport",
+    title: "Escala DXB",
+    correctCity: "dubai",
+    difficulty: "easy",
+    clues: [
+      "Duty free absurdo, blazer no tapete rolante.",
+      "Olhou voos pra 'qualquer lugar mais quieto'.",
+      "Aeroporto que parece cidade. Ele parecia escala.",
+    ],
+    shareLine: "Flavinho em escala em Dubai",
+  },
+  {
+    id: "dxb-frame",
+    title: "Janela no céu",
+    correctCity: "dubai",
+    difficulty: "hard",
+    clues: [
+      "Mirante com moldura gigante sobre a cidade.",
+      "Vento seco, vista cara, blazer teimoso.",
+      "Cartão postal do Golfo. Rastro quente.",
+    ],
+    shareLine: "Flavinho no mirante de Dubai",
   },
 ];
 
+export const LEVELS: Level[] = EPISODE_SEEDS.map((seed) => ({
+  ...seed,
+  wrongHints: buildWrongHints(seed.correctCity),
+  scene: CITY_SCENES[seed.correctCity],
+}));
+
 export function getCity(id: CityId): City {
   return CITIES.find((c) => c.id === id)!;
+}
+
+export function getLevelById(id: string): Level | undefined {
+  return LEVELS.find((l) => l.id === id);
 }

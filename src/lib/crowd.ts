@@ -62,28 +62,36 @@ function hashSeed(seed: string) {
   return h >>> 0;
 }
 
+/** Flat board placement: nearly uniform scale so nobody "flies". */
 export function buildCrowd(
   seed: string,
   crowdCount: number,
   flavinhoScale: number,
   ground: GroundBand,
 ): CrowdItem[] {
-  const rand = mulberry32(hashSeed(seed));
+  const rand = mulberry32(hashSeed(seed + ":flat"));
   const items: CrowdItem[] = [];
-  const xMin = ground.xMin ?? 4;
-  const xMax = ground.xMax ?? 96;
-  const ySpan = Math.max(8, ground.yMax - ground.yMin);
+  const xMin = ground.xMin ?? 6;
+  const xMax = ground.xMax ?? 94;
+  const yMin = ground.yMin ?? 10;
+  const yMax = ground.yMax ?? 90;
   const flavinhoIndex = Math.floor(rand() * crowdCount);
 
+  // Soft grid jitter so the crowd fills the flat board without stacking.
+  const cols = Math.ceil(Math.sqrt(crowdCount * 1.35));
+  const rows = Math.ceil(crowdCount / cols);
+
   for (let i = 0; i < crowdCount; i++) {
-    const depth = rand(); // 0 = farther, 1 = closer
-    const x = xMin + rand() * (xMax - xMin);
-    const y = ground.yMin + depth * ySpan;
+    const col = i % cols;
+    const row = Math.floor(i / cols);
+    const cellW = (xMax - xMin) / cols;
+    const cellH = (yMax - yMin) / Math.max(rows, 1);
+    const x = xMin + col * cellW + cellW * (0.2 + rand() * 0.6);
+    const y = yMin + row * cellH + cellH * (0.2 + rand() * 0.6);
     const isFlavinho = i === flavinhoIndex;
-    const base = 0.045 + depth * 0.055;
     const scale = isFlavinho
-      ? Math.min(flavinhoScale, base + 0.008)
-      : base + rand() * 0.01;
+      ? flavinhoScale
+      : flavinhoScale * (0.88 + rand() * 0.18);
 
     items.push({
       id: `${seed}-p-${i}`,
@@ -94,24 +102,22 @@ export function buildCrowd(
       x,
       y,
       scale,
-      facing: rand() > 0.45 ? 1 : -1,
-      z: y,
+      facing: rand() > 0.5 ? 1 : -1,
+      z: y + rand() * 0.01,
     });
   }
 
-  const propCount = Math.max(5, Math.floor(crowdCount / 7));
+  const propCount = Math.max(6, Math.floor(crowdCount / 8));
   for (let i = 0; i < propCount; i++) {
-    const depth = rand();
-    const y = ground.yMin + depth * ySpan;
     items.push({
       id: `${seed}-prop-${i}`,
       kind: "prop",
       src: PROP_SRCS[Math.floor(rand() * PROP_SRCS.length)],
       x: xMin + rand() * (xMax - xMin),
-      y,
-      scale: 0.04 + depth * 0.05,
+      y: yMin + rand() * (yMax - yMin),
+      scale: flavinhoScale * (0.7 + rand() * 0.35),
       facing: 1,
-      z: y - 0.01,
+      z: 0,
     });
   }
 

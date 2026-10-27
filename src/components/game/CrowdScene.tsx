@@ -89,13 +89,14 @@ export function CrowdScene({
           width: `${widthPct}%`,
           height: `${heightPct}%`,
           zIndex: Math.round(item.z * 10),
-          transform: `translate(-50%, -100%) scaleX(${item.facing})`,
+          // Flat board: center tokens on the tile so nothing "floats" in perspective.
+          transform: `translate(-50%, -50%) scaleX(${item.facing})`,
         } as const;
 
         const shadow = (
           <span
             aria-hidden
-            className="pointer-events-none absolute left-1/2 top-[96%] h-[8%] w-[55%] -translate-x-1/2 rounded-[50%] bg-black/25 blur-[1px]"
+            className="pointer-events-none absolute left-1/2 top-[78%] h-[12%] w-[70%] -translate-x-1/2 rounded-[50%] bg-black/20 blur-[1.5px]"
           />
         );
 
