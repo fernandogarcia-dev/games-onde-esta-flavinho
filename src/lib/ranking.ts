@@ -56,22 +56,36 @@ export function upsertLocalBoard(name: string, score: number): RankEntry[] {
   return board;
 }
 
-export async function fetchLeaderboard(): Promise<{
+export async function fetchLeaderboard(playerName?: string): Promise<{
   entries: RankEntry[];
   global: boolean;
+  myRank?: number;
+  myScore?: number;
   error?: string;
 }> {
   try {
-    const res = await fetch("/api/rank", { cache: "no-store" });
+    const who = sanitizeName(playerName || getPlayerName());
+    const qs = who ? `?name=${encodeURIComponent(who)}` : "";
+    const res = await fetch(`/api/rank${qs}`, { cache: "no-store" });
     const data = (await res.json()) as {
       entries?: RankEntry[];
       global?: boolean;
+      myRank?: number;
+      myEntry?: RankEntry;
       error?: string;
     };
     const remote = Array.isArray(data.entries) ? data.entries : [];
     return {
       entries: remote,
       global: Boolean(data.global),
+      myRank:
+        typeof data.myRank === "number" && data.myRank > 0
+          ? data.myRank
+          : undefined,
+      myScore:
+        typeof data.myEntry?.score === "number"
+          ? data.myEntry.score
+          : undefined,
       error: data.error,
     };
   } catch {

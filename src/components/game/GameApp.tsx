@@ -33,9 +33,9 @@ import {
   CITY_HIT_BONUS,
   CITY_MISS_PENALTY,
   CLICK_MISS_PENALTY,
-  FIND_SCORE_MAX,
   findLimitSeconds,
   findScoreAt,
+  findScoreMax,
   formatClock,
   labelFindTime,
   PERFECT_FIND_BONUS,
@@ -98,7 +98,8 @@ export function GameApp() {
   const level: Level | null = run[levelIndex] ?? null;
   const city = level ? getCity(level.correctCity) : null;
   const findLimit = findLimitSeconds(difficulty);
-  const liveFindPoints = findScoreAt(findRemaining, findLimit);
+  const findMax = findScoreMax(difficulty);
+  const liveFindPoints = findScoreAt(findRemaining, findLimit, findMax);
 
   const cityOptions = useMemo(() => {
     if (!level) return [];
@@ -164,10 +165,15 @@ export function GameApp() {
   );
 
   async function refreshBoard() {
-    const { entries, global, error } = await fetchLeaderboard();
+    const { entries, global, error, myRank: remoteRank, myScore } =
+      await fetchLeaderboard(getPlayerName());
     setBoard(entries);
     setBoardGlobal(global);
     setBoardError(error || null);
+    if (remoteRank && remoteRank > 0) setMyRank(remoteRank);
+    if (typeof myScore === "number" && myScore > 0) {
+      setBest((b) => Math.max(b, myScore));
+    }
   }
 
   function startFindTimer() {
@@ -268,7 +274,7 @@ export function GameApp() {
     if (foundLockRef.current || phase !== "find" || !findActive) return;
     foundLockRef.current = true;
     const remaining = findRemaining;
-    const base = findScoreAt(remaining, findLimit);
+    const base = findScoreAt(remaining, findLimit, findScoreMax(difficulty));
     const nextStreak = streak + 1;
     const withStreak = applyStreak(base, nextStreak);
     const perfect = misses === 0;
@@ -430,6 +436,8 @@ export function GameApp() {
               entries={board}
               global={boardGlobal}
               highlight={playerName}
+              myRank={myRank}
+              myScore={best > 0 ? best : null}
               error={boardError}
               shareText={rankShareText}
             />
@@ -762,6 +770,8 @@ export function GameApp() {
               entries={board}
               global={boardGlobal}
               highlight={playerName || nameDraft}
+              myRank={myRank}
+              myScore={score > 0 ? score : best > 0 ? best : null}
               compact
               error={boardError}
               shareText={rankShareText}
@@ -931,7 +941,7 @@ function Landing({
           <p className="mt-4 text-sm text-[var(--muted)]">
             {best > 0
               ? `Seu recorde: ${best.toLocaleString("pt-BR")} pts · modo ${labelMode(difficulty)}: ${citiesTotal} cidades`
-              : `Modo ${labelMode(difficulty)}: ${citiesTotal} cidades no mapa. Cada achado começa com ${FIND_SCORE_MAX.toLocaleString("pt-BR")} pts no relógio.`}
+              : `Modo ${labelMode(difficulty)}: ${citiesTotal} cidades no mapa. Cada achado começa com ${findScoreMax(difficulty).toLocaleString("pt-BR")} pts no relógio.`}
           </p>
           <div className="mt-5">
             <ShareBar

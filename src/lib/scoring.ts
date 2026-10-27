@@ -8,7 +8,14 @@ export const FIND_TIME_LIMIT: Record<Difficulty, number> = {
   mix: 3 * 60,
 };
 
-export const FIND_SCORE_MAX = 5000;
+/** Points on the find clock at t=0 — harder modes pay more. */
+export const FIND_SCORE_MAX: Record<Difficulty, number> = {
+  easy: 1000,
+  medium: 2000,
+  hard: 3000,
+  mix: 2000,
+};
+
 export const CITY_HIT_BONUS = 200;
 export const CITY_MISS_PENALTY = 80;
 export const CLICK_MISS_PENALTY = 15;
@@ -19,11 +26,19 @@ export function findLimitSeconds(difficulty: Difficulty): number {
   return FIND_TIME_LIMIT[difficulty];
 }
 
-/** Points still on the table: 5000 at t=0, 0 at timeout. */
-export function findScoreAt(remainingSec: number, limitSec: number): number {
+export function findScoreMax(difficulty: Difficulty): number {
+  return FIND_SCORE_MAX[difficulty];
+}
+
+/** Points still on the table: max at t=0, 0 at timeout. */
+export function findScoreAt(
+  remainingSec: number,
+  limitSec: number,
+  maxPoints: number,
+): number {
   if (limitSec <= 0) return 0;
   const ratio = Math.max(0, Math.min(1, remainingSec / limitSec));
-  return Math.round(FIND_SCORE_MAX * ratio);
+  return Math.round(maxPoints * ratio);
 }
 
 export function streakMultiplier(streak: number): number {

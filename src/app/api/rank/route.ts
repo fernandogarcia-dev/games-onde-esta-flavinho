@@ -3,10 +3,11 @@ import { sanitizeName } from "@/lib/ranking";
 import {
   isGlobalRankEnabled,
   listRanks,
+  lookupPlayer,
   upsertRank,
 } from "@/lib/rank-store";
 
-export async function GET() {
+export async function GET(req: Request) {
   if (!isGlobalRankEnabled()) {
     return NextResponse.json(
       {
@@ -20,10 +21,31 @@ export async function GET() {
   }
 
   try {
+    const url = new URL(req.url);
+    const who = sanitizeName(url.searchParams.get("name") || "");
     const entries = await listRanks();
+    let myRank = 0;
+    let myEntry = null as { name: string; score: number; at: number } | null;
+
+    if (who) {
+      const hit = entries.findIndex(
+        (e) => e.name.toLowerCase() === who.toLowerCase(),
+      );
+      if (hit >= 0) {
+        myRank = hit + 1;
+        myEntry = entries[hit];
+      } else {
+        const looked = await lookupPlayer(who);
+        myRank = looked.rank;
+        myEntry = looked.entry;
+      }
+    }
+
     return NextResponse.json({
       entries: entries.slice(0, 20),
       global: true,
+      myRank: myRank > 0 ? myRank : undefined,
+      myEntry: myEntry || undefined,
     });
   } catch (e) {
     const message = e instanceof Error ? e.message : "Falha no ranking";

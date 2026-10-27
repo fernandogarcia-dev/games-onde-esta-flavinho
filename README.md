@@ -90,12 +90,12 @@ Pistas usam marcas famosas e reconhecíveis (nunca charadas).
 
 ## Pontuação e timer
 
-| Modo | Tempo pra achar | Pontos na mesa |
+| Modo | Tempo pra achar | Pontos na mesa (t=0) |
 |---|---|---|
-| Fácil | 5 min | começam em 5000 e caem com o relógio |
-| Médio | 3 min | idem |
-| Difícil | 1 min | idem |
-| Surpresa | 3 min | idem |
+| Fácil | 5 min | 1000 (caem com o relógio) |
+| Médio | 3 min | 2000 |
+| Difícil | 1 min | 3000 |
+| Surpresa | 3 min | 2000 |
 
 ## Stack
 

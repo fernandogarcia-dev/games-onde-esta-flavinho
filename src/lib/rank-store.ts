@@ -47,6 +47,41 @@ export async function listRanks(): Promise<RankEntry[]> {
   return rowsToEntries((data || []) as Row[]);
 }
 
+/** Absolute 1-based rank + entry for a player name (any position). */
+export async function lookupPlayer(
+  name: string,
+): Promise<{ entry: RankEntry | null; rank: number }> {
+  const sb = getSupabaseAdmin();
+  if (!sb) return { entry: null, rank: 0 };
+  const nameKey = name.trim().toLowerCase();
+  if (!nameKey) return { entry: null, rank: 0 };
+
+  const { data, error } = await sb
+    .from("leaderboard")
+    .select("name, score, updated_at")
+    .eq("name_key", nameKey)
+    .maybeSingle();
+  if (error) {
+    console.error("[rank] lookup", error.message);
+    throw new Error(error.message);
+  }
+  if (!data) return { entry: null, rank: 0 };
+
+  const entry: RankEntry = {
+    name: data.name,
+    score: data.score,
+    at: new Date(data.updated_at).getTime() || Date.now(),
+  };
+  const { count, error: countErr } = await sb
+    .from("leaderboard")
+    .select("name_key", { count: "exact", head: true })
+    .gt("score", entry.score);
+  if (countErr) {
+    console.error("[rank] lookup count", countErr.message);
+  }
+  return { entry, rank: (count ?? 0) + 1 };
+}
+
 export async function upsertRank(
   name: string,
   score: number,
@@ -89,8 +124,18 @@ export async function upsertRank(
   }
 
   const entries = await listRanks();
-  const rank =
-    entries.findIndex((e) => e.name.toLowerCase() === nameKey) + 1 ||
-    entries.length;
+  const inList =
+    entries.findIndex((e) => e.name.toLowerCase() === nameKey) + 1;
+  if (inList > 0) return { entries, rank: inList };
+
+  // Outside the cached top list — count how many beat this score.
+  const { count, error: countErr } = await sb
+    .from("leaderboard")
+    .select("name_key", { count: "exact", head: true })
+    .gt("score", best);
+  if (countErr) {
+    console.error("[rank] count", countErr.message);
+  }
+  const rank = (count ?? entries.length) + 1;
   return { entries, rank };
 }
