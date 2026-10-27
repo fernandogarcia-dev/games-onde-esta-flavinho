@@ -1,8 +1,9 @@
 import { LEVELS, type Level } from "@/lib/levels";
+import type { Difficulty } from "@/lib/types";
 
 const STORAGE_RECENT = "flavinho_recent_episodes";
 const STORAGE_DECK = "flavinho_active_deck";
-const RECENT_LIMIT = 18; // avoid repeats until many unique dossiers play
+const RECENT_LIMIT = 24;
 const RUN_SIZE = 6;
 
 function readJson<T>(key: string, fallback: T): T {
@@ -39,25 +40,45 @@ export function rememberEpisode(id: string) {
   writeJson(STORAGE_RECENT, recent.slice(0, RECENT_LIMIT));
 }
 
-/** Build a fresh run of dossiers, preferring ones not seen recently. */
-export function dealNewRun(size = RUN_SIZE): Level[] {
-  const recent = new Set(getRecentEpisodeIds());
-  const fresh = LEVELS.filter((l) => !recent.has(l.id));
-  const pool = fresh.length >= size ? fresh : LEVELS;
-  const dealt = shuffle(pool).slice(0, size);
+function poolForDifficulty(difficulty: Difficulty): Level[] {
+  if (difficulty === "mix") return LEVELS;
+  return LEVELS.filter((l) => l.difficulty === difficulty);
+}
 
-  // If pool was small, still try to diversify cities in the run
-  const cities = new Set<string>();
+/** Fresh run: prefers unseen dossiers + diverse cities. */
+export function dealNewRun(
+  size = RUN_SIZE,
+  difficulty: Difficulty = "mix",
+): Level[] {
+  const recent = new Set(getRecentEpisodeIds());
+  const byDiff = poolForDifficulty(difficulty);
+  const base = byDiff.length >= size ? byDiff : LEVELS;
+  const fresh = base.filter((l) => !recent.has(l.id));
+  const pool = fresh.length >= size ? fresh : base;
+
+  // Greedy: pick episodes that introduce new cities first
+  const shuffled = shuffle(pool);
   const diversified: Level[] = [];
-  for (const level of dealt) {
+  const cities = new Set<string>();
+
+  for (const level of shuffled) {
     if (diversified.length >= size) break;
-    if (!cities.has(level.correctCity) || diversified.length + (size - cities.size) < size) {
+    if (!cities.has(level.correctCity)) {
+      diversified.push(level);
+      cities.add(level.correctCity);
+    }
+  }
+  for (const level of shuffled) {
+    if (diversified.length >= size) break;
+    if (!diversified.some((d) => d.id === level.id)) {
       diversified.push(level);
       cities.add(level.correctCity);
     }
   }
   while (diversified.length < size) {
-    const extra = shuffle(LEVELS).find((l) => !diversified.some((d) => d.id === l.id));
+    const extra = shuffle(LEVELS).find(
+      (l) => !diversified.some((d) => d.id === l.id),
+    );
     if (!extra) break;
     diversified.push(extra);
   }
@@ -69,15 +90,10 @@ export function dealNewRun(size = RUN_SIZE): Level[] {
   return diversified;
 }
 
-export function loadSavedRun(): Level[] | null {
-  const ids = readJson<string[]>(STORAGE_DECK, []);
-  if (!ids.length) return null;
-  const levels = ids
-    .map((id) => LEVELS.find((l) => l.id === id))
-    .filter(Boolean) as Level[];
-  return levels.length ? levels : null;
-}
-
 export function episodeCatalogSize() {
   return LEVELS.length;
+}
+
+export function cityCatalogSize() {
+  return new Set(LEVELS.map((l) => l.correctCity)).size;
 }

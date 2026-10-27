@@ -8,7 +8,7 @@ type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
 
 const variants: Record<NonNullable<Props["variant"]>, string> = {
   primary:
-    "bg-[var(--brand)] text-[var(--ink)] shadow-[4px_4px_0_var(--ink)] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[3px_3px_0_var(--ink)]",
+    "bg-[var(--brand)] text-white shadow-[4px_4px_0_var(--ink)] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[3px_3px_0_var(--ink)]",
   secondary:
     "bg-[var(--paper)] text-[var(--ink)] border-2 border-[var(--ink)] hover:bg-[var(--sand)]",
   ghost: "bg-transparent text-[var(--ink)] hover:bg-black/5",

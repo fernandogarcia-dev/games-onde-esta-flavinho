@@ -5,13 +5,19 @@ import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { CrowdScene } from "@/components/game/CrowdScene";
 import { PixPanel } from "@/components/game/PixPanel";
-import { dealNewRun, episodeCatalogSize, rememberEpisode } from "@/lib/deck";
 import {
-  CITIES,
+  cityCatalogSize,
+  dealNewRun,
+  episodeCatalogSize,
+  rememberEpisode,
+} from "@/lib/deck";
+import {
   getCity,
+  pickCityOptions,
   type CityId,
   type Level,
 } from "@/lib/levels";
+import type { Difficulty } from "@/lib/types";
 import {
   buildShareUrl,
   buildWhatsAppShare,
@@ -22,8 +28,16 @@ import {
 
 type Phase = "landing" | "briefing" | "clues" | "find" | "win" | "fail-city";
 
+const LIVES_BY_DIFFICULTY: Record<Difficulty, number> = {
+  easy: 5,
+  medium: 3,
+  hard: 2,
+  mix: 3,
+};
+
 export function GameApp() {
   const [phase, setPhase] = useState<Phase>("landing");
+  const [difficulty, setDifficulty] = useState<Difficulty>("mix");
   const [run, setRun] = useState<Level[]>([]);
   const [levelIndex, setLevelIndex] = useState(0);
   const [clueIndex, setClueIndex] = useState(0);
@@ -38,9 +52,23 @@ export function GameApp() {
   const [elapsed, setElapsed] = useState(0);
   const [running, setRunning] = useState(false);
   const catalogSize = episodeCatalogSize();
+  const citiesTotal = cityCatalogSize();
 
   const level: Level | null = run[levelIndex] ?? null;
   const city = level ? getCity(level.correctCity) : null;
+
+  const cityOptions = useMemo(() => {
+    if (!level) return [];
+    return pickCityOptions(level.correctCity, `${level.id}-${levelIndex}-${difficulty}`);
+  }, [level, levelIndex, difficulty]);
+
+  const crowdCount = useMemo(() => {
+    if (!level) return 40;
+    const base = level.scene.crowdCount;
+    if (difficulty === "easy") return Math.max(28, Math.floor(base * 0.75));
+    if (difficulty === "hard") return Math.floor(base * 1.3);
+    return base;
+  }, [level, difficulty]);
 
   useEffect(() => {
     if (!running) return;
@@ -53,8 +81,9 @@ export function GameApp() {
     [levelIndex, run.length],
   );
 
-  function startGame() {
-    const dealt = dealNewRun(6);
+  function startGame(diff: Difficulty = difficulty) {
+    const dealt = dealNewRun(6, diff);
+    setDifficulty(diff);
     setRun(dealt);
     rememberEpisode(dealt[0].id);
     setBest(getBestScore());
@@ -64,11 +93,19 @@ export function GameApp() {
     setClueIndex(0);
     setScore(1000);
     setMisses(0);
-    setLives(6);
+    setLives(LIVES_BY_DIFFICULTY[diff]);
     setFeedback("");
     setShowHint(false);
     setElapsed(0);
     setRunning(true);
+  }
+
+  function restartToMenu() {
+    setPhase("landing");
+    setRunning(false);
+    setFeedback("");
+    setShowHint(false);
+    setShowPix(false);
   }
 
   function goToClues() {
@@ -125,7 +162,7 @@ export function GameApp() {
     setLevelIndex(next);
     setClueIndex(0);
     setMisses(0);
-    setLives(6);
+    setLives(LIVES_BY_DIFFICULTY[difficulty]);
     setFeedback("");
     setShowHint(false);
     setPhase("briefing");
@@ -159,18 +196,20 @@ export function GameApp() {
         <button
           type="button"
           className="font-[family-name:var(--font-display)] text-xl tracking-wide text-[var(--ink)] sm:text-2xl"
-          onClick={() => {
-            setPhase("landing");
-            setRunning(false);
-          }}
+          onClick={restartToMenu}
         >
           Onde Está Flavinho?
         </button>
         <div className="flex items-center gap-2">
           {phase !== "landing" && (
-            <div className="hidden rounded-full border border-[var(--ink)]/15 bg-white/70 px-3 py-1 text-xs font-semibold text-[var(--ink)] sm:block">
-              Ep {progressLabel} · {score} pts · {formatTime(elapsed)}
-            </div>
+            <>
+              <div className="hidden rounded-full border border-[var(--ink)]/15 bg-white/70 px-3 py-1 text-xs font-semibold text-[var(--ink)] sm:block">
+                Ep {progressLabel} · {score} pts · {formatTime(elapsed)}
+              </div>
+              <Button variant="secondary" size="sm" onClick={restartToMenu}>
+                Recomeçar
+              </Button>
+            </>
           )}
           <Button variant="money" size="sm" onClick={() => setShowPix((v) => !v)}>
             Apoiar
@@ -183,7 +222,10 @@ export function GameApp() {
           <Landing
             best={best}
             catalogSize={catalogSize}
-            onStart={startGame}
+            citiesTotal={citiesTotal}
+            difficulty={difficulty}
+            onDifficultyChange={setDifficulty}
+            onStart={() => startGame(difficulty)}
             onPix={() => setShowPix(true)}
           />
         )}
@@ -202,13 +244,16 @@ export function GameApp() {
             </p>
             <div className="mt-5 flex flex-wrap gap-3 text-sm font-semibold">
               <span className="rounded-lg bg-[var(--sand)] px-3 py-1.5">
-                Temperatura: {labelDifficulty(level.difficulty)}
+                Modo: {labelMode(difficulty)}
+              </span>
+              <span className="rounded-lg bg-[var(--sand)] px-3 py-1.5">
+                Dossiê: {labelDifficulty(level.difficulty)}
               </span>
               <span className="rounded-lg bg-[var(--sand)] px-3 py-1.5">
                 Tentativas: {lives}
               </span>
               <span className="rounded-lg bg-[var(--sand)] px-3 py-1.5">
-                Dossiê {progressLabel} desta rodada
+                Episódio {progressLabel}
               </span>
             </div>
             <div className="mt-6 flex flex-wrap gap-3">
@@ -260,8 +305,11 @@ export function GameApp() {
               <h3 className="font-[family-name:var(--font-display)] text-xl text-[var(--ink)]">
                 Marque no mapa
               </h3>
+              <p className="mt-1 text-xs text-[var(--muted)]">
+                Seis cidades desta pasta (muda a cada dossiê).
+              </p>
               <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2">
-                {CITIES.map((c) => (
+                {cityOptions.map((c) => (
                   <button
                     key={c.id}
                     type="button"
@@ -335,9 +383,9 @@ export function GameApp() {
             </div>
 
             <CrowdScene
-              seed={`${level.id}-${levelIndex}`}
+              seed={`${level.id}-${levelIndex}-${difficulty}`}
               background={level.scene.background}
-              crowdCount={level.scene.crowdCount}
+              crowdCount={crowdCount}
               flavinhoScale={level.scene.flavinhoScale}
               ground={level.scene.ground}
               onFound={onFound}
@@ -383,6 +431,9 @@ export function GameApp() {
               <Button variant="secondary" onClick={shareWin}>
                 Estourar no Zap
               </Button>
+              <Button variant="secondary" onClick={restartToMenu}>
+                Recomeçar
+              </Button>
               <Button variant="money" onClick={() => setShowPix(true)}>
                 Café via PIX
               </Button>
@@ -405,7 +456,10 @@ export function GameApp() {
               hesitava.
             </p>
             <div className="mt-6 flex flex-wrap justify-center gap-3">
-              <Button onClick={startGame}>Reabrir o dossiê</Button>
+              <Button onClick={() => startGame(difficulty)}>Tentar de novo</Button>
+              <Button variant="secondary" onClick={restartToMenu}>
+                Recomeçar
+              </Button>
               <Button variant="money" onClick={() => setShowPix(true)}>
                 Mandar um café
               </Button>
@@ -431,14 +485,27 @@ export function GameApp() {
 function Landing({
   best,
   catalogSize,
+  citiesTotal,
+  difficulty,
+  onDifficultyChange,
   onStart,
   onPix,
 }: {
   best: number;
   catalogSize: number;
+  citiesTotal: number;
+  difficulty: Difficulty;
+  onDifficultyChange: (d: Difficulty) => void;
   onStart: () => void;
   onPix: () => void;
 }) {
+  const modes: { id: Difficulty; label: string; hint: string }[] = [
+    { id: "easy", label: "Fácil", hint: "5 tentativas · multidão menor" },
+    { id: "medium", label: "Médio", hint: "3 tentativas · padrão" },
+    { id: "hard", label: "Difícil", hint: "2 tentativas · multidão cheia" },
+    { id: "mix", label: "Surpresa", hint: "mistura tudo" },
+  ];
+
   return (
     <section className="relative overflow-hidden rounded-[2rem] border-[3px] border-[var(--ink)] bg-[var(--paper)] shadow-[10px_10px_0_var(--ink)]">
       <div className="pointer-events-none absolute inset-0">
@@ -462,9 +529,44 @@ function Landing({
             Onde Está Flavinho?
           </h1>
           <p className="mt-4 max-w-md text-lg text-[var(--muted)]">
-            Ele saiu da agenda. Sobrou um blazer azul, seis cidades possíveis e
-            uma multidão que não colabora.
+            Ele saiu da agenda. Sobrou um blazer azul, {citiesTotal} cidades no
+            radar e uma multidão que não colabora.
           </p>
+
+          <div className="mt-6">
+            <p className="mb-2 text-sm font-bold uppercase tracking-[0.16em] text-[var(--ink)]">
+              Escolha a dificuldade
+            </p>
+            <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+              {modes.map((m) => {
+                const active = difficulty === m.id;
+                return (
+                  <button
+                    key={m.id}
+                    type="button"
+                    onClick={() => onDifficultyChange(m.id)}
+                    className={`rounded-2xl border-2 px-3 py-2.5 text-left transition ${
+                      active
+                        ? "border-[var(--ink)] bg-[var(--brand)] text-white shadow-[3px_3px_0_var(--ink)]"
+                        : "border-[var(--ink)]/40 bg-white/80 text-[var(--ink)] hover:border-[var(--ink)] hover:bg-white"
+                    }`}
+                  >
+                    <div className="font-[family-name:var(--font-display)] text-base">
+                      {m.label}
+                    </div>
+                    <div
+                      className={`text-[11px] leading-snug ${
+                        active ? "text-white/85" : "text-[var(--muted)]"
+                      }`}
+                    >
+                      {m.hint}
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
           <div className="mt-7 flex flex-wrap gap-3">
             <Button size="lg" onClick={onStart}>
               Abrir o dossiê
@@ -475,8 +577,8 @@ function Landing({
           </div>
           <p className="mt-4 text-sm text-[var(--muted)]">
             {best > 0
-              ? `Seu recorde: ${best} pts · ${catalogSize} dossiês no arquivo`
-              : `${catalogSize} dossiês no arquivo. Cada rodada embaralha 6.`}
+              ? `Seu recorde: ${best} pts · ${catalogSize} dossiês · ${citiesTotal} cidades`
+              : `${catalogSize} dossiês no arquivo. Cada rodada embaralha 6 cidades diferentes.`}
           </p>
         </div>
 
@@ -504,6 +606,13 @@ function labelDifficulty(d: Level["difficulty"]) {
   if (d === "easy") return "morna";
   if (d === "medium") return "quente";
   return "escaldante";
+}
+
+function labelMode(d: Difficulty) {
+  if (d === "easy") return "Fácil";
+  if (d === "medium") return "Médio";
+  if (d === "hard") return "Difícil";
+  return "Surpresa";
 }
 
 function formatTime(total: number) {

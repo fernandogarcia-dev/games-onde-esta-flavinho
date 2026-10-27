@@ -1,5 +1,7 @@
 # Domínios pra comprar agora
 
+**Importante:** nenhum domínio foi comprado pelo agente. Esta lista é só recomendação. Você compra no registrador com o cartão/PayPal seu.
+
 Confirmados **disponíveis** via RDAP no momento da criação do projeto. Sempre confira de novo no checkout.
 
 ## Top picks

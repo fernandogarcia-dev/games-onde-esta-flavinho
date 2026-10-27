@@ -4,4 +4,18 @@ export type CityId =
   | "saopaulo"
   | "miami"
   | "paris"
-  | "dubai";
+  | "dubai"
+  | "salvador"
+  | "belohorizonte"
+  | "curitiba"
+  | "recife"
+  | "buenosaires"
+  | "lisboa"
+  | "londres"
+  | "novayork"
+  | "barcelona"
+  | "roma"
+  | "cancun"
+  | "toquio";
+
+export type Difficulty = "easy" | "medium" | "hard" | "mix";

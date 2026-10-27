@@ -25,89 +25,51 @@ export type Level = EpisodeSeed & {
 };
 
 export const CITIES: City[] = [
-  {
-    id: "brasilia",
-    name: "Brasília",
-    country: "Brasil",
-    blurb: "Planalto, corredores e muita audiência.",
-  },
-  {
-    id: "rio",
-    name: "Rio de Janeiro",
-    country: "Brasil",
-    blurb: "Areia, óculos escuros e disfarce de turista.",
-  },
-  {
-    id: "saopaulo",
-    name: "São Paulo",
-    country: "Brasil",
-    blurb: "Guarda-chuva, trânsito e anonimato urbano.",
-  },
-  {
-    id: "miami",
-    name: "Miami",
-    country: "EUA",
-    blurb: "Palmeiras, pastel e vista pro mar.",
-  },
-  {
-    id: "paris",
-    name: "Paris",
-    country: "França",
-    blurb: "Café, croissant e torre no horizonte.",
-  },
-  {
-    id: "dubai",
-    name: "Dubai",
-    country: "EAU",
-    blurb: "Marina iluminada e ar-condicionado no máximo.",
-  },
+  { id: "brasilia", name: "Brasília", country: "Brasil", blurb: "Planalto e corredores longos." },
+  { id: "rio", name: "Rio de Janeiro", country: "Brasil", blurb: "Orla, coco e disfarce de turista." },
+  { id: "saopaulo", name: "São Paulo", country: "Brasil", blurb: "Garoa, metrô e anonimato." },
+  { id: "salvador", name: "Salvador", country: "Brasil", blurb: "Pelourinho, axé e ladeiras." },
+  { id: "belohorizonte", name: "Belo Horizonte", country: "Brasil", blurb: "Pão de queijo e serra." },
+  { id: "curitiba", name: "Curitiba", country: "Brasil", blurb: "Frio, ônibus e jardim botânico." },
+  { id: "recife", name: "Recife", country: "Brasil", blurb: "Pontes, mangue e frevo." },
+  { id: "miami", name: "Miami", country: "EUA", blurb: "Pastel, inglês e boardwalk." },
+  { id: "novayork", name: "Nova York", country: "EUA", blurb: "Arranha-céu e café pra viagem." },
+  { id: "cancun", name: "Cancún", country: "México", blurb: "Turquesa, all-inclusive e sol." },
+  { id: "buenosaires", name: "Buenos Aires", country: "Argentina", blurb: "Tango, bife e espanhol." },
+  { id: "lisboa", name: "Lisboa", country: "Portugal", blurb: "Elétrico, pastel de nata." },
+  { id: "londres", name: "Londres", country: "Reino Unido", blurb: "Chuva, metrô e sotaque." },
+  { id: "paris", name: "Paris", country: "França", blurb: "Café, croissant e torre." },
+  { id: "barcelona", name: "Barcelona", country: "Espanha", blurb: "Gaudí, praia e tapas." },
+  { id: "roma", name: "Roma", country: "Itália", blurb: "Fontes, gelato e ruínas." },
+  { id: "dubai", name: "Dubai", country: "EAU", blurb: "Marina, neon e ar gelado." },
+  { id: "toquio", name: "Tóquio", country: "Japão", blurb: "Neon, metrô e vending machine." },
 ];
 
-const CITY_NAMES: Record<CityId, string> = {
-  brasilia: "Brasília",
-  rio: "Rio",
-  saopaulo: "São Paulo",
-  miami: "Miami",
-  paris: "Paris",
-  dubai: "Dubai",
-};
-
 const GENERIC_WRONG: Record<CityId, string[]> = {
-  brasilia: [
-    "Cheira a Planalto demais pra essa pista.",
-    "Brasília não fecha com esse recorte.",
-    "Cerrado planejado? Pista fria.",
-  ],
-  rio: [
-    "Orla carioca não combina com essa evidência.",
-    "Cristo no fundo? Não é o caso.",
-    "Água de coco e calçadão ficaram pra outra hora.",
-  ],
-  saopaulo: [
-    "Paulista e garoa não batem com isso.",
-    "SP é caos vertical. Essa pista aponta outro lado.",
-    "Guarda-chuva cinza? Não é aqui.",
-  ],
-  miami: [
-    "Boardwalk pastel? Pista fria.",
-    "Inglês com sotaque tropical não aparece aqui.",
-    "Miami não fecha o mapa.",
-  ],
-  paris: [
-    "Croissant e torre de ferro ficaram pra depois.",
-    "Paris não assina essa pista.",
-    "Café europeu? Não é o rastro.",
-  ],
-  dubai: [
-    "Neon de marina não é essa vibe.",
-    "Golfo chic? Pista fria.",
-    "Dubai não fecha com esse áudio.",
-  ],
+  brasilia: ["Cheira a Planalto demais.", "Cerrado planejado? Pista fria."],
+  rio: ["Orla carioca não fecha.", "Cristo no fundo? Não é o caso."],
+  saopaulo: ["Paulista e garoa não batem.", "SP aponta outro lado."],
+  salvador: ["Pelourinho não assina essa pista.", "Axé ficou pra outra hora."],
+  belohorizonte: ["Pão de queijo não salva essa pista.", "BH não fecha o mapa."],
+  curitiba: ["Frio curitibano? Pista fria mesmo.", "Jardim botânico não aparece aqui."],
+  recife: ["Pontes do Recife não batem.", "Frevo ficou pra depois."],
+  miami: ["Boardwalk pastel? Não.", "Miami não fecha o mapa."],
+  novayork: ["Big Apple demais pra essa pista.", "NY não assina esse áudio."],
+  cancun: ["Turquesa mexicano? Pista fria.", "All-inclusive não aparece."],
+  buenosaires: ["Tango e bife? Não é aqui.", "Portenho demais pra essa pista."],
+  lisboa: ["Elétrico e nata? Pista fria.", "Lisboa não fecha."],
+  londres: ["Chuva inglesa não bate.", "Londres aponta outro lado."],
+  paris: ["Croissant e torre? Depois.", "Paris não assina."],
+  barcelona: ["Gaudí não aparece nessa pista.", "Barcelona ficou frio."],
+  roma: ["Fontana e gelato? Não.", "Roma não fecha o mapa."],
+  dubai: ["Neon do Golfo? Pista fria.", "Dubai não fecha."],
+  toquio: ["Neon japonês não bate.", "Tóquio aponta outro lado."],
 };
 
 function buildWrongHints(correct: CityId): Record<CityId, string> {
   const out = {} as Record<CityId, string>;
-  for (const id of Object.keys(CITY_NAMES) as CityId[]) {
+  for (const city of CITIES) {
+    const id = city.id;
     if (id === correct) {
       out[id] = "";
       continue;
@@ -707,6 +669,330 @@ export const EPISODE_SEEDS: EpisodeSeed[] = [
     ],
     shareLine: "Flavinho no mirante de Dubai",
   },
+
+  // Salvador
+  {
+    id: "ssa-pelourinho",
+    title: "Ladeira no Pelô",
+    correctCity: "salvador",
+    difficulty: "easy",
+    clues: [
+      "Subiu ladeira colorida com blazer suando.",
+      "Pediu acarajé e pediu pra não postar.",
+      "Tambor ao longe. Não era Rio.",
+    ],
+    shareLine: "Flavinho em Salvador",
+  },
+  {
+    id: "ssa-elevator",
+    title: "Elevador Lacerda",
+    correctCity: "salvador",
+    difficulty: "medium",
+    clues: [
+      "Desceu de elevador urbano com vista pra baía.",
+      "Comprou foto polaroid e rasgou depois.",
+      "Bahia óbvia. Disfarce fraco.",
+    ],
+    shareLine: "Flavinho no Elevador Lacerda",
+  },
+  {
+    id: "ssa-barra",
+    title: "Farol da Barra",
+    correctCity: "salvador",
+    difficulty: "hard",
+    clues: [
+      "Farol ao fundo, pôr do sol lotado.",
+      "Alguém gritou 'ô meu rei' e ele acelerou.",
+      "Atlantico baiano, zero Cristo Redentor.",
+    ],
+    shareLine: "Flavinho no Farol da Barra",
+  },
+
+  // BH
+  {
+    id: "bh-pao",
+    title: "Fila do pão de queijo",
+    correctCity: "belohorizonte",
+    difficulty: "easy",
+    clues: [
+      "Pediu pão de queijo e café com leite.",
+      "Mineiro no balcão reconheceu o blazer e fingiu demência.",
+      "Serra ao fundo. Nada de orla.",
+    ],
+    shareLine: "Flavinho em BH",
+  },
+  {
+    id: "bh-liberade",
+    title: "Feira hippie",
+    correctCity: "belohorizonte",
+    difficulty: "medium",
+    clues: [
+      "Domingo na Praça da Liberdade, barraca e sol.",
+      "Comprou bijuteria e sumiu entre famílias.",
+      "BH clássica. Sem neon de Dubai.",
+    ],
+    shareLine: "Flavinho na Liberdade (BH)",
+  },
+
+  // Curitiba
+  {
+    id: "cwb-botanico",
+    title: "Estufa gelada",
+    correctCity: "curitiba",
+    difficulty: "easy",
+    clues: [
+      "Casaco por cima do blazer. Sinais de Paraná.",
+      "Foto na estufa de vidro, cancelada na hora.",
+      "Frio demais pra ser Salvador.",
+    ],
+    shareLine: "Flavinho em Curitiba",
+  },
+  {
+    id: "cwb-bus",
+    title: "Tubo de ônibus",
+    correctCity: "curitiba",
+    difficulty: "medium",
+    clues: [
+      "Entrou num tubo de estação de ônibus biarticulado.",
+      "Pegou cartão transporte no nome errado.",
+      "Organização curitibana. Zero caos carioca.",
+    ],
+    shareLine: "Flavinho no transporte de Curitiba",
+  },
+
+  // Recife
+  {
+    id: "rec-ponte",
+    title: "Pontes e mangue",
+    correctCity: "recife",
+    difficulty: "medium",
+    clues: [
+      "Atravessou ponte com cheiro de maré.",
+      "Pediu tapioca e olhou demais pro celular.",
+      "Recife antigo. Frevo longe, blazer perto.",
+    ],
+    shareLine: "Flavinho no Recife",
+  },
+  {
+    id: "rec-porto",
+    title: "Marco Zero",
+    correctCity: "recife",
+    difficulty: "hard",
+    clues: [
+      "Palco vazio, praça aberta, vento do porto.",
+      "Alguém vendeu cordel com a cara dele. Ele negou.",
+      "Nordeste urbano. Sem Paulista.",
+    ],
+    shareLine: "Flavinho no Marco Zero",
+  },
+
+  // Buenos Aires
+  {
+    id: "bue-tango",
+    title: "Milonga improvisada",
+    correctCity: "buenosaires",
+    difficulty: "medium",
+    clues: [
+      "Passou por milonga e recusou dançar.",
+      "Pediu bife de chorizo e pagou em peso.",
+      "Espanhol portenho. Não era Miami.",
+    ],
+    shareLine: "Flavinho em Buenos Aires",
+  },
+  {
+    id: "bue-caminito",
+    title: "Cores em La Boca",
+    correctCity: "buenosaires",
+    difficulty: "easy",
+    clues: [
+      "Casas coloridas, turistas, blazer no meio.",
+      "Selfie com bandeira argentina... apagada.",
+      "Caminito lotado. Rastro óbvio.",
+    ],
+    shareLine: "Flavinho em La Boca",
+  },
+
+  // Lisboa
+  {
+    id: "lis-tram",
+    title: "Elétrico 28",
+    correctCity: "lisboa",
+    difficulty: "easy",
+    clues: [
+      "Subiu no elétrico amarelo lotado.",
+      "Pediu pastel de nata e um espresso.",
+      "Lisboa de cartão postal. Blazer amarrotado.",
+    ],
+    shareLine: "Flavinho em Lisboa",
+  },
+  {
+    id: "lis-belem",
+    title: "Fila em Belém",
+    correctCity: "lisboa",
+    difficulty: "hard",
+    clues: [
+      "Fila eterna de pastel. Ele desistiu no meio.",
+      "Tejo ao fundo, torre de pedra.",
+      "Portugal. Real brasileiro não passou no caixa.",
+    ],
+    shareLine: "Flavinho em Belém",
+  },
+
+  // Londres
+  {
+    id: "lon-tube",
+    title: "Mind the gap",
+    correctCity: "londres",
+    difficulty: "medium",
+    clues: [
+      "Desceu no Tube com cara de quem odeia fila.",
+      "Comprou umbrella barato sob chuva fina.",
+      "Inglês no alto-falante. Blazer molhado.",
+    ],
+    shareLine: "Flavinho em Londres",
+  },
+  {
+    id: "lon-bridge",
+    title: "Tower Bridge selfie",
+    correctCity: "londres",
+    difficulty: "hard",
+    clues: [
+      "Pose quase feita. Foto cancelada.",
+      "Ônibus vermelho passou na frente.",
+      "Tâmisa cinza. Nada de marina neon.",
+    ],
+    shareLine: "Flavinho na Tower Bridge",
+  },
+
+  // Nova York
+  {
+    id: "nyc-subway",
+    title: "Subway sem mapa",
+    correctCity: "novayork",
+    difficulty: "hard",
+    clues: [
+      "Olhou o mapa do subway de cabeça pra baixo.",
+      "Pediu coffee to go e sumiu na multidãos.",
+      "NY em rush hour. Zero disfarce bom.",
+    ],
+    shareLine: "Flavinho em Nova York",
+  },
+  {
+    id: "nyc-central",
+    title: "Central Park escape",
+    correctCity: "novayork",
+    difficulty: "medium",
+    clues: [
+      "Sentou num banco e fingiu ler jornal.",
+      "Carruagem passou. Ele não olhou.",
+      "Manhattan verde no meio do caos.",
+    ],
+    shareLine: "Flavinho no Central Park",
+  },
+
+  // Barcelona
+  {
+    id: "bcn-sagrada",
+    title: "Fila da Sagrada",
+    correctCity: "barcelona",
+    difficulty: "medium",
+    clues: [
+      "Olhou a fachada e desistiu da fila.",
+      "Pediu tapas e pagou em euro.",
+      "Catalunha óbvia. Blazer no sol.",
+    ],
+    shareLine: "Flavinho em Barcelona",
+  },
+  {
+    id: "bcn-beach",
+    title: "Barceloneta",
+    correctCity: "barcelona",
+    difficulty: "easy",
+    clues: [
+      "Areia europeia, sem Cristo no fundo.",
+      "Pediu sangria e pediu a conta rápido.",
+      "Mediterrâneo. Não era Copacabana.",
+    ],
+    shareLine: "Flavinho na Barceloneta",
+  },
+
+  // Roma
+  {
+    id: "rom-fountain",
+    title: "Moeda na fonte",
+    correctCity: "roma",
+    difficulty: "easy",
+    clues: [
+      "Jogou moeda e pediu pra ninguém filmar.",
+      "Gelato na mão, blazer no ombro.",
+      "Fontana lotada. Italiano no ar.",
+    ],
+    shareLine: "Flavinho em Roma",
+  },
+  {
+    id: "rom-coliseu",
+    title: "Selfie no Coliseu",
+    correctCity: "roma",
+    difficulty: "hard",
+    clues: [
+      "Quase tirou foto com gladiador de mentira.",
+      "Desistiu. Saiu andando rápido.",
+      "Ruína romana. Zero Dubai.",
+    ],
+    shareLine: "Flavinho no Coliseu",
+  },
+
+  // Cancún
+  {
+    id: "cun-resort",
+    title: "All-inclusive",
+    correctCity: "cancun",
+    difficulty: "easy",
+    clues: [
+      "Pulseira de resort, blazer no buffet.",
+      "Pediu margarita e olhou a saída.",
+      "Turquesa mexicano. Espanhol de aeroporto.",
+    ],
+    shareLine: "Flavinho em Cancún",
+  },
+  {
+    id: "cun-ruins",
+    title: "Ruínas sob sol",
+    correctCity: "cancun",
+    difficulty: "medium",
+    clues: [
+      "Subiu pirâmide pequena e desceu arrependido.",
+      "Guia falou em espanhol. Ele sorriu mudo.",
+      "Quintana Roo. Não era Roma.",
+    ],
+    shareLine: "Flavinho nas ruínas perto de Cancún",
+  },
+
+  // Tóquio
+  {
+    id: "tyo-shibuya",
+    title: "Travessia de Shibuya",
+    correctCity: "toquio",
+    difficulty: "hard",
+    clues: [
+      "Atravessou com a maré humana e quase voltou.",
+      "Comprou chá em máquina e se perdeu.",
+      "Neon japonês. Zero português no ar.",
+    ],
+    shareLine: "Flavinho em Shibuya",
+  },
+  {
+    id: "tyo-temple",
+    title: "Incenso em Asakusa",
+    correctCity: "toquio",
+    difficulty: "medium",
+    clues: [
+      "Passou pelo portão vermelho sem bater foto.",
+      "Comprou amulete e guardou no bolso do blazer.",
+      "Tóquio tradicional. Rastro quieto.",
+    ],
+    shareLine: "Flavinho em Asakusa",
+  },
 ];
 
 export const LEVELS: Level[] = EPISODE_SEEDS.map((seed) => ({
@@ -721,4 +1007,32 @@ export function getCity(id: CityId): City {
 
 export function getLevelById(id: string): Level | undefined {
   return LEVELS.find((l) => l.id === id);
+}
+
+/** 6 city options for the map: correct + 5 random others (changes every dossier). */
+export function pickCityOptions(correct: CityId, salt: string): City[] {
+  let h = 2166136261;
+  for (let i = 0; i < salt.length; i++) {
+    h ^= salt.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  const rand = () => {
+    h |= 0;
+    h =
+      (Math.imul(h ^ (h >>> 16), 2246822507) +
+        Math.imul(h ^ (h >>> 13), 3266489909)) |
+      0;
+    return ((h >>> 0) % 10000) / 10000;
+  };
+  const others = CITIES.filter((c) => c.id !== correct);
+  for (let i = others.length - 1; i > 0; i--) {
+    const j = Math.floor(rand() * (i + 1));
+    [others[i], others[j]] = [others[j], others[i]];
+  }
+  const picked = [getCity(correct), ...others.slice(0, 5)];
+  for (let i = picked.length - 1; i > 0; i--) {
+    const j = Math.floor(rand() * (i + 1));
+    [picked[i], picked[j]] = [picked[j], picked[i]];
+  }
+  return picked;
 }

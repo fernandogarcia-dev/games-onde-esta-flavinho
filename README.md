@@ -8,14 +8,15 @@ Jogo satírico / meme: siga o rastro, marque a cidade, ache ele na multidão.
 
 > Humor/sátira. Não é notícia, denúncia, campanha eleitoral nem afiliação política.
 
-## PIX e legalidade (resumo prático)
+## PIX é legal?
 
-Isso **não** é aconselhamento jurídico. Em linhas gerais, no Brasil:
+**Resposta curta:** apoio voluntário (“manda um café”) via PIX pra um jogo de humor/sátira, **jogável de graça**, costuma ser ok na prática no Brasil. Isso **não** é aconselhamento jurídico.
 
-- **Apoio voluntário / “café” via PIX** pra conteúdo de humor costuma ser tratado como liberalidade entre adultos, desde que não se finja ser instituição de caridade, rifa, aposta ou doação eleitoral.
-- O jogo deve continuar **jogável de graça** (o app já é).
-- Se o volume crescer, fale com contador (declaração IR / possível MEI) e, se quiser blindagem, com advogado (sátira política + responsabilidade civil).
-- Evite: sorteio sem autorização, prometer prêmio, se passar por ONG, ou cobrar como se fosse serviço essencial sem entrega clara.
+Em linhas gerais:
+
+- PIX de apoio entre adultos ≠ rifa, aposta, crowdfunding de caridade nem doação eleitoral.
+- Não finja ser ONG, não prometa prêmio, não cobre como se fosse obrigação.
+- Se o volume crescer: fale com contador (IR / MEI) e, se quiser blindagem, com advogado (sátira política + responsabilidade civil).
 
 ## Rodar local
 
@@ -28,31 +29,36 @@ npm run dev -- --port 43127
 
 Abra [http://127.0.0.1:43127](http://127.0.0.1:43127).
 
-## Deploy na Vercel (rápido)
+## Como subir na Vercel
 
-1. Suba o repo na Vercel (Import Git Repository).
-2. Em **Environment Variables**, coloque:
-   - `NEXT_PUBLIC_PIX_KEY` = sua chave PIX
+1. Crie o repo no GitHub/GitLab (se ainda não tiver) e faça push deste código.
+2. Em [vercel.com/new](https://vercel.com/new) → **Import** o repositório.
+3. Framework: Next.js (detecta sozinho). Build: `npm run build`.
+4. Em **Environment Variables**, adicione:
+   - `NEXT_PUBLIC_PIX_KEY` = sua chave PIX real
    - `NEXT_PUBLIC_PIX_NAME` = nome que aparece no painel
-3. Deploy.
-4. Em **Domains**, aponte o domínio que você comprou.
+5. Clique **Deploy**. Em ~1 minuto você ganha uma URL `*.vercel.app`.
+6. (Opcional) Settings → Domains → Add → cole o domínio que **você** comprou e siga o DNS.
 
-## Domínios recomendados (baratos e bons)
+CLI alternativa (se tiver a Vercel CLI logada):
 
-Checados via RDAP como **disponíveis** neste momento (confirme no registrador antes de pagar):
+```bash
+npx vercel
+npx vercel --prod
+```
+
+## Domínio: eu NÃO comprei
+
+Nenhum domínio foi comprado daqui. Só listei opções baratas e disponíveis na época (veja `DOMAINS.md`). Compra = cartão/PayPal seu no registrador.
 
 | Prioridade | Domínio | Por quê | Preço aproximado |
 |---|---|---|---|
 | 1 | **ondeestaflavinho.com** | Melhor marca, fácil de falar no Zap | ~US$ 10–15/ano |
 | 2 | **cadeflavinho.lol** | Barato, meme, BR demais | ~US$ 1.50–2 no 1º ano |
 | 3 | **ondeestaflavinho.fun** | Barato e claro | ~US$ 2.50–4 no 1º ano |
-| 4 | **achaflavinho.fun** | CTA no domínio | ~US$ 2.50–4 no 1º ano |
-| 5 | **flavinhofugiu.lol** | Hook da notícia | ~US$ 1.50–2 no 1º ano |
 
 **Onde comprar:** [Porkbun](https://porkbun.com) ou [Namecheap](https://www.namecheap.com).  
-**Sugestão prática agora:** compre `cadeflavinho.lol` (barato) **e** `ondeestaflavinho.com` (marca). Aponte os dois pra Vercel.
-
-DNS na Vercel: adicione o domínio no projeto → copie os nameservers/records que a Vercel mostrar → cole no registrador.
+Sugestão: `cadeflavinho.lol` (barato) + `ondeestaflavinho.com` (marca). Aponte os dois pra Vercel.
 
 ## Monetização em minutos (sem esperar AdSense)
 
