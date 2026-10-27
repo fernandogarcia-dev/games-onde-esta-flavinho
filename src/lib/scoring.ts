@@ -5,7 +5,6 @@ export const FIND_TIME_LIMIT: Record<Difficulty, number> = {
   easy: 5 * 60,
   medium: 3 * 60,
   hard: 1 * 60,
-  mix: 3 * 60,
 };
 
 /** Points on the find clock at t=0 — harder modes pay more. */
@@ -13,7 +12,6 @@ export const FIND_SCORE_MAX: Record<Difficulty, number> = {
   easy: 1000,
   medium: 2000,
   hard: 3000,
-  mix: 2000,
 };
 
 export const CITY_HIT_BONUS = 200;

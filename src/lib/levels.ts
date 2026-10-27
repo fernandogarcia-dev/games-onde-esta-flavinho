@@ -119,7 +119,7 @@ export function getLevelById(id: string): Level | undefined {
 export function pickCityOptions(
   correct: CityId,
   salt: string,
-  difficulty: Difficulty = "mix",
+  difficulty: Difficulty = "medium",
 ): City[] {
   let h = 2166136261;
   for (let i = 0; i < salt.length; i++) {

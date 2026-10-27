@@ -7,8 +7,7 @@ export type ShareChannel = "whatsapp" | "twitter" | "facebook" | "copy" | "nativ
 function labelMode(d: Difficulty) {
   if (d === "easy") return "Fácil";
   if (d === "medium") return "Médio";
-  if (d === "hard") return "Difícil";
-  return "Surpresa";
+  return "Difícil";
 }
 
 export function gameShareUrl() {

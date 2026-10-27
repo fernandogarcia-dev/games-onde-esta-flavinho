@@ -12,16 +12,12 @@ export const LIVES_BY_DIFFICULTY: Record<Difficulty, number> = {
   easy: 5,
   medium: 3,
   hard: 2,
-  mix: 3,
 };
 
 /** Attach famous city traits matched to the game difficulty + lives. */
 export function withCityClues(level: Level, gameDifficulty: Difficulty): Level {
   const tier = resolveClueTier(gameDifficulty, level.difficulty);
-  const lives =
-    gameDifficulty === "mix"
-      ? LIVES_BY_DIFFICULTY[level.difficulty]
-      : LIVES_BY_DIFFICULTY[gameDifficulty];
+  const lives = LIVES_BY_DIFFICULTY[gameDifficulty];
   return {
     ...level,
     clues: pickCityClues(
@@ -73,14 +69,13 @@ export function rememberEpisode(id: string) {
 }
 
 function poolForDifficulty(difficulty: Difficulty): Level[] {
-  if (difficulty === "mix") return LEVELS;
   return LEVELS.filter((l) => l.difficulty === difficulty);
 }
 
 /** Fresh run: prefers unseen dossiers + diverse cities. */
 export function dealNewRun(
   size = RUN_SIZE,
-  difficulty: Difficulty = "mix",
+  difficulty: Difficulty = "medium",
 ): Level[] {
   const recent = new Set(getRecentEpisodeIds());
   const byDiff = poolForDifficulty(difficulty);
@@ -122,11 +117,10 @@ export function dealNewRun(
   return diversified.map((l) => withCityClues(l, difficulty));
 }
 
-export function episodeCatalogSize(difficulty: Difficulty = "mix") {
-  if (difficulty === "mix") return LEVELS.length;
+export function episodeCatalogSize(difficulty: Difficulty = "medium") {
   return poolForDifficulty(difficulty).length;
 }
 
-export function cityCatalogSize(difficulty: Difficulty = "mix") {
+export function cityCatalogSize(difficulty: Difficulty = "medium") {
   return cityCatalogSizeFor(difficulty);
 }

@@ -62,7 +62,7 @@ type Phase =
 
 export function GameApp() {
   const [phase, setPhase] = useState<Phase>("landing");
-  const [difficulty, setDifficulty] = useState<Difficulty>("mix");
+  const [difficulty, setDifficulty] = useState<Difficulty>("medium");
   const [run, setRun] = useState<Level[]>([]);
   const [levelIndex, setLevelIndex] = useState(0);
   const [clueIndex, setClueIndex] = useState(0);
@@ -500,7 +500,7 @@ export function GameApp() {
               </div>
               <div className="mt-3 flex flex-wrap gap-2 text-xs font-semibold sm:text-sm">
                 <span className="rounded-lg bg-[var(--sand)] px-2.5 py-1">
-                  Pistas {labelClueTier(difficulty, level.difficulty)}
+                  Pistas {labelClueTier(difficulty)}
                 </span>
                 <span className="rounded-lg bg-[var(--sand)] px-2.5 py-1">
                   Timer {labelFindTime(difficulty)}
@@ -899,23 +899,30 @@ function Landing({
   onDifficultyChange: (d: Difficulty) => void;
   onStart: () => void;
 }) {
-  const modes: { id: Difficulty; label: string; hint: string }[] = [
+  const modes: {
+    id: Difficulty;
+    label: string;
+    hint: string;
+    tone: string;
+  }[] = [
     {
       id: "easy",
       label: "Fácil",
       hint: "24 cidades · 5 vidas",
+      tone: "bg-[#e8f6ef] border-[#1f8a5b]",
     },
     {
       id: "medium",
       label: "Médio",
       hint: "56 cidades · 3 vidas",
+      tone: "bg-[#fff4d6] border-[#d4a017]",
     },
     {
       id: "hard",
       label: "Difícil",
       hint: "124 cidades · 2 vidas",
+      tone: "bg-[#fde8e4] border-[#c2410c]",
     },
-    { id: "mix", label: "Surpresa", hint: "124 cidades · mistura" },
   ];
 
   return (
@@ -949,29 +956,56 @@ function Landing({
           </p>
 
           <div className="mt-6">
-            <p className="mb-2 text-sm font-bold uppercase tracking-[0.16em] text-[var(--ink)]">
-              Escolha a dificuldade
-            </p>
-            <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+            <div className="mb-2 flex items-end justify-between gap-2">
+              <p className="text-sm font-bold uppercase tracking-[0.16em] text-[var(--ink)]">
+                Escolha a dificuldade
+              </p>
+              <p className="text-[11px] font-semibold text-[var(--muted)]">
+                toque pra trocar
+              </p>
+            </div>
+            <div
+              role="radiogroup"
+              aria-label="Dificuldade"
+              className="grid grid-cols-3 gap-2 rounded-2xl border-2 border-dashed border-[var(--ink)]/35 bg-white/70 p-2"
+            >
               {modes.map((m) => {
                 const active = difficulty === m.id;
                 return (
                   <button
                     key={m.id}
                     type="button"
+                    role="radio"
+                    aria-checked={active}
                     onClick={() => onDifficultyChange(m.id)}
-                    className={`rounded-2xl border-2 px-3 py-2.5 text-left transition ${
+                    className={`rounded-xl border-2 px-2.5 py-3 text-left transition ${
                       active
-                        ? "border-[var(--ink)] bg-[var(--brand)] text-white shadow-[3px_3px_0_var(--ink)]"
-                        : "border-[var(--ink)]/40 bg-white/80 text-[var(--ink)] hover:border-[var(--ink)] hover:bg-white"
+                        ? `${m.tone} text-[var(--ink)] shadow-[3px_3px_0_var(--ink)] ring-2 ring-[var(--ink)]`
+                        : "border-[var(--ink)]/20 bg-white/90 text-[var(--ink)] opacity-80 hover:opacity-100 hover:border-[var(--ink)]/50"
                     }`}
                   >
-                    <div className="font-[family-name:var(--font-display)] text-base">
-                      {m.label}
+                    <div className="flex items-center gap-1.5">
+                      <span
+                        aria-hidden
+                        className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-full border-2 ${
+                          active
+                            ? "border-[var(--ink)] bg-[var(--ink)] text-white"
+                            : "border-[var(--ink)]/40 bg-white"
+                        }`}
+                      >
+                        {active ? (
+                          <span className="text-[9px] font-black leading-none">
+                            ✓
+                          </span>
+                        ) : null}
+                      </span>
+                      <span className="font-[family-name:var(--font-display)] text-base leading-none">
+                        {m.label}
+                      </span>
                     </div>
                     <div
-                      className={`text-[11px] leading-snug ${
-                        active ? "text-white/85" : "text-[var(--muted)]"
+                      className={`mt-1.5 text-[10px] leading-snug sm:text-[11px] ${
+                        active ? "text-[var(--ink)]/80" : "text-[var(--muted)]"
                       }`}
                     >
                       {m.hint}
@@ -1024,16 +1058,11 @@ function Landing({
 function labelMode(d: Difficulty) {
   if (d === "easy") return "Fácil";
   if (d === "medium") return "Médio";
-  if (d === "hard") return "Difícil";
-  return "Surpresa";
+  return "Difícil";
 }
 
-function labelClueTier(
-  game: Difficulty,
-  episode: "easy" | "medium" | "hard",
-) {
-  const tier = game === "mix" ? episode : game;
-  if (tier === "easy") return "fáceis";
-  if (tier === "hard") return "difíceis";
+function labelClueTier(game: Difficulty) {
+  if (game === "easy") return "fáceis";
+  if (game === "hard") return "difíceis";
   return "médias";
 }

@@ -24,9 +24,8 @@ function mulberry32(a: number) {
 /** Map game mode + episode tier → which famous-trait deck to draw from. */
 export function resolveClueTier(
   gameDifficulty: Difficulty,
-  episodeDifficulty: ClueTier,
+  _episodeDifficulty: ClueTier,
 ): ClueTier {
-  if (gameDifficulty === "mix") return episodeDifficulty;
   return gameDifficulty;
 }
 

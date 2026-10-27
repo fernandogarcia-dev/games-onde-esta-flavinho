@@ -83,8 +83,8 @@ Propagação: minutos a algumas horas.
 | Modo | Cidades no mapa | Observação |
 |---|---|---|
 | Fácil | 24 | países distintos |
-| Médio | 56 | pode repetir país em países grandes |
-| Difícil / Surpresa | 124 | países podem ou não se repetir |
+| Médio (padrão) | 56 | pode repetir país em países grandes |
+| Difícil | 124 | países podem ou não se repetir |
 
 Pistas usam marcas famosas e reconhecíveis (nunca charadas).
 
@@ -95,7 +95,6 @@ Pistas usam marcas famosas e reconhecíveis (nunca charadas).
 | Fácil | 5 min | 1000 (caem com o relógio) |
 | Médio | 3 min | 2000 |
 | Difícil | 1 min | 3000 |
-| Surpresa | 3 min | 2000 |
 
 ## Stack
 

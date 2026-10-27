@@ -1634,7 +1634,7 @@ export const CITY_CATALOG: CityRecord[] = [
 const TIER_RANK: Record<CityTier, number> = { easy: 0, medium: 1, hard: 2 };
 
 export function citiesForDifficulty(d: Difficulty): CityRecord[] {
-  if (d === "hard" || d === "mix") return CITY_CATALOG;
+  if (d === "hard") return CITY_CATALOG;
   if (d === "medium") return CITY_CATALOG.filter((c) => TIER_RANK[c.tier] <= 1);
   return CITY_CATALOG.filter((c) => c.tier === "easy");
 }
