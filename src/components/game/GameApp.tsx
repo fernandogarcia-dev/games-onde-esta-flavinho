@@ -309,6 +309,7 @@ export function GameApp() {
               background={level.scene.background}
               crowdCount={level.scene.crowdCount}
               flavinhoScale={level.scene.flavinhoScale}
+              ground={level.scene.ground}
               onFound={onFound}
               onMiss={onMiss}
               showHint={showHint}

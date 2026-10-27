@@ -24,6 +24,8 @@ export type Level = {
     background: string;
     crowdCount: number;
     flavinhoScale: number;
+    /** Percent band where feet can stand (keeps crowd on the ground). */
+    ground: { yMin: number; yMax: number; xMin?: number; xMax?: number };
   };
   shareLine: string;
 };
@@ -90,6 +92,7 @@ export const LEVELS: Level[] = [
       background: "/game/scene-rio-cartoon.jpg",
       crowdCount: 48,
       flavinhoScale: 0.085,
+      ground: { yMin: 62, yMax: 94, xMin: 2, xMax: 72 },
     },
     shareLine: "Achei o Flavinho no Rio no Onde Está Flavinho?!",
   },
@@ -115,6 +118,7 @@ export const LEVELS: Level[] = [
       background: "/game/scene-brasilia-cartoon.jpg",
       crowdCount: 52,
       flavinhoScale: 0.08,
+      ground: { yMin: 55, yMax: 94, xMin: 4, xMax: 96 },
     },
     shareLine: "Flavinho tava em Brasília o tempo todo 😭",
   },
@@ -140,6 +144,7 @@ export const LEVELS: Level[] = [
       background: "/game/scene-sp-cartoon.jpg",
       crowdCount: 56,
       flavinhoScale: 0.078,
+      ground: { yMin: 58, yMax: 95, xMin: 4, xMax: 96 },
     },
     shareLine: "Achei o Flavinho na Paulista (de guarda-chuva)!",
   },
@@ -165,6 +170,7 @@ export const LEVELS: Level[] = [
       background: "/game/scene-miami-cartoon.jpg",
       crowdCount: 58,
       flavinhoScale: 0.075,
+      ground: { yMin: 60, yMax: 94, xMin: 3, xMax: 78 },
     },
     shareLine: "Flavinho em Miami no jogo Onde Está Flavinho",
   },
@@ -190,6 +196,7 @@ export const LEVELS: Level[] = [
       background: "/game/scene-paris-cartoon.jpg",
       crowdCount: 60,
       flavinhoScale: 0.072,
+      ground: { yMin: 58, yMax: 95, xMin: 4, xMax: 96 },
     },
     shareLine: "Flavinho em Paris?! Onde Está Flavinho é viciante",
   },
@@ -215,6 +222,7 @@ export const LEVELS: Level[] = [
       background: "/game/scene-dubai-cartoon.jpg",
       crowdCount: 62,
       flavinhoScale: 0.07,
+      ground: { yMin: 58, yMax: 95, xMin: 4, xMax: 96 },
     },
     shareLine: "Final: Flavinho em Dubai. Joga Onde Está Flavinho!",
   },

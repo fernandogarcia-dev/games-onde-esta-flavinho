@@ -13,6 +13,12 @@ type Props = {
   background: string;
   crowdCount: number;
   flavinhoScale: number;
+  ground: {
+    yMin: number;
+    yMax: number;
+    xMin?: number;
+    xMax?: number;
+  };
   onFound: () => void;
   onMiss: () => void;
   showHint: boolean;
@@ -24,14 +30,15 @@ export function CrowdScene({
   background,
   crowdCount,
   flavinhoScale,
+  ground,
   onFound,
   onMiss,
   showHint,
   disabled,
 }: Props) {
   const items = useMemo(
-    () => buildCrowd(seed, crowdCount, flavinhoScale),
-    [seed, crowdCount, flavinhoScale],
+    () => buildCrowd(seed, crowdCount, flavinhoScale, ground),
+    [seed, crowdCount, flavinhoScale, ground],
   );
   const [missFlash, setMissFlash] = useState<{ x: number; y: number } | null>(
     null,

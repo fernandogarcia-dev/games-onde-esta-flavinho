@@ -9,6 +9,13 @@ export type CrowdItem = {
   z: number;
 };
 
+export type GroundBand = {
+  yMin: number;
+  yMax: number;
+  xMin?: number;
+  xMax?: number;
+};
+
 export const FLAVINHO_SRC = "/game/chars/chr-flavinho.png";
 
 export const DECOY_SRCS = [
@@ -55,27 +62,28 @@ function hashSeed(seed: string) {
   return h >>> 0;
 }
 
-/** Pack characters so they feel like a crowd without stacking on the exact same spot. */
 export function buildCrowd(
   seed: string,
   crowdCount: number,
   flavinhoScale: number,
+  ground: GroundBand,
 ): CrowdItem[] {
   const rand = mulberry32(hashSeed(seed));
   const items: CrowdItem[] = [];
-
+  const xMin = ground.xMin ?? 4;
+  const xMax = ground.xMax ?? 96;
+  const ySpan = Math.max(8, ground.yMax - ground.yMin);
   const flavinhoIndex = Math.floor(rand() * crowdCount);
 
-  // Prefer mid/back rows so the target is not a giant sticker in the front.
   for (let i = 0; i < crowdCount; i++) {
-    const depth = 0.12 + rand() * 0.78;
-    const x = 4 + rand() * 92;
-    const y = 32 + depth * 60;
+    const depth = rand(); // 0 = farther, 1 = closer
+    const x = xMin + rand() * (xMax - xMin);
+    const y = ground.yMin + depth * ySpan;
     const isFlavinho = i === flavinhoIndex;
-    const base = 0.038 + depth * 0.095;
+    const base = 0.045 + depth * 0.055;
     const scale = isFlavinho
-      ? Math.min(flavinhoScale, base + 0.01)
-      : base + rand() * 0.012;
+      ? Math.min(flavinhoScale, base + 0.008)
+      : base + rand() * 0.01;
 
     items.push({
       id: `${seed}-p-${i}`,
@@ -91,19 +99,19 @@ export function buildCrowd(
     });
   }
 
-  // Props sprinkled to break silhouette scanning
-  const propCount = Math.max(6, Math.floor(crowdCount / 5));
+  const propCount = Math.max(5, Math.floor(crowdCount / 7));
   for (let i = 0; i < propCount; i++) {
-    const depth = 0.2 + rand() * 0.7;
+    const depth = rand();
+    const y = ground.yMin + depth * ySpan;
     items.push({
       id: `${seed}-prop-${i}`,
       kind: "prop",
       src: PROP_SRCS[Math.floor(rand() * PROP_SRCS.length)],
-      x: 5 + rand() * 90,
-      y: 38 + depth * 55,
-      scale: 0.05 + depth * 0.07 + rand() * 0.03,
+      x: xMin + rand() * (xMax - xMin),
+      y,
+      scale: 0.04 + depth * 0.05,
       facing: 1,
-      z: 38 + depth * 55,
+      z: y - 0.01,
     });
   }
 
