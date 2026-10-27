@@ -66,9 +66,24 @@ body {
   animation: floaty 4.5s ease-in-out infinite;
 }
 
+@keyframes pulse-urgent {
+  0%,
+  100% {
+    box-shadow: 4px 4px 0 var(--ink);
+  }
+  50% {
+    box-shadow: 0 0 0 3px rgba(194, 65, 12, 0.35), 4px 4px 0 var(--ink);
+  }
+}
+
+.timer-urgent {
+  animation: pulse-urgent 0.7s ease-in-out infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .animate-rise,
-  .animate-float {
+  .animate-float,
+  .timer-urgent {
     animation: none;
   }
 }

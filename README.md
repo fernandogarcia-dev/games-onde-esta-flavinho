@@ -40,12 +40,33 @@ Abra [http://127.0.0.1:43127](http://127.0.0.1:43127).
 5. Clique **Deploy**. Em ~1 minuto você ganha uma URL `*.vercel.app`.
 6. (Opcional) Settings → Domains → Add → cole o domínio que **você** comprou e siga o DNS.
 
+### Ranking global (Upstash)
+
+Sem Redis o placar funciona **neste aparelho**. Pra ranking mundial:
+
+1. No projeto na Vercel → **Storage** / Marketplace → **Upstash Redis** (plano free).
+2. Conecte ao projeto — a Vercel injeta `UPSTASH_REDIS_REST_URL` e `UPSTASH_REDIS_REST_TOKEN`.
+3. Redeploy.
+
+**Não preciso da senha da sua conta Vercel.** Você só importa o repo (ou conecta o GitHub). Se quiser que eu rode `vercel` daqui no futuro, aí sim um token de deploy (`vercel login` / token) — mas o caminho normal é Import no site.
+
 CLI alternativa (se tiver a Vercel CLI logada):
 
 ```bash
 npx vercel
 npx vercel --prod
 ```
+
+## Pontuação e timer
+
+| Modo | Tempo pra achar | Pontos na mesa |
+|---|---|---|
+| Fácil | 5 min | começam em 5000 e caem com o relógio |
+| Médio | 3 min | idem |
+| Difícil | 1 min | idem |
+| Surpresa | 3 min | idem |
+
+Ao achar, o que sobrou na mesa **soma** no total do topo. Sequência de achados multiplica. Achado sem clique errado +400. Sem tempo = game over da caçada.
 
 ## Domínio: eu NÃO comprei
 

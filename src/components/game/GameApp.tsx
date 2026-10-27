@@ -1,9 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { CrowdScene } from "@/components/game/CrowdScene";
+import { Leaderboard } from "@/components/game/Leaderboard";
 import { PixPanel } from "@/components/game/PixPanel";
 import {
   cityCatalogSize,
@@ -19,6 +20,26 @@ import {
 } from "@/lib/levels";
 import type { Difficulty } from "@/lib/types";
 import {
+  fetchLeaderboard,
+  getPlayerName,
+  sanitizeName,
+  setPlayerName,
+  submitScore,
+  type RankEntry,
+} from "@/lib/ranking";
+import {
+  applyStreak,
+  CITY_HIT_BONUS,
+  CITY_MISS_PENALTY,
+  CLICK_MISS_PENALTY,
+  FIND_SCORE_MAX,
+  findLimitSeconds,
+  findScoreAt,
+  formatClock,
+  labelFindTime,
+  PERFECT_FIND_BONUS,
+} from "@/lib/scoring";
+import {
   buildShareUrl,
   buildWhatsAppShare,
   getBestScore,
@@ -26,7 +47,14 @@ import {
   saveBestScore,
 } from "@/lib/monetization";
 
-type Phase = "landing" | "briefing" | "clues" | "find" | "win" | "fail-city";
+type Phase =
+  | "landing"
+  | "briefing"
+  | "clues"
+  | "find"
+  | "win"
+  | "fail-city"
+  | "fail-time";
 
 const LIVES_BY_DIFFICULTY: Record<Difficulty, number> = {
   easy: 5,
@@ -41,9 +69,10 @@ export function GameApp() {
   const [run, setRun] = useState<Level[]>([]);
   const [levelIndex, setLevelIndex] = useState(0);
   const [clueIndex, setClueIndex] = useState(0);
-  const [score, setScore] = useState(1000);
+  const [score, setScore] = useState(0);
   const [misses, setMisses] = useState(0);
   const [lives, setLives] = useState(3);
+  const [streak, setStreak] = useState(0);
   const [feedback, setFeedback] = useState("");
   const [showHint, setShowHint] = useState(false);
   const [hintUnlocked, setHintUnlocked] = useState(false);
@@ -51,15 +80,33 @@ export function GameApp() {
   const [showPix, setShowPix] = useState(false);
   const [elapsed, setElapsed] = useState(0);
   const [running, setRunning] = useState(false);
+  const [findRemaining, setFindRemaining] = useState(0);
+  const [findActive, setFindActive] = useState(false);
+  const [lastFindBonus, setLastFindBonus] = useState(0);
+  const [lastPerfect, setLastPerfect] = useState(false);
+  const [playerName, setPlayerNameState] = useState("");
+  const [nameDraft, setNameDraft] = useState("");
+  const [needsName, setNeedsName] = useState(false);
+  const [board, setBoard] = useState<RankEntry[]>([]);
+  const [boardGlobal, setBoardGlobal] = useState(false);
+  const [myRank, setMyRank] = useState<number | null>(null);
+  const [newRecord, setNewRecord] = useState(false);
+  const findDeadlineRef = useRef<number | null>(null);
+  const foundLockRef = useRef(false);
   const catalogSize = episodeCatalogSize();
   const citiesTotal = cityCatalogSize();
 
   const level: Level | null = run[levelIndex] ?? null;
   const city = level ? getCity(level.correctCity) : null;
+  const findLimit = findLimitSeconds(difficulty);
+  const liveFindPoints = findScoreAt(findRemaining, findLimit);
 
   const cityOptions = useMemo(() => {
     if (!level) return [];
-    return pickCityOptions(level.correctCity, `${level.id}-${levelIndex}-${difficulty}`);
+    return pickCityOptions(
+      level.correctCity,
+      `${level.id}-${levelIndex}-${difficulty}`,
+    );
   }, [level, levelIndex, difficulty]);
 
   const crowdCount = useMemo(() => {
@@ -71,15 +118,60 @@ export function GameApp() {
   }, [level, difficulty]);
 
   useEffect(() => {
+    setBest(getBestScore());
+    setPlayerNameState(getPlayerName());
+    void refreshBoard();
+  }, []);
+
+  useEffect(() => {
     if (!running) return;
     const id = window.setInterval(() => setElapsed((e) => e + 1), 1000);
     return () => window.clearInterval(id);
   }, [running]);
 
+  useEffect(() => {
+    if (!findActive || findDeadlineRef.current == null) return;
+    const tick = () => {
+      const deadline = findDeadlineRef.current;
+      if (deadline == null) return;
+      const left = Math.max(0, Math.ceil((deadline - Date.now()) / 1000));
+      setFindRemaining(left);
+      if (left <= 0) {
+        setFindActive(false);
+        findDeadlineRef.current = null;
+        setStreak(0);
+        setPhase("fail-time");
+        setRunning(false);
+      }
+    };
+    tick();
+    const id = window.setInterval(tick, 250);
+    return () => window.clearInterval(id);
+  }, [findActive]);
+
   const progressLabel = useMemo(
     () => (run.length ? `${levelIndex + 1} / ${run.length}` : "—"),
     [levelIndex, run.length],
   );
+
+  async function refreshBoard() {
+    const { entries, global } = await fetchLeaderboard();
+    setBoard(entries);
+    setBoardGlobal(global);
+  }
+
+  function startFindTimer() {
+    const limit = findLimitSeconds(difficulty);
+    findDeadlineRef.current = Date.now() + limit * 1000;
+    foundLockRef.current = false;
+    setFindRemaining(limit);
+    setFindActive(true);
+  }
+
+  function stopFindTimer() {
+    setFindActive(false);
+    findDeadlineRef.current = null;
+  }
 
   function startGame(diff: Difficulty = difficulty) {
     const dealt = dealNewRun(6, diff);
@@ -91,13 +183,20 @@ export function GameApp() {
     setPhase("briefing");
     setLevelIndex(0);
     setClueIndex(0);
-    setScore(1000);
+    setScore(0);
     setMisses(0);
+    setStreak(0);
     setLives(LIVES_BY_DIFFICULTY[diff]);
     setFeedback("");
     setShowHint(false);
     setElapsed(0);
     setRunning(true);
+    setLastFindBonus(0);
+    setLastPerfect(false);
+    setNeedsName(false);
+    setMyRank(null);
+    setNewRecord(false);
+    stopFindTimer();
   }
 
   function restartToMenu() {
@@ -106,6 +205,9 @@ export function GameApp() {
     setFeedback("");
     setShowHint(false);
     setShowPix(false);
+    setNeedsName(false);
+    stopFindTimer();
+    void refreshBoard();
   }
 
   function goToClues() {
@@ -117,44 +219,90 @@ export function GameApp() {
   function pickCity(id: CityId) {
     if (!level || !city) return;
     if (id === level.correctCity) {
-      setFeedback(`Mapa fechou em ${city.name}. Agora é olho vivo na multidão.`);
-      setScore((s) => s + 250);
+      setFeedback(
+        `Mapa fechou em ${city.name}. Relógio ligado: ${labelFindTime(difficulty)} pra achar.`,
+      );
+      setScore((s) => s + CITY_HIT_BONUS);
+      setMisses(0);
       setPhase("find");
+      startFindTimer();
       return;
     }
     const wrong = level.wrongHints[id] || "Rastro frio. Outra cidade.";
     setFeedback(wrong);
-    setScore((s) => Math.max(0, s - 80));
+    setScore((s) => Math.max(0, s - CITY_MISS_PENALTY));
     setLives((l) => {
       const next = l - 1;
       if (next <= 0) {
         setPhase("fail-city");
         setRunning(false);
+        setStreak(0);
       }
       return next;
     });
     setClueIndex((c) => Math.min(c + 1, level.clues.length - 1));
   }
 
-  function onFound() {
-    const bonus = Math.max(50, 400 - misses * 40);
-    const nextScore = score + bonus;
+  async function publishScore(total: number, name: string) {
+    const result = await submitScore(name, total);
+    setBoard(result.entries);
+    setBoardGlobal(result.global);
+    setMyRank(result.rank);
+  }
+
+  async function onFound() {
+    if (foundLockRef.current || phase !== "find" || !findActive) return;
+    foundLockRef.current = true;
+    const remaining = findRemaining;
+    const base = findScoreAt(remaining, findLimit);
+    const nextStreak = streak + 1;
+    const withStreak = applyStreak(base, nextStreak);
+    const perfect = misses === 0;
+    const perfectPts = perfect ? PERFECT_FIND_BONUS : 0;
+    const gained = withStreak + perfectPts;
+    const nextScore = score + gained;
+
+    stopFindTimer();
+    setStreak(nextStreak);
+    setLastFindBonus(gained);
+    setLastPerfect(perfect);
     setScore(nextScore);
     setRunning(false);
     saveBestScore(nextScore);
-    setBest(getBestScore());
+    const prevBest = getBestScore();
+    setBest(prevBest);
+    setNewRecord(nextScore >= prevBest && nextScore > 0);
+
+    const existing = getPlayerName();
+    if (!existing) {
+      setNeedsName(true);
+      setNameDraft("");
+    } else {
+      setNeedsName(false);
+      await publishScore(nextScore, existing);
+    }
     setPhase("win");
   }
 
   function onMiss() {
     setMisses((m) => m + 1);
-    setScore((s) => Math.max(0, s - 25));
+    setScore((s) => Math.max(0, s - CLICK_MISS_PENALTY));
+  }
+
+  async function confirmName() {
+    const clean = setPlayerName(nameDraft);
+    if (!clean || clean.length < 2) return;
+    setPlayerNameState(clean);
+    setNeedsName(false);
+    await publishScore(score, clean);
   }
 
   function nextLevel() {
+    if (needsName) return;
     if (levelIndex >= run.length - 1) {
       setPhase("landing");
       setRunning(false);
+      void refreshBoard();
       return;
     }
     const next = levelIndex + 1;
@@ -165,15 +313,19 @@ export function GameApp() {
     setLives(LIVES_BY_DIFFICULTY[difficulty]);
     setFeedback("");
     setShowHint(false);
+    setLastFindBonus(0);
+    setLastPerfect(false);
+    setMyRank(null);
+    setNewRecord(false);
     setPhase("briefing");
     setRunning(true);
   }
 
   function shareWin() {
     if (!level) return;
-    const text = `${level.shareLine}\nPontuação: ${score}\n${buildShareUrl()}`;
-    const url = buildWhatsAppShare(text);
-    window.open(url, "_blank", "noopener,noreferrer");
+    const who = playerName ? `${playerName} · ` : "";
+    const text = `${level.shareLine}\n${who}${score.toLocaleString("pt-BR")} pts\n${buildShareUrl()}`;
+    window.open(buildWhatsAppShare(text), "_blank", "noopener,noreferrer");
   }
 
   function unlockVisualHint() {
@@ -183,6 +335,8 @@ export function GameApp() {
     }
     setShowPix(true);
   }
+
+  const urgent = findActive && findRemaining <= Math.max(10, findLimit * 0.2);
 
   return (
     <div className="relative min-h-full">
@@ -203,8 +357,20 @@ export function GameApp() {
         <div className="flex items-center gap-2">
           {phase !== "landing" && (
             <>
-              <div className="hidden rounded-full border border-[var(--ink)]/15 bg-white/70 px-3 py-1 text-xs font-semibold text-[var(--ink)] sm:block">
-                Ep {progressLabel} · {score} pts · {formatTime(elapsed)}
+              <div className="hidden items-center gap-2 rounded-full border border-[var(--ink)]/15 bg-white/80 px-3 py-1 text-xs font-semibold text-[var(--ink)] sm:flex">
+                <span>Ep {progressLabel}</span>
+                <span className="text-[var(--muted)]">·</span>
+                <span className="tabular-nums text-[var(--brand)]">
+                  {score.toLocaleString("pt-BR")} pts
+                </span>
+                {streak > 1 && (
+                  <>
+                    <span className="text-[var(--muted)]">·</span>
+                    <span className="text-[var(--accent)]">🔥 x{streak}</span>
+                  </>
+                )}
+                <span className="text-[var(--muted)]">·</span>
+                <span className="tabular-nums">{formatClock(elapsed)}</span>
               </div>
               <Button variant="secondary" size="sm" onClick={restartToMenu}>
                 Recomeçar
@@ -219,15 +385,25 @@ export function GameApp() {
 
       <main className="relative z-10 mx-auto w-full max-w-5xl px-4 pb-16 sm:px-6">
         {phase === "landing" && (
-          <Landing
-            best={best}
-            catalogSize={catalogSize}
-            citiesTotal={citiesTotal}
-            difficulty={difficulty}
-            onDifficultyChange={setDifficulty}
-            onStart={() => startGame(difficulty)}
-            onPix={() => setShowPix(true)}
-          />
+          <div className="space-y-6">
+            <Landing
+              best={best}
+              catalogSize={catalogSize}
+              citiesTotal={citiesTotal}
+              difficulty={difficulty}
+              playerName={playerName}
+              topScore={board[0]?.score ?? 0}
+              topName={board[0]?.name ?? ""}
+              onDifficultyChange={setDifficulty}
+              onStart={() => startGame(difficulty)}
+              onPix={() => setShowPix(true)}
+            />
+            <Leaderboard
+              entries={board}
+              global={boardGlobal}
+              highlight={playerName}
+            />
+          </div>
         )}
 
         {phase === "briefing" && level && (
@@ -239,22 +415,27 @@ export function GameApp() {
               {level.title}
             </h1>
             <p className="mt-3 text-[var(--muted)]">
-              Três recortes chegaram na mesa. Cruze as pistas, chute a cidade e,
-              se o mapa fechar, ele ainda tem que aparecer no meio da multidão.
+              Cruze as pistas, feche a cidade e ache ele na multidão. No modo{" "}
+              {labelMode(difficulty)} você tem{" "}
+              <strong>{labelFindTime(difficulty)}</strong> — a caçada começa em{" "}
+              <strong>{FIND_SCORE_MAX.toLocaleString("pt-BR")}</strong> pts e
+              derrete com o relógio.
             </p>
             <div className="mt-5 flex flex-wrap gap-3 text-sm font-semibold">
               <span className="rounded-lg bg-[var(--sand)] px-3 py-1.5">
                 Modo: {labelMode(difficulty)}
               </span>
               <span className="rounded-lg bg-[var(--sand)] px-3 py-1.5">
-                Dossiê: {labelDifficulty(level.difficulty)}
+                Timer: {labelFindTime(difficulty)}
               </span>
               <span className="rounded-lg bg-[var(--sand)] px-3 py-1.5">
                 Tentativas: {lives}
               </span>
-              <span className="rounded-lg bg-[var(--sand)] px-3 py-1.5">
-                Episódio {progressLabel}
-              </span>
+              {streak > 0 && (
+                <span className="rounded-lg bg-[var(--accent)]/15 px-3 py-1.5 text-[var(--accent)]">
+                  Sequência 🔥 {streak}
+                </span>
+              )}
             </div>
             <div className="mt-6 flex flex-wrap gap-3">
               <Button size="lg" onClick={goToClues}>
@@ -297,7 +478,9 @@ export function GameApp() {
               <div className="mt-4 flex flex-wrap gap-2 text-sm font-semibold text-[var(--muted)]">
                 <span>Tentativas: {lives}</span>
                 <span>·</span>
-                <span>{score} pts</span>
+                <span className="text-[var(--brand)]">
+                  {score.toLocaleString("pt-BR")} pts
+                </span>
               </div>
             </div>
 
@@ -332,6 +515,52 @@ export function GameApp() {
 
         {phase === "find" && level && city && (
           <section className="animate-rise space-y-4">
+            <div
+              className={`flex flex-wrap items-center justify-between gap-3 rounded-2xl border-2 px-4 py-3 ${
+                urgent
+                  ? "timer-urgent border-[var(--alert)] bg-[var(--alert)]/10"
+                  : "border-[var(--ink)] bg-[var(--paper)] shadow-[4px_4px_0_var(--ink)]"
+              }`}
+            >
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-wide text-[var(--muted)]">
+                  Tempo · pontos na mesa
+                </p>
+                <p
+                  className={`font-[family-name:var(--font-display)] text-3xl tabular-nums ${
+                    urgent ? "text-[var(--alert)]" : "text-[var(--ink)]"
+                  }`}
+                >
+                  {formatClock(findRemaining)}
+                </p>
+              </div>
+              <div className="text-right">
+                <p className="text-[10px] font-bold uppercase tracking-wide text-[var(--muted)]">
+                  Se achar agora
+                </p>
+                <p className="font-[family-name:var(--font-display)] text-3xl tabular-nums text-[var(--brand)]">
+                  +{liveFindPoints.toLocaleString("pt-BR")}
+                </p>
+                {streak > 0 && (
+                  <p className="text-xs font-semibold text-[var(--accent)]">
+                    sequência 🔥 x{streak + 1} no próximo achado
+                  </p>
+                )}
+              </div>
+              <div className="w-full sm:w-48">
+                <div className="h-2 overflow-hidden rounded-full bg-[var(--sand)]">
+                  <div
+                    className={`h-full transition-[width] duration-200 ${
+                      urgent ? "bg-[var(--alert)]" : "bg-[var(--brand)]"
+                    }`}
+                    style={{
+                      width: `${Math.max(0, (findRemaining / findLimit) * 100)}%`,
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+
             <div className="flex flex-wrap items-end justify-between gap-3">
               <div>
                 <p className="text-sm font-bold uppercase tracking-[0.18em] text-[var(--brand)]">
@@ -341,7 +570,8 @@ export function GameApp() {
                   Ele está aí. Ache.
                 </h2>
                 <p className="text-sm text-[var(--muted)]">
-                  Cliques errados: {misses} · Dezenas de disfarces. Um só é o real.
+                  Cliques errados: {misses} · Total:{" "}
+                  {score.toLocaleString("pt-BR")} pts
                 </p>
               </div>
               <div className="flex flex-wrap items-center gap-3">
@@ -359,25 +589,13 @@ export function GameApp() {
                       Procurado · sem disfarce
                     </p>
                     <p className="text-sm font-black text-[var(--ink)]">Flavinho</p>
-                    <p className="text-[11px] text-[var(--muted)]">blazer azul, sem chapéu</p>
+                    <p className="text-[11px] text-[var(--muted)]">
+                      blazer azul, sem chapéu
+                    </p>
                   </div>
                 </div>
                 <Button variant="secondary" size="sm" onClick={unlockVisualHint}>
                   {showHint ? "Dica ativa" : "Pedir dica"}
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => {
-                    const text = `To no rastro do Flavinho em ${city.name}: ${buildShareUrl()}`;
-                    window.open(
-                      buildWhatsAppShare(text),
-                      "_blank",
-                      "noopener,noreferrer",
-                    );
-                  }}
-                >
-                  Mandar no Zap
                 </Button>
               </div>
             </div>
@@ -388,9 +606,10 @@ export function GameApp() {
               crowdCount={crowdCount}
               flavinhoScale={level.scene.flavinhoScale}
               ground={level.scene.ground}
-              onFound={onFound}
+              onFound={() => void onFound()}
               onMiss={onMiss}
               showHint={showHint}
+              disabled={!findActive}
             />
 
             {showPix && (
@@ -406,54 +625,114 @@ export function GameApp() {
         )}
 
         {phase === "win" && city && (
-          <section className="animate-rise mx-auto max-w-xl rounded-3xl border-[3px] border-[var(--ink)] bg-[var(--paper)] p-6 text-center shadow-[8px_8px_0_var(--ink)] sm:p-8">
-            <Image
-              src="/game/disguises/real.png"
-              alt="Flavinho encontrado"
-              width={140}
-              height={200}
-              className="mx-auto object-contain"
-              unoptimized
-            />
-            <h2 className="mt-4 font-[family-name:var(--font-display)] text-4xl text-[var(--ink)]">
-              Pegou o rastro
-            </h2>
-            <p className="mt-2 text-[var(--muted)]">
-              Local: {city.name}. Pontuação: <strong>{score}</strong> · Recorde:{" "}
-              <strong>{best}</strong>
-            </p>
-            <div className="mt-6 flex flex-wrap justify-center gap-3">
-              <Button size="lg" onClick={nextLevel}>
-                {levelIndex >= run.length - 1
-                  ? "Nova rodada (outros dossiês)"
-                  : "Próximo dossiê"}
-              </Button>
-              <Button variant="secondary" onClick={shareWin}>
-                Estourar no Zap
-              </Button>
-              <Button variant="secondary" onClick={restartToMenu}>
-                Recomeçar
-              </Button>
-              <Button variant="money" onClick={() => setShowPix(true)}>
-                Café via PIX
-              </Button>
+          <section className="animate-rise mx-auto grid max-w-4xl gap-6 lg:grid-cols-[1.1fr_0.9fr]">
+            <div className="rounded-3xl border-[3px] border-[var(--ink)] bg-[var(--paper)] p-6 text-center shadow-[8px_8px_0_var(--ink)] sm:p-8">
+              <Image
+                src="/game/disguises/real.png"
+                alt="Flavinho encontrado"
+                width={120}
+                height={170}
+                className="mx-auto object-contain"
+                unoptimized
+              />
+              <h2 className="mt-3 font-[family-name:var(--font-display)] text-4xl text-[var(--ink)]">
+                Pegou o rastro
+              </h2>
+              {newRecord && (
+                <p className="mt-2 inline-block rounded-full bg-[var(--brand)] px-3 py-1 text-sm font-black text-white">
+                  Novo recorde!
+                </p>
+              )}
+              <p className="mt-2 text-[var(--muted)]">
+                {city.name} · caçada{" "}
+                <strong className="text-[var(--brand)]">
+                  +{lastFindBonus.toLocaleString("pt-BR")}
+                </strong>
+                {lastPerfect ? " (achado limpo incluso)" : ""}
+                {streak > 1 ? ` · sequência x${streak}` : ""}
+              </p>
+              <p className="mt-1 font-[family-name:var(--font-display)] text-3xl text-[var(--ink)]">
+                Total {score.toLocaleString("pt-BR")} pts
+              </p>
+              {myRank != null && (
+                <p className="mt-1 text-sm font-semibold text-[var(--accent)]">
+                  Você está em #{myRank} no ranking
+                </p>
+              )}
+
+              {needsName ? (
+                <div className="mx-auto mt-5 max-w-sm text-left">
+                  <p className="text-sm font-bold text-[var(--ink)]">
+                    Como te chamamos no placar?
+                  </p>
+                  <p className="text-xs text-[var(--muted)]">
+                    Só nome e pontuação. Primeira vez que você fecha um rastro.
+                  </p>
+                  <div className="mt-3 flex gap-2">
+                    <input
+                      value={nameDraft}
+                      onChange={(e) =>
+                        setNameDraft(sanitizeName(e.target.value))
+                      }
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") void confirmName();
+                      }}
+                      maxLength={16}
+                      placeholder="Seu apelido"
+                      className="min-w-0 flex-1 rounded-xl border-2 border-[var(--ink)] bg-white px-3 py-2.5 font-semibold text-[var(--ink)] outline-none focus:border-[var(--brand)]"
+                      autoFocus
+                    />
+                    <Button
+                      onClick={() => void confirmName()}
+                      disabled={nameDraft.trim().length < 2}
+                    >
+                      Entrar
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <div className="mt-6 flex flex-wrap justify-center gap-3">
+                  <Button size="lg" onClick={nextLevel}>
+                    {levelIndex >= run.length - 1
+                      ? "Ver ranking / nova rodada"
+                      : "Próximo dossiê"}
+                  </Button>
+                  <Button variant="secondary" onClick={shareWin}>
+                    Estourar no Zap
+                  </Button>
+                  <Button variant="secondary" onClick={restartToMenu}>
+                    Recomeçar
+                  </Button>
+                </div>
+              )}
+
+              {showPix && (
+                <div className="mt-5 text-left">
+                  <PixPanel />
+                </div>
+              )}
             </div>
-            {showPix && (
-              <div className="mt-5 text-left">
-                <PixPanel />
-              </div>
-            )}
+            <Leaderboard
+              entries={board}
+              global={boardGlobal}
+              highlight={playerName || nameDraft}
+              compact
+            />
           </section>
         )}
 
-        {phase === "fail-city" && (
+        {(phase === "fail-city" || phase === "fail-time") && (
           <section className="animate-rise mx-auto max-w-xl rounded-3xl border-[3px] border-[var(--ink)] bg-[var(--paper)] p-6 text-center shadow-[8px_8px_0_var(--ink)]">
             <h2 className="font-[family-name:var(--font-display)] text-3xl text-[var(--ink)]">
-              Rastro apagado
+              {phase === "fail-time" ? "Tempo esgotado" : "Rastro apagado"}
             </h2>
             <p className="mt-2 text-[var(--muted)]">
-              Acabaram as tentativas. Ele trocou de cidade enquanto você
-              hesitava.
+              {phase === "fail-time"
+                ? "O relógio zerou e os pontos da mesa evaporaram. Ele trocou de disfarce."
+                : "Acabaram as tentativas no mapa. Ele trocou de cidade enquanto você hesitava."}
+            </p>
+            <p className="mt-3 font-semibold text-[var(--ink)]">
+              Pontuação da corrida: {score.toLocaleString("pt-BR")}
             </p>
             <div className="mt-6 flex flex-wrap justify-center gap-3">
               <Button onClick={() => startGame(difficulty)}>Tentar de novo</Button>
@@ -487,6 +766,9 @@ function Landing({
   catalogSize,
   citiesTotal,
   difficulty,
+  playerName,
+  topScore,
+  topName,
   onDifficultyChange,
   onStart,
   onPix,
@@ -495,15 +777,30 @@ function Landing({
   catalogSize: number;
   citiesTotal: number;
   difficulty: Difficulty;
+  playerName: string;
+  topScore: number;
+  topName: string;
   onDifficultyChange: (d: Difficulty) => void;
   onStart: () => void;
   onPix: () => void;
 }) {
   const modes: { id: Difficulty; label: string; hint: string }[] = [
-    { id: "easy", label: "Fácil", hint: "5 tentativas · multidão menor" },
-    { id: "medium", label: "Médio", hint: "3 tentativas · padrão" },
-    { id: "hard", label: "Difícil", hint: "2 tentativas · multidão cheia" },
-    { id: "mix", label: "Surpresa", hint: "mistura tudo" },
+    {
+      id: "easy",
+      label: "Fácil",
+      hint: `5 min · ${FIND_SCORE_MAX.toLocaleString("pt-BR")} pts`,
+    },
+    {
+      id: "medium",
+      label: "Médio",
+      hint: `3 min · ${FIND_SCORE_MAX.toLocaleString("pt-BR")} pts`,
+    },
+    {
+      id: "hard",
+      label: "Difícil",
+      hint: `1 min · ${FIND_SCORE_MAX.toLocaleString("pt-BR")} pts`,
+    },
+    { id: "mix", label: "Surpresa", hint: "3 min · mistura tudo" },
   ];
 
   return (
@@ -529,8 +826,11 @@ function Landing({
             Onde Está Flavinho?
           </h1>
           <p className="mt-4 max-w-md text-lg text-[var(--muted)]">
-            Ele saiu da agenda. Sobrou um blazer azul, {citiesTotal} cidades no
-            radar e uma multidão que não colabora.
+            {playerName ? `E aí, ${playerName}. ` : ""}
+            Relógio ligado, pontos derretendo, ranking esperando.{" "}
+            {topName
+              ? `Bata ${topName} (${topScore.toLocaleString("pt-BR")} pts).`
+              : "Seja o primeiro no placar."}
           </p>
 
           <div className="mt-6">
@@ -577,8 +877,8 @@ function Landing({
           </div>
           <p className="mt-4 text-sm text-[var(--muted)]">
             {best > 0
-              ? `Seu recorde: ${best} pts · ${catalogSize} dossiês · ${citiesTotal} cidades`
-              : `${catalogSize} dossiês no arquivo. Cada rodada embaralha 6 cidades diferentes.`}
+              ? `Seu recorde: ${best.toLocaleString("pt-BR")} pts · ${catalogSize} dossiês · ${citiesTotal} cidades`
+              : `${catalogSize} dossiês. Cada achado começa com ${FIND_SCORE_MAX.toLocaleString("pt-BR")} pts no relógio.`}
           </p>
         </div>
 
@@ -602,23 +902,9 @@ function Landing({
   );
 }
 
-function labelDifficulty(d: Level["difficulty"]) {
-  if (d === "easy") return "morna";
-  if (d === "medium") return "quente";
-  return "escaldante";
-}
-
 function labelMode(d: Difficulty) {
   if (d === "easy") return "Fácil";
   if (d === "medium") return "Médio";
   if (d === "hard") return "Difícil";
   return "Surpresa";
-}
-
-function formatTime(total: number) {
-  const m = Math.floor(total / 60)
-    .toString()
-    .padStart(2, "0");
-  const s = (total % 60).toString().padStart(2, "0");
-  return `${m}:${s}`;
 }
