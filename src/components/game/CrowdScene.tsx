@@ -54,20 +54,20 @@ export function CrowdScene({
     return () => mq.removeEventListener("change", apply);
   }, []);
 
-  // Portrait: fewer + slightly larger tokens, not mega-sprites that pile up.
-  const mobileBoost = portrait ? 1.18 : 1;
-  const scale = flavinhoScale * (portrait ? 1.08 : 1);
+  // Portrait keeps density; shrink tokens instead of gutting the crowd.
+  const mobileBoost = portrait ? 1.06 : 1;
+  const scale = flavinhoScale * (portrait ? 0.92 : 1);
   const count = portrait
-    ? Math.max(14, Math.floor(crowdCount * 0.42))
+    ? Math.max(28, Math.floor(crowdCount * 0.78))
     : crowdCount;
 
   const items = useMemo(() => {
     const band = portrait
       ? {
-          yMin: Math.max(10, ground.yMin - 2),
-          yMax: Math.min(90, ground.yMax + 2),
-          xMin: Math.max(6, (ground.xMin ?? 10) - 2),
-          xMax: Math.min(94, (ground.xMax ?? 90) + 2),
+          yMin: Math.max(8, ground.yMin - 2),
+          yMax: Math.min(92, ground.yMax + 2),
+          xMin: Math.max(3, (ground.xMin ?? 4) - 1),
+          xMax: Math.min(97, (ground.xMax ?? 96) + 1),
         }
       : ground;
     return buildCrowd(seed, count, scale, band, { mobileBoost, lookTier });
@@ -118,6 +118,7 @@ export function CrowdScene({
           item.scale,
           item.kind,
           mobileBoost,
+          lookTier === "hard" ? 3.4 : lookTier === "medium" ? 4.2 : 5.2,
         );
         const style = {
           left: `${item.x}%`,

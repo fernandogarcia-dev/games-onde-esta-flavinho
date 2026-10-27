@@ -130,15 +130,13 @@ function decoyLook(
   tier: LookTier,
   rand: () => number,
 ): { src: string; filter?: string } {
-  // Hard: many near-clones of the real sprite with tiny filter tweaks.
-  if (tier === "hard" && rand() < 0.42) {
+  if (tier === "hard" && rand() < 0.45) {
     return {
       src: FLAVINHO_SRC,
       filter: pickFrom(NEAR_CLONE_FILTERS, rand),
     };
   }
-  // Medium: occasional near-clone so the sea of blazers starts earlier.
-  if (tier === "medium" && rand() < 0.14) {
+  if (tier === "medium" && rand() < 0.16) {
     return {
       src: FLAVINHO_SRC,
       filter: pickFrom(NEAR_CLONE_FILTERS, rand),
@@ -147,29 +145,21 @@ function decoyLook(
   return { src: pickFrom(disguisePoolFor(tier), rand) };
 }
 
-function scaleFor(
-  tier: LookTier,
-  isFlavinho: boolean,
-  flavinhoScale: number,
-  rand: () => number,
-) {
-  // Harder = sizes almost match, so scale doesn't give him away.
+/** How packed the board gets — Waldo energy. */
+export function densityFor(tier: LookTier): {
+  overlap: number;
+  rows: number;
+  depthMin: number;
+  depthMax: number;
+  baseMin: number;
+} {
   if (tier === "hard") {
-    return (
-      flavinhoScale *
-      (isFlavinho ? 1 + rand() * 0.03 : 0.97 + rand() * 0.07)
-    );
+    return { overlap: 0.32, rows: 9, depthMin: 0.52, depthMax: 1.05, baseMin: 3.4 };
   }
   if (tier === "medium") {
-    return (
-      flavinhoScale *
-      (isFlavinho ? 1.01 + rand() * 0.06 : 0.88 + rand() * 0.2)
-    );
+    return { overlap: 0.5, rows: 7, depthMin: 0.58, depthMax: 1.1, baseMin: 4.2 };
   }
-  return (
-    flavinhoScale *
-    (isFlavinho ? 1.02 + rand() * 0.1 : 0.78 + rand() * 0.32)
-  );
+  return { overlap: 0.72, rows: 5, depthMin: 0.68, depthMax: 1.18, baseMin: 5.2 };
 }
 
 /** Percent size used by CrowdScene (must stay in sync). */
@@ -177,8 +167,12 @@ export function spriteBox(
   scale: number,
   kind: CrowdItem["kind"],
   mobileBoost = 1,
+  baseMinOverride?: number,
 ) {
-  const baseMin = kind === "prop" ? 3.2 : 5.8;
+  const baseMin =
+    kind === "prop"
+      ? Math.min(3.2, (baseMinOverride ?? 5.8) * 0.55)
+      : (baseMinOverride ?? 5.8);
   const widthPct = Math.max(scale * 100 * mobileBoost, baseMin * mobileBoost);
   const heightPct = widthPct * (kind === "prop" ? 1.05 : 1.55);
   return { widthPct, heightPct };
@@ -190,7 +184,7 @@ export function clampInside(
   y: number,
   widthPct: number,
   heightPct: number,
-  pad = 0.8,
+  pad = 0.4,
 ) {
   const halfW = widthPct / 2;
   const halfH = heightPct / 2;
@@ -208,24 +202,27 @@ function tooClose(
 ) {
   for (const p of placed) {
     const dx = p.x - x;
-    const dy = (p.y - y) * 1.15;
-    const need = Math.max(minDist, (p.r + minDist) * 0.55);
-    if (dx * dx + dy * dy < need * need) return true;
+    // Vertical stacking is desired in Waldo scenes — weight it less.
+    const dy = (p.y - y) * 0.7;
+    if (dx * dx + dy * dy < minDist * minDist) return true;
   }
   return false;
 }
 
 export function lookTip(tier: LookTier): string {
   if (tier === "hard") {
-    return "Quase todo mundo de blazer. Ache o SEM acessório.";
+    return "Multidão lotada. Ache o SEM acessório.";
   }
   if (tier === "medium") {
-    return "Vários de blazer. Olho no SEM disfarce.";
+    return "Tá cheio. Olho no SEM disfarce.";
   }
   return "Ache o SEM disfarce. O resto é camuflagem.";
 }
 
-/** Scatter disguise sprites fully inside a flat board, with real randomness. */
+/**
+ * Waldo-style scatter: perspective rows, intentional overlap,
+ * denser and smaller as difficulty rises.
+ */
 export function buildCrowd(
   seed: string,
   crowdCount: number,
@@ -235,64 +232,79 @@ export function buildCrowd(
 ): CrowdItem[] {
   const mobileBoost = opts?.mobileBoost ?? 1;
   const lookTier = opts?.lookTier ?? "medium";
-  const rand = mulberry32(hashSeed(`${seed}:crowd-v5:${lookTier}`));
+  const dens = densityFor(lookTier);
+  const rand = mulberry32(hashSeed(`${seed}:crowd-v6-waldo:${lookTier}`));
   const items: CrowdItem[] = [];
-  const xMin = ground.xMin ?? 8;
-  const xMax = ground.xMax ?? 92;
-  const yMin = ground.yMin ?? 12;
-  const yMax = ground.yMax ?? 88;
+  const xMin = ground.xMin ?? 4;
+  const xMax = ground.xMax ?? 96;
+  const yMin = ground.yMin ?? 10;
+  const yMax = ground.yMax ?? 92;
   const flavinhoIndex = Math.floor(rand() * crowdCount);
   const placed: { x: number; y: number; r: number }[] = [];
-
-  const sample = spriteBox(flavinhoScale, "decoy", mobileBoost);
-  const sizeAwareMin = Math.max(
-    sample.widthPct * 0.72,
-    sample.heightPct * 0.42,
-  );
-  const densityMin = 9.5 / Math.sqrt(Math.max(crowdCount, 1));
-  const minDist = Math.max(sizeAwareMin, densityMin);
+  const rows = dens.rows;
 
   for (let i = 0; i < crowdCount; i++) {
     const isFlavinho = i === flavinhoIndex;
-    const scale = scaleFor(lookTier, isFlavinho, flavinhoScale, rand);
+    // Bias Flavinho toward mid/front rows so he's findable but not giant in front.
+    const row = isFlavinho
+      ? Math.min(rows - 1, Math.floor(rows * (0.35 + rand() * 0.5)))
+      : Math.floor(rand() * rows);
+    const depthT = rows <= 1 ? 1 : row / (rows - 1);
+    const depthScale =
+      dens.depthMin + (dens.depthMax - dens.depthMin) * depthT;
+    const twinJitter =
+      lookTier === "hard"
+        ? isFlavinho
+          ? 1 + rand() * 0.02
+          : 0.97 + rand() * 0.06
+        : lookTier === "medium"
+          ? isFlavinho
+            ? 1.01 + rand() * 0.05
+            : 0.9 + rand() * 0.16
+          : isFlavinho
+            ? 1.04 + rand() * 0.08
+            : 0.82 + rand() * 0.28;
+    const scale = flavinhoScale * depthScale * twinJitter;
     const kind: CrowdItem["kind"] = isFlavinho ? "flavinho" : "decoy";
-    const { widthPct, heightPct } = spriteBox(scale, kind, mobileBoost);
-    const radius = Math.max(widthPct, heightPct) * 0.38;
+    const { widthPct, heightPct } = spriteBox(
+      scale,
+      kind,
+      mobileBoost,
+      dens.baseMin,
+    );
+    const radius = Math.max(widthPct, heightPct) * 0.34;
+    const minDist = Math.max(widthPct * dens.overlap, 2.2);
+
+    const rowY =
+      yMin + ((row + 0.45 + (rand() - 0.5) * 0.35) / rows) * (yMax - yMin);
 
     let x = 50;
-    let y = 50;
+    let y = rowY;
     let ok = false;
-    for (let attempt = 0; attempt < 90; attempt++) {
-      const cols = Math.max(3, Math.ceil(Math.sqrt(crowdCount * 1.1)));
-      const rows = Math.max(3, Math.ceil(crowdCount / cols));
-      const cell = i % (cols * rows);
-      const col = cell % cols;
-      const row = Math.floor(cell / cols);
-      const gridX = xMin + ((col + 0.35 + rand() * 0.3) / cols) * (xMax - xMin);
-      const gridY = yMin + ((row + 0.35 + rand() * 0.3) / rows) * (yMax - yMin);
-      const useGrid = attempt < 40;
-      const rawX = useGrid ? gridX : xMin + rand() * (xMax - xMin);
-      const rawY = useGrid ? gridY : yMin + rand() * (yMax - yMin);
-      const jitterX = (rand() - 0.5) * (useGrid ? 4 : 8);
-      const jitterY = (rand() - 0.5) * (useGrid ? 4 : 8);
-      const c = clampInside(
-        rawX + jitterX,
-        rawY + jitterY,
-        widthPct,
-        heightPct,
-      );
+    for (let attempt = 0; attempt < 70; attempt++) {
+      const slot = (i + attempt * 3) % Math.max(8, Math.ceil(crowdCount / rows));
+      const slots = Math.max(8, Math.ceil(crowdCount / rows));
+      const rawX =
+        xMin +
+        ((slot + 0.2 + rand() * 0.6) / slots) * (xMax - xMin) +
+        (rand() - 0.5) * (lookTier === "hard" ? 10 : 6);
+      const rawY = rowY + (rand() - 0.5) * (lookTier === "hard" ? 7 : 5);
+      const c = clampInside(rawX, rawY, widthPct, heightPct);
       x = c.x;
       y = c.y;
-      const relax = attempt > 55 ? 0.78 : 0.92;
+      const relax = attempt > 40 ? 0.7 : 1;
       if (!tooClose(x, y, placed, minDist * relax)) {
         ok = true;
         break;
       }
     }
     if (!ok) {
-      const edgeX = rand() > 0.5 ? xMin + rand() * 12 : xMax - rand() * 12;
-      const edgeY = yMin + rand() * (yMax - yMin);
-      const c = clampInside(edgeX, edgeY, widthPct, heightPct);
+      const c = clampInside(
+        xMin + rand() * (xMax - xMin),
+        rowY + (rand() - 0.5) * 4,
+        widthPct,
+        heightPct,
+      );
       x = c.x;
       y = c.y;
     }
@@ -302,10 +314,9 @@ export function buildCrowd(
       ? { src: FLAVINHO_SRC as string, filter: undefined as string | undefined }
       : decoyLook(lookTier, rand);
 
-    // On hard, flip less often — facing shouldn't be a free tell either.
     const facing: 1 | -1 =
       lookTier === "hard"
-        ? rand() > 0.35
+        ? rand() > 0.38
           ? 1
           : -1
         : rand() > 0.5
@@ -325,24 +336,25 @@ export function buildCrowd(
     });
   }
 
-  for (let i = items.length - 1; i > 0; i--) {
-    if (rand() > 0.55) continue;
-    const j = Math.floor(rand() * (i + 1));
-    const zi = items[i].z;
-    items[i].z = items[j].z;
-    items[j].z = zi;
-  }
-
-  const propCount =
-    lookTier === "hard"
-      ? Math.max(1, Math.floor(crowdCount / 20))
-      : Math.max(2, Math.floor(crowdCount / 16));
+  const propFactor = lookTier === "hard" ? 10 : lookTier === "medium" ? 12 : 14;
+  const propCount = Math.max(3, Math.floor(crowdCount / propFactor));
   for (let i = 0; i < propCount; i++) {
-    const scale = flavinhoScale * (0.5 + rand() * 0.35);
-    const { widthPct, heightPct } = spriteBox(scale, "prop", mobileBoost);
+    const row = Math.floor(rand() * rows);
+    const depthT = rows <= 1 ? 1 : row / (rows - 1);
+    const depthScale =
+      dens.depthMin + (dens.depthMax - dens.depthMin) * depthT;
+    const scale = flavinhoScale * depthScale * (0.45 + rand() * 0.35);
+    const { widthPct, heightPct } = spriteBox(
+      scale,
+      "prop",
+      mobileBoost,
+      dens.baseMin,
+    );
+    const rowY =
+      yMin + ((row + 0.5 + (rand() - 0.5) * 0.3) / rows) * (yMax - yMin);
     const c = clampInside(
       xMin + rand() * (xMax - xMin),
-      yMin + rand() * (yMax - yMin),
+      rowY,
       widthPct,
       heightPct,
     );
@@ -354,7 +366,7 @@ export function buildCrowd(
       y: c.y,
       scale,
       facing: 1,
-      z: c.y * 0.4,
+      z: c.y * 0.45,
     });
   }
 

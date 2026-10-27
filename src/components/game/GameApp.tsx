@@ -116,13 +116,22 @@ export function GameApp() {
     );
   }, [level, levelIndex, difficulty]);
 
+  const lookTier = useMemo(
+    () =>
+      level
+        ? resolveClueTier(difficulty, level.difficulty)
+        : ("medium" as const),
+    [level, difficulty],
+  );
+
   const crowdCount = useMemo(() => {
-    if (!level) return 40;
+    if (!level) return 72;
     const base = level.scene.crowdCount;
-    if (difficulty === "easy") return Math.max(28, Math.floor(base * 0.75));
-    if (difficulty === "hard") return Math.floor(base * 1.3);
+    // Waldo packing follows the visual tier (mix uses each dossier's tier).
+    if (lookTier === "easy") return Math.max(36, Math.floor(base * 0.55));
+    if (lookTier === "hard") return Math.floor(base * 1.85);
     return base;
-  }, [level, difficulty]);
+  }, [level, lookTier]);
 
   useEffect(() => {
     setBest(getBestScore());
@@ -649,7 +658,7 @@ export function GameApp() {
               crowdCount={crowdCount}
               flavinhoScale={level.scene.flavinhoScale}
               ground={level.scene.ground}
-              lookTier={resolveClueTier(difficulty, level.difficulty)}
+              lookTier={lookTier}
               onFound={() => void onFound()}
               onMiss={onMiss}
               showHint={showHint}
