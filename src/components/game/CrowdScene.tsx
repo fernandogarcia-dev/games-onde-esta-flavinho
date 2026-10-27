@@ -13,6 +13,7 @@ import {
   spriteBox,
   type LookTier,
 } from "@/lib/crowd";
+import { PERSPECTIVE_GROUND } from "@/lib/perspective";
 
 type Props = {
   seed: string;
@@ -54,22 +55,21 @@ export function CrowdScene({
     return () => mq.removeEventListener("change", apply);
   }, []);
 
-  // Portrait: keep the difficulty ladder, just slightly fewer / smaller.
-  const mobileBoost =
-    lookTier === "easy" ? (portrait ? 1.2 : 1.12) : portrait ? 1.05 : 1;
+  // Global size nudge by difficulty — perspective curve stays the same.
+  const mobileBoost = portrait ? 1.04 : 1;
   const scale =
     flavinhoScale *
     (lookTier === "easy"
       ? portrait
-        ? 1.15
-        : 1.22
+        ? 1.12
+        : 1.18
       : lookTier === "hard"
         ? portrait
-          ? 0.88
-          : 0.95
+          ? 0.9
+          : 0.96
         : portrait
-          ? 0.98
-          : 1.05);
+          ? 1
+          : 1.04);
   const count = portrait
     ? Math.max(
         lookTier === "easy" ? 14 : lookTier === "hard" ? 32 : 22,
@@ -81,16 +81,15 @@ export function CrowdScene({
     : crowdCount;
 
   const items = useMemo(() => {
-    const band = portrait
-      ? {
-          yMin: Math.max(8, ground.yMin - 2),
-          yMax: Math.min(92, ground.yMax + 2),
-          xMin: Math.max(3, (ground.xMin ?? 4) - 1),
-          xMax: Math.min(97, (ground.xMax ?? 96) + 1),
-        }
-      : ground;
+    // Always honor the shared perspective band (plates are authored for it).
+    const band = {
+      yMin: ground.yMin ?? PERSPECTIVE_GROUND.yMin,
+      yMax: ground.yMax ?? PERSPECTIVE_GROUND.yMax,
+      xMin: ground.xMin ?? PERSPECTIVE_GROUND.xMin,
+      xMax: ground.xMax ?? PERSPECTIVE_GROUND.xMax,
+    };
     return buildCrowd(seed, count, scale, band, { mobileBoost, lookTier });
-  }, [seed, count, scale, ground, mobileBoost, portrait, lookTier]);
+  }, [seed, count, scale, ground, mobileBoost, lookTier]);
   const [missFlash, setMissFlash] = useState<{ x: number; y: number } | null>(
     null,
   );
@@ -115,6 +114,7 @@ export function CrowdScene({
     <div
       className="relative mx-auto w-full max-w-5xl overflow-hidden rounded-2xl border-[3px] border-[var(--ink)] shadow-[6px_6px_0_var(--ink)] select-none touch-manipulation"
       style={{
+        // Match authored perspective plates (16:10). Portrait crops the same art.
         aspectRatio: portrait ? "3 / 4" : "16 / 10",
         backgroundColor: "#d7d2c8",
         maxHeight: portrait ? "min(68dvh, 640px)" : undefined,
@@ -127,17 +127,17 @@ export function CrowdScene({
         src={background}
         alt=""
         fill
-        className="object-cover"
+        className="object-cover object-[center_42%]"
         sizes="(max-width: 768px) 100vw, 960px"
         priority
       />
 
       {items.map((item) => {
+        // Size is already baked from Y in item.scale — do not re-floor by tier.
         const { widthPct, heightPct } = spriteBox(
           item.scale,
           item.kind,
           mobileBoost,
-          lookTier === "hard" ? 3.3 : lookTier === "medium" ? 4.6 : 6.4,
         );
         const style = {
           left: `${item.x}%`,

@@ -1,3 +1,11 @@
+import {
+  PERSPECTIVE,
+  PERSPECTIVE_GROUND,
+  depthRatio,
+  scaleAtDepth,
+  type PerspectiveGround,
+} from "@/lib/perspective";
+
 export type CrowdItem = {
   id: string;
   kind: "flavinho" | "decoy" | "prop";
@@ -11,19 +19,13 @@ export type CrowdItem = {
   filter?: string;
 };
 
-export type GroundBand = {
-  yMin: number;
-  yMax: number;
-  xMin?: number;
-  xMax?: number;
-};
+export type GroundBand = PerspectiveGround;
 
 export type LookTier = "easy" | "medium" | "hard";
 
 /** Undisguised Flavinho — the click target. */
 export const FLAVINHO_SRC = "/game/disguises/real.png";
 
-/** Wild costumes — easy to rule out at a glance. */
 export const DISGUISE_WILD = [
   "/game/disguises/hippie.png",
   "/game/disguises/sideburns.png",
@@ -37,7 +39,6 @@ export const DISGUISE_WILD = [
   "/game/disguises/bald.png",
 ] as const;
 
-/** Mid distance — still different, but same body language. */
 export const DISGUISE_MID = [
   "/game/disguises/hoodie.png",
   "/game/disguises/blonde.png",
@@ -46,10 +47,6 @@ export const DISGUISE_MID = [
   "/game/disguises/beanie.png",
 ] as const;
 
-/**
- * Subtle — keep the navy blazer / same silhouette.
- * glasses is nearly identical to real (only adds frames).
- */
 export const DISGUISE_SUBTLE = [
   "/game/disguises/glasses.png",
   "/game/disguises/glasses.png",
@@ -61,7 +58,6 @@ export const DISGUISE_SUBTLE = [
   "/game/disguises/hoodie.png",
 ] as const;
 
-/** Soft CSS tweaks so a real.png decoy isn't pixel-identical, just almost. */
 const NEAR_CLONE_FILTERS = [
   "brightness(1.05) contrast(0.97)",
   "brightness(0.95) saturate(1.06)",
@@ -145,49 +141,49 @@ function decoyLook(
   return { src: pickFrom(disguisePoolFor(tier), rand) };
 }
 
-/** How packed the board gets — clear ladder easy → medium → hard. */
+/** Packing density only — size always comes from Y perspective. */
 export function densityFor(tier: LookTier): {
   overlap: number;
   rows: number;
-  depthMin: number;
-  depthMax: number;
-  baseMin: number;
 } {
-  if (tier === "hard") {
-    // Sea of twins, heavy overlap.
-    return { overlap: 0.3, rows: 9, depthMin: 0.5, depthMax: 1.02, baseMin: 3.3 };
-  }
-  if (tier === "medium") {
-    // Busy but readable — between easy air and hard chaos.
-    return { overlap: 0.58, rows: 6, depthMin: 0.62, depthMax: 1.12, baseMin: 4.6 };
-  }
-  // Easy: sparse, bigger tokens, room to breathe.
-  return { overlap: 0.95, rows: 3, depthMin: 0.85, depthMax: 1.28, baseMin: 6.4 };
+  if (tier === "hard") return { overlap: 0.34, rows: 9 };
+  if (tier === "medium") return { overlap: 0.58, rows: 6 };
+  return { overlap: 0.92, rows: 3 };
 }
 
-/** Percent size used by CrowdScene (must stay in sync). */
+function twinJitter(tier: LookTier, isFlavinho: boolean, rand: () => number) {
+  // Tiny only — must never overpower perspective depth.
+  if (tier === "hard") {
+    return isFlavinho ? 1 + rand() * 0.02 : 0.97 + rand() * 0.05;
+  }
+  if (tier === "medium") {
+    return isFlavinho ? 1.01 + rand() * 0.04 : 0.94 + rand() * 0.1;
+  }
+  return isFlavinho ? 1.03 + rand() * 0.06 : 0.9 + rand() * 0.16;
+}
+
+/**
+ * Percent box from scale. NO large baseMin — that was flattening perspective.
+ * Must stay in sync with CrowdScene.
+ */
 export function spriteBox(
   scale: number,
   kind: CrowdItem["kind"],
   mobileBoost = 1,
-  baseMinOverride?: number,
 ) {
-  const baseMin =
-    kind === "prop"
-      ? Math.min(3.2, (baseMinOverride ?? 5.8) * 0.55)
-      : (baseMinOverride ?? 5.8);
-  const widthPct = Math.max(scale * 100 * mobileBoost, baseMin * mobileBoost);
+  const floor =
+    kind === "prop" ? PERSPECTIVE.propMinWidthPct : PERSPECTIVE.minWidthPct;
+  const widthPct = Math.max(scale * 100 * mobileBoost, floor * mobileBoost);
   const heightPct = widthPct * (kind === "prop" ? 1.05 : 1.55);
   return { widthPct, heightPct };
 }
 
-/** Keep the full sprite inside the board (centered with translate -50/-50). */
 export function clampInside(
   x: number,
   y: number,
   widthPct: number,
   heightPct: number,
-  pad = 0.4,
+  pad = 0.35,
 ) {
   const halfW = widthPct / 2;
   const halfH = heightPct / 2;
@@ -205,113 +201,105 @@ function tooClose(
 ) {
   for (const p of placed) {
     const dx = p.x - x;
-    // Vertical stacking is desired in Waldo scenes — weight it less.
-    const dy = (p.y - y) * 0.7;
+    const dy = (p.y - y) * 0.65;
     if (dx * dx + dy * dy < minDist * minDist) return true;
   }
   return false;
 }
 
 export function lookTip(tier: LookTier): string {
-  if (tier === "hard") {
-    return "Multidão lotada. Ache o SEM acessório.";
-  }
-  if (tier === "medium") {
-    return "Tá cheio. Olho no SEM disfarce.";
-  }
+  if (tier === "hard") return "Multidão lotada. Ache o SEM acessório.";
+  if (tier === "medium") return "Tá cheio. Olho no SEM disfarce.";
   return "Ache o SEM disfarce. O resto é camuflagem.";
 }
 
 /**
- * Waldo-style scatter: perspective rows, intentional overlap,
- * denser and smaller as difficulty rises.
+ * Place sprites on perspective rows, then lock scale to final Y
+ * so foreshortening always matches the plate.
  */
 export function buildCrowd(
   seed: string,
   crowdCount: number,
   flavinhoScale: number,
-  ground: GroundBand,
+  ground: GroundBand = PERSPECTIVE_GROUND,
   opts?: { mobileBoost?: number; lookTier?: LookTier },
 ): CrowdItem[] {
   const mobileBoost = opts?.mobileBoost ?? 1;
   const lookTier = opts?.lookTier ?? "medium";
   const dens = densityFor(lookTier);
-  const rand = mulberry32(hashSeed(`${seed}:crowd-v6-waldo:${lookTier}`));
+  const rand = mulberry32(hashSeed(`${seed}:crowd-v7-persp:${lookTier}`));
   const items: CrowdItem[] = [];
-  const xMin = ground.xMin ?? 4;
-  const xMax = ground.xMax ?? 96;
-  const yMin = ground.yMin ?? 10;
-  const yMax = ground.yMax ?? 92;
+  const xMin = ground.xMin ?? PERSPECTIVE.xMin;
+  const xMax = ground.xMax ?? PERSPECTIVE.xMax;
+  const yMin = ground.yMin ?? PERSPECTIVE.yMin;
+  const yMax = ground.yMax ?? PERSPECTIVE.yMax;
   const flavinhoIndex = Math.floor(rand() * crowdCount);
   const placed: { x: number; y: number; r: number }[] = [];
   const rows = dens.rows;
 
   for (let i = 0; i < crowdCount; i++) {
     const isFlavinho = i === flavinhoIndex;
-    // Bias Flavinho toward mid/front rows so he's findable but not giant in front.
     const row = isFlavinho
       ? Math.min(rows - 1, Math.floor(rows * (0.35 + rand() * 0.5)))
       : Math.floor(rand() * rows);
-    const depthT = rows <= 1 ? 1 : row / (rows - 1);
-    const depthScale =
-      dens.depthMin + (dens.depthMax - dens.depthMin) * depthT;
-    const twinJitter =
-      lookTier === "hard"
-        ? isFlavinho
-          ? 1 + rand() * 0.02
-          : 0.97 + rand() * 0.06
-        : lookTier === "medium"
-          ? isFlavinho
-            ? 1.01 + rand() * 0.05
-            : 0.9 + rand() * 0.16
-          : isFlavinho
-            ? 1.04 + rand() * 0.08
-            : 0.82 + rand() * 0.28;
-    const scale = flavinhoScale * depthScale * twinJitter;
-    const kind: CrowdItem["kind"] = isFlavinho ? "flavinho" : "decoy";
-    const { widthPct, heightPct } = spriteBox(
-      scale,
-      kind,
-      mobileBoost,
-      dens.baseMin,
-    );
-    const radius = Math.max(widthPct, heightPct) * 0.34;
-    const minDist = Math.max(widthPct * dens.overlap, 2.2);
 
     const rowY =
-      yMin + ((row + 0.45 + (rand() - 0.5) * 0.35) / rows) * (yMax - yMin);
+      yMin + ((row + 0.45 + (rand() - 0.5) * 0.3) / rows) * (yMax - yMin);
+
+    // Provisional scale from row depth for collision sizing.
+    let scale =
+      scaleAtDepth(rowY, flavinhoScale, ground) *
+      twinJitter(lookTier, isFlavinho, rand);
+    const kind: CrowdItem["kind"] = isFlavinho ? "flavinho" : "decoy";
+    let box = spriteBox(scale, kind, mobileBoost);
 
     let x = 50;
     let y = rowY;
     let ok = false;
     for (let attempt = 0; attempt < 70; attempt++) {
-      const slot = (i + attempt * 3) % Math.max(8, Math.ceil(crowdCount / rows));
       const slots = Math.max(8, Math.ceil(crowdCount / rows));
+      const slot = (i + attempt * 3) % slots;
       const rawX =
         xMin +
         ((slot + 0.2 + rand() * 0.6) / slots) * (xMax - xMin) +
-        (rand() - 0.5) * (lookTier === "hard" ? 10 : 6);
-      const rawY = rowY + (rand() - 0.5) * (lookTier === "hard" ? 7 : 5);
-      const c = clampInside(rawX, rawY, widthPct, heightPct);
+        (rand() - 0.5) * (lookTier === "hard" ? 9 : 5);
+      const rawY = rowY + (rand() - 0.5) * (lookTier === "hard" ? 6 : 4);
+      // Re-scale to candidate Y before clamping so back sprites stay small.
+      scale =
+        scaleAtDepth(rawY, flavinhoScale, ground) *
+        twinJitter(lookTier, isFlavinho, rand);
+      box = spriteBox(scale, kind, mobileBoost);
+      const c = clampInside(rawX, rawY, box.widthPct, box.heightPct);
       x = c.x;
       y = c.y;
-      const relax = attempt > 40 ? 0.7 : 1;
+      const minDist = Math.max(box.widthPct * dens.overlap, 1.6);
+      const relax = attempt > 40 ? 0.72 : 1;
       if (!tooClose(x, y, placed, minDist * relax)) {
         ok = true;
         break;
       }
     }
     if (!ok) {
+      const rawY = rowY + (rand() - 0.5) * 3;
+      scale =
+        scaleAtDepth(rawY, flavinhoScale, ground) *
+        twinJitter(lookTier, isFlavinho, rand);
+      box = spriteBox(scale, kind, mobileBoost);
       const c = clampInside(
         xMin + rand() * (xMax - xMin),
-        rowY + (rand() - 0.5) * 4,
-        widthPct,
-        heightPct,
+        rawY,
+        box.widthPct,
+        box.heightPct,
       );
       x = c.x;
       y = c.y;
     }
-    placed.push({ x, y, r: radius });
+
+    // Final lock: size is a pure function of settled Y (+ tiny twin jitter).
+    const jitter = twinJitter(lookTier, isFlavinho, rand);
+    scale = scaleAtDepth(y, flavinhoScale, ground) * jitter;
+    box = spriteBox(scale, kind, mobileBoost);
+    placed.push({ x, y, r: Math.max(box.widthPct, box.heightPct) * 0.32 });
 
     const look = isFlavinho
       ? { src: FLAVINHO_SRC as string, filter: undefined as string | undefined }
@@ -343,24 +331,13 @@ export function buildCrowd(
   const propCount = Math.max(3, Math.floor(crowdCount / propFactor));
   for (let i = 0; i < propCount; i++) {
     const row = Math.floor(rand() * rows);
-    const depthT = rows <= 1 ? 1 : row / (rows - 1);
-    const depthScale =
-      dens.depthMin + (dens.depthMax - dens.depthMin) * depthT;
-    const scale = flavinhoScale * depthScale * (0.45 + rand() * 0.35);
-    const { widthPct, heightPct } = spriteBox(
-      scale,
-      "prop",
-      mobileBoost,
-      dens.baseMin,
-    );
     const rowY =
-      yMin + ((row + 0.5 + (rand() - 0.5) * 0.3) / rows) * (yMax - yMin);
-    const c = clampInside(
-      xMin + rand() * (xMax - xMin),
-      rowY,
-      widthPct,
-      heightPct,
-    );
+      yMin + ((row + 0.5 + (rand() - 0.5) * 0.25) / rows) * (yMax - yMin);
+    const rawX = xMin + rand() * (xMax - xMin);
+    let scale = scaleAtDepth(rowY, flavinhoScale, ground) * (0.42 + rand() * 0.3);
+    let box = spriteBox(scale, "prop", mobileBoost);
+    const c = clampInside(rawX, rowY, box.widthPct, box.heightPct);
+    scale = scaleAtDepth(c.y, flavinhoScale, ground) * (0.42 + rand() * 0.3);
     items.push({
       id: `${seed}-prop-${i}`,
       kind: "prop",
@@ -375,3 +352,16 @@ export function buildCrowd(
 
   return items.sort((a, b) => a.z - b.z);
 }
+
+/** Debug helper: expected width% at a depth. */
+export function expectedWidthPct(
+  y: number,
+  flavinhoScale: number,
+  mobileBoost = 1,
+  ground?: PerspectiveGround,
+) {
+  return spriteBox(scaleAtDepth(y, flavinhoScale, ground), "decoy", mobileBoost)
+    .widthPct;
+}
+
+export { depthRatio, scaleAtDepth, PERSPECTIVE_GROUND };
