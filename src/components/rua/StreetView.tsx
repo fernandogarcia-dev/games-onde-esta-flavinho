@@ -15,6 +15,8 @@ type Props = {
   className?: string;
 };
 
+type Status = "loading" | "ready" | "empty" | "nokey" | "denied";
+
 let mapsConfigured = false;
 
 function ensureMapsOptions() {
@@ -26,10 +28,59 @@ function ensureMapsOptions() {
   mapsConfigured = true;
 }
 
+function errText(err: unknown): string {
+  if (!err) return "";
+  if (typeof err === "string") return err;
+  if (err instanceof Error) return err.message;
+  try {
+    return JSON.stringify(err);
+  } catch {
+    return String(err);
+  }
+}
+
+function isDenied(err: unknown): boolean {
+  const t = errText(err).toLowerCase();
+  return (
+    t.includes("request_denied") ||
+    t.includes("not activated") ||
+    t.includes("api project") ||
+    t.includes("billing") ||
+    t.includes("referer") ||
+    t.includes("referrer") ||
+    t.includes("denied")
+  );
+}
+
+async function findNearestPanorama(
+  service: google.maps.StreetViewService,
+  StreetViewSource: typeof google.maps.StreetViewSource,
+  lat: number,
+  lng: number,
+): Promise<google.maps.StreetViewResponse> {
+  const attempts: google.maps.StreetViewLocationRequest[] = [
+    { location: { lat, lng }, radius: 5000, source: StreetViewSource.OUTDOOR },
+    { location: { lat, lng }, radius: 20000, source: StreetViewSource.OUTDOOR },
+    { location: { lat, lng }, radius: 50000 },
+    { location: { lat, lng }, radius: 100000 },
+  ];
+
+  let lastErr: unknown;
+  for (const req of attempts) {
+    try {
+      return await service.getPanorama(req);
+    } catch (err) {
+      lastErr = err;
+      if (isDenied(err)) throw err;
+    }
+  }
+  throw lastErr ?? new Error("ZERO_RESULTS");
+}
+
 export function StreetView({ lat, lng, seed, className = "" }: Props) {
   const hostRef = useRef<HTMLDivElement | null>(null);
   const panoramaRef = useRef<google.maps.StreetViewPanorama | null>(null);
-  const [status, setStatus] = useState<"loading" | "ready" | "empty" | "nokey">(
+  const [status, setStatus] = useState<Status>(
     hasGoogleMapsKey() ? "loading" : "nokey",
   );
 
@@ -55,11 +106,12 @@ export function StreetView({ lat, lng, seed, className = "" }: Props) {
         if (cancelled || !hostRef.current) return;
 
         const service = new StreetViewService();
-        const result = await service.getPanorama({
-          location: { lat, lng },
-          radius: 2500,
-          source: StreetViewSource.OUTDOOR,
-        });
+        const result = await findNearestPanorama(
+          service,
+          StreetViewSource,
+          lat,
+          lng,
+        );
 
         if (cancelled || !hostRef.current) return;
 
@@ -98,7 +150,8 @@ export function StreetView({ lat, lng, seed, className = "" }: Props) {
         setStatus("ready");
       } catch (err) {
         console.error("[streetview]", err);
-        if (!cancelled) setStatus("empty");
+        if (cancelled) return;
+        setStatus(isDenied(err) ? "denied" : "empty");
       }
     })();
 
@@ -122,11 +175,37 @@ export function StreetView({ lat, lng, seed, className = "" }: Props) {
           Falta a chave do Street View
         </p>
         <p className="max-w-sm text-sm text-[var(--muted)]">
-          Cria uma API key no Google Cloud (Maps JavaScript API), coloca em{" "}
+          Defina{" "}
           <code className="rounded bg-white px-1">
             NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
           </code>{" "}
-          e reinicia o server. O crédito mensal grátis costuma bastar.
+          e reinicie o server.
+        </p>
+      </div>
+    );
+  }
+
+  if (status === "denied") {
+    return (
+      <div
+        className={`flex aspect-[4/3] w-full flex-col items-center justify-center gap-2 bg-[var(--sand)] px-4 text-center ${className}`}
+      >
+        <p className="font-[family-name:var(--font-display)] text-lg text-[var(--ink)]">
+          Google bloqueou o Street View
+        </p>
+        <p className="max-w-md text-sm leading-relaxed text-[var(--muted)]">
+          Não é a cidade — a API key ainda não tem as APIs certas (ou billing).
+          No Google Cloud, ative{" "}
+          <strong className="text-[var(--ink)]">Maps JavaScript API</strong> e{" "}
+          <strong className="text-[var(--ink)]">Street View Static API</strong>,
+          confirme que o billing do projeto está ligado, e libera a key pra estes
+          referrers:{" "}
+          <code className="rounded bg-white px-1">localhost:*</code>,{" "}
+          <code className="rounded bg-white px-1">127.0.0.1:*</code>,{" "}
+          <code className="rounded bg-white px-1">
+            *.cadeflavinho.com.br/*
+          </code>
+          .
         </p>
       </div>
     );
@@ -150,8 +229,7 @@ export function StreetView({ lat, lng, seed, className = "" }: Props) {
             Sem Street View aqui
           </p>
           <p className="text-sm text-[var(--muted)]">
-            Essa cidade ficou sem panorama perto. Pula pra próxima ou tenta de
-            novo.
+            Raro — não achamos panorama num raio grande. Pula pra próxima.
           </p>
         </div>
       )}

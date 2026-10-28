@@ -32,16 +32,19 @@ Abra [http://127.0.0.1:43127](http://127.0.0.1:43127).
 
 ### Street View (Rua da Amargura)
 
-1. [Google Cloud Console](https://console.cloud.google.com/) → criar projeto (e ligar billing; o crédito mensal grátis costuma bastar).
-2. Ativar **Maps JavaScript API**.
-3. Criar uma **API key**, restringir à Maps JavaScript API e aos seus domínios (`localhost`, `cadeflavinho.com.br`, etc.).
+1. [Google Cloud Console](https://console.cloud.google.com/) → projeto com **billing ligado** (crédito mensal grátis costuma bastar).
+2. Ativar **as duas** APIs:
+   - [Maps JavaScript API](https://console.cloud.google.com/apis/library/maps-backend.googleapis.com)
+   - [Street View Static API](https://console.cloud.google.com/apis/library/street_view_image_backend.googleapis.com)  
+   (sem a segunda, o panorama cai em `REQUEST_DENIED` e parece “cidade sem Street View”)
+3. Criar/ajustar a **API key**: restringir a essas duas APIs + HTTP referrers (`localhost:*`, `127.0.0.1:*`, `*.cadeflavinho.com.br/*`).
 4. No `.env.local` (e na Vercel):
 
 ```bash
 NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=sua_chave_aqui
 ```
 
-5. Reiniciar o `npm run dev` (ou redeploy).
+5. Reiniciar o `npm run dev` (ou redeploy). Pode levar 1–5 min pra API nova liberar.
 
 ## SEO
 
