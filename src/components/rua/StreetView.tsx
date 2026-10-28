@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { importLibrary, setOptions } from "@googlemaps/js-api-loader";
 import {
@@ -12,10 +13,12 @@ type Props = {
   lat: number;
   lng: number;
   seed: string;
+  /** Wikimedia (or other) city photo used when Street View fails. */
+  fallbackPhoto?: string;
   className?: string;
 };
 
-type Status = "loading" | "ready" | "empty" | "nokey" | "denied";
+type Status = "loading" | "ready" | "empty" | "nokey" | "denied" | "photo";
 
 let mapsConfigured = false;
 
@@ -77,16 +80,64 @@ async function findNearestPanorama(
   throw lastErr ?? new Error("ZERO_RESULTS");
 }
 
-export function StreetView({ lat, lng, seed, className = "" }: Props) {
+function PhotoFallback({
+  src,
+  reason,
+  className,
+}: {
+  src: string;
+  reason: "denied" | "empty" | "nokey";
+  className: string;
+}) {
+  const tip =
+    reason === "denied"
+      ? "Street View do Google ainda bloqueado — jogando com foto da cidade."
+      : reason === "nokey"
+        ? "Sem chave do Maps — usando foto da cidade."
+        : "Sem panorama por perto — usando foto da cidade.";
+
+  return (
+    <div
+      className={`relative aspect-[4/3] w-full overflow-hidden bg-[var(--sand)] ${className}`}
+    >
+      <Image
+        src={src}
+        alt="Pista visual da cidade onde o Flavinho sumiu"
+        fill
+        unoptimized
+        className="object-cover"
+        sizes="(max-width: 1024px) 100vw, 50vw"
+      />
+      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/75 via-black/40 to-transparent px-4 pb-3 pt-10">
+        <p className="text-xs font-bold uppercase tracking-[0.16em] text-white/80">
+          Pista visual
+        </p>
+        <p className="mt-1 text-sm font-semibold text-white">{tip}</p>
+      </div>
+    </div>
+  );
+}
+
+export function StreetView({
+  lat,
+  lng,
+  seed,
+  fallbackPhoto,
+  className = "",
+}: Props) {
   const hostRef = useRef<HTMLDivElement | null>(null);
   const panoramaRef = useRef<google.maps.StreetViewPanorama | null>(null);
   const [status, setStatus] = useState<Status>(
-    hasGoogleMapsKey() ? "loading" : "nokey",
+    hasGoogleMapsKey() ? "loading" : fallbackPhoto ? "photo" : "nokey",
+  );
+  const [failReason, setFailReason] = useState<"denied" | "empty" | "nokey">(
+    hasGoogleMapsKey() ? "empty" : "nokey",
   );
 
   useEffect(() => {
     if (!hasGoogleMapsKey()) {
-      setStatus("nokey");
+      setFailReason("nokey");
+      setStatus(fallbackPhoto ? "photo" : "nokey");
       return;
     }
     if (!hostRef.current) return;
@@ -117,7 +168,8 @@ export function StreetView({ lat, lng, seed, className = "" }: Props) {
 
         const location = result?.data?.location;
         if (!location?.latLng || !location.pano) {
-          setStatus("empty");
+          setFailReason("empty");
+          setStatus(fallbackPhoto ? "photo" : "empty");
           return;
         }
 
@@ -151,20 +203,32 @@ export function StreetView({ lat, lng, seed, className = "" }: Props) {
       } catch (err) {
         console.error("[streetview]", err);
         if (cancelled) return;
-        setStatus(isDenied(err) ? "denied" : "empty");
+        const denied = isDenied(err);
+        setFailReason(denied ? "denied" : "empty");
+        setStatus(fallbackPhoto ? "photo" : denied ? "denied" : "empty");
       }
     })();
 
     return () => {
       cancelled = true;
     };
-  }, [lat, lng, seed]);
+  }, [lat, lng, seed, fallbackPhoto]);
 
   useEffect(() => {
     return () => {
       panoramaRef.current = null;
     };
   }, []);
+
+  if (status === "photo" && fallbackPhoto) {
+    return (
+      <PhotoFallback
+        src={fallbackPhoto}
+        reason={failReason}
+        className={className}
+      />
+    );
+  }
 
   if (status === "nokey") {
     return (
@@ -194,18 +258,10 @@ export function StreetView({ lat, lng, seed, className = "" }: Props) {
           Google bloqueou o Street View
         </p>
         <p className="max-w-md text-sm leading-relaxed text-[var(--muted)]">
-          Não é a cidade — a API key ainda não tem as APIs certas (ou billing).
-          No Google Cloud, ative{" "}
-          <strong className="text-[var(--ink)]">Maps JavaScript API</strong> e{" "}
+          Ative no Google Cloud a{" "}
+          <strong className="text-[var(--ink)]">Maps JavaScript API</strong> e a{" "}
           <strong className="text-[var(--ink)]">Street View Static API</strong>,
-          confirme que o billing do projeto está ligado, e libera a key pra estes
-          referrers:{" "}
-          <code className="rounded bg-white px-1">localhost:*</code>,{" "}
-          <code className="rounded bg-white px-1">127.0.0.1:*</code>,{" "}
-          <code className="rounded bg-white px-1">
-            *.cadeflavinho.com.br/*
-          </code>
-          .
+          com billing ligado.
         </p>
       </div>
     );

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { LegalNotice } from "@/components/game/LegalNotice";
@@ -16,7 +17,6 @@ import {
 import {
   cluesFor,
   dealParcaRun,
-  PARCA_CLUE_PENALTY,
   PARCA_HIT_BONUS,
   pickParcaOptions,
   type ParcaPerson,
@@ -39,11 +39,8 @@ export function ParcaApp({ onBack }: { onBack: () => void }) {
   const [phase, setPhase] = useState<Phase>("landing");
   const [difficulty, setDifficulty] = useState<Difficulty>("medium");
   const [person, setPerson] = useState<ParcaPerson | null>(null);
-  const [clueIndex, setClueIndex] = useState(0);
-  const [tried, setTried] = useState<string[]>([]);
+  const [pickedId, setPickedId] = useState<string | null>(null);
   const [score, setScore] = useState(0);
-  const [lives, setLives] = useState(3);
-  const [feedback, setFeedback] = useState("");
   const [elapsed, setElapsed] = useState(0);
   const [running, setRunning] = useState(false);
   const [best, setBest] = useState(0);
@@ -60,7 +57,7 @@ export function ParcaApp({ onBack }: { onBack: () => void }) {
 
   const options = useMemo(() => {
     if (!person) return [];
-    return pickParcaOptions(person, `${person.id}-${difficulty}`, 6);
+    return pickParcaOptions(person, `${person.id}-${difficulty}`, 4);
   }, [person, difficulty]);
 
   useEffect(() => {
@@ -75,18 +72,12 @@ export function ParcaApp({ onBack }: { onBack: () => void }) {
     return () => window.clearInterval(id);
   }, [running]);
 
-  const livesFor = (d: Difficulty) =>
-    d === "easy" ? 5 : d === "medium" ? 3 : 2;
-
   function startGame(d: Difficulty) {
     const dealt = dealParcaRun(1);
     setDifficulty(d);
     setPerson(dealt[0] ?? null);
-    setClueIndex(0);
-    setTried([]);
+    setPickedId(null);
     setScore(0);
-    setLives(livesFor(d));
-    setFeedback("");
     setElapsed(0);
     setRunning(true);
     setNeedsName(false);
@@ -99,6 +90,7 @@ export function ParcaApp({ onBack }: { onBack: () => void }) {
     setRunning(false);
     setPhase("landing");
     setPerson(null);
+    setPickedId(null);
     setBoard(readModeBoard("parca"));
     setBest(getModeBest("parca"));
   }
@@ -120,36 +112,18 @@ export function ParcaApp({ onBack }: { onBack: () => void }) {
   }
 
   function pickPerson(id: string) {
-    if (!person || tried.includes(id) || phase !== "clues") return;
+    if (!person || phase !== "clues" || pickedId) return;
+    setPickedId(id);
 
     if (id === person.id) {
-      const openClues = clueIndex + 1;
-      const bonus = Math.max(
-        200,
-        PARCA_HIT_BONUS[difficulty] - (openClues - 1) * PARCA_CLUE_PENALTY,
-      );
+      const bonus = PARCA_HIT_BONUS[difficulty];
       setScore(bonus);
-      setFeedback(`Era ${person.name}! O Flavinho levou esse parça.`);
       finish(bonus, true);
       return;
     }
 
-    const nextTried = [...tried, id];
-    setTried(nextTried);
-    const nextLives = lives - 1;
-    setLives(nextLives);
-
-    if (clueIndex + 1 < clues.length) {
-      setClueIndex((c) => c + 1);
-      setFeedback("Não foi esse. Mais uma dica do sumiço.");
-    } else {
-      setFeedback("Não foi esse.");
-    }
-
-    if (nextLives <= 0) {
-      setFeedback(`As vidas acabaram. O parça era ${person.name}.`);
-      finish(0, false);
-    }
+    setScore(0);
+    finish(0, false);
   }
 
   function saveNameAndRank() {
@@ -165,10 +139,12 @@ export function ParcaApp({ onBack }: { onBack: () => void }) {
 
   const shareText = useMemo(() => {
     if (phase === "result") {
-      return `Diga-me com Quem Andas… · ${won ? "descobri o parça" : "o parça escapou"} · ${score.toLocaleString("pt-BR")} pts\n${buildInviteText().split("\n").pop()}`;
+      return `Diga-me com Quem Andas… · ${won ? "descobri quem ele levou" : "errei o parça"} · ${score.toLocaleString("pt-BR")} pts\n${buildInviteText().split("\n").pop()}`;
     }
     return `Diga-me com Quem Andas… — quem o Flavinho levou na fuga?\n${buildInviteText().split("\n").pop()}`;
   }, [phase, score, won]);
+
+  const picked = options.find((o) => o.id === pickedId) ?? null;
 
   return (
     <div className="relative min-h-full">
@@ -194,9 +170,7 @@ export function ParcaApp({ onBack }: { onBack: () => void }) {
         <div className="flex items-center gap-2">
           {phase === "clues" && (
             <div className="hidden items-center gap-2 rounded-full border border-[var(--ink)]/15 bg-white/80 px-3 py-1 text-xs font-semibold text-[var(--ink)] sm:flex">
-              <span>
-                {lives} vida{lives === 1 ? "" : "s"}
-              </span>
+              <span>1 chute</span>
               <span className="text-[var(--muted)]">·</span>
               <span className="tabular-nums">{formatClock(elapsed)}</span>
             </div>
@@ -220,40 +194,56 @@ export function ParcaApp({ onBack }: { onBack: () => void }) {
       <main className="relative z-10 mx-auto w-full max-w-5xl px-4 pb-16 sm:px-6">
         {phase === "landing" && (
           <div className="space-y-6">
-            <section className="animate-rise rounded-[2rem] border-[3px] border-[var(--ink)] bg-[var(--paper)] p-6 shadow-[10px_10px_0_var(--ink)] sm:p-10">
-              <p className="text-sm font-bold uppercase tracking-[0.22em] text-[var(--brand)]">
-                {modeMeta.badge} · um parça · uma fuga
-              </p>
-              <h1 className="mt-3 font-[family-name:var(--font-display)] text-4xl text-[var(--ink)] sm:text-5xl">
-                {modeMeta.name}
-              </h1>
-              <p className="mt-3 max-w-xl text-lg text-[var(--muted)]">
-                O Flavinho não sumiu sozinho. Ele{" "}
-                <strong className="text-[var(--ink)]">levou alguém</strong> na
-                fuga. Pelas dicas, descobre quem foi o parça. Uma rodada só —
-                acertou ou errou, acabou.
-              </p>
-
-              <DifficultyPicker
-                difficulty={difficulty}
-                onChange={setDifficulty}
-              />
-
-              <div className="mt-7 flex flex-wrap gap-3">
-                <Button size="lg" onClick={() => startGame(difficulty)}>
-                  Quem ele levou?
-                </Button>
-                <Button variant="secondary" onClick={onBack}>
-                  Voltar aos modos
-                </Button>
+            <section className="animate-rise overflow-hidden rounded-[2rem] border-[3px] border-[var(--ink)] bg-[var(--paper)] shadow-[10px_10px_0_var(--ink)]">
+              <div className="relative aspect-[21/9] w-full border-b-[3px] border-[var(--ink)]/15 sm:aspect-[3/1]">
+                <Image
+                  src={modeMeta.art}
+                  alt={modeMeta.artAlt}
+                  fill
+                  priority
+                  className="object-cover object-center"
+                  sizes="(max-width: 1024px) 100vw, 960px"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[var(--paper)] via-transparent to-transparent" />
               </div>
-              <p className="mt-4 text-sm text-[var(--muted)]">
-                {best > 0
-                  ? `Seu recorde neste modo: ${best.toLocaleString("pt-BR")} pts`
-                  : "Quanto menos dica você abrir, mais ponto. Errar gasta vida e libera pista."}
-              </p>
-              <div className="mt-5">
-                <ShareBar text={shareText} label="Chama a galera" compact />
+              <div className="p-6 sm:p-10">
+                <p className="text-sm font-bold uppercase tracking-[0.22em] text-[var(--brand)]">
+                  {modeMeta.badge} · uma tentativa
+                </p>
+                <h1 className="mt-3 font-[family-name:var(--font-display)] text-4xl text-[var(--ink)] sm:text-5xl">
+                  {modeMeta.name}
+                </h1>
+                <p className="mt-3 max-w-xl text-lg text-[var(--muted)]">
+                  O Flavinho{" "}
+                  <strong className="text-[var(--ink)]">não fugiu sozinho</strong>
+                  . No banco do carona foi embora{" "}
+                  <strong className="text-[var(--ink)]">uma figura pública</strong>
+                  . Lê as dicas do passageiro, escolhe{" "}
+                  <strong className="text-[var(--ink)]">um nome só</strong> e
+                  vê se acertou — sem segunda chance.
+                </p>
+
+                <DifficultyPicker
+                  difficulty={difficulty}
+                  onChange={setDifficulty}
+                />
+
+                <div className="mt-7 flex flex-wrap gap-3">
+                  <Button size="lg" onClick={() => startGame(difficulty)}>
+                    Quem ele levou?
+                  </Button>
+                  <Button variant="secondary" onClick={onBack}>
+                    Voltar aos modos
+                  </Button>
+                </div>
+                <p className="mt-4 text-sm text-[var(--muted)]">
+                  {best > 0
+                    ? `Seu recorde neste modo: ${best.toLocaleString("pt-BR")} pts`
+                    : "Todas as dicas abertas. Um chute. Tela final."}
+                </p>
+                <div className="mt-5">
+                  <ShareBar text={shareText} label="Chama a galera" compact />
+                </div>
               </div>
             </section>
             <Leaderboard
@@ -269,90 +259,87 @@ export function ParcaApp({ onBack }: { onBack: () => void }) {
         )}
 
         {phase === "clues" && person && (
-          <section className="animate-rise grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
+          <section className="animate-rise grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
             <div className="rounded-3xl border-[3px] border-[var(--ink)] bg-[var(--paper)] p-5 shadow-[6px_6px_0_var(--ink)] sm:p-6">
-              <p className="text-sm font-bold uppercase tracking-[0.18em] text-[var(--brand)]">
-                Boletim da fuga
-              </p>
-              <h2 className="mt-2 font-[family-name:var(--font-display)] text-2xl text-[var(--ink)] sm:text-3xl">
-                Quem o Flavinho levou com ele?
-              </h2>
-              <p className="mt-1 text-sm text-[var(--muted)]">
-                Não foi viagem solo. Tem um parça no banco do carona. Lê as
-                dicas e marca o nome.
-              </p>
+              <div className="flex items-start gap-4">
+                <div className="relative h-20 w-16 shrink-0 overflow-hidden rounded-2xl border-[3px] border-[var(--ink)] bg-[var(--sand)] shadow-[4px_4px_0_var(--ink)]">
+                  <Image
+                    src="/game/disguises/real.webp"
+                    alt="Flavinho"
+                    fill
+                    unoptimized
+                    className="object-contain p-1"
+                  />
+                </div>
+                <div className="flex h-20 w-16 shrink-0 flex-col items-center justify-center rounded-2xl border-[3px] border-dashed border-[var(--ink)]/50 bg-[#fff4d6] shadow-[4px_4px_0_var(--ink)]">
+                  <span className="font-[family-name:var(--font-display)] text-3xl text-[var(--ink)]">
+                    ?
+                  </span>
+                  <span className="px-1 text-center text-[9px] font-bold uppercase tracking-wide text-[var(--ink)]/70">
+                    Parça
+                  </span>
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-bold uppercase tracking-[0.18em] text-[var(--brand)]">
+                    Passageiro misterioso
+                  </p>
+                  <h2 className="mt-1 font-[family-name:var(--font-display)] text-2xl leading-tight text-[var(--ink)] sm:text-3xl">
+                    Quem o Flavinho levou com ele?
+                  </h2>
+                  <p className="mt-2 text-sm text-[var(--muted)]">
+                    Não é “onde ele está”. É{" "}
+                    <strong className="text-[var(--ink)]">
+                      quem entrou no carro junto
+                    </strong>
+                    . Um nome. Acertou ou errou.
+                  </p>
+                </div>
+              </div>
 
-              <ul className="mt-5 space-y-3">
-                {clues.map((clue, i) => {
-                  const unlocked = i <= clueIndex;
-                  return (
-                    <li
-                      key={`${person.id}-${i}`}
-                      className={`rounded-2xl border-[3px] px-4 py-4 ${
-                        unlocked
-                          ? "border-[var(--ink)] bg-[#fff4d6] text-[var(--ink)] shadow-[5px_5px_0_var(--ink)]"
-                          : "border-dashed border-[var(--ink)]/30 bg-white/70 text-[var(--muted)]"
-                      }`}
-                    >
-                      <p className="text-xs font-bold uppercase tracking-wide">
-                        {unlocked
-                          ? `Dica do parça ${i + 1}`
-                          : `Dica ${i + 1} bloqueada`}
-                      </p>
-                      <p
-                        className={`mt-1 leading-snug ${
-                          unlocked
-                            ? "text-base font-semibold sm:text-lg"
-                            : "text-sm font-medium"
-                        }`}
-                      >
-                        {unlocked
-                          ? clue
-                          : "Erra um nome pra liberar mais rastro."}
-                      </p>
-                    </li>
-                  );
-                })}
+              <ul className="mt-6 space-y-3">
+                {clues.map((clue, i) => (
+                  <li
+                    key={`${person.id}-${i}`}
+                    className="rounded-2xl border-[3px] border-[var(--ink)] bg-[#fff4d6] px-4 py-4 text-[var(--ink)] shadow-[5px_5px_0_var(--ink)]"
+                  >
+                    <p className="text-xs font-bold uppercase tracking-wide">
+                      Dica do passageiro {i + 1}/{clues.length}
+                    </p>
+                    <p className="mt-1 text-base font-semibold leading-snug sm:text-lg">
+                      {clue}
+                    </p>
+                  </li>
+                ))}
               </ul>
-              {feedback && (
-                <p className="mt-4 rounded-xl border-2 border-[var(--ink)]/20 bg-white px-3 py-2 text-sm font-semibold text-[var(--ink)]">
-                  {feedback}
-                </p>
-              )}
             </div>
 
             <div className="rounded-3xl border-[3px] border-[var(--ink)] bg-[var(--paper)] p-5 shadow-[6px_6px_0_var(--ink)] sm:p-6">
               <h3 className="font-[family-name:var(--font-display)] text-xl text-[var(--ink)]">
-                Lista de suspeitos
+                Quem foi o parça?
               </h3>
-              <p className="mt-1 text-xs text-[var(--muted)]">
-                Um desses foi embora com o Flavinho.
+              <p className="mt-1 text-sm text-[var(--muted)]">
+                Escolhe <strong className="text-[var(--ink)]">um</strong> destes
+                nomes. Sem voltar atrás.
               </p>
               <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2">
-                {options.map((opt) => {
-                  const dead = tried.includes(opt.id);
-                  return (
-                    <button
-                      key={opt.id}
-                      type="button"
-                      disabled={dead}
-                      onClick={() => pickPerson(opt.id)}
-                      className={`rounded-xl border-2 px-3 py-3 text-left transition ${
-                        dead
-                          ? "cursor-not-allowed border-[var(--ink)]/20 bg-[#f3f4f6] opacity-60"
-                          : "border-[var(--ink)]/25 bg-white hover:-translate-y-0.5 hover:border-[var(--ink)] hover:bg-[#fff4d6] hover:shadow-[3px_3px_0_var(--ink)]"
-                      }`}
-                    >
-                      <div className="font-bold text-[var(--ink)]">
-                        {opt.name}
-                      </div>
-                      <div className="mt-0.5 text-xs text-[var(--muted)]">
-                        {dead ? "Não foi esse." : opt.blurb}
-                      </div>
-                    </button>
-                  );
-                })}
+                {options.map((opt) => (
+                  <button
+                    key={opt.id}
+                    type="button"
+                    disabled={!!pickedId}
+                    onClick={() => pickPerson(opt.id)}
+                    className="rounded-xl border-2 border-[var(--ink)]/25 bg-white px-3 py-3 text-left transition hover:-translate-y-0.5 hover:border-[var(--ink)] hover:bg-[#fff4d6] hover:shadow-[3px_3px_0_var(--ink)] disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    <div className="font-bold text-[var(--ink)]">{opt.name}</div>
+                    <div className="mt-0.5 text-xs text-[var(--muted)]">
+                      {opt.blurb}
+                    </div>
+                  </button>
+                ))}
               </div>
+              <p className="mt-4 text-center text-xs font-semibold uppercase tracking-[0.14em] text-[var(--brand)]">
+                Uma tentativa · {formatClock(elapsed)}
+              </p>
             </div>
           </section>
         )}
@@ -360,16 +347,24 @@ export function ParcaApp({ onBack }: { onBack: () => void }) {
         {phase === "result" && person && (
           <section className="animate-rise mx-auto max-w-xl rounded-3xl border-[3px] border-[var(--ink)] bg-[var(--paper)] p-6 text-center shadow-[8px_8px_0_var(--ink)]">
             <p className="text-xs font-bold uppercase tracking-[0.2em] text-[var(--brand)]">
-              {won ? "Parça identificado" : "Fuga completa"}
+              {won ? "Parça identificado" : "Errou o passageiro"}
             </p>
             <h2 className="mt-2 font-[family-name:var(--font-display)] text-3xl text-[var(--ink)]">
-              {won ? "Era esse que ele levou!" : "O parça escapou"}
+              {won
+                ? "Era esse que ele levou!"
+                : "Não foi quem ele levou"}
             </h2>
-            <p className="mt-2 text-[var(--muted)]">
+            <p className="mt-3 text-[var(--muted)]">
               O Flavinho saiu com{" "}
               <strong className="text-[var(--ink)]">{person.name}</strong>
               {person.blurb ? ` — ${person.blurb}` : ""}.
             </p>
+            {!won && picked && (
+              <p className="mt-2 text-sm text-[var(--muted)]">
+                Seu chute:{" "}
+                <strong className="text-[var(--ink)]">{picked.name}</strong>.
+              </p>
+            )}
             <p className="mt-2 font-semibold text-[var(--ink)]">
               {score.toLocaleString("pt-BR")} pts · {formatClock(elapsed)}
               {myRank ? ` · #${myRank} neste modo` : ""}
@@ -441,19 +436,19 @@ function DifficultyPicker({
     {
       id: "easy",
       label: "Fácil",
-      hint: "Dicas bem óbvias · 5 vidas",
+      hint: "Dicas bem óbvias",
       tone: "bg-[#e8f6ef] border-[#1f8a5b]",
     },
     {
       id: "medium",
       label: "Médio",
-      hint: "Dicas de meio-termo · 3 vidas",
+      hint: "Dicas de meio-termo",
       tone: "bg-[#fff4d6] border-[#d4a017]",
     },
     {
       id: "hard",
       label: "Difícil",
-      hint: "Dicas afiadas · 2 vidas",
+      hint: "Dicas afiadas",
       tone: "bg-[#fde8e4] border-[#c2410c]",
     },
   ];

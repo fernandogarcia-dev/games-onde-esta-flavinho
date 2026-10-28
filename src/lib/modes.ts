@@ -26,9 +26,9 @@ export const GAME_MODES: GameModeMeta[] = [
   {
     id: "rua",
     name: "Rua da Amargura",
-    tagline: "Street View. Um chute. Acertou?",
+    tagline: "Uma rua. Um chute. Acertou?",
     blurb:
-      "Uma rua misteriosa no Street View. Gira, anda um pouco e marca no mapa onde o Flavinho sumiu. Uma tentativa só.",
+      "Uma pista da cidade (Street View quando dá). Marca no mapa onde o Flavinho sumiu. Uma tentativa só.",
     tone: "bg-[#fff4d6] border-[#d4a017]",
     badge: "Modo 2",
     art: "/modes/rua.jpg",
@@ -37,13 +37,13 @@ export const GAME_MODES: GameModeMeta[] = [
   {
     id: "parca",
     name: "Diga-me com Quem Andas…",
-    tagline: "Quem ele levou na fuga?",
+    tagline: "Quem entrou no carro com ele?",
     blurb:
-      "O Flavinho não sumiu sozinho. Pelas dicas, descobre qual figura pública foi o parça que ele levou embora.",
+      "Não é achar o Flavinho — é descobrir qual figura pública ele levou no banco do carona. Uma tentativa.",
     tone: "bg-[#fde8e4] border-[#c2410c]",
     badge: "Modo 3",
     art: "/modes/parca.jpg",
-    artAlt: "Flavinho fugindo com um parça em silhueta",
+    artAlt: "Flavinho fugindo de carro com um passageiro misterioso",
   },
 ];
 

@@ -279,6 +279,7 @@ export function RuaApp({ onBack }: { onBack: () => void }) {
                 lat={city.lat}
                 lng={city.lng}
                 seed={`${city.id}-${difficulty}`}
+                fallbackPhoto={city.photo}
               />
               <div className="border-t-2 border-[var(--ink)]/10 px-4 py-3">
                 <p className="text-xs font-bold uppercase tracking-[0.16em] text-[var(--brand)]">
@@ -288,8 +289,8 @@ export function RuaApp({ onBack }: { onBack: () => void }) {
                   Onde o Flavinho sumiu?
                 </h2>
                 <p className="mt-1 text-sm text-[var(--muted)]">
-                  Gira o Street View, anda um pouco e marca no mapa. Sem segunda
-                  chance.
+                  Olha a pista, marca no mapa e confirma. Um chute só — depois é
+                  tela final.
                 </p>
               </div>
             </div>

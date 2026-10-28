@@ -46,6 +46,8 @@ NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=sua_chave_aqui
 
 5. Reiniciar o `npm run dev` (ou redeploy). Pode levar 1–5 min pra API nova liberar.
 
+Se o Google ainda bloquear o panorama, o modo **cai automaticamente na foto da cidade** (Wikimedia) pra partida continuar jogável — o pin no mapa segue valendo.
+
 ## SEO
 
 - `sitemap.xml` e `robots.txt` gerados pelo Next (`src/app/sitemap.ts`, `robots.ts`)
