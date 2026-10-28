@@ -290,8 +290,8 @@ export function RuaApp({ onBack }: { onBack: () => void }) {
                   Onde o Flavinho sumiu?
                 </h2>
                 <p className="mt-1 text-sm text-[var(--muted)]">
-                  Olha a pista, marca no mapa e confirma. Um chute só — depois é
-                  tela final.
+                  Anda na rua (setas ou clique no chão), olha em volta, marca no
+                  mapa e confirma. Um chute só.
                 </p>
               </div>
             </div>

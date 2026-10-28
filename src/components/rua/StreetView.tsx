@@ -55,6 +55,10 @@ function isDenied(err: unknown): boolean {
   );
 }
 
+function linkCount(result: google.maps.StreetViewResponse): number {
+  return result?.data?.links?.length ?? 0;
+}
+
 async function findNearestPanorama(
   service: google.maps.StreetViewService,
   StreetViewSource: typeof google.maps.StreetViewSource,
@@ -62,21 +66,37 @@ async function findNearestPanorama(
   lng: number,
 ): Promise<google.maps.StreetViewResponse> {
   const attempts: google.maps.StreetViewLocationRequest[] = [
-    { location: { lat, lng }, radius: 5000, source: StreetViewSource.OUTDOOR },
-    { location: { lat, lng }, radius: 20000, source: StreetViewSource.OUTDOOR },
+    { location: { lat, lng }, radius: 500, source: StreetViewSource.OUTDOOR },
+    { location: { lat, lng }, radius: 2000, source: StreetViewSource.OUTDOOR },
+    { location: { lat, lng }, radius: 8000, source: StreetViewSource.OUTDOOR },
+    { location: { lat, lng }, radius: 25000, source: StreetViewSource.OUTDOOR },
     { location: { lat, lng }, radius: 50000 },
     { location: { lat, lng }, radius: 100000 },
   ];
 
   let lastErr: unknown;
+  let best: google.maps.StreetViewResponse | null = null;
+  let bestLinks = -1;
+
   for (const req of attempts) {
     try {
-      return await service.getPanorama(req);
+      const result = await service.getPanorama(req);
+      const links = linkCount(result);
+      if (links > bestLinks) {
+        best = result;
+        bestLinks = links;
+      }
+      // Prefer a walkable outdoor pano as soon as we find one with links.
+      if (links > 0 && req.source === StreetViewSource.OUTDOOR) {
+        return result;
+      }
     } catch (err) {
       lastErr = err;
       if (isDenied(err)) throw err;
     }
   }
+
+  if (best) return best;
   throw lastErr ?? new Error("ZERO_RESULTS");
 }
 
@@ -149,6 +169,8 @@ export function StreetView({
       setStatus("loading");
       try {
         ensureMapsOptions();
+        // Core maps + streetView — panorama navigation needs both loaded.
+        await importLibrary("maps");
         const { StreetViewService, StreetViewPanorama, StreetViewSource } =
           (await importLibrary(
             "streetView",
@@ -177,9 +199,10 @@ export function StreetView({
           pano: location.pano,
           position: location.latLng,
           pov: { heading, pitch: 0 },
-          zoom: 1,
+          zoom: 0,
           addressControl: false,
           showRoadLabels: false,
+          // Walking / looking around
           linksControl: true,
           panControl: true,
           zoomControl: true,
@@ -188,6 +211,8 @@ export function StreetView({
           motionTracking: false,
           motionTrackingControl: false,
           clickToGo: true,
+          scrollwheel: true,
+          disableDoubleClickZoom: false,
         };
 
         if (!panoramaRef.current) {
@@ -198,6 +223,17 @@ export function StreetView({
         } else {
           panoramaRef.current.setOptions(options);
         }
+
+        // Make sure arrows + click-to-walk stay on after setOptions races.
+        panoramaRef.current.setOptions({
+          linksControl: true,
+          clickToGo: true,
+          scrollwheel: true,
+        });
+
+        // Focus the canvas so click/drag feels immediate.
+        hostRef.current.tabIndex = 0;
+        hostRef.current.focus({ preventScroll: true });
 
         setStatus("ready");
       } catch (err) {
@@ -269,13 +305,26 @@ export function StreetView({
 
   return (
     <div
-      className={`relative aspect-[4/3] w-full bg-[var(--sand)] ${className}`}
+      className={`relative aspect-[4/3] w-full overflow-hidden bg-[var(--sand)] ${className}`}
     >
-      <div ref={hostRef} className="absolute inset-0 h-full w-full" />
+      <div
+        ref={hostRef}
+        className="absolute inset-0 h-full w-full touch-pan-y outline-none [&_.gm-iv-address]:hidden"
+        role="application"
+        aria-label="Street View — arraste pra olhar, clique nas setas ou na rua pra andar"
+      />
       {status === "loading" && (
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-[var(--sand)]/80">
           <p className="text-sm font-semibold text-[var(--muted)]">
             Abrindo a rua…
+          </p>
+        </div>
+      )}
+      {status === "ready" && (
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent px-3 pb-2.5 pt-8">
+          <p className="text-center text-[11px] font-semibold text-white/95 sm:text-xs">
+            Arrasta pra olhar · setas / clique na rua pra andar · scroll pra
+            zoom
           </p>
         </div>
       )}
