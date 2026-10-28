@@ -59,7 +59,11 @@ type Phase =
   | "fail-city"
   | "fail-time";
 
-export function GameApp() {
+export function GameApp({
+  onBackToModes,
+}: {
+  onBackToModes?: () => void;
+} = {}) {
   const [phase, setPhase] = useState<Phase>("landing");
   const [difficulty, setDifficulty] = useState<Difficulty>("medium");
   const [run, setRun] = useState<Level[]>([]);
@@ -389,13 +393,18 @@ export function GameApp() {
       </div>
 
       <header className="relative z-10 mx-auto flex w-full max-w-5xl items-center justify-between gap-3 px-4 py-4 sm:px-6">
-        <button
-          type="button"
-          className="font-[family-name:var(--font-display)] text-xl tracking-wide text-[var(--ink)] sm:text-2xl"
-          onClick={restartToMenu}
-        >
-          Cadê Flavinho?
-        </button>
+        <div className="min-w-0">
+          <button
+            type="button"
+            className="font-[family-name:var(--font-display)] text-xl tracking-wide text-[var(--ink)] sm:text-2xl"
+            onClick={onBackToModes ?? restartToMenu}
+          >
+            Cadê Flavinho?
+          </button>
+          <p className="truncate text-[11px] font-bold uppercase tracking-[0.16em] text-[var(--brand)]">
+            O Mestre dos Disfarces
+          </p>
+        </div>
         <div className="flex items-center gap-2">
           {phase !== "landing" && (
             <>
@@ -418,6 +427,11 @@ export function GameApp() {
                 Recomeçar
               </Button>
             </>
+          )}
+          {onBackToModes && (
+            <Button variant="secondary" size="sm" onClick={onBackToModes}>
+              Modos
+            </Button>
           )}
           <Button
             variant="secondary"
@@ -978,14 +992,15 @@ function Landing({
       <div className="relative grid items-center gap-8 px-6 py-10 sm:px-10 sm:py-14 lg:grid-cols-[1.15fr_0.85fr]">
         <div className="animate-rise">
           <p className="text-sm font-bold uppercase tracking-[0.25em] text-[var(--brand)]">
-            Boletim relâmpago · sumiço confirmado
+            Modo 1 · O Mestre dos Disfarces
           </p>
           <h1 className="mt-3 max-w-xl font-[family-name:var(--font-display)] text-5xl leading-[0.95] text-[var(--ink)] sm:text-6xl md:text-7xl">
             Cadê Flavinho?
           </h1>
           <p className="mt-4 max-w-md text-lg text-[var(--muted)]">
             {playerName ? `E aí, ${playerName}. ` : ""}
-            Relógio ligado, pontos derretendo, ranking esperando.{" "}
+            Ache ele na multidão. Relógio ligado, pontos derretendo, ranking
+            esperando.{" "}
             {topName
               ? `Bata ${topName} (${topScore.toLocaleString("pt-BR")} pts).`
               : "Seja o primeiro no placar."}

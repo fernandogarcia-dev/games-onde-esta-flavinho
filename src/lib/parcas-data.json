@@ -1,0 +1,3308 @@
+{
+  "version": 1,
+  "mode": "parca",
+  "count": 150,
+  "note": "Rascunho local. Revise nomes e dicas. Nada disso sobe online até OK.",
+  "people": [
+    {
+      "id": "trump",
+      "name": "Donald Trump",
+      "blurb": "Ex-presidente dos EUA",
+      "clues": {
+        "easy": [
+          "Conhecido por ter a cara laranja.",
+          "Grita \"You're fired!\" na cabeça do povo.",
+          "Tem torre com o sobrenome em Nova York."
+        ],
+        "medium": [
+          "Cabelo com arquitetura própria.",
+          "Twitter furioso virou marca.",
+          "Slogan Make America Great Again."
+        ],
+        "hard": [
+          "Apresentou O Aprendiz antes da política.",
+          "Já teve cassino em Atlantic City.",
+          "Meme eterno de foto com vento adverso."
+        ]
+      }
+    },
+    {
+      "id": "lula",
+      "name": "Luiz Inácio Lula da Silva",
+      "blurb": "Presidente do Brasil",
+      "clues": {
+        "easy": [
+          "Já foi metalúrgico e virou presidente.",
+          "Barba branca icônica da política BR.",
+          "É o atual presidente do Brasil."
+        ],
+        "medium": [
+          "Começou no sindicato do ABC paulista.",
+          "Partido: PT.",
+          "Torcida usa apelido carinhoso."
+        ],
+        "hard": [
+          "Nasceu em Garanhuns (PE).",
+          "Primeiro mandato começou em 2003.",
+          "Saga jurídica com prisão e soltura famosa."
+        ]
+      }
+    },
+    {
+      "id": "jair",
+      "name": "Jair Bolsonaro",
+      "blurb": "Ex-presidente; pai do Flavinho",
+      "clues": {
+        "easy": [
+          "Pai do Flavinho deste jogo.",
+          "Ex-presidente do Brasil.",
+          "Ficou famoso pelo \"mitô\"."
+        ],
+        "medium": [
+          "Militar da reserva.",
+          "Teve o cercadinho como ritual.",
+          "Passou por PSL e PL."
+        ],
+        "hard": [
+          "Décadas de Câmara pelo Rio.",
+          "Sofreu atentado com faca em 2018.",
+          "Apoiadores chamam de capitão."
+        ]
+      }
+    },
+    {
+      "id": "janja",
+      "name": "Janja Lula da Silva",
+      "blurb": "Primeira-dama",
+      "clues": {
+        "easy": [
+          "Esposa do Lula.",
+          "Primeira-dama atual.",
+          "Aparece muito em eventos oficiais."
+        ],
+        "medium": [
+          "Ativista digital antes do Planalto.",
+          "Mineira de origem.",
+          "Já foi chamada de primeira-influenciadora."
+        ],
+        "hard": [
+          "Casou com Lula em 2022.",
+          "Nome de batismo: Rosângela.",
+          "Pauta forte em cultura e social."
+        ]
+      }
+    },
+    {
+      "id": "michelle",
+      "name": "Michelle Bolsonaro",
+      "blurb": "Ex-primeira-dama",
+      "clues": {
+        "easy": [
+          "Ex-primeira-dama do Brasil.",
+          "Casada com o Jair.",
+          "Discursos emocionados famosos."
+        ],
+        "medium": [
+          "Usa libras em aparições.",
+          "Atua em causa da pessoa com deficiência.",
+          "Evangélica assumida."
+        ],
+        "hard": [
+          "Primeira-dama de 2019 a 2022.",
+          "Tem filhos com o ex-presidente.",
+          "Presença forte em atos."
+        ]
+      }
+    },
+    {
+      "id": "neymar",
+      "name": "Neymar Jr.",
+      "blurb": "Jogador",
+      "clues": {
+        "easy": [
+          "Camisa 10 da seleção em várias eras.",
+          "Dancinha e cabelo colorido.",
+          "Brilha (e cai) no gramado."
+        ],
+        "medium": [
+          "Nasceu em Mogi das Cruzes.",
+          "Já jogou no Barcelona com Messi.",
+          "Passagem bombada pelo PSG."
+        ],
+        "hard": [
+          "Estreou no Santos.",
+          "Lesão grave perto de Copa.",
+          "Instituto com o nome do pai."
+        ]
+      }
+    },
+    {
+      "id": "messi",
+      "name": "Lionel Messi",
+      "blurb": "Astro argentino",
+      "clues": {
+        "easy": [
+          "Argentino baixinho que dribbla o mundo.",
+          "Campeão da Copa de 2022.",
+          "Rival eterno do CR7 no bar."
+        ],
+        "medium": [
+          "Maior parte da carreira no Barcelona.",
+          "Hoje no Inter Miami.",
+          "Apelido: La Pulga."
+        ],
+        "hard": [
+          "Nasceu em Rosário.",
+          "Tratamento hormonal na infância.",
+          "Número clássico: 10."
+        ]
+      }
+    },
+    {
+      "id": "cr7",
+      "name": "Cristiano Ronaldo",
+      "blurb": "Astro português",
+      "clues": {
+        "easy": [
+          "Português do \"Siuuu\".",
+          "Corpo de academia, ego de balada.",
+          "United, Real Madrid, etc."
+        ],
+        "medium": [
+          "Nasceu na Madeira.",
+          "Apelido: CR7.",
+          "Hoje joga na Arábia."
+        ],
+        "hard": [
+          "Começou no Sporting.",
+          "Tem museu em Portugal.",
+          "Número clássico: 7."
+        ]
+      }
+    },
+    {
+      "id": "pele",
+      "name": "Pelé",
+      "blurb": "Rei do futebol",
+      "clues": {
+        "easy": [
+          "O Rei do futebol.",
+          "Tricampeão mundial.",
+          "Santos no peito da história."
+        ],
+        "medium": [
+          "Nome de batismo: Edson.",
+          "Nasceu em Três Corações.",
+          "Apelido veio da infância."
+        ],
+        "hard": [
+          "Milésimo gol em 1969.",
+          "Jogou no Cosmos (EUA).",
+          "Morreu em 2022."
+        ]
+      }
+    },
+    {
+      "id": "ronaldo",
+      "name": "Ronaldo Fenômeno",
+      "blurb": "Ex-jogador",
+      "clues": {
+        "easy": [
+          "O Fenômeno.",
+          "Dentes e dribles dos anos 90/2000.",
+          "Copas e finais inesquecíveis."
+        ],
+        "medium": [
+          "Barcelona e Inter no histórico.",
+          "Também no Real Madrid.",
+          "Hoje empresário/dono de clube."
+        ],
+        "hard": [
+          "Carioca.",
+          "Lesões graves de joelho.",
+          "Apelido: R9."
+        ]
+      }
+    },
+    {
+      "id": "ronaldinho",
+      "name": "Ronaldinho Gaúcho",
+      "blurb": "Ex-jogador",
+      "clues": {
+        "easy": [
+          "Sorriso e drible malandro.",
+          "Cabelo com listra anos 2000.",
+          "Ballon d'Or na memória."
+        ],
+        "medium": [
+          "Brilhou no Barcelona.",
+          "Gaúcho de Porto Alegre.",
+          "Festa dentro e fora de campo."
+        ],
+        "hard": [
+          "Começou no Grêmio.",
+          "PSG e Flamengo no histórico.",
+          "Irmão Roberto Assis."
+        ]
+      }
+    },
+    {
+      "id": "gabigol",
+      "name": "Gabriel Barbosa",
+      "blurb": "Jogador",
+      "clues": {
+        "easy": [
+          "Gabigol.",
+          "Herói de finais do Flamengo.",
+          "Comemoração de braço aberto."
+        ],
+        "medium": [
+          "Revelado pelo Santos.",
+          "Passagem pela Inter de Milão.",
+          "Camisa 9 em fases marcantes."
+        ],
+        "hard": [
+          "Nasceu em São Bernardo.",
+          "Apelido cola mais que o nome.",
+          "Libertadores na galeria."
+        ]
+      }
+    },
+    {
+      "id": "vinicius",
+      "name": "Vinícius Júnior",
+      "blurb": "Jogador",
+      "clues": {
+        "easy": [
+          "Vini Jr. do Real Madrid.",
+          "Denúncias de racismo na Europa viralizaram.",
+          "Drible curto e velocidade."
+        ],
+        "medium": [
+          "Revelado pelo Flamengo.",
+          "Carioca de São Gonçalo.",
+          "Ballon d'Or na conversa."
+        ],
+        "hard": [
+          "Estreou muito jovem.",
+          "Ativismo antirracista.",
+          "Ninho pra Madrid."
+        ]
+      }
+    },
+    {
+      "id": "anitta",
+      "name": "Anitta",
+      "blurb": "Cantora",
+      "clues": {
+        "easy": [
+          "Rainha do funk no planeta.",
+          "Hit Envolver / Show das Poderosas.",
+          "Canta em PT, EN e ES."
+        ],
+        "medium": [
+          "Nasceu em Honório Gurgel.",
+          "Empresária além de cantora.",
+          "Já apresentou reality musical."
+        ],
+        "hard": [
+          "Nome de batismo: Larissa.",
+          "Bloco de carnaval famoso.",
+          "Capa de revista gringa."
+        ]
+      }
+    },
+    {
+      "id": "ivete",
+      "name": "Ivete Sangalo",
+      "blurb": "Cantora",
+      "clues": {
+        "easy": [
+          "Baiana do axé.",
+          "Voz de trio elétrico.",
+          "Carnaval de Salvador é casa."
+        ],
+        "medium": [
+          "Nasceu em Juazeiro.",
+          "Já apresentou TV.",
+          "Hits de sorte grande."
+        ],
+        "hard": [
+          "Começou na Banda Eva.",
+          "Filhos gêmeos viralizaram.",
+          "Marido empresário do axé."
+        ]
+      }
+    },
+    {
+      "id": "ludmilla",
+      "name": "Ludmilla",
+      "blurb": "Cantora",
+      "clues": {
+        "easy": [
+          "Funk/pop que explode no Spotify.",
+          "Carioca potente.",
+          "Casamento com Brunna viralizou."
+        ],
+        "medium": [
+          "Já foi MC Beyoncé (fase antiga).",
+          "Hits de empoderamento.",
+          "Carnaval forte."
+        ],
+        "hard": [
+          "Nasceu em Duque de Caxias.",
+          "Álbuns Numanice.",
+          "Troca de nome artístico famosa."
+        ]
+      }
+    },
+    {
+      "id": "pabllo",
+      "name": "Pabllo Vittar",
+      "blurb": "Cantora",
+      "clues": {
+        "easy": [
+          "Drag queen pop do Brasil.",
+          "Hits de pista.",
+          "Ícone LGBTQIA+ nacional."
+        ],
+        "medium": [
+          "Maranhense.",
+          "Colabs internacionais.",
+          "Peruca e look de impacto."
+        ],
+        "hard": [
+          "Cena drag para o pop.",
+          "Turnês lotadas.",
+          "Nome artístico icônico."
+        ]
+      }
+    },
+    {
+      "id": "luan",
+      "name": "Luan Santana",
+      "blurb": "Cantor sertanejo",
+      "clues": {
+        "easy": [
+          "Sertanejo universitário de capa.",
+          "Hits de sofrência romântica.",
+          "Sorriso de outdoor."
+        ],
+        "medium": [
+          "Sul-mato-grossense.",
+          "Começou muito jovem.",
+          "Turnês gigantes."
+        ],
+        "hard": [
+          "Campo Grande no radar.",
+          "Dueto com gringos.",
+          "Fãs em coro."
+        ]
+      }
+    },
+    {
+      "id": "marilia",
+      "name": "Marília Mendonça",
+      "blurb": "Cantora",
+      "clues": {
+        "easy": [
+          "Rainha da sofrência.",
+          "Voz do sertanejo que dói gostoso.",
+          "Partida trágica em acidente aéreo."
+        ],
+        "medium": [
+          "Goiana.",
+          "Infiel / Todo Mundo Vai Sofrer.",
+          "Mãe solo na narrativa."
+        ],
+        "hard": [
+          "Comoção nacional em 2021.",
+          "Álbum póstumo.",
+          "Patrimônio da nova geração."
+        ]
+      }
+    },
+    {
+      "id": "gusttavolima",
+      "name": "Gusttavo Lima",
+      "blurb": "Cantor sertanejo",
+      "clues": {
+        "easy": [
+          "O Embaixador.",
+          "Buteco e cerveja.",
+          "Hit de balada sertaneja."
+        ],
+        "medium": [
+          "Mineiro.",
+          "Balada boa na memória.",
+          "Avião e vida de celebridade."
+        ],
+        "hard": [
+          "Presidente Olegário (MG).",
+          "Fãs Embaixadores.",
+          "Polêmicas políticas pontuais."
+        ]
+      }
+    },
+    {
+      "id": "madonna",
+      "name": "Madonna",
+      "blurb": "Cantora",
+      "clues": {
+        "easy": [
+          "Rainha do Pop.",
+          "Material Girl.",
+          "Reinventa look a cada década."
+        ],
+        "medium": [
+          "Like a Virgin na história.",
+          "Temporada longa no Brasil viralizou.",
+          "Turnês polêmicas."
+        ],
+        "hard": [
+          "Louise Ciccone.",
+          "Michigan.",
+          "Vogue / Hung Up / Like a Prayer."
+        ]
+      }
+    },
+    {
+      "id": "taylorswift",
+      "name": "Taylor Swift",
+      "blurb": "Cantora",
+      "clues": {
+        "easy": [
+          "Eras Tour parou cidades.",
+          "Swifties em peso.",
+          "Muda de era musical."
+        ],
+        "medium": [
+          "Começou no country.",
+          "Taylor's Version.",
+          "Namoro com jogador de futebol americano."
+        ],
+        "hard": [
+          "Pennsylvania.",
+          "Grammys aos montes.",
+          "Gato famoso na fofoca."
+        ]
+      }
+    },
+    {
+      "id": "beyonce",
+      "name": "Beyoncé",
+      "blurb": "Cantora",
+      "clues": {
+        "easy": [
+          "Queen B.",
+          "Destiny's Child no começo.",
+          "Visual de superprodução."
+        ],
+        "medium": [
+          "Texana.",
+          "Renaissance / Cowboy Carter.",
+          "Casada com rapper magnata."
+        ],
+        "hard": [
+          "Houston.",
+          "Irmã Solange.",
+          "Halftime show histórico."
+        ]
+      }
+    },
+    {
+      "id": "rihanna",
+      "name": "Rihanna",
+      "blurb": "Cantora e empresária",
+      "clues": {
+        "easy": [
+          "Umbrella na memória.",
+          "Barbadense pop.",
+          "Império Fenty."
+        ],
+        "medium": [
+          "Voz melosa e hits de pista.",
+          "Gravidez viralizou moda.",
+          "Empresária bilionária."
+        ],
+        "hard": [
+          "Robyn Fenty.",
+          "Super Bowl.",
+          "Roc Nation no histórico."
+        ]
+      }
+    },
+    {
+      "id": "badbunny",
+      "name": "Bad Bunny",
+      "blurb": "Cantor",
+      "clues": {
+        "easy": [
+          "Reggaeton/trap latino global.",
+          "Cabelo e moda ousada.",
+          "Porto-riquenho."
+        ],
+        "medium": [
+          "Álbuns em espanhol no topo.",
+          "Já apareceu na WWE.",
+          "Estilo anti-machismo pop."
+        ],
+        "hard": [
+          "Benito.",
+          "Hits com J Balvin.",
+          "Turnê de estádio."
+        ]
+      }
+    },
+    {
+      "id": "trumpish",
+      "name": "Joe Biden",
+      "blurb": "Ex-presidente dos EUA",
+      "clues": {
+        "easy": [
+          "Ex-presidente americano recente.",
+          "Óculos e cabelo branco.",
+          "Vice do Obama antes."
+        ],
+        "medium": [
+          "Partido Democrata.",
+          "Idade avançada virou tema.",
+          "Filho Beau na narrativa."
+        ],
+        "hard": [
+          "Delaware.",
+          "Esposa Jill.",
+          "Perdeu a reeleição para o laranja."
+        ]
+      }
+    },
+    {
+      "id": "obama",
+      "name": "Barack Obama",
+      "blurb": "Ex-presidente dos EUA",
+      "clues": {
+        "easy": [
+          "Primeiro presidente negro dos EUA.",
+          "Sorriso e cartaz Hope.",
+          "Michelle ao lado."
+        ],
+        "medium": [
+          "Senador por Illinois.",
+          "Nobel da Paz.",
+          "Podcast depois da Casa Branca."
+        ],
+        "hard": [
+          "Havaí.",
+          "Livros best-seller.",
+          "Malia e Sasha."
+        ]
+      }
+    },
+    {
+      "id": "michelleobama",
+      "name": "Michelle Obama",
+      "blurb": "Ex-primeira-dama dos EUA",
+      "clues": {
+        "easy": [
+          "Ex-primeira-dama americana.",
+          "Braços firmes viraram meme positivo.",
+          "Livro Becoming."
+        ],
+        "medium": [
+          "Advogada antes.",
+          "Campanha de alimentação saudável.",
+          "Ícone de estilo."
+        ],
+        "hard": [
+          "Chicago.",
+          "Casada com Barack.",
+          "Falas motivacionais."
+        ]
+      }
+    },
+    {
+      "id": "putin",
+      "name": "Vladimir Putin",
+      "blurb": "Presidente da Rússia",
+      "clues": {
+        "easy": [
+          "Homem forte do Kremlin.",
+          "Fotos sem camisa no gelo.",
+          "Guerra na Ucrânia no noticiário."
+        ],
+        "medium": [
+          "Ex-KGB na biografia.",
+          "Décadas no poder.",
+          "Mesa longa viralizou."
+        ],
+        "hard": [
+          "Leningrado.",
+          "Judô no marketing.",
+          "Partido Rússia Unida."
+        ]
+      }
+    },
+    {
+      "id": "zelensky",
+      "name": "Volodymyr Zelensky",
+      "blurb": "Presidente da Ucrânia",
+      "clues": {
+        "easy": [
+          "Presidente da Ucrânia na guerra.",
+          "Já foi comediante.",
+          "Camiseta verde-oliva símbolo."
+        ],
+        "medium": [
+          "Ator de série sobre presidente.",
+          "Pede armas no noticiário mundial.",
+          "Ucraniano."
+        ],
+        "hard": [
+          "Humor antes da política.",
+          "Eleito em 2019.",
+          "TV no passado."
+        ]
+      }
+    },
+    {
+      "id": "milei",
+      "name": "Javier Milei",
+      "blurb": "Presidente da Argentina",
+      "clues": {
+        "easy": [
+          "Presidente argentino dos memes.",
+          "Cabelo explosivo.",
+          "Motosserra na campanha."
+        ],
+        "medium": [
+          "Economista liberal radical.",
+          "Apelido loco entre críticos/fãs.",
+          "Cachorros clonados na fofoca."
+        ],
+        "hard": [
+          "La Libertad Avanza.",
+          "Ex-comentarista de TV.",
+          "Vizinho barulhento do Brasil."
+        ]
+      }
+    },
+    {
+      "id": "xi",
+      "name": "Xi Jinping",
+      "blurb": "Presidente da China",
+      "clues": {
+        "easy": [
+          "Homem forte da China.",
+          "Partido Comunista Chinês.",
+          "Poder centralizado."
+        ],
+        "medium": [
+          "Esposa cantora famosa na China.",
+          "Nova rota da seda no discurso.",
+          "Zero COVID na memória."
+        ],
+        "hard": [
+          "Facção princeling.",
+          "Mandatos estendidos.",
+          "Cargo conhecido no mundo todo."
+        ]
+      }
+    },
+    {
+      "id": "papa",
+      "name": "Papa Francisco",
+      "blurb": "Líder católico",
+      "clues": {
+        "easy": [
+          "Papa argentino.",
+          "Sorriso e simplicidade.",
+          "Primeiro papa latino-americano."
+        ],
+        "medium": [
+          "Jesuíta.",
+          "Nome em homenagem a Assis.",
+          "Líder católico global."
+        ],
+        "hard": [
+          "Buenos Aires.",
+          "Jorge Bergoglio.",
+          "Futebol na biografia papal."
+        ]
+      }
+    },
+    {
+      "id": "charles",
+      "name": "Rei Charles III",
+      "blurb": "Monarca britânico",
+      "clues": {
+        "easy": [
+          "Rei atual do Reino Unido.",
+          "Filho da Elizabeth II.",
+          "Orelhas famosas de charge."
+        ],
+        "medium": [
+          "Ex-príncipe de Gales.",
+          "Casamento com Camilla.",
+          "Décadas esperando o trono."
+        ],
+        "hard": [
+          "Nome longo real.",
+          "Meio ambiente no discurso.",
+          "Coroação recente."
+        ]
+      }
+    },
+    {
+      "id": "harry",
+      "name": "Príncipe Harry",
+      "blurb": "Realeza britânica",
+      "clues": {
+        "easy": [
+          "Filho ruivo da Diana.",
+          "Casado com a Meghan.",
+          "Saiu do trabalho real."
+        ],
+        "medium": [
+          "Livro Spare.",
+          "Mora nos EUA.",
+          "Irmão William na novela."
+        ],
+        "hard": [
+          "Serviu no Exército.",
+          "Netflix/docs.",
+          "Duque de Sussex."
+        ]
+      }
+    },
+    {
+      "id": "willsmith",
+      "name": "Will Smith",
+      "blurb": "Ator",
+      "clues": {
+        "easy": [
+          "Príncipe de Bel-Air.",
+          "Tapa no Oscar viralizou o planeta.",
+          "Rapper e ator."
+        ],
+        "medium": [
+          "MIB / Independence Day.",
+          "Casamento com Jada na fofoca.",
+          "Filadélfia."
+        ],
+        "hard": [
+          "Fresh Prince.",
+          "Filhos famosos.",
+          "Rap anos 90."
+        ]
+      }
+    },
+    {
+      "id": "tomcruise",
+      "name": "Tom Cruise",
+      "blurb": "Ator",
+      "clues": {
+        "easy": [
+          "Missão Impossível.",
+          "Corre muito em filme.",
+          "Cientologia na fofoca."
+        ],
+        "medium": [
+          "Top Gun.",
+          "Faz as próprias cenas de ação.",
+          "Sorriso de capa."
+        ],
+        "hard": [
+          "Nova York.",
+          "Casamentos famosos.",
+          "Thomas Mapother."
+        ]
+      }
+    },
+    {
+      "id": "dicaprio",
+      "name": "Leonardo DiCaprio",
+      "blurb": "Ator",
+      "clues": {
+        "easy": [
+          "Titanic.",
+          "Oscar demorado virou meme.",
+          "Ativista climático de tapete vermelho."
+        ],
+        "medium": [
+          "Lobo de Wall Street.",
+          "Inception face meme.",
+          "Namora gente bem mais jovem (fofoca)."
+        ],
+        "hard": [
+          "LA.",
+          "Scorsese frequente.",
+          "Urso do Revenant."
+        ]
+      }
+    },
+    {
+      "id": "angelina",
+      "name": "Angelina Jolie",
+      "blurb": "Atriz",
+      "clues": {
+        "easy": [
+          "Lara Croft na memória.",
+          "Lábios famosos.",
+          "Filantropia e adoção internacional."
+        ],
+        "medium": [
+          "Brad Pitt na novela.",
+          "Malévola.",
+          "Diretora também."
+        ],
+        "hard": [
+          "Jolie-Pitt.",
+          "Tatuagens.",
+          "UNHCR."
+        ]
+      }
+    },
+    {
+      "id": "bradpitt",
+      "name": "Brad Pitt",
+      "blurb": "Ator",
+      "clues": {
+        "easy": [
+          "Clube da Luta / Troy.",
+          "Sorriso hollywoodiano.",
+          "Ex de Angelina."
+        ],
+        "medium": [
+          "Ocean's Eleven.",
+          "Produtor premiado.",
+          "Beleza de revista."
+        ],
+        "hard": [
+          "Missouri.",
+          "Filhos na disputa pública.",
+          "Once Upon a Time in Hollywood."
+        ]
+      }
+    },
+    {
+      "id": "wagnermoura",
+      "name": "Wagner Moura",
+      "blurb": "Ator",
+      "clues": {
+        "easy": [
+          "Capitão Nascimento.",
+          "Pablo Escobar na série gringa.",
+          "Baiano intensivo."
+        ],
+        "medium": [
+          "Elite da Tropa.",
+          "Também diretor.",
+          "Ativismo cultural."
+        ],
+        "hard": [
+          "Salvador/região.",
+          "Hollywood e cinema BR.",
+          "Personagens de tensão."
+        ]
+      }
+    },
+    {
+      "id": "santoro",
+      "name": "Rodrigo Santoro",
+      "blurb": "Ator",
+      "clues": {
+        "easy": [
+          "Brasileiro em Hollywood.",
+          "Xerxes em 300.",
+          "Novela e cinema."
+        ],
+        "medium": [
+          "Lost / Westworld.",
+          "Carioca.",
+          "Galã de longa data."
+        ],
+        "hard": [
+          "Petrópolis/RJ.",
+          "Carreira internacional.",
+          "Presença marcante."
+        ]
+      }
+    },
+    {
+      "id": "taisa",
+      "name": "Taís Araújo",
+      "blurb": "Atriz",
+      "clues": {
+        "easy": [
+          "Protagonista histórica na Globo.",
+          "Casada com Lázaro Ramos.",
+          "Beleza e militância negra."
+        ],
+        "medium": [
+          "Xica / novelas marcantes.",
+          "Apresentadora também.",
+          "Carioca."
+        ],
+        "hard": [
+          "Casal power.",
+          "Cinema e teatro.",
+          "Ícone de representação."
+        ]
+      }
+    },
+    {
+      "id": "lazaro",
+      "name": "Lázaro Ramos",
+      "blurb": "Ator",
+      "clues": {
+        "easy": [
+          "Ator baiano de peso.",
+          "Casado com Taís.",
+          "Livros e apresentações."
+        ],
+        "medium": [
+          "Cinema nacional.",
+          "Ativismo antirracista.",
+          "Voz marcante."
+        ],
+        "hard": [
+          "Salvador.",
+          "Diretor/escritor.",
+          "TV e teatro."
+        ]
+      }
+    },
+    {
+      "id": "faustao",
+      "name": "Fausto Silva",
+      "blurb": "Apresentador",
+      "clues": {
+        "easy": [
+          "Domingão.",
+          "Oloco, meu!.",
+          "Gigante da TV brasileira."
+        ],
+        "medium": [
+          "Globo e depois Band.",
+          "Transplante na pauta.",
+          "Interior de SP na origem."
+        ],
+        "hard": [
+          "Rádio no começo.",
+          "Dança dos famosos.",
+          "Apelido Faustão."
+        ]
+      }
+    },
+    {
+      "id": "silvio",
+      "name": "Silvio Santos",
+      "blurb": "Apresentador e empresário",
+      "clues": {
+        "easy": [
+          "Quem quer dinheiro?.",
+          "Dono do SBT.",
+          "Baú da Felicidade."
+        ],
+        "medium": [
+          "Senor Abravanel.",
+          "Microfone na plateia.",
+          "Já foi candidato a presidente."
+        ],
+        "hard": [
+          "Começou como vendedor.",
+          "Família Abravanel.",
+          "Aviãozinho de papel."
+        ]
+      }
+    },
+    {
+      "id": "xuxa",
+      "name": "Xuxa Meneghel",
+      "blurb": "Apresentadora",
+      "clues": {
+        "easy": [
+          "Rainha dos baixinhos.",
+          "Loira do Xou.",
+          "Festa na memória infantil."
+        ],
+        "medium": [
+          "Gaúcha.",
+          "Namoro com Pelé na história.",
+          "Cantora também."
+        ],
+        "hard": [
+          "Maria da Graça.",
+          "Modelo no começo.",
+          "Xou da Xuxa."
+        ]
+      }
+    },
+    {
+      "id": "datena",
+      "name": "José Luiz Datena",
+      "blurb": "Apresentador",
+      "clues": {
+        "easy": [
+          "Policialesco na TV.",
+          "Bordões de mesa de bar.",
+          "Já arremessou cadeira em debate."
+        ],
+        "medium": [
+          "Anos de Band.",
+          "Flertou com política.",
+          "Voz rouca."
+        ],
+        "hard": [
+          "Esporte no começo.",
+          "José Luiz.",
+          "Brasil no bordão."
+        ]
+      }
+    },
+    {
+      "id": "huck",
+      "name": "Luciano Huck",
+      "blurb": "Apresentador",
+      "clues": {
+        "easy": [
+          "Caldeirão.",
+          "Generosidade na TV.",
+          "Casado com Angélica."
+        ],
+        "medium": [
+          "Flerte político.",
+          "Empresário.",
+          "Carioca."
+        ],
+        "hard": [
+          "Quadros famosos.",
+          "Filhos na mídia.",
+          "Globo."
+        ]
+      }
+    },
+    {
+      "id": "angelica",
+      "name": "Angélica",
+      "blurb": "Apresentadora",
+      "clues": {
+        "easy": [
+          "Loira da TV infantil/juvenil.",
+          "Casada com Huck.",
+          "Carreira longa na Globo."
+        ],
+        "medium": [
+          "Cantora também.",
+          "Gaúcha.",
+          "Auditórios."
+        ],
+        "hard": [
+          "Filhos famosos.",
+          "Retornos à TV.",
+          "Pop anos 90/2000."
+        ]
+      }
+    },
+    {
+      "id": "bial",
+      "name": "Pedro Bial",
+      "blurb": "Apresentador",
+      "clues": {
+        "easy": [
+          "BBB por anos.",
+          "Óculos de intelectual de TV.",
+          "Jornalista também."
+        ],
+        "medium": [
+          "Fantástico/entrevistas.",
+          "Carioca.",
+          "Tom professoral."
+        ],
+        "hard": [
+          "Globo longa.",
+          "Docs e livros.",
+          "Saída do BBB marcou era."
+        ]
+      }
+    },
+    {
+      "id": "boninho",
+      "name": "Boninho",
+      "blurb": "Diretor de TV",
+      "clues": {
+        "easy": [
+          "Cérebro do BBB.",
+          "Marido da Ana Furtado.",
+          "Diretor de reality."
+        ],
+        "medium": [
+          "Globo há décadas.",
+          "Twitter antigo ativo.",
+          "Bastidores."
+        ],
+        "hard": [
+          "José Bonifácio.",
+          "Filhos na mídia.",
+          "Paredão na lenda."
+        ]
+      }
+    },
+    {
+      "id": "whindersson",
+      "name": "Whindersson Nunes",
+      "blurb": "Humorista",
+      "clues": {
+        "easy": [
+          "Youtuber que virou arena.",
+          "Piauiense.",
+          "Humor raiz de internet."
+        ],
+        "medium": [
+          "Stand-up lotado.",
+          "Vídeos pobres no começo.",
+          "Também canta às vezes."
+        ],
+        "hard": [
+          "Bom Jesus (PI).",
+          "Canal gigante.",
+          "Memes próprios."
+        ]
+      }
+    },
+    {
+      "id": "tiririca",
+      "name": "Tiririca",
+      "blurb": "Humorista e político",
+      "clues": {
+        "easy": [
+          "Pior que tá não fica.",
+          "Palhaço deputado.",
+          "Cabelo de fogo."
+        ],
+        "medium": [
+          "Florentina na música.",
+          "Votação enorme.",
+          "Nordestino."
+        ],
+        "hard": [
+          "Francisco Everardo.",
+          "Cearense.",
+          "TV e Câmara."
+        ]
+      }
+    },
+    {
+      "id": "felipeneto",
+      "name": "Felipe Neto",
+      "blurb": "Youtuber",
+      "clues": {
+        "easy": [
+          "Youtuber carioca de opinião forte.",
+          "Cabelo colorido em fases.",
+          "Livros e polêmicas."
+        ],
+        "medium": [
+          "Irmão Luccas no ecossistema.",
+          "Ativismo nas redes.",
+          "Empresa de entretenimento."
+        ],
+        "hard": [
+          "Humor ácido no começo.",
+          "Mais inscritos do BR em fases.",
+          "Cancelamento e volta."
+        ]
+      }
+    },
+    {
+      "id": "casimiro",
+      "name": "Casimiro",
+      "blurb": "Streamer",
+      "clues": {
+        "easy": [
+          "Meteu essa?.",
+          "Streams de futebol e reação.",
+          "Humor seco carioca."
+        ],
+        "medium": [
+          "YouTube/Twitch bombado.",
+          "Cazé TV.",
+          "Catchphrases."
+        ],
+        "hard": [
+          "Jornalismo esportivo recente.",
+          "Cortes dominam.",
+          "Torcida e memes."
+        ]
+      }
+    },
+    {
+      "id": "virginia",
+      "name": "Virginia Fonseca",
+      "blurb": "Influenciadora",
+      "clues": {
+        "easy": [
+          "Influencer de moda e família.",
+          "Casada com Zé Felipe.",
+          "Lives e marca digital."
+        ],
+        "medium": [
+          "Mineira.",
+          "Reality/TV.",
+          "Empresária de beleza."
+        ],
+        "hard": [
+          "Filhos viralizam.",
+          "Começo jovem no Insta.",
+          "Lifestyle de capa."
+        ]
+      }
+    },
+    {
+      "id": "zefelipe",
+      "name": "Zé Felipe",
+      "blurb": "Cantor",
+      "clues": {
+        "easy": [
+          "Filho do Leonardo.",
+          "Sertanejo.",
+          "Marido da Virginia."
+        ],
+        "medium": [
+          "Família de cantores.",
+          "Hits de balada.",
+          "Redes bombadas."
+        ],
+        "hard": [
+          "José no nome.",
+          "Dueto com o pai.",
+          "Vida de reality."
+        ]
+      }
+    },
+    {
+      "id": "leonardo",
+      "name": "Leonardo",
+      "blurb": "Cantor sertanejo",
+      "clues": {
+        "easy": [
+          "Sertanejo romântico clássico.",
+          "Pai do Zé Felipe.",
+          "Dupla com Leandro na história."
+        ],
+        "medium": [
+          "Goiano.",
+          "Carreira clássica.",
+          "Voz marcante."
+        ],
+        "hard": [
+          "Leonardo e Leandro.",
+          "Perda do irmão.",
+          "Patriarca artístico."
+        ]
+      }
+    },
+    {
+      "id": "gil",
+      "name": "Gilberto Gil",
+      "blurb": "Cantor e ex-ministro",
+      "clues": {
+        "easy": [
+          "Tropicália e violão.",
+          "Ex-ministro da Cultura.",
+          "Baiano da MPB."
+        ],
+        "medium": [
+          "Preso na ditadura.",
+          "Aquele Abraço.",
+          "Família de músicos."
+        ],
+        "hard": [
+          "Salvador.",
+          "Exílio em Londres.",
+          "Gorro icônico."
+        ]
+      }
+    },
+    {
+      "id": "caetano",
+      "name": "Caetano Veloso",
+      "blurb": "Cantor",
+      "clues": {
+        "easy": [
+          "Tropicália.",
+          "Baiano intelectual da MPB.",
+          "Letras sofisticadas."
+        ],
+        "medium": [
+          "Irmã Bethânia.",
+          "Exílio em Londres.",
+          "Sampa na obra."
+        ],
+        "hard": [
+          "Santo Amaro.",
+          "Cinema e livro.",
+          "Parceria com Gil."
+        ]
+      }
+    },
+    {
+      "id": "bethania",
+      "name": "Maria Bethânia",
+      "blurb": "Cantora",
+      "clues": {
+        "easy": [
+          "Irmã do Caetano.",
+          "Voz grave da MPB.",
+          "Interpretação teatral."
+        ],
+        "medium": [
+          "Palco intenso.",
+          "Família Veloso.",
+          "Repertório dramático."
+        ],
+        "hard": [
+          "Santo Amaro.",
+          "Anos 60.",
+          "Ícone da música BR."
+        ]
+      }
+    },
+    {
+      "id": "chico",
+      "name": "Chico Buarque",
+      "blurb": "Cantor e escritor",
+      "clues": {
+        "easy": [
+          "MPB e literatura.",
+          "Letras na ditadura.",
+          "Construção / Cálice."
+        ],
+        "medium": [
+          "Carioca.",
+          "Teatro também.",
+          "Família intelectual."
+        ],
+        "hard": [
+          "Francisco.",
+          "Budapeste.",
+          "Pai historiador."
+        ]
+      }
+    },
+    {
+      "id": "ritalee",
+      "name": "Rita Lee",
+      "blurb": "Cantora",
+      "clues": {
+        "easy": [
+          "Mutantes e rock BR.",
+          "Ovelha Negra / Lança Perfume.",
+          "Rainha do rock nacional."
+        ],
+        "medium": [
+          "Morreu em 2023.",
+          "Casada com Roberto de Carvalho.",
+          "Memórias em livro."
+        ],
+        "hard": [
+          "São Paulo.",
+          "Mutantes no começo.",
+          "Ironia na veia."
+        ]
+      }
+    },
+    {
+      "id": "elon",
+      "name": "Elon Musk",
+      "blurb": "Empresário",
+      "clues": {
+        "easy": [
+          "Dono do X (Twitter).",
+          "Tesla e foguetes.",
+          "Memes de marciano rico."
+        ],
+        "medium": [
+          "SpaceX.",
+          "Compra do Twitter.",
+          "Filhos com nomes estranhos."
+        ],
+        "hard": [
+          "Sul-africano.",
+          "Neuralink.",
+          "Homem mais rico em listas."
+        ]
+      }
+    },
+    {
+      "id": "zuck",
+      "name": "Mark Zuckerberg",
+      "blurb": "Empresário",
+      "clues": {
+        "easy": [
+          "Dono do Facebook/Meta.",
+          "Cara de robô em meme.",
+          "Óculos de VR."
+        ],
+        "medium": [
+          "Harvard dropout famoso.",
+          "Instagram no grupo.",
+          "Audiências no Congresso."
+        ],
+        "hard": [
+          "NY.",
+          "Esposa Priscilla.",
+          "Metaverso."
+        ]
+      }
+    },
+    {
+      "id": "billgates",
+      "name": "Bill Gates",
+      "blurb": "Empresário",
+      "clues": {
+        "easy": [
+          "Fundador da Microsoft.",
+          "Óculos de nerd rico.",
+          "Filantropia global."
+        ],
+        "medium": [
+          "Windows em tudo.",
+          "Fundação Bill e Melinda.",
+          "Vacinas na fofoca."
+        ],
+        "hard": [
+          "Seattle.",
+          "Livros.",
+          "Divórcio público."
+        ]
+      }
+    },
+    {
+      "id": "bezos",
+      "name": "Jeff Bezos",
+      "blurb": "Empresário",
+      "clues": {
+        "easy": [
+          "Dono da Amazon.",
+          "Blue Origin.",
+          "Careca de bilionário."
+        ],
+        "medium": [
+          "Ex-homem mais rico.",
+          "Washington Post.",
+          "Novo casamento na fofoca."
+        ],
+        "hard": [
+          "Garagem da Amazon.",
+          "Riso espalhafatoso.",
+          "Patrimônio espacial."
+        ]
+      }
+    },
+    {
+      "id": "therock",
+      "name": "Dwayne Johnson",
+      "blurb": "Ator",
+      "clues": {
+        "easy": [
+          "The Rock.",
+          "Sobrancelha e músculos.",
+          "WWE para Hollywood."
+        ],
+        "medium": [
+          "Jumanji / Velozes.",
+          "Sorriso blockbuster.",
+          "Fitness empresário."
+        ],
+        "hard": [
+          "Samoa no DNA.",
+          "Seven Bucks.",
+          "Política especulada."
+        ]
+      }
+    },
+    {
+      "id": "keanu",
+      "name": "Keanu Reeves",
+      "blurb": "Ator",
+      "clues": {
+        "easy": [
+          "Matrix.",
+          "John Wick.",
+          "Fama de pessoa gentil."
+        ],
+        "medium": [
+          "Ação cyberpunk.",
+          "Moto na lenda.",
+          "Canadense."
+        ],
+        "hard": [
+          "Bill e Ted.",
+          "Internet ama.",
+          "Baixo em banda."
+        ]
+      }
+    },
+    {
+      "id": "mj",
+      "name": "Michael Jackson",
+      "blurb": "Cantor",
+      "clues": {
+        "easy": [
+          "Rei do Pop.",
+          "Moonwalk.",
+          "Thriller."
+        ],
+        "medium": [
+          "Jackson 5.",
+          "Neverland na polêmica.",
+          "Clipes revolucionários."
+        ],
+        "hard": [
+          "Indiana.",
+          "Morreu em 2009.",
+          "Luva branca."
+        ]
+      }
+    },
+    {
+      "id": "shakira",
+      "name": "Shakira",
+      "blurb": "Cantora",
+      "clues": {
+        "easy": [
+          "Quadris que não mentem.",
+          "Colombiana pop.",
+          "Waka Waka / Copa."
+        ],
+        "medium": [
+          "Cabelo e voz única.",
+          "Piqué na novela pública.",
+          "Sucesso bilíngue."
+        ],
+        "hard": [
+          "Barranquilla.",
+          "Filantropia.",
+          "Super Bowl com JLo."
+        ]
+      }
+    },
+    {
+      "id": "jlo",
+      "name": "Jennifer Lopez",
+      "blurb": "Cantora e atriz",
+      "clues": {
+        "easy": [
+          "JLo.",
+          "Diva latina.",
+          "Palco e cinema."
+        ],
+        "medium": [
+          "Jenny from the Block.",
+          "Ben Affleck na fofoca.",
+          "Empresária."
+        ],
+        "hard": [
+          "Bronx.",
+          "Idol em fases.",
+          "Tapete vermelho."
+        ]
+      }
+    },
+    {
+      "id": "gaga",
+      "name": "Lady Gaga",
+      "blurb": "Cantora",
+      "clues": {
+        "easy": [
+          "Poker Face / Bad Romance.",
+          "Vestido de carne.",
+          "Atriz também."
+        ],
+        "medium": [
+          "NY teatral.",
+          "Little Monsters.",
+          "Moda absurda."
+        ],
+        "hard": [
+          "Stefani Germanotta.",
+          "Oscar/Grammy.",
+          "Chromatica."
+        ]
+      }
+    },
+    {
+      "id": "adele",
+      "name": "Adele",
+      "blurb": "Cantora",
+      "clues": {
+        "easy": [
+          "Voz britânica de balada.",
+          "Someone Like You.",
+          "Álbuns com idade no nome."
+        ],
+        "medium": [
+          "Londres.",
+          "Emagrecimento viralizou.",
+          "Oscar/Grammy."
+        ],
+        "hard": [
+          "Tottenham.",
+          "Términos em letra.",
+          "Shows intimistas."
+        ]
+      }
+    },
+    {
+      "id": "edsheeran",
+      "name": "Ed Sheeran",
+      "blurb": "Cantor",
+      "clues": {
+        "easy": [
+          "Ruivo com violão.",
+          "Shape of You.",
+          "Hits acústicos."
+        ],
+        "medium": [
+          "Loop station.",
+          "Colabs infinitas.",
+          "Tatuagens e humor."
+        ],
+        "hard": [
+          "Inglaterra.",
+          "Álbuns símbolos.",
+          "Amizade com Swift."
+        ]
+      }
+    },
+    {
+      "id": "bieber",
+      "name": "Justin Bieber",
+      "blurb": "Cantor",
+      "clues": {
+        "easy": [
+          "Baby no começo.",
+          "Canadense teen virou adulto.",
+          "Hailey no altar."
+        ],
+        "medium": [
+          "YouTube discovery.",
+          "Justice / Purpose.",
+          "Tatuagens e fé."
+        ],
+        "hard": [
+          "Ontario.",
+          "Usher no começo.",
+          "Moda e skate."
+        ]
+      }
+    },
+    {
+      "id": "selena",
+      "name": "Selena Gomez",
+      "blurb": "Cantora e atriz",
+      "clues": {
+        "easy": [
+          "Disney para o pop.",
+          "Rare / hits.",
+          "Empresária de beleza."
+        ],
+        "medium": [
+          "Bieber no passado.",
+          "Série de crime recente.",
+          "Lúpus público."
+        ],
+        "hard": [
+          "Texas.",
+          "Only Murders.",
+          "Rare Beauty."
+        ]
+      }
+    },
+    {
+      "id": "zendaya",
+      "name": "Zendaya",
+      "blurb": "Atriz",
+      "clues": {
+        "easy": [
+          "Euphoria / Spider-Man.",
+          "Tapete vermelho.",
+          "Tom Holland na fofoca."
+        ],
+        "medium": [
+          "Disney no começo.",
+          "Estilo icônico.",
+          "Cantora em fase."
+        ],
+        "hard": [
+          "Oakland.",
+          "Emmy.",
+          "Geração nova."
+        ]
+      }
+    },
+    {
+      "id": "chalamet",
+      "name": "Timothée Chalamet",
+      "blurb": "Ator",
+      "clues": {
+        "easy": [
+          "Duna / Call Me by Your Name.",
+          "Cabelo de capa.",
+          "Galã gen Z."
+        ],
+        "medium": [
+          "Wonka.",
+          "Tapete viral.",
+          "Franco-americano."
+        ],
+        "hard": [
+          "NY.",
+          "Grandes diretores.",
+          "Fãs intensas."
+        ]
+      }
+    },
+    {
+      "id": "pascal",
+      "name": "Pedro Pascal",
+      "blurb": "Ator",
+      "clues": {
+        "easy": [
+          "Last of Us / Mandalorian.",
+          "Tio da internet.",
+          "Chileno-americano."
+        ],
+        "medium": [
+          "Game of Thrones.",
+          "Carinho gen Z.",
+          "Ação e drama."
+        ],
+        "hard": [
+          "Santiago para EUA.",
+          "Narcos.",
+          "Meme afetuoso."
+        ]
+      }
+    },
+    {
+      "id": "ciro",
+      "name": "Ciro Gomes",
+      "blurb": "Político",
+      "clues": {
+        "easy": [
+          "Político cearense de voz alta.",
+          "Já foi ministro e governador.",
+          "Explode em entrevista."
+        ],
+        "medium": [
+          "PDT no histórico.",
+          "Irmão político.",
+          "Disputou a presidênica."
+        ],
+        "hard": [
+          "Prefeito de Fortaleza.",
+          "Fazenda nos anos 90.",
+          "Pindamonhangaba."
+        ]
+      }
+    },
+    {
+      "id": "haddad",
+      "name": "Fernando Haddad",
+      "blurb": "Político",
+      "clues": {
+        "easy": [
+          "Fazenda em fases recentes.",
+          "Ex-prefeito de SP.",
+          "Ex-candidato a presidente."
+        ],
+        "medium": [
+          "Professor.",
+          "Disputou com Bolsonaro em 2018.",
+          "Óculos de intelectual."
+        ],
+        "hard": [
+          "Paulistano.",
+          "Academia.",
+          "Gestão na capital."
+        ]
+      }
+    },
+    {
+      "id": "alckmin",
+      "name": "Geraldo Alckmin",
+      "blurb": "Político",
+      "clues": {
+        "easy": [
+          "Vice-presidente do Brasil.",
+          "Ex-governador de SP.",
+          "Picolé de chuchu na memória."
+        ],
+        "medium": [
+          "PSDB virou PT na virada.",
+          "Médico.",
+          "Paulista."
+        ],
+        "hard": [
+          "Pindamonhangaba.",
+          "Mandatos em SP.",
+          "Chapa com Lula."
+        ]
+      }
+    },
+    {
+      "id": "moro",
+      "name": "Sergio Moro",
+      "blurb": "Político e ex-juiz",
+      "clues": {
+        "easy": [
+          "Ex-juiz da Lava Jato.",
+          "Ex-ministro da Justiça.",
+          "Senador em fase recente."
+        ],
+        "medium": [
+          "Curitiba na narrativa.",
+          "Polêmicas jurídicas.",
+          "Livro e TV."
+        ],
+        "hard": [
+          "Lava Jato.",
+          "Partidos vários.",
+          "Casamento na mídia."
+        ]
+      }
+    },
+    {
+      "id": "dallagnol",
+      "name": "Deltan Dallagnol",
+      "blurb": "Ex-procurador e político",
+      "clues": {
+        "easy": [
+          "Ex-procurador da Lava Jato.",
+          "PowerPoint famoso.",
+          "Já foi deputado."
+        ],
+        "medium": [
+          "Curitiba.",
+          "Cassações/polêmicas.",
+          "Evangélico público."
+        ],
+        "hard": [
+          "Força-tarefa.",
+          "Redes ativas.",
+          "Paraná."
+        ]
+      }
+    },
+    {
+      "id": "moraes",
+      "name": "Alexandre de Moraes",
+      "blurb": "Ministro do STF",
+      "clues": {
+        "easy": [
+          "Ministro do STF.",
+          "Togado mais midiático do Brasil hoje.",
+          "Decisões que viram manchete."
+        ],
+        "medium": [
+          "TSE em fases.",
+          "Alvo de críticas da direita.",
+          "Paulista."
+        ],
+        "hard": [
+          "Carreira no eleitoral.",
+          "Noticiário constante.",
+          "Nome completo longo."
+        ]
+      }
+    },
+    {
+      "id": "barroso",
+      "name": "Luís Roberto Barroso",
+      "blurb": "Ministro do STF",
+      "clues": {
+        "easy": [
+          "Ministro do STF.",
+          "Falas filosóficas e memes.",
+          "Carioca de toga."
+        ],
+        "medium": [
+          "Já presidiu o TSE.",
+          "Entrevistas longas.",
+          "Acadêmico."
+        ],
+        "hard": [
+          "Nome completo.",
+          "Livros jurídicos.",
+          "Supremo."
+        ]
+      }
+    },
+    {
+      "id": "dilma",
+      "name": "Dilma Rousseff",
+      "blurb": "Política",
+      "clues": {
+        "easy": [
+          "Ex-presidenta do Brasil.",
+          "Impeachment na história recente.",
+          "Economista no perfil."
+        ],
+        "medium": [
+          "PT.",
+          "Ditadura na biografia.",
+          "Primeira mulher presidenta."
+        ],
+        "hard": [
+          "Minas.",
+          "Nova Lima/BH.",
+          "Cargo internacional depois."
+        ]
+      }
+    },
+    {
+      "id": "temer",
+      "name": "Michel Temer",
+      "blurb": "Político",
+      "clues": {
+        "easy": [
+          "Ex-presidente após Dilma.",
+          "MDB.",
+          "Bigode clássico."
+        ],
+        "medium": [
+          "Vice que assumiu.",
+          "Paulista.",
+          "Artigo 142 meme."
+        ],
+        "hard": [
+          "Tietê.",
+          "Décadas na política.",
+          "Livros jurídicos."
+        ]
+      }
+    },
+    {
+      "id": "fhc",
+      "name": "Fernando Henrique Cardoso",
+      "blurb": "Político",
+      "clues": {
+        "easy": [
+          "Ex-presidente FHC.",
+          "Plano Real na memória.",
+          "Sociólogo."
+        ],
+        "medium": [
+          "PSDB.",
+          "Dois mandatos.",
+          "Intelectual-político."
+        ],
+        "hard": [
+          "Rio/SP.",
+          "Livros.",
+          "Era do Real."
+        ]
+      }
+    },
+    {
+      "id": "collor",
+      "name": "Fernando Collor",
+      "blurb": "Político",
+      "clues": {
+        "easy": [
+          "Ex-presidente impeachmado.",
+          "Caçador de marajás na propaganda.",
+          "Alagoas."
+        ],
+        "medium": [
+          "Anos 90.",
+          "Senador depois.",
+          "Jet ski na memória pop."
+        ],
+        "hard": [
+          "Família política.",
+          "Impeachment 1992.",
+          "Volta ao Senado."
+        ]
+      }
+    },
+    {
+      "id": "marina",
+      "name": "Marina Silva",
+      "blurb": "Política",
+      "clues": {
+        "easy": [
+          "Ministra do Meio Ambiente em fases.",
+          "Acreana.",
+          "Pauta ambiental."
+        ],
+        "medium": [
+          "Já foi candidata a presidente.",
+          "Rede Sustentabilidade.",
+          "História de superação."
+        ],
+        "hard": [
+          "Acre.",
+          "Analfabeta na infância.",
+          "Chico Mendes no histórico."
+        ]
+      }
+    },
+    {
+      "id": "janones",
+      "name": "André Janones",
+      "blurb": "Político",
+      "clues": {
+        "easy": [
+          "Deputado de redes sociais.",
+          "Mineiro de marketing digital.",
+          "Apoio a Lula em campanha."
+        ],
+        "medium": [
+          "Vídeos curtos.",
+          "Câmara Federal.",
+          "Bordões."
+        ],
+        "hard": [
+          "Ituiutaba região.",
+          "Avante.",
+          "Comunicação de massa."
+        ]
+      }
+    },
+    {
+      "id": "pablomarcal",
+      "name": "Pablo Marçal",
+      "blurb": "Coach e político",
+      "clues": {
+        "easy": [
+          "Coach de frases de efeito.",
+          "Disputou SP.",
+          "Presença explosiva."
+        ],
+        "medium": [
+          "Marketing agressivo.",
+          "Livros de autoajuda.",
+          "Look de palestrante."
+        ],
+        "hard": [
+          "Polêmicas eleitorais.",
+          "Motivacional.",
+          "Meme no X."
+        ]
+      }
+    },
+    {
+      "id": "eduardo",
+      "name": "Eduardo Bolsonaro",
+      "blurb": "Político",
+      "clues": {
+        "easy": [
+          "Filho do Jair.",
+          "Deputado.",
+          "Ideologia bolsonarista."
+        ],
+        "medium": [
+          "SP/RJ no mandato.",
+          "Redes e palestras.",
+          "Irmão do Flavinho."
+        ],
+        "hard": [
+          "Câmara.",
+          "Pautas de costumes.",
+          "Conservador internacional."
+        ]
+      }
+    },
+    {
+      "id": "carlosb",
+      "name": "Carlos Bolsonaro",
+      "blurb": "Político",
+      "clues": {
+        "easy": [
+          "Filho do Jair.",
+          "Vereador do Rio.",
+          "Apelido 02."
+        ],
+        "medium": [
+          "Redes e bastidores.",
+          "Família Bolsonaro.",
+          "Polêmicas digitais."
+        ],
+        "hard": [
+          "Câmara do Rio.",
+          "Irmãos 01/03.",
+          "Vereança longa."
+        ]
+      }
+    },
+    {
+      "id": "romario",
+      "name": "Romário",
+      "blurb": "Ex-jogador e político",
+      "clues": {
+        "easy": [
+          "Baixinho.",
+          "Campeão de 94.",
+          "Deputado/senador em fases."
+        ],
+        "medium": [
+          "Vasco na religião.",
+          "Goleador eterno.",
+          "Falas polêmicas."
+        ],
+        "hard": [
+          "Rio.",
+          "Barcelona.",
+          "Política RJ."
+        ]
+      }
+    },
+    {
+      "id": "cafu",
+      "name": "Cafu",
+      "blurb": "Ex-jogador",
+      "clues": {
+        "easy": [
+          "Lateral campeão do mundo.",
+          "Capitão de 2002.",
+          "Sou captão meme carinhoso."
+        ],
+        "medium": [
+          "São Paulo FC.",
+          "Dois mundiais.",
+          "Origem humilde."
+        ],
+        "hard": [
+          "Itaquaquecetuba.",
+          "Roma/Milan.",
+          "Embaixador da bola."
+        ]
+      }
+    },
+    {
+      "id": "kaka",
+      "name": "Kaká",
+      "blurb": "Ex-jogador",
+      "clues": {
+        "easy": [
+          "Ballon d'Or elegante.",
+          "Milan e Real.",
+          "Craque bonzinho."
+        ],
+        "medium": [
+          "Evangélico público.",
+          "Seleção anos 2000.",
+          "Irmão Digão."
+        ],
+        "hard": [
+          "Brasília.",
+          "São Paulo FC.",
+          "Orlando no fim."
+        ]
+      }
+    },
+    {
+      "id": "zico",
+      "name": "Zico",
+      "blurb": "Ex-jogador",
+      "clues": {
+        "easy": [
+          "Galinho de Quintino.",
+          "Flamengo eterno.",
+          "Meia-armador lenda."
+        ],
+        "medium": [
+          "Japão no fim.",
+          "Camisa 10 sagrada.",
+          "Carioca."
+        ],
+        "hard": [
+          "Irmãos jogadores.",
+          "Técnico também.",
+          "Ídolo rubro-negro."
+        ]
+      }
+    },
+    {
+      "id": "endrick",
+      "name": "Endrick",
+      "blurb": "Jogador",
+      "clues": {
+        "easy": [
+          "Jovem fenômeno BR.",
+          "Real Madrid contratado.",
+          "Palmeiras na vitrine."
+        ],
+        "medium": [
+          "Gols cedo demais.",
+          "Seleção absurda de nova.",
+          "Marketing global."
+        ],
+        "hard": [
+          "DF/Taguatinga.",
+          "Comparações pesadas.",
+          "Geração 2006."
+        ]
+      }
+    },
+    {
+      "id": "casemiro",
+      "name": "Casemiro",
+      "blurb": "Jogador",
+      "clues": {
+        "easy": [
+          "Volante tanque.",
+          "Real e United.",
+          "Cabeça de série na seleção."
+        ],
+        "medium": [
+          "SP.",
+          "Títulos europeus.",
+          "Corte e marcação."
+        ],
+        "hard": [
+          "São Paulo FC.",
+          "Inglaterra.",
+          "Liderança."
+        ]
+      }
+    },
+    {
+      "id": "alisson",
+      "name": "Alisson Becker",
+      "blurb": "Goleiro",
+      "clues": {
+        "easy": [
+          "Goleiro da seleção.",
+          "Liverpool.",
+          "Gaúcho."
+        ],
+        "medium": [
+          "Irmão também goleiro.",
+          "Saídas com os pés.",
+          "Títulos ingleses."
+        ],
+        "hard": [
+          "Internacional.",
+          "Roma para Liverpool.",
+          "Luva de ouro."
+        ]
+      }
+    },
+    {
+      "id": "mbappe",
+      "name": "Kylian Mbappé",
+      "blurb": "Jogador",
+      "clues": {
+        "easy": [
+          "Francês velocista.",
+          "PSG para Real.",
+          "Copa e finais."
+        ],
+        "medium": [
+          "Família africana.",
+          "Camisa 10 francesa.",
+          "Nike."
+        ],
+        "hard": [
+          "Bondy.",
+          "Estreia jovem.",
+          "Haaland na conversa."
+        ]
+      }
+    },
+    {
+      "id": "haaland",
+      "name": "Erling Haaland",
+      "blurb": "Jogador",
+      "clues": {
+        "easy": [
+          "Norueguês goleador.",
+          "City.",
+          "Corpo de videogame."
+        ],
+        "medium": [
+          "Pai jogador.",
+          "Dortmund antes.",
+          "Números absurdos."
+        ],
+        "hard": [
+          "City.",
+          "Celebração robótica.",
+          "Premier League."
+        ]
+      }
+    },
+    {
+      "id": "ibra",
+      "name": "Zlatan Ibrahimović",
+      "blurb": "Ex-jogador",
+      "clues": {
+        "easy": [
+          "Zlatan.",
+          "Ego nas alturas.",
+          "Sueco lendário."
+        ],
+        "medium": [
+          "Terceira pessoa.",
+          "Milan / PSG / United.",
+          "Artes marciais na lenda."
+        ],
+        "hard": [
+          "Malmö.",
+          "Longevidade.",
+          "Memes de autoestima."
+        ]
+      }
+    },
+    {
+      "id": "hamilton",
+      "name": "Lewis Hamilton",
+      "blurb": "Piloto",
+      "clues": {
+        "easy": [
+          "Heptacampeão de F1.",
+          "Mercedes.",
+          "Ativismo e moda."
+        ],
+        "medium": [
+          "Britânico.",
+          "Capacete icônico.",
+          "Verstappen rival."
+        ],
+        "hard": [
+          "Stevenage.",
+          "Primeiro negro campeão F1.",
+          "Ferrari no rumo."
+        ]
+      }
+    },
+    {
+      "id": "senna",
+      "name": "Ayrton Senna",
+      "blurb": "Piloto",
+      "clues": {
+        "easy": [
+          "Ídolo brasileiro eterno.",
+          "Tricampeão de F1.",
+          "Bandeira no pódio."
+        ],
+        "medium": [
+          "McLaren amarela.",
+          "Rivalidade com Prost.",
+          "Morreu em Imola."
+        ],
+        "hard": [
+          "São Paulo.",
+          "Instituto Senna.",
+          "1994 na dor nacional."
+        ]
+      }
+    },
+    {
+      "id": "gisele",
+      "name": "Gisele Bündchen",
+      "blurb": "Modelo",
+      "clues": {
+        "easy": [
+          "Supermodelo brasileira.",
+          "Passarela mundial.",
+          "Ex de Tom Brady."
+        ],
+        "medium": [
+          "Gaúcha.",
+          "Ambiente e negócios.",
+          "Listas de cache."
+        ],
+        "hard": [
+          "Horizontina RS.",
+          "Victoria's Secret.",
+          "Filhos na mídia."
+        ]
+      }
+    },
+    {
+      "id": "marquezine",
+      "name": "Bruna Marquezine",
+      "blurb": "Atriz",
+      "clues": {
+        "easy": [
+          "Novela desde criança.",
+          "Ex de Neymar na novela pública.",
+          "Cinema e streaming."
+        ],
+        "medium": [
+          "Carioca/Baixada.",
+          "Moda.",
+          "Beleza de capa."
+        ],
+        "hard": [
+          "Carreira infantil.",
+          "Hollywood flerte.",
+          "Empresária."
+        ]
+      }
+    },
+    {
+      "id": "larissa",
+      "name": "Larissa Manoela",
+      "blurb": "Atriz",
+      "clues": {
+        "easy": [
+          "Atriz teen da carochinha.",
+          "Cabelo cacheado.",
+          "Disputa familiar pública."
+        ],
+        "medium": [
+          "Cinema e TV desde criança.",
+          "Cantora também.",
+          "Empresária jovem."
+        ],
+        "hard": [
+          "SBT/Globo.",
+          "Autonomia financeira viral.",
+          "Geração teen."
+        ]
+      }
+    },
+    {
+      "id": "maisa",
+      "name": "Maisa Silva",
+      "blurb": "Atriz e apresentadora",
+      "clues": {
+        "easy": [
+          "Cresceu no SBT.",
+          "Infantil para jovem.",
+          "Opinião afiada."
+        ],
+        "medium": [
+          "Cinema e streaming.",
+          "Ativismo jovem.",
+          "Filha do ecossistema Silvio."
+        ],
+        "hard": [
+          "Carreira desde criança.",
+          "Entrevistas.",
+          "Geração SBT."
+        ]
+      }
+    },
+    {
+      "id": "paulogustavo",
+      "name": "Paulo Gustavo",
+      "blurb": "Humorista",
+      "clues": {
+        "easy": [
+          "Humorista carioca.",
+          "Minha Mãe é uma Peça.",
+          "Partida na pandemia."
+        ],
+        "medium": [
+          "Teatro lotado.",
+          "TV e cinema.",
+          "Marido Thales público."
+        ],
+        "hard": [
+          "Niterói.",
+          "Personagens.",
+          "Legado LGBTQIA+."
+        ]
+      }
+    },
+    {
+      "id": "porchat",
+      "name": "Fábio Porchat",
+      "blurb": "Humorista",
+      "clues": {
+        "easy": [
+          "Humorista e apresentador.",
+          "Porta dos Fundos no DNA.",
+          "Ironia afiada."
+        ],
+        "medium": [
+          "Carioca.",
+          "Cinema e TV.",
+          "Talk show."
+        ],
+        "hard": [
+          "Fundos.",
+          "Streaming.",
+          "Palco."
+        ]
+      }
+    },
+    {
+      "id": "tata",
+      "name": "Tatá Werneck",
+      "blurb": "Apresentadora",
+      "clues": {
+        "easy": [
+          "Humor ácido na TV.",
+          "Lady Night.",
+          "Atriz também."
+        ],
+        "medium": [
+          "Casada com Rafa Vitti.",
+          "Entrevistas cômicas.",
+          "Mineira/carioca de atuação."
+        ],
+        "hard": [
+          "Personagens.",
+          "Redes.",
+          "TV."
+        ]
+      }
+    },
+    {
+      "id": "juliette",
+      "name": "Juliette Freire",
+      "blurb": "Cantora e ex-BBB",
+      "clues": {
+        "easy": [
+          "Campeã do BBB.",
+          "Paraibana.",
+          "Cantora depois."
+        ],
+        "medium": [
+          "Advogada/maquiadora antes.",
+          "Hits.",
+          "Sorriso."
+        ],
+        "hard": [
+          "Campina Grande.",
+          "Pós-BBB musical.",
+          "Nordeste."
+        ]
+      }
+    },
+    {
+      "id": "gildovigor",
+      "name": "Gil do Vigor",
+      "blurb": "Ex-BBB e economista",
+      "clues": {
+        "easy": [
+          "Gil do Vigor.",
+          "BBB e PhD na narrativa.",
+          "Energia contagiante."
+        ],
+        "medium": [
+          "Economista.",
+          "Livros e palestras.",
+          "Ícone queer nordestino."
+        ],
+        "hard": [
+          "Recife/PB.",
+          "Doutorado EUA.",
+          "Publicidade."
+        ]
+      }
+    },
+    {
+      "id": "gretchen",
+      "name": "Gretchen",
+      "blurb": "Cantora",
+      "clues": {
+        "easy": [
+          "Rainha do rebolado.",
+          "Anos 80 na memória.",
+          "Meme eterno."
+        ],
+        "medium": [
+          "Família de celebridades.",
+          "Reality.",
+          "Frases prontas."
+        ],
+        "hard": [
+          "Carreira dançante.",
+          "Hits.",
+          "Matriarca pop."
+        ]
+      }
+    },
+    {
+      "id": "susanavieira",
+      "name": "Susana Vieira",
+      "blurb": "Atriz",
+      "clues": {
+        "easy": [
+          "Novela eterna.",
+          "Falas afiadas.",
+          "Carioca da Globo."
+        ],
+        "medium": [
+          "Décadas de TV.",
+          "Personagens.",
+          "Entrevistas bombásticas."
+        ],
+        "hard": [
+          "Teatro.",
+          "Gay darling.",
+          "Carreira longuíssima."
+        ]
+      }
+    },
+    {
+      "id": "fernandatorres",
+      "name": "Fernanda Torres",
+      "blurb": "Atriz",
+      "clues": {
+        "easy": [
+          "Atriz premiada.",
+          "Filha da Fernanda Montenegro.",
+          "Cinema BR."
+        ],
+        "medium": [
+          "Globo e cinema.",
+          "Papéis densos.",
+          "Marido Andrucha."
+        ],
+        "hard": [
+          "Prêmios recentes.",
+          "Família Montenegro.",
+          "Carioca."
+        ]
+      }
+    },
+    {
+      "id": "montenegro",
+      "name": "Fernanda Montenegro",
+      "blurb": "Atriz",
+      "clues": {
+        "easy": [
+          "Dama do cinema BR.",
+          "Indicação ao Oscar histórica.",
+          "Voz inconfundível."
+        ],
+        "medium": [
+          "Décadas de arte.",
+          "TV também.",
+          "Carioca."
+        ],
+        "hard": [
+          "Nome sagrado.",
+          "Filha Fernanda Torres.",
+          "Patrimônio cultural."
+        ]
+      }
+    },
+    {
+      "id": "emicida",
+      "name": "Emicida",
+      "blurb": "Cantor",
+      "clues": {
+        "easy": [
+          "Rap perifa SP.",
+          "Poesia e ativismo.",
+          "Laboratório Fantasma."
+        ],
+        "medium": [
+          "Álbuns aclamados.",
+          "AmarElo.",
+          "Paulista."
+        ],
+        "hard": [
+          "SP.",
+          "Docs/livros.",
+          "Colabs."
+        ]
+      }
+    },
+    {
+      "id": "criolo",
+      "name": "Criolo",
+      "blurb": "Cantor",
+      "clues": {
+        "easy": [
+          "Rap/MPB de SP.",
+          "Voz grave.",
+          "Crítica social."
+        ],
+        "medium": [
+          "Álbuns cult.",
+          "Palco.",
+          "Zona na obra."
+        ],
+        "hard": [
+          "SP.",
+          "Discos.",
+          "Colabs."
+        ]
+      }
+    },
+    {
+      "id": "matue",
+      "name": "Matuê",
+      "blurb": "Cantor",
+      "clues": {
+        "easy": [
+          "Trap BR estourado.",
+          "Hits de playlist.",
+          "Cena nacional."
+        ],
+        "medium": [
+          "Álbuns recentes.",
+          "Visual.",
+          "Internet."
+        ],
+        "hard": [
+          "Trap.",
+          "Colabs.",
+          "Shows."
+        ]
+      }
+    },
+    {
+      "id": "luisasonza",
+      "name": "Luísa Sonza",
+      "blurb": "Cantora",
+      "clues": {
+        "easy": [
+          "Pop BR atual.",
+          "Hits e polêmicas afetivas.",
+          "Clipes."
+        ],
+        "medium": [
+          "Colabs com Anitta.",
+          "Redes.",
+          "Carreira jovem."
+        ],
+        "hard": [
+          "Álbuns.",
+          "TV.",
+          "Playlist."
+        ]
+      }
+    },
+    {
+      "id": "robertocarlos",
+      "name": "Roberto Carlos",
+      "blurb": "Cantor",
+      "clues": {
+        "easy": [
+          "Rei.",
+          "Especiais de fim de ano.",
+          "Hits eternos."
+        ],
+        "medium": [
+          "Jovem Guarda.",
+          "Cadeira do especial.",
+          "Voz rouca."
+        ],
+        "hard": [
+          "Cachoeiro.",
+          "Décadas no topo.",
+          "Erasmo."
+        ]
+      }
+    },
+    {
+      "id": "chico_xavier",
+      "name": "Chico Xavier",
+      "blurb": "Médium",
+      "clues": {
+        "easy": [
+          "Médium mais famoso do Brasil.",
+          "Espiritismo.",
+          "Uberaba na memória."
+        ],
+        "medium": [
+          "Livros psicografados.",
+          "Imagem de bondade.",
+          "Filme biográfico."
+        ],
+        "hard": [
+          "Pedro Leopoldo.",
+          "Décadas.",
+          "Comoção na morte."
+        ]
+      }
+    },
+    {
+      "id": "marcelorossi",
+      "name": "Padre Marcelo Rossi",
+      "blurb": "Padre cantor",
+      "clues": {
+        "easy": [
+          "Padre dos hits católicos.",
+          "Academia e missa.",
+          "Anos 90/2000."
+        ],
+        "medium": [
+          "CDs religiosos.",
+          "TV.",
+          "Paulista."
+        ],
+        "hard": [
+          "SP.",
+          "Músicas de missa young.",
+          "Livros."
+        ]
+      }
+    },
+    {
+      "id": "malafaia",
+      "name": "Silas Malafaia",
+      "blurb": "Pastor",
+      "clues": {
+        "easy": [
+          "Pastor midiático.",
+          "Voz alta e política.",
+          "Assembleia no radar."
+        ],
+        "medium": [
+          "TV e redes.",
+          "Apoios eleitorais.",
+          "Carioca."
+        ],
+        "hard": [
+          "Livros.",
+          "Polêmicas.",
+          "Debate constante."
+        ]
+      }
+    },
+    {
+      "id": "edir",
+      "name": "Edir Macedo",
+      "blurb": "Líder religioso",
+      "clues": {
+        "easy": [
+          "Líder da Universal.",
+          "Record na narrativa.",
+          "Bispo."
+        ],
+        "medium": [
+          "Livros e templos.",
+          "Política evangélica.",
+          "Fortuna e polêmicas."
+        ],
+        "hard": [
+          "Rio.",
+          "IURD.",
+          "Mídia."
+        ]
+      }
+    },
+    {
+      "id": "sabrinasato",
+      "name": "Sabrina Sato",
+      "blurb": "Apresentadora",
+      "clues": {
+        "easy": [
+          "Apresentadora e ex-Pânico.",
+          "Riso característico.",
+          "TV aberta."
+        ],
+        "medium": [
+          "Record/SBT em fases.",
+          "Empresária.",
+          "Nikkei-BR."
+        ],
+        "hard": [
+          "BBB antiga.",
+          "Carreira longa.",
+          "Redes."
+        ]
+      }
+    },
+    {
+      "id": "anamaria",
+      "name": "Ana Maria Braga",
+      "blurb": "Apresentadora",
+      "clues": {
+        "easy": [
+          "Mais Você.",
+          "Louro José na memória.",
+          "Café da manhã."
+        ],
+        "medium": [
+          "Globo manhã.",
+          "Saúde pública.",
+          "Frases de acordar."
+        ],
+        "hard": [
+          "SP.",
+          "Livros.",
+          "Ícone matinal."
+        ]
+      }
+    },
+    {
+      "id": "bonner",
+      "name": "William Bonner",
+      "blurb": "Jornalista",
+      "clues": {
+        "easy": [
+          "Âncora do JN.",
+          "Voz sóbrio.",
+          "Ex-casal com Fátima."
+        ],
+        "medium": [
+          "Óculos formais.",
+          "Décadas Globo.",
+          "Hard news."
+        ],
+        "hard": [
+          "SP.",
+          "Filhos na mídia.",
+          "Bancada."
+        ]
+      }
+    },
+    {
+      "id": "fatima",
+      "name": "Fátima Bernardes",
+      "blurb": "Apresentadora",
+      "clues": {
+        "easy": [
+          "Ex-JN e Encontro.",
+          "Sorriso de entrevista.",
+          "Ex-Bonner."
+        ],
+        "medium": [
+          "Jornalista.",
+          "Programa diário.",
+          "Carioca."
+        ],
+        "hard": [
+          "Troca de fase.",
+          "Novo relacionamento.",
+          "Carreira longa."
+        ]
+      }
+    },
+    {
+      "id": "cazuza",
+      "name": "Cazuza",
+      "blurb": "Cantor",
+      "clues": {
+        "easy": [
+          "Exagerado.",
+          "Barão Vermelho para solo.",
+          "Poeta do rock BR."
+        ],
+        "medium": [
+          "Carioca.",
+          "Doença e coragem pública.",
+          "Letras afiadas."
+        ],
+        "hard": [
+          "RJ.",
+          "Discos solo.",
+          "1990."
+        ]
+      }
+    },
+    {
+      "id": "raul",
+      "name": "Raul Seixas",
+      "blurb": "Cantor",
+      "clues": {
+        "easy": [
+          "Maluco beleza.",
+          "Rock brasileiro.",
+          "Óculos e bigode."
+        ],
+        "medium": [
+          "Baiano.",
+          "Misticismo e anarquia.",
+          "Hits eternos."
+        ],
+        "hard": [
+          "Salvador.",
+          "Discos.",
+          "Lenda."
+        ]
+      }
+    },
+    {
+      "id": "renatorusso",
+      "name": "Renato Russo",
+      "blurb": "Cantor",
+      "clues": {
+        "easy": [
+          "Legião Urbana.",
+          "Pais e Filhos.",
+          "Brasília rock."
+        ],
+        "medium": [
+          "Letrista geracional.",
+          "Bandeira LGBTQIA+ póstuma.",
+          "Voz marcante."
+        ],
+        "hard": [
+          "DF.",
+          "Legião.",
+          "1996."
+        ]
+      }
+    },
+    {
+      "id": "cassia",
+      "name": "Cássia Eller",
+      "blurb": "Cantora",
+      "clues": {
+        "easy": [
+          "Voz rouca.",
+          "Maluca demais.",
+          "Partida precoce."
+        ],
+        "medium": [
+          "Brasília.",
+          "Filho na biografia.",
+          "Covers potentes."
+        ],
+        "hard": [
+          "DF.",
+          "Álbuns.",
+          "Lenda rock BR."
+        ]
+      }
+    },
+    {
+      "id": "timmaia",
+      "name": "Tim Maia",
+      "blurb": "Cantor",
+      "clues": {
+        "easy": [
+          "Soul brasileiro.",
+          "Gordo e genial na lenda.",
+          "Despecciona na memória."
+        ],
+        "medium": [
+          "Carioca.",
+          "Hits eternos.",
+          "Personalidade explosiva."
+        ],
+        "hard": [
+          "RJ.",
+          "Soul.",
+          "Legado."
+        ]
+      }
+    },
+    {
+      "id": "tomjobim",
+      "name": "Tom Jobim",
+      "blurb": "Compositor",
+      "clues": {
+        "easy": [
+          "Bossa nova.",
+          "Garota de Ipanema.",
+          "Piano e gravata."
+        ],
+        "medium": [
+          "Carioca.",
+          "Vinicius na parceria.",
+          "Jazz mundial."
+        ],
+        "hard": [
+          "RJ.",
+          "Discos.",
+          "Antônio Carlos."
+        ]
+      }
+    },
+    {
+      "id": "viniciusmoraes",
+      "name": "Vinicius de Moraes",
+      "blurb": "Poeta",
+      "clues": {
+        "easy": [
+          "Poetinha.",
+          "Bossa nova.",
+          "Letras de amor."
+        ],
+        "medium": [
+          "Diplomata.",
+          "Tom Jobim.",
+          "Carioca."
+        ],
+        "hard": [
+          "RJ.",
+          "Teatro.",
+          "Sonetos."
+        ]
+      }
+    },
+    {
+      "id": "elis",
+      "name": "Elis Regina",
+      "blurb": "Cantora",
+      "clues": {
+        "easy": [
+          "Furacão da MPB.",
+          "Voz absoluta.",
+          "Morreu jovem, mito."
+        ],
+        "medium": [
+          "Gaúcha.",
+          "TV clássica.",
+          "Interpretação intensa."
+        ],
+        "hard": [
+          "Porto Alegre.",
+          "Álbuns.",
+          "Filha Maria Rita."
+        ]
+      }
+    },
+    {
+      "id": "seujorge",
+      "name": "Seu Jorge",
+      "blurb": "Cantor e ator",
+      "clues": {
+        "easy": [
+          "Voz rouca carioca.",
+          "Cidade de Deus.",
+          "Samba-rock."
+        ],
+        "medium": [
+          "Life Aquatic covers.",
+          "Charme de palco.",
+          "Belford Roxo."
+        ],
+        "hard": [
+          "Ator e músico.",
+          "Álbuns.",
+          "RJ."
+        ]
+      }
+    },
+    {
+      "id": "alok",
+      "name": "Alok",
+      "blurb": "DJ",
+      "clues": {
+        "easy": [
+          "DJ brasileiro global.",
+          "Eletrônico de festival.",
+          "Óculos marcantes."
+        ],
+        "medium": [
+          "Filho de músicos.",
+          "Hits mundiais.",
+          "Empresário."
+        ],
+        "hard": [
+          "Brand próprio.",
+          "Festivais.",
+          "Brasil no EDM."
+        ]
+      }
+    },
+    {
+      "id": "joelma",
+      "name": "Joelma",
+      "blurb": "Cantora",
+      "clues": {
+        "easy": [
+          "Banda Calypso.",
+          "Cabelo e energia.",
+          "Paraense na memória."
+        ],
+        "medium": [
+          "Hits dançantes.",
+          "Ximbinha no passado.",
+          "Carreira solo."
+        ],
+        "hard": [
+          "Belém.",
+          "Calypso fenômeno.",
+          "Look explosivo."
+        ]
+      }
+    },
+    {
+      "id": "safadao",
+      "name": "Wesley Safadão",
+      "blurb": "Cantor",
+      "clues": {
+        "easy": [
+          "Forró/piseiro estourado.",
+          "Cearense de hit.",
+          "Empresário da música."
+        ],
+        "medium": [
+          "Gado e aviões.",
+          "Paredão.",
+          "Família."
+        ],
+        "hard": [
+          "Fortaleza.",
+          "Solo.",
+          "Shows lotados."
+        ]
+      }
+    },
+    {
+      "id": "nattan",
+      "name": "Nattan",
+      "blurb": "Cantor",
+      "clues": {
+        "easy": [
+          "Piseiro atual.",
+          "Hits virais.",
+          "Nordestino."
+        ],
+        "medium": [
+          "Spotify BR.",
+          "Clipes.",
+          "Geração nova."
+        ],
+        "hard": [
+          "Cena.",
+          "Colabs.",
+          "Shows."
+        ]
+      }
+    },
+    {
+      "id": "valesca",
+      "name": "Valesca Popozuda",
+      "blurb": "Cantora",
+      "clues": {
+        "easy": [
+          "Beijinho no ombro.",
+          "Funk e empoderamento.",
+          "Carioca."
+        ],
+        "medium": [
+          "Hits 2010.",
+          "Reality/TV.",
+          "Frases prontas."
+        ],
+        "hard": [
+          "RJ.",
+          "Clipe icônico.",
+          "Pop-funk."
+        ]
+      }
+    },
+    {
+      "id": "mccarol",
+      "name": "MC Carol",
+      "blurb": "Cantora",
+      "clues": {
+        "easy": [
+          "Funk de protesto e humor.",
+          "Baixada.",
+          "Falas políticas."
+        ],
+        "medium": [
+          "Hits.",
+          "Rede e TV.",
+          "Ativismo."
+        ],
+        "hard": [
+          "Duque de Caxias.",
+          "Letras afiadas.",
+          "Palco."
+        ]
+      }
+    }
+  ]
+}

@@ -1,12 +1,14 @@
 # Cadê Flavinho?
 
-Jogo satírico / meme: siga o rastro, marque a cidade, ache ele na multidão.
+Jogo satírico / meme com **três modos**:
 
-Site: [cadeflavinho.com.br](https://cadeflavinho.com.br)
+1. **O Mestre dos Disfarces** — pistas da cidade + ache ele na multidão.
+2. **Rua da Amargura** — foto da rua → marca no mapa (Leaflet + OSM, sem cadastro).
+3. **Diga-me com Quem Andas…** — dicas meme pra achar o parça da fuga (150 nomes).
 
-1. Recortes e pistas levam a uma cidade.
-2. Se o mapa fechar, ele ainda está escondido na multidão — com timer e pontos derretendo.
-3. Apoio voluntário via PIX (botão **Apoio voluntário**), valor livre, sem obrigação.
+Site publicado (modo clássico): [cadeflavinho.com.br](https://cadeflavinho.com.br)
+
+> Os modos 2 e 3 estão em teste **local**. Não sobem online até OK explícito.
 
 > Obra ficcional de sátira humorística. Não é notícia, denúncia, biografia, campanha eleitoral nem afiliação partidária.
 > Qualquer PIX cobre só infraestrutura/custos do desenvolvedor — sem vínculo com imagem de terceiros, partidos ou campanhas.

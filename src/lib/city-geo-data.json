@@ -1,0 +1,994 @@
+{
+  "rio": {
+    "lat": -22.9028,
+    "lng": -43.20778,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/98/Cidade_Maravilhosa.jpg/330px-Cidade_Maravilhosa.jpg?utm_source=pt.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Rio de Janeiro",
+    "country": "Brasil",
+    "tier": "easy"
+  },
+  "buenosaires": {
+    "lat": -34.59972,
+    "lng": -58.38194,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1e/Puerto_Madero%2C_Buenos_Aires_%2840689219792%29_%28cropped%29.jpg/330px-Puerto_Madero%2C_Buenos_Aires_%2840689219792%29_%28cropped%29.jpg?utm_source=pt.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Buenos Aires",
+    "country": "Argentina",
+    "tier": "easy"
+  },
+  "santiago": {
+    "lat": -33.4375,
+    "lng": -70.65,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/21/Palacio_de_La_Moneda_-_miguelreflex.jpg/330px-Palacio_de_La_Moneda_-_miguelreflex.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Santiago",
+    "country": "Chile",
+    "tier": "easy"
+  },
+  "lima": {
+    "lat": -12.06,
+    "lng": -77.0375,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/69/Bas%C3%ADlica_Catedral_Metropolitana_de_Lima_%28cropped%29.jpg/330px-Bas%C3%ADlica_Catedral_Metropolitana_de_Lima_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Lima",
+    "country": "Peru",
+    "tier": "easy"
+  },
+  "bogota": {
+    "lat": 4.71111111,
+    "lng": -74.07222222,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/20/Bogota%2C_Colombia_%2836668708290%29.jpg/330px-Bogota%2C_Colombia_%2836668708290%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Bogotá",
+    "country": "Colômbia",
+    "tier": "easy"
+  },
+  "cidadedomexico": {
+    "lat": 19.4326,
+    "lng": -99.1332,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4f/Sobrevuelos_CDMX_HJ2A4913_%2825514321687%29_%28cropped%29.jpg/330px-Sobrevuelos_CDMX_HJ2A4913_%2825514321687%29_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Cidade do México",
+    "country": "México",
+    "tier": "easy"
+  },
+  "novayork": {
+    "lat": 40.6611,
+    "lng": -73.94389,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7a/View_of_Empire_State_Building_from_Rockefeller_Center_New_York_City_dllu_%28cropped%29.jpg/330px-View_of_Empire_State_Building_from_Rockefeller_Center_New_York_City_dllu_%28cropped%29.jpg?utm_source=pt.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Nova York",
+    "country": "EUA",
+    "tier": "easy"
+  },
+  "toronto": {
+    "lat": 43.6583,
+    "lng": -79.37333,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0f/Toronto_Skyline_from_Olympic_Island%2C_June_20_2026_%285-3_cropped%29.jpg/330px-Toronto_Skyline_from_Olympic_Island%2C_June_20_2026_%285-3_cropped%29.jpg?utm_source=pt.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Toronto",
+    "country": "Canadá",
+    "tier": "easy"
+  },
+  "lisboa": {
+    "lat": 38.72528,
+    "lng": -9.15,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/41/Lisbon_%2836831596786%29_%28cropped%29.jpg/330px-Lisbon_%2836831596786%29_%28cropped%29.jpg?utm_source=pt.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Lisboa",
+    "country": "Portugal",
+    "tier": "easy"
+  },
+  "madrid": {
+    "lat": 40.383,
+    "lng": -3.67,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/af/Plaza_Mayor_De_Madrid_%28215862629%29_edited.jpeg/330px-Plaza_Mayor_De_Madrid_%28215862629%29_edited.jpeg?utm_source=pt.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Madri",
+    "country": "Espanha",
+    "tier": "easy"
+  },
+  "paris": {
+    "lat": 48.8567,
+    "lng": 2.3522,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4b/La_Tour_Eiffel_vue_de_la_Tour_Saint-Jacques%2C_Paris_ao%C3%BBt_2014_%282%29.jpg/330px-La_Tour_Eiffel_vue_de_la_Tour_Saint-Jacques%2C_Paris_ao%C3%BBt_2014_%282%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Paris",
+    "country": "França",
+    "tier": "easy"
+  },
+  "londres": {
+    "lat": 51.507389,
+    "lng": -0.12775,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/67/London_Skyline_%28125508655%29.jpeg/330px-London_Skyline_%28125508655%29.jpeg?utm_source=pt.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Londres",
+    "country": "Reino Unido",
+    "tier": "easy"
+  },
+  "roma": {
+    "lat": 41.89333333,
+    "lng": 12.48277778,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7e/Trevi_Fountain%2C_Rome%2C_Italy_2_-_May_2007.jpg/330px-Trevi_Fountain%2C_Rome%2C_Italy_2_-_May_2007.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Roma",
+    "country": "Itália",
+    "tier": "easy"
+  },
+  "berlim": {
+    "lat": 52.51667,
+    "lng": 13.3944,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f7/Museumsinsel_Berlin_Juli_2021_1_%28cropped%29_b.jpg/330px-Museumsinsel_Berlin_Juli_2021_1_%28cropped%29_b.jpg?utm_source=pt.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Berlim",
+    "country": "Alemanha",
+    "tier": "easy"
+  },
+  "amsterdam": {
+    "lat": 52.3676,
+    "lng": 4.9041,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/57/Imagen_de_los_canales_conc%C3%A9ntricos_en_%C3%81msterdam.png/330px-Imagen_de_los_canales_conc%C3%A9ntricos_en_%C3%81msterdam.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Amsterdã",
+    "country": "Países Baixos",
+    "tier": "easy"
+  },
+  "atenas": {
+    "lat": 37.9838,
+    "lng": 23.7275,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/68/Athens_Acropolis_at_Daybreak.jpg/330px-Athens_Acropolis_at_Daybreak.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Atenas",
+    "country": "Grécia",
+    "tier": "easy"
+  },
+  "istambul": {
+    "lat": 41.017,
+    "lng": 28.967,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/cb/Historical_peninsula_and_modern_skyline_of_Istanbul.jpg/330px-Historical_peninsula_and_modern_skyline_of_Istanbul.jpg?utm_source=pt.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Istambul",
+    "country": "Turquia",
+    "tier": "easy"
+  },
+  "dubai": {
+    "lat": 25.20472222,
+    "lng": 55.27083333,
+    "photo": "https://thumb.wikimedia.org/wikipedia/en/thumb/c/c7/Burj_Khalifa_2021.jpg/330px-Burj_Khalifa_2021.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Dubai",
+    "country": "EAU",
+    "tier": "easy"
+  },
+  "cairo": {
+    "lat": 30.04444444,
+    "lng": 31.23583333,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/db/Cairo_From_Tower_%28cropped%29.jpg/330px-Cairo_From_Tower_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Cairo",
+    "country": "Egito",
+    "tier": "easy"
+  },
+  "capetown": {
+    "lat": -33.917,
+    "lng": 18.417,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ec/Aerial_View_of_Sea_Point%2C_Cape_Town_South_Africa.jpg/330px-Aerial_View_of_Sea_Point%2C_Cape_Town_South_Africa.jpg?utm_source=pt.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Cidade do Cabo",
+    "country": "África do Sul",
+    "tier": "easy"
+  },
+  "toquio": {
+    "lat": 35.68972222,
+    "lng": 139.69222222,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b2/Skyscrapers_of_Shinjuku_2009_January.jpg/330px-Skyscrapers_of_Shinjuku_2009_January.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Tóquio",
+    "country": "Japão",
+    "tier": "easy"
+  },
+  "seul": {
+    "lat": 37.5665,
+    "lng": 126.978,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/30/%EC%A4%91%ED%99%94%EC%A0%84%EC%9D%98_%EB%82%AE.jpg/330px-%EC%A4%91%ED%99%94%EC%A0%84%EC%9D%98_%EB%82%AE.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Seul",
+    "country": "Coreia do Sul",
+    "tier": "easy"
+  },
+  "sydney": {
+    "lat": -33.865,
+    "lng": 151.20944,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a8/Sydney_Opera_House_Day.png/330px-Sydney_Opera_House_Day.png?utm_source=pt.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Sydney",
+    "country": "Austrália",
+    "tier": "easy"
+  },
+  "moscou": {
+    "lat": 55.75,
+    "lng": 37.617,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/85/Saint_Basil%27s_Cathedral_and_the_Red_Square.jpg/330px-Saint_Basil%27s_Cathedral_and_the_Red_Square.jpg?utm_source=pt.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Moscou",
+    "country": "Rússia",
+    "tier": "easy"
+  },
+  "saopaulo": {
+    "lat": -23.55028,
+    "lng": -46.63389,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/73/Marginal_Pinheiros_e_Jockey_Club.jpg/330px-Marginal_Pinheiros_e_Jockey_Club.jpg?utm_source=pt.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "São Paulo",
+    "country": "Brasil",
+    "tier": "medium"
+  },
+  "brasilia": {
+    "lat": -15.79389,
+    "lng": -47.88278,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2d/Planalto_Central_%28cropped%29.jpg/330px-Planalto_Central_%28cropped%29.jpg?utm_source=pt.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Brasília",
+    "country": "Brasil",
+    "tier": "medium"
+  },
+  "salvador": {
+    "lat": -12.9714,
+    "lng": -38.5014,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c0/Salvador_BA_%28cropped%29_2.jpg/330px-Salvador_BA_%28cropped%29_2.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Salvador",
+    "country": "Brasil",
+    "tier": "medium"
+  },
+  "belohorizonte": {
+    "lat": -19.92806,
+    "lng": -43.94194,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9a/Praca_do_Papa%2C_Belo_Horizonte_%28cropped%292.jpg/330px-Praca_do_Papa%2C_Belo_Horizonte_%28cropped%292.jpg?utm_source=pt.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Belo Horizonte",
+    "country": "Brasil",
+    "tier": "medium"
+  },
+  "curitiba": {
+    "lat": -25.42972,
+    "lng": -49.27194,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/55/Tangu%C3%A1_Curitiba.jpg/330px-Tangu%C3%A1_Curitiba.jpg?utm_source=pt.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Curitiba",
+    "country": "Brasil",
+    "tier": "medium"
+  },
+  "recife": {
+    "lat": -8.05389,
+    "lng": -34.88083,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/82/Antonio_Vaz_island_-_Recife%2C_Pernambuco%2C_Brazil_%28cropped%29.jpg/330px-Antonio_Vaz_island_-_Recife%2C_Pernambuco%2C_Brazil_%28cropped%29.jpg?utm_source=pt.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Recife",
+    "country": "Brasil",
+    "tier": "medium"
+  },
+  "miami": {
+    "lat": 25.77528,
+    "lng": -80.20889,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d3/Miami_Skyline_2020.jpg/330px-Miami_Skyline_2020.jpg?utm_source=pt.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Miami",
+    "country": "EUA",
+    "tier": "medium"
+  },
+  "losangeles": {
+    "lat": 34.05389,
+    "lng": -118.245,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0e/Echo_Park_Lake.jpg/330px-Echo_Park_Lake.jpg?utm_source=pt.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Los Angeles",
+    "country": "EUA",
+    "tier": "medium"
+  },
+  "chicago": {
+    "lat": 41.88194,
+    "lng": -87.6278,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a5/Chicago_River_ferry_b.jpg/330px-Chicago_River_ferry_b.jpg?utm_source=pt.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Chicago",
+    "country": "EUA",
+    "tier": "medium"
+  },
+  "cancun": {
+    "lat": 21.16056,
+    "lng": -86.8475,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/62/Flag_of_Benito_Juarez.svg/langpt-330px-Flag_of_Benito_Juarez.svg.png?utm_source=pt.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Cancún",
+    "country": "México",
+    "tier": "medium"
+  },
+  "guadalajara": {
+    "lat": 20.6597,
+    "lng": -103.3496,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/38/Panor%C3%A1mica_Guadalajara_desde_edificio_Bansi_hacia_norte_%28cropped%29.jpg/330px-Panor%C3%A1mica_Guadalajara_desde_edificio_Bansi_hacia_norte_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Guadalajara",
+    "country": "México",
+    "tier": "medium"
+  },
+  "barcelona": {
+    "lat": 41.38333333,
+    "lng": 2.18333333,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a6/Evening_light_over_Barcelona.jpg/330px-Evening_light_over_Barcelona.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Barcelona",
+    "country": "Espanha",
+    "tier": "medium"
+  },
+  "valencia": {
+    "lat": 39.4699,
+    "lng": -0.3763,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fe/Malvarrosa_Beach%2C_Valencia%2C_Spain_%2829812271043%29.jpg/330px-Malvarrosa_Beach%2C_Valencia%2C_Spain_%2829812271043%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Valência",
+    "country": "Espanha",
+    "tier": "medium"
+  },
+  "milao": {
+    "lat": 45.46667,
+    "lng": 9.16667,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6c/Facade_-_Duomo_-_Milan_2014_%289%29.JPG/330px-Facade_-_Duomo_-_Milan_2014_%289%29.JPG?utm_source=pt.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Milão",
+    "country": "Itália",
+    "tier": "medium"
+  },
+  "napoles": {
+    "lat": 40.83,
+    "lng": 14.25,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/be/Italy_location_map.svg/langpt-330px-Italy_location_map.svg.png?utm_source=pt.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Nápoles",
+    "country": "Itália",
+    "tier": "medium"
+  },
+  "lyon": {
+    "lat": 45.767,
+    "lng": 4.83,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b8/Lyon-Paysages.jpg/330px-Lyon-Paysages.jpg?utm_source=pt.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Lyon",
+    "country": "França",
+    "tier": "medium"
+  },
+  "manchester": {
+    "lat": 53.46666667,
+    "lng": -2.23333333,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5d/Manchester_Skyline_From_Oxford_Road_2020.jpg/330px-Manchester_Skyline_From_Oxford_Road_2020.jpg?utm_source=pt.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Manchester",
+    "country": "Reino Unido",
+    "tier": "medium"
+  },
+  "edinburgo": {
+    "lat": 55.953,
+    "lng": -3.189,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1a/Skyline_of_Edinburgh.jpg/330px-Skyline_of_Edinburgh.jpg?utm_source=pt.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Edimburgo",
+    "country": "Reino Unido",
+    "tier": "medium"
+  },
+  "viena": {
+    "lat": 48.2,
+    "lng": 16.367,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bf/Flag_of_Salzburg%2C_Vienna%2C_Vorarlberg.svg/langpt-330px-Flag_of_Salzburg%2C_Vienna%2C_Vorarlberg.svg.png?utm_source=pt.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Viena",
+    "country": "Áustria",
+    "tier": "medium"
+  },
+  "praga": {
+    "lat": 50.0755,
+    "lng": 14.4378,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a7/Prague_%286365119737%29.jpg/330px-Prague_%286365119737%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Praga",
+    "country": "Tchéquia",
+    "tier": "medium"
+  },
+  "varsovia": {
+    "lat": 52.23,
+    "lng": 21.01111111,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/35/Aleja_Niepdleglosci_Warsaw_2022_aerial_%28cropped%29.jpg/330px-Aleja_Niepdleglosci_Warsaw_2022_aerial_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Varsóvia",
+    "country": "Polônia",
+    "tier": "medium"
+  },
+  "estocolmo": {
+    "lat": 59.317,
+    "lng": 18.05,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/49/Stockholm_lead_image.jpg/330px-Stockholm_lead_image.jpg?utm_source=pt.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Estocolmo",
+    "country": "Suécia",
+    "tier": "medium"
+  },
+  "oslo": {
+    "lat": 59.91667,
+    "lng": 10.73333,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5b/Oslo_newer_montage_2013.png/330px-Oslo_newer_montage_2013.png?utm_source=pt.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Oslo",
+    "country": "Noruega",
+    "tier": "medium"
+  },
+  "dublin": {
+    "lat": 53.35,
+    "lng": -6.26028,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/42/Samuel_Beckett_Bridge_At_Sunset_Dublin_Ireland_%2897037639%29_%28cropped%29.jpeg/330px-Samuel_Beckett_Bridge_At_Sunset_Dublin_Ireland_%2897037639%29_%28cropped%29.jpeg?utm_source=pt.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Dublin",
+    "country": "Irlanda",
+    "tier": "medium"
+  },
+  "zurique": {
+    "lat": 47.36667,
+    "lng": 8.55,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4a/CHE_Z%C3%BCrich_COA.svg/langpt-330px-CHE_Z%C3%BCrich_COA.svg.png?utm_source=pt.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Zurique",
+    "country": "Suíça",
+    "tier": "medium"
+  },
+  "montreal": {
+    "lat": 45.5,
+    "lng": -73.567,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c2/Mtl_from_mont_royal_%28cropped%29.jpg/330px-Mtl_from_mont_royal_%28cropped%29.jpg?utm_source=pt.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Montreal",
+    "country": "Canadá",
+    "tier": "medium"
+  },
+  "vancouver": {
+    "lat": 49.26083333,
+    "lng": -123.11388889,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/33/Skyline_of_Vancouver%2C_Canada.jpg/330px-Skyline_of_Vancouver%2C_Canada.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Vancouver",
+    "country": "Canadá",
+    "tier": "medium"
+  },
+  "hongkong": {
+    "lat": 22.267,
+    "lng": 114.188,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/43/HK_Government_House_2005.jpg/330px-HK_Government_House_2005.jpg?utm_source=pt.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Hong Kong",
+    "country": "China",
+    "tier": "medium"
+  },
+  "singapura": {
+    "lat": 1.367,
+    "lng": 103.8,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/48/Flag_of_Singapore.svg/langpt-330px-Flag_of_Singapore.svg.png?utm_source=pt.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Singapura",
+    "country": "Singapura",
+    "tier": "medium"
+  },
+  "banguecoque": {
+    "lat": 13.75222,
+    "lng": 100.49389,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7d/4Y1A1159_Bangkok_%2833536795515%29.jpg/330px-4Y1A1159_Bangkok_%2833536795515%29.jpg?utm_source=pt.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Banguecoque",
+    "country": "Tailândia",
+    "tier": "medium"
+  },
+  "bali_denpasar": {
+    "lat": -8.6705,
+    "lng": 115.2126,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f8/Aerial_view_of_Bajra_Sandhi_Monument_Denpasar_Bali_Indonesia.jpg/330px-Aerial_view_of_Bajra_Sandhi_Monument_Denpasar_Bali_Indonesia.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Denpasar",
+    "country": "Indonésia",
+    "tier": "medium"
+  },
+  "nairobi": {
+    "lat": -1.283,
+    "lng": 36.817,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/42/Nairobi_Montage_A.jpg/330px-Nairobi_Montage_A.jpg?utm_source=pt.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Nairobi",
+    "country": "Quênia",
+    "tier": "medium"
+  },
+  "porto": {
+    "lat": 41.14944,
+    "lng": -8.61083,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e5/Puente_Don_Luis_I%2C_Oporto%2C_Portugal%2C_2012-05-09%2C_DD_13.JPG/330px-Puente_Don_Luis_I%2C_Oporto%2C_Portugal%2C_2012-05-09%2C_DD_13.JPG?utm_source=pt.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Porto",
+    "country": "Portugal",
+    "tier": "hard"
+  },
+  "faro": {
+    "lat": 37.0194,
+    "lng": -7.9304,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/61/2021_12_12_arne_mueseler_08_17_0576.jpg/330px-2021_12_12_arne_mueseler_08_17_0576.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Faro",
+    "country": "Portugal",
+    "tier": "hard"
+  },
+  "sevilha": {
+    "lat": 37.3891,
+    "lng": -5.9845,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2b/Sevilla_Cathedral_-_Southeast.jpg/330px-Sevilla_Cathedral_-_Southeast.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Sevilha",
+    "country": "Espanha",
+    "tier": "hard"
+  },
+  "bilbau": {
+    "lat": 43.25,
+    "lng": -2.917,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f4/Bilbao-collage.jpg/330px-Bilbao-collage.jpg?utm_source=pt.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Bilbau",
+    "country": "Espanha",
+    "tier": "hard"
+  },
+  "florenca": {
+    "lat": 43.77138889,
+    "lng": 11.25416667,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3a/Firenze_-_Piazzale_Michelangelo%2C_Firenze%2C_Italy_-_April_6%2C_2015_02.jpg/330px-Firenze_-_Piazzale_Michelangelo%2C_Firenze%2C_Italy_-_April_6%2C_2015_02.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Florença",
+    "country": "Itália",
+    "tier": "hard"
+  },
+  "veneza": {
+    "lat": 45.43333,
+    "lng": 12.33333,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4f/Venezia_aerial_view.jpg/330px-Venezia_aerial_view.jpg?utm_source=pt.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Veneza",
+    "country": "Itália",
+    "tier": "hard"
+  },
+  "turim": {
+    "lat": 45.07916667,
+    "lng": 7.67611111,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ae/Torino_Piazza_Castello_11.jpg/330px-Torino_Piazza_Castello_11.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Turim",
+    "country": "Itália",
+    "tier": "hard"
+  },
+  "marselha": {
+    "lat": 43.2964,
+    "lng": 5.37,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a1/Notre-Dame_de_la_Garde_aerial_view_2020.jpeg/330px-Notre-Dame_de_la_Garde_aerial_view_2020.jpeg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Marselha",
+    "country": "França",
+    "tier": "hard"
+  },
+  "nice": {
+    "lat": 43.7028,
+    "lng": 7.26917,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/cb/Galerie_Nice.jpg/330px-Galerie_Nice.jpg?utm_source=pt.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Nice",
+    "country": "França",
+    "tier": "hard"
+  },
+  "bruxelas": {
+    "lat": 50.84666667,
+    "lng": 4.3525,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ae/Grand_Place_Bruselas_2.jpg/330px-Grand_Place_Bruselas_2.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Bruxelas",
+    "country": "Bélgica",
+    "tier": "hard"
+  },
+  "brugge": {
+    "lat": 51.20888889,
+    "lng": 3.22416667,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9a/Br%C3%BCgge_Blick_vom_Belfried_4.jpg/330px-Br%C3%BCgge_Blick_vom_Belfried_4.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Bruges",
+    "country": "Bélgica",
+    "tier": "hard"
+  },
+  "rotterdam": {
+    "lat": 51.93083,
+    "lng": 4.47917,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e3/A_view_of_Rotterdam%2C_taken_from_the_roof_of_the_Maassilo%2C_Rotterdam%2C_The_Netherlands.jpg/330px-A_view_of_Rotterdam%2C_taken_from_the_roof_of_the_Maassilo%2C_Rotterdam%2C_The_Netherlands.jpg?utm_source=pt.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Rotterdam",
+    "country": "Países Baixos",
+    "tier": "hard"
+  },
+  "haia": {
+    "lat": 52.0705,
+    "lng": 4.3007,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/ce/Den_Haag_Skyline_1.jpg/330px-Den_Haag_Skyline_1.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Haia",
+    "country": "Países Baixos",
+    "tier": "hard"
+  },
+  "colonia": {
+    "lat": 50.93638889,
+    "lng": 6.95277778,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5f/Kranh%C3%A4user_Cologne%2C_April_2018_-01.jpg/330px-Kranh%C3%A4user_Cologne%2C_April_2018_-01.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Colônia",
+    "country": "Alemanha",
+    "tier": "hard"
+  },
+  "munique": {
+    "lat": 48.1375,
+    "lng": 11.575,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3b/Frauenkirche_and_Neues_Rathaus_Munich_March_2013.JPG/330px-Frauenkirche_and_Neues_Rathaus_Munich_March_2013.JPG?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Munique",
+    "country": "Alemanha",
+    "tier": "hard"
+  },
+  "hamburgo": {
+    "lat": 53.55,
+    "lng": 10,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/59/Binnenalster_am_Abend.jpg/330px-Binnenalster_am_Abend.jpg?utm_source=pt.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Hamburgo",
+    "country": "Alemanha",
+    "tier": "hard"
+  },
+  "francoforte": {
+    "lat": 50.11055556,
+    "lng": 8.68222222,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/19/Frankfurt_am_Main%2C_Central_business_district_%282024%29.jpg/330px-Frankfurt_am_Main%2C_Central_business_district_%282024%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Frankfurt",
+    "country": "Alemanha",
+    "tier": "hard"
+  },
+  "zurique2": {
+    "lat": 46.2044,
+    "lng": 6.1432,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ab/Geneve_2005_001_Ork.ch.jpg/330px-Geneve_2005_001_Ork.ch.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Genebra",
+    "country": "Suíça",
+    "tier": "hard"
+  },
+  "basileia": {
+    "lat": 47.5596,
+    "lng": 7.5886,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f5/Basel_-_M%C3%BCnsterpfalz1.jpg/330px-Basel_-_M%C3%BCnsterpfalz1.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Basileia",
+    "country": "Suíça",
+    "tier": "hard"
+  },
+  "salzburgo": {
+    "lat": 47.8,
+    "lng": 13.045,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/91/Salzburg_%2848489551981%29.jpg/330px-Salzburg_%2848489551981%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Salzburgo",
+    "country": "Áustria",
+    "tier": "hard"
+  },
+  "budapeste": {
+    "lat": 47.4979,
+    "lng": 19.0402,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/53/View_from_Gell%C3%A9rt_Hill_to_the_Danube%2C_Hungary_-_Budapest_%2828493220635%29.jpg/330px-View_from_Gell%C3%A9rt_Hill_to_the_Danube%2C_Hungary_-_Budapest_%2828493220635%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Budapeste",
+    "country": "Hungria",
+    "tier": "hard"
+  },
+  "cracovia": {
+    "lat": 50.0647,
+    "lng": 19.945,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a3/Krakow_Rynek_Glowny_panorama_2.jpg/330px-Krakow_Rynek_Glowny_panorama_2.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Cracóvia",
+    "country": "Polônia",
+    "tier": "hard"
+  },
+  "gdansk": {
+    "lat": 54.34806,
+    "lng": 18.64528,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1d/Collage_of_views_of_Gdansk.jpg/330px-Collage_of_views_of_Gdansk.jpg?utm_source=pt.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Gdansk",
+    "country": "Polônia",
+    "tier": "hard"
+  },
+  "helsinki": {
+    "lat": 60.17,
+    "lng": 24.933,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c1/HelsinkiMontage_NoEffects.jpg/330px-HelsinkiMontage_NoEffects.jpg?utm_source=pt.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Helsinque",
+    "country": "Finlândia",
+    "tier": "hard"
+  },
+  "copenhague": {
+    "lat": 55.67611111,
+    "lng": 12.56833333,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/15/2018_-_Christiansborg_from_the_Marble_Bridge.jpg/330px-2018_-_Christiansborg_from_the_Marble_Bridge.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Copenhague",
+    "country": "Dinamarca",
+    "tier": "hard"
+  },
+  "reikiavik": {
+    "lat": 64.13333,
+    "lng": -21.93333,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9a/Reykjavik_Main_Image.jpg/330px-Reykjavik_Main_Image.jpg?utm_source=pt.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Reykjavik",
+    "country": "Islândia",
+    "tier": "hard"
+  },
+  "dublin2": {
+    "lat": 51.8985,
+    "lng": -8.4756,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d4/University_College_Cork_-_Quad_during_Eclipse_2015_%2816684104050%29.jpg/330px-University_College_Cork_-_Quad_during_Eclipse_2015_%2816684104050%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Cork",
+    "country": "Irlanda",
+    "tier": "hard"
+  },
+  "glasgow": {
+    "lat": 55.86111111,
+    "lng": -4.25,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/ff/Glasgow_-_aerial_-_2025-04-17_14.jpg/330px-Glasgow_-_aerial_-_2025-04-17_14.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Glasgow",
+    "country": "Reino Unido",
+    "tier": "hard"
+  },
+  "liverpool": {
+    "lat": 53.4072,
+    "lng": -2.9917,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/78/Pier_Head%2C_Liverpool_-_geograph.org.uk_-_3059094.jpg/330px-Pier_Head%2C_Liverpool_-_geograph.org.uk_-_3059094.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Liverpool",
+    "country": "Reino Unido",
+    "tier": "hard"
+  },
+  "bristol": {
+    "lat": 51.45361111,
+    "lng": -2.5975,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/19/Clifton_Suspension_Bridge_and_the_Observatory_in_Bristol%2C_England.jpg/330px-Clifton_Suspension_Bridge_and_the_Observatory_in_Bristol%2C_England.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Bristol",
+    "country": "Reino Unido",
+    "tier": "hard"
+  },
+  "boston": {
+    "lat": 42.36027778,
+    "lng": -71.05777778,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/96/ISH_WC_Boston4.jpg/330px-ISH_WC_Boston4.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Boston",
+    "country": "EUA",
+    "tier": "hard"
+  },
+  "safrancisco": {
+    "lat": 37.7749,
+    "lng": -122.4194,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9f/Zeppelin-ride-020100925-195_%285029394846%29.jpg/330px-Zeppelin-ride-020100925-195_%285029394846%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "São Francisco",
+    "country": "EUA",
+    "tier": "hard"
+  },
+  "seattle": {
+    "lat": 47.60972,
+    "lng": -122.33306,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/58/Seattle_Center_as_night_falls.jpg/330px-Seattle_Center_as_night_falls.jpg?utm_source=pt.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Seattle",
+    "country": "EUA",
+    "tier": "hard"
+  },
+  "lasvegas": {
+    "lat": 36.175,
+    "lng": -115.13639,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/71/City_of_Las_Vegas_skyline.jpg/330px-City_of_Las_Vegas_skyline.jpg?utm_source=pt.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Las Vegas",
+    "country": "EUA",
+    "tier": "hard"
+  },
+  "houston": {
+    "lat": 29.76278,
+    "lng": -95.38306,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a3/Texas_medical_center.jpg/330px-Texas_medical_center.jpg?utm_source=pt.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Houston",
+    "country": "EUA",
+    "tier": "hard"
+  },
+  "atlanta": {
+    "lat": 33.755,
+    "lng": -84.39,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/37/Atlanta_skyline_from_Jackson_Street_Bridge_2020.jpg/330px-Atlanta_skyline_from_Jackson_Street_Bridge_2020.jpg?utm_source=pt.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Atlanta",
+    "country": "EUA",
+    "tier": "hard"
+  },
+  "denver": {
+    "lat": 39.73917,
+    "lng": -104.99028,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e8/Denver_skyline.jpg/330px-Denver_skyline.jpg?utm_source=pt.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Denver",
+    "country": "EUA",
+    "tier": "hard"
+  },
+  "philadelphia": {
+    "lat": 39.9528,
+    "lng": -75.16361,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/96/Philadelphia_Montage_by_Jleon_0310.jpg/330px-Philadelphia_Montage_by_Jleon_0310.jpg?utm_source=pt.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Filadélfia",
+    "country": "EUA",
+    "tier": "hard"
+  },
+  "sandiego": {
+    "lat": 32.715,
+    "lng": -117.1625,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a7/Downtown_San_Diego_by_Don_Ramey_Logan_%28cropped%29.jpg/330px-Downtown_San_Diego_by_Don_Ramey_Logan_%28cropped%29.jpg?utm_source=pt.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "San Diego",
+    "country": "EUA",
+    "tier": "hard"
+  },
+  "austin": {
+    "lat": 30.26722,
+    "lng": -97.74306,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ab/CongressAveBridge-Apr2010.JPG/330px-CongressAveBridge-Apr2010.JPG?utm_source=pt.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Austin",
+    "country": "EUA",
+    "tier": "hard"
+  },
+  "montreal2": {
+    "lat": 46.8139,
+    "lng": -71.208,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a4/Quebec_City_skyline_from_L%C3%A9vis.jpg/330px-Quebec_City_skyline_from_L%C3%A9vis.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Quebec",
+    "country": "Canadá",
+    "tier": "hard"
+  },
+  "calgary": {
+    "lat": 51.04583,
+    "lng": -114.0575,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bb/Downtown_Calgary_2020-4.jpg/330px-Downtown_Calgary_2020-4.jpg?utm_source=pt.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Calgary",
+    "country": "Canadá",
+    "tier": "hard"
+  },
+  "ottawa": {
+    "lat": 45.417,
+    "lng": -75.683,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f6/Downtown_Ottawa_2022.jpg/330px-Downtown_Ottawa_2022.jpg?utm_source=pt.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Ottawa",
+    "country": "Canadá",
+    "tier": "hard"
+  },
+  "guadalajara2": {
+    "lat": 25.6866,
+    "lng": -100.3161,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/de/View_of_Monterrey_%282015%29.jpg/330px-View_of_Monterrey_%282015%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Monterrey",
+    "country": "México",
+    "tier": "hard"
+  },
+  "oaxaca": {
+    "lat": 17.055,
+    "lng": -96.65388889,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2a/Coat_of_arms_of_Oaxaca.svg/langpt-330px-Coat_of_arms_of_Oaxaca.svg.png?utm_source=pt.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Oaxaca",
+    "country": "México",
+    "tier": "hard"
+  },
+  "merida": {
+    "lat": 20.9674,
+    "lng": -89.5926,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ef/Collage_Merida_Yucatan.jpg/330px-Collage_Merida_Yucatan.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Mérida",
+    "country": "México",
+    "tier": "hard"
+  },
+  "cartagena": {
+    "lat": 10.391,
+    "lng": -75.4794,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/30/Museo_Naval_del_Caribe.JPG/330px-Museo_Naval_del_Caribe.JPG?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Cartagena",
+    "country": "Colômbia",
+    "tier": "hard"
+  },
+  "medellin": {
+    "lat": 6.23083333,
+    "lng": -75.59055556,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/76/Centro_de_Medell%C3%ADn_en_dron_04.jpg/330px-Centro_de_Medell%C3%ADn_en_dron_04.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Medellín",
+    "country": "Colômbia",
+    "tier": "hard"
+  },
+  "quito": {
+    "lat": -0.22,
+    "lng": -78.5125,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5b/FACHADA_ASAMBLEA_NACIONAL._QUITO%2C_20_DE_FEBRERO_2020._01.jpg/330px-FACHADA_ASAMBLEA_NACIONAL._QUITO%2C_20_DE_FEBRERO_2020._01.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Quito",
+    "country": "Equador",
+    "tier": "hard"
+  },
+  "lapaz": {
+    "lat": -16.49417,
+    "lng": -68.1475,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f4/Edificios_de_la_ciudad_de_La_Paz_desde_Plaza_Murillo_2018_%28cropped%29.jpg/330px-Edificios_de_la_ciudad_de_La_Paz_desde_Plaza_Murillo_2018_%28cropped%29.jpg?utm_source=pt.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "La Paz",
+    "country": "Bolívia",
+    "tier": "hard"
+  },
+  "asuncion": {
+    "lat": -25.2637,
+    "lng": -57.5759,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/47/Palacio_de_los_L%C3%B3pez_Asunci%C3%B3n_2.jpg/330px-Palacio_de_los_L%C3%B3pez_Asunci%C3%B3n_2.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Assunção",
+    "country": "Paraguai",
+    "tier": "hard"
+  },
+  "montevideo": {
+    "lat": -34.90555556,
+    "lng": -56.18416667,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/59/PALACIO_LEGISLATIVO_01.JPG/330px-PALACIO_LEGISLATIVO_01.JPG?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Montevidéu",
+    "country": "Uruguai",
+    "tier": "hard"
+  },
+  "santiagodechile2": {
+    "lat": -33.0472,
+    "lng": -71.6127,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/dd/Historic_Quarter_of_the_Seaport_City_of_Valpara%C3%ADso_04.jpg/330px-Historic_Quarter_of_the_Seaport_City_of_Valpara%C3%ADso_04.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Valparaíso",
+    "country": "Chile",
+    "tier": "hard"
+  },
+  "cusco": {
+    "lat": -13.51694444,
+    "lng": -71.97861111,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/79/Cusco_Emblem.svg/langpt-330px-Cusco_Emblem.svg.png?utm_source=pt.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Cusco",
+    "country": "Peru",
+    "tier": "hard"
+  },
+  "havana": {
+    "lat": 23.13666667,
+    "lng": -82.35888889,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8b/Flag_of_City_of_Havana.svg/langpt-330px-Flag_of_City_of_Havana.svg.png?utm_source=pt.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Havana",
+    "country": "Cuba",
+    "tier": "hard"
+  },
+  "saopaulo2": {
+    "lat": -3.7319,
+    "lng": -38.5267,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/73/Fortaleza%2C_Brazil_%284%29_%28cropped%29.jpg/330px-Fortaleza%2C_Brazil_%284%29_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Fortaleza",
+    "country": "Brasil",
+    "tier": "hard"
+  },
+  "manaus": {
+    "lat": -3.07361,
+    "lng": -60.0056,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f8/Manaus_amazonas.jpg/330px-Manaus_amazonas.jpg?utm_source=pt.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Manaus",
+    "country": "Brasil",
+    "tier": "hard"
+  },
+  "florianopolis": {
+    "lat": -27.59694,
+    "lng": -48.54889,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/09/Morro_da_Cruz%2C_Florian%C3%B3polis_-_SC%2C_Brazil_-_panoramio_%28cropped%29.jpg/330px-Morro_da_Cruz%2C_Florian%C3%B3polis_-_SC%2C_Brazil_-_panoramio_%28cropped%29.jpg?utm_source=pt.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Florianópolis",
+    "country": "Brasil",
+    "tier": "hard"
+  },
+  "goiania": {
+    "lat": -16.66667,
+    "lng": -49.25,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fa/Panomara_Goi%C3%A2nia_2022.jpg/330px-Panomara_Goi%C3%A2nia_2022.jpg?utm_source=pt.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Goiânia",
+    "country": "Brasil",
+    "tier": "hard"
+  },
+  "belem": {
+    "lat": -1.4558,
+    "lng": -48.4902,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/91/L1010748-L1010765_copie_%28cropped%29.jpg/330px-L1010748-L1010765_copie_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Belém",
+    "country": "Brasil",
+    "tier": "hard"
+  },
+  "osaka": {
+    "lat": 34.69388889,
+    "lng": 135.50222222,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/ca/Osaka_Castle_03bs3200.jpg/330px-Osaka_Castle_03bs3200.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Osaka",
+    "country": "Japão",
+    "tier": "hard"
+  },
+  "quioto": {
+    "lat": 35.0116,
+    "lng": 135.7681,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ae/Kiyomizu-dera%2C_Kyoto%2C_November_2016_-02.jpg/330px-Kiyomizu-dera%2C_Kyoto%2C_November_2016_-02.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Quioto",
+    "country": "Japão",
+    "tier": "hard"
+  },
+  "busan": {
+    "lat": 35.1028,
+    "lng": 129.04028,
+    "photo": "https://upload.wikimedia.org/wikipedia/commons/0/08/Busan_montage.png?utm_source=pt.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+    "name": "Busan",
+    "country": "Coreia do Sul",
+    "tier": "hard"
+  },
+  "taipei": {
+    "lat": 25.033,
+    "lng": 121.533,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d9/Taipei_City_montage.PNG/330px-Taipei_City_montage.PNG?utm_source=pt.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Taipei",
+    "country": "Taiwan",
+    "tier": "hard"
+  },
+  "kualalumpur": {
+    "lat": 3.13333,
+    "lng": 101.7,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c1/Bukit_Bintang_Junction_in_2023.jpg/330px-Bukit_Bintang_Junction_in_2023.jpg?utm_source=pt.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Kuala Lumpur",
+    "country": "Malásia",
+    "tier": "hard"
+  },
+  "jacarta": {
+    "lat": -6.1333,
+    "lng": 106.75,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bf/Busway_in_Bundaran_HI.jpg/330px-Busway_in_Bundaran_HI.jpg?utm_source=pt.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Jacarta",
+    "country": "Indonésia",
+    "tier": "hard"
+  },
+  "hanoi": {
+    "lat": 21.03306,
+    "lng": 105.84972,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/17/Hanoi_Montage.jpg/330px-Hanoi_Montage.jpg?utm_source=pt.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Hanói",
+    "country": "Vietnã",
+    "tier": "hard"
+  },
+  "cidadehochiminh": {
+    "lat": 10.77555556,
+    "lng": 106.70194444,
+    "photo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/86/Ho_Chi_Minh_City%2C_City_Hall%2C_2020-01_CN-03.jpg/330px-Ho_Chi_Minh_City%2C_City_Hall%2C_2020-01_CN-03.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "name": "Cidade de Ho Chi Minh",
+    "country": "Vietnã",
+    "tier": "hard"
+  }
+}

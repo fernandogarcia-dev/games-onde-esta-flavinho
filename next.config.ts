@@ -13,6 +13,12 @@ const nextConfig: NextConfig = {
     "*.cursorapi.com",
     "**.cursorapi.com",
   ],
+  images: {
+    remotePatterns: [
+      { protocol: "https", hostname: "upload.wikimedia.org" },
+      { protocol: "https", hostname: "*.wikipedia.org" },
+    ],
+  },
   turbopack: {
     rules: {
       "*.css": {

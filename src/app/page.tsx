@@ -1,5 +1,5 @@
-import { GameApp } from "@/components/game/GameApp";
+import { HomeApp } from "@/components/home/HomeApp";
 
 export default function Home() {
-  return <GameApp />;
+  return <HomeApp />;
 }
