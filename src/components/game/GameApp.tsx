@@ -10,6 +10,7 @@ import { PixModal } from "@/components/game/PixModal";
 import { RankModal } from "@/components/game/RankModal";
 import { ShareBar } from "@/components/game/ShareBar";
 import { ModeTheme } from "@/components/home/ModeTheme";
+import { useScrollTop } from "@/hooks/useScrollTop";
 import {
   cityCatalogSize,
   dealNewRun,
@@ -68,6 +69,7 @@ export function GameApp({
   onBackToModes?: () => void;
 } = {}) {
   const [phase, setPhase] = useState<Phase>("landing");
+  useScrollTop([phase]);
   const [difficulty, setDifficulty] = useState<Difficulty>("medium");
   const [run, setRun] = useState<Level[]>([]);
   const [levelIndex, setLevelIndex] = useState(0);

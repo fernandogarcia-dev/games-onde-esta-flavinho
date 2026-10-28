@@ -33,6 +33,7 @@ import { cityCatalogSize } from "@/lib/deck";
 import { buildInviteText } from "@/lib/share";
 import { hasGoogleMapsKey } from "@/lib/google-maps";
 import { ModeTheme } from "@/components/home/ModeTheme";
+import { useScrollTop } from "@/hooks/useScrollTop";
 
 const GuessMap = dynamic(
   () => import("@/components/rua/GuessMap").then((m) => m.GuessMap),
@@ -75,6 +76,7 @@ function isHit(pts: number) {
 
 export function RuaApp({ onBack }: { onBack: () => void }) {
   const [phase, setPhase] = useState<Phase>("landing");
+  useScrollTop([phase]);
   const [difficulty, setDifficulty] = useState<Difficulty>("medium");
   const [city, setCity] = useState<CityGeo | null>(null);
   const [score, setScore] = useState(0);

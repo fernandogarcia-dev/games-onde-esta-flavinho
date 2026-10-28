@@ -16,6 +16,7 @@ import {
 } from "@/lib/mode-ranking";
 import { ModeTheme } from "@/components/home/ModeTheme";
 import { ParcaPortrait } from "@/components/parca/ParcaPortrait";
+import { useScrollTop } from "@/hooks/useScrollTop";
 import {
   cluesFor,
   dealParcaRun,
@@ -39,6 +40,7 @@ const modeMeta = getMode("parca");
 
 export function ParcaApp({ onBack }: { onBack: () => void }) {
   const [phase, setPhase] = useState<Phase>("landing");
+  useScrollTop([phase]);
   const [difficulty, setDifficulty] = useState<Difficulty>("medium");
   const [person, setPerson] = useState<ParcaPerson | null>(null);
   const [pickedId, setPickedId] = useState<string | null>(null);
