@@ -248,25 +248,27 @@ export function ParcaApp({ onBack }: { onBack: () => void }) {
         )}
 
         {phase === "clues" && person && (
-          <section className="animate-rise grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
+          <section className="animate-rise mx-auto flex max-w-3xl flex-col gap-5">
             <div className="rounded-3xl border-[3px] border-[var(--ink)] bg-[var(--paper)] p-5 shadow-[6px_6px_0_var(--ink)] sm:p-6">
-              <div className="flex items-start gap-4">
-                <div className="relative h-20 w-16 shrink-0 overflow-hidden rounded-2xl border-[3px] border-[var(--ink)] bg-[var(--sand)] shadow-[4px_4px_0_var(--ink)]">
-                  <Image
-                    src="/game/disguises/real.webp"
-                    alt="Flavinho"
-                    fill
-                    unoptimized
-                    className="object-contain p-1"
-                  />
-                </div>
-                <div className="flex h-20 w-16 shrink-0 flex-col items-center justify-center rounded-2xl border-[3px] border-dashed border-[var(--ink)]/50 bg-[#fff4d6] shadow-[4px_4px_0_var(--ink)]">
-                  <span className="font-[family-name:var(--font-display)] text-3xl text-[var(--ink)]">
-                    ?
-                  </span>
-                  <span className="px-1 text-center text-[9px] font-bold uppercase tracking-wide text-[var(--ink)]/70">
-                    Parça
-                  </span>
+              <div className="flex flex-col items-center gap-4 text-center sm:flex-row sm:items-start sm:text-left">
+                <div className="flex shrink-0 items-end justify-center gap-3">
+                  <div className="relative h-24 w-20 overflow-hidden rounded-2xl border-[3px] border-[var(--ink)] bg-[var(--sand)] shadow-[4px_4px_0_var(--ink)] sm:h-20 sm:w-16">
+                    <Image
+                      src="/game/disguises/real.webp"
+                      alt="Flavinho"
+                      fill
+                      unoptimized
+                      className="object-contain p-1"
+                    />
+                  </div>
+                  <div className="flex h-24 w-20 flex-col items-center justify-center rounded-2xl border-[3px] border-dashed border-[var(--ink)]/50 bg-[#fff4d6] shadow-[4px_4px_0_var(--ink)] sm:h-20 sm:w-16">
+                    <span className="font-[family-name:var(--font-display)] text-3xl text-[var(--ink)]">
+                      ?
+                    </span>
+                    <span className="px-1 text-center text-[9px] font-bold uppercase tracking-wide text-[var(--ink)]/70">
+                      Parça
+                    </span>
+                  </div>
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="text-sm font-bold uppercase tracking-[0.18em] text-[var(--brand)]">
