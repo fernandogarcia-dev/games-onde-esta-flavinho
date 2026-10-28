@@ -44,7 +44,7 @@ export function pickCityClues(
   const want = Math.max(1, Math.min(5, count));
   const record = getCityRecord(city);
   const pool = [...record.clues[tier]];
-  const rand = mulberry32(hashSalt(`${salt}:${city}:${tier}:clues-v3:${want}`));
+  const rand = mulberry32(hashSalt(`${salt}:${city}:${tier}:clues-v4:${want}`));
   for (let i = pool.length - 1; i > 0; i--) {
     const j = Math.floor(rand() * (i + 1));
     [pool[i], pool[j]] = [pool[j], pool[i]];

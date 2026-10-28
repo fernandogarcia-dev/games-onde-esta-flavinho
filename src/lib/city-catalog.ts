@@ -25,9 +25,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "rio",
     tier: "easy",
     clues: {
-      easy: ["Tem o Cristo Redentor no Corcovado.", "Copacabana e Ipanema são praias famosas.", "É a cidade do Carnaval mais famoso do Brasil.", "O Pão de Açúcar é cartão-postal.", "O Maracanã é um estádio mundialmente conhecido."],
-      medium: ["O bondinho sobe o Pão de Açúcar.", "Os Arcos da Lapa marcam a noite carioca.", "O Sambódromo recebe o desfile das escolas.", "A Escadaria Selarón é de azulejos coloridos.", "O Posto Nove é ponto clássico da orla."],
-      hard: ["O Bonde de Santa Teresa sobe as ladeiras.", "A Feira de São Cristóvão celebra o Nordeste.", "O Aterro do Flamengo tem vista da baía.", "O Cais do Valongo é patrimônio do porto.", "O Mirante Dona Marta mostra a Baía de Guanabara."],
+      easy: ["Tem o Cristo lá em cima do Corcovado.", "Copacabana e Ipanema — praia que todo mundo conhece.", "O Carnaval daqui é o mais famoso do Brasil.", "Aquele Pão de Açúcar com o bondinho.", "O Maracanã fica aqui."],
+      medium: ["O bondinho sobe até o Pão de Açúcar.", "Na Lapa tem aqueles Arcos famosos.", "As escolas de samba desfilam no Sambódromo.", "A escadaria toda de azulejo colorido — Selarón.", "Posto 9: ponto clássico da orla."],
+      hard: ["O bondinho de Santa Teresa sobe as ladeiras.", "A Feira de São Cristóvão é a festa do Nordeste na cidade.", "No Aterro do Flamengo a vista da baía é linda.", "O Cais do Valongo fica na zona portuária.", "Do Mirante Dona Marta dá pra ver a Baía de Guanabara."],
     },
   },
   {
@@ -38,9 +38,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "plaza",
     tier: "easy",
     clues: {
-      easy: ["É a capital da Argentina.", "O tango nasceu e vive nas noites da cidade.", "A Obelisco marca a Avenida 9 de Julio.", "O bife de chorizo é marca registrada.", "Fala-se espanhol com sotaque portenho."],
-      medium: ["La Boca e Caminito são o cartão colorido.", "San Telmo tem feira de antiguidades.", "A Casa Rosada fica na Plaza de Mayo.", "O teatro Colón é casa de ópera famosa.", "Palermo concentra bares e parques."],
-      hard: ["Recoleta tem o cemitério de Evita.", "Puerto Madero revitalizou o porto.", "A Avenida Corrientes é a Broadway portenha.", "O El Ateneo é livraria em teatro antigo.", "Tigre e o delta ficam a um trem."],
+      easy: ["Capital da Argentina.", "Terra do tango — a noite toda.", "Tem o Obelisco bem na 9 de Julio.", "Bife de chorizo é clássico por aqui.", "Falam espanhol com sotaque portenho."],
+      medium: ["La Boca e o Caminito são aquele bairro colorido.", "Em San Telmo rola feira de antiguidades.", "A Casa Rosada fica na Plaza de Mayo.", "O Teatro Colón é a ópera famosa.", "Palermo é cheio de bar e parque."],
+      hard: ["Em Recoleta tem o cemitério onde está a Evita.", "Puerto Madero é a orla do porto renovada.", "A Avenida Corrientes é tipo a Broadway de lá.", "O El Ateneo é uma livraria dentro de um teatro antigo.", "Tigre e o delta ficam a um passeio de trem."],
     },
   },
   {
@@ -51,9 +51,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "plaza",
     tier: "easy",
     clues: {
-      easy: ["É a capital do Chile.", "Fica aos pés da Cordilheira dos Andes.", "É conhecida pelo vinho chileno.", "A Plaza de Armas é o centro histórico.", "Tem metrô moderno sob a cidade."],
-      medium: ["O Cerro San Cristóbal tem vista da capital.", "La Moneda é o palácio presidencial.", "Bellavista é o bairro boêmio.", "O Mercado Central serve frutos do mar.", "Valparaíso fica a poucas horas de distância."],
-      hard: ["O costanera Center tem o arranha-céu mais alto.", "Barrio Lastarria mistura museus e cafés.", "O Cajón del Maipo é rota de natureza próxima.", "O Museu da Memória trata da ditadura.", "Ski nos Andes fica a ~1h da cidade."],
+      easy: ["Capital do Chile.", "Fica bem aos pés dos Andes.", "Terra do vinho chileno.", "A Plaza de Armas é o centro velho.", "Tem metrô moderno por baixo da cidade."],
+      medium: ["Do Cerro San Cristóbal dá pra ver a capital inteira.", "La Moneda é o palácio do presidente.", "Bellavista é o bairro mais boêmio.", "No Mercado Central o forte é frutos do mar.", "Valparaíso fica a poucas horas daqui."],
+      hard: ["O Costanera Center tem o prédio mais alto.", "Lastarria mistura museu e café.", "O Cajón del Maipo é o rolê de natureza perto.", "Tem um Museu da Memória sobre a ditadura.", "Dá pra esquiar nos Andes a mais ou menos 1h."],
     },
   },
   {
@@ -64,9 +64,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "miami",
     tier: "easy",
     clues: {
-      easy: ["É a capital do Peru.", "É famosa pela gastronomia peruana.", "Fica na costa do Pacífico.", "O ceviche é o prato mais associado.", "Machu Picchu fica no mesmo país."],
-      medium: ["O Centro Histórico tem a Plaza Mayor.", "Miraflores é o bairro turístico à beira-mar.", "Barranco é boêmio e artístico.", "O Circuito Mágico das Águas anima a noite.", "Huaca Pucllana é pirâmide de adobe no meio da cidade."],
-      hard: ["O Museu Larco guarda cerâmica pré-colombiana.", "A Costa Verde é a via à beira dos penhascos.", "Surquillo tem mercado gastronômico famoso.", "Callao é o porto vizinho.", "Pachacamac fica nos arredores."],
+      easy: ["Capital do Peru.", "A comida peruana daqui é de outro nível.", "Fica na costa do Pacífico.", "Ceviche é o prato que todo mundo pede.", "Machu Picchu fica no mesmo país."],
+      medium: ["No centro histórico tem a Plaza Mayor.", "Miraflores é o bairro turístico na beira-mar.", "Barranco é o lado artístico e boêmio.", "De noite tem o Circuito Mágico das Águas.", "A Huaca Pucllana é uma pirâmide de adobe no meio da cidade."],
+      hard: ["O Museu Larco tem cerâmica pré-colombiana demais.", "A Costa Verde corre na beira dos penhascos.", "Surquillo tem um mercado gastronômico famoso.", "Callao é o porto do lado.", "Pachacamac fica nos arredores."],
     },
   },
   {
@@ -77,9 +77,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "plaza",
     tier: "easy",
     clues: {
-      easy: ["É a capital da Colômbia.", "Fica a mais de 2.600 m de altitude.", "É conhecida pelo café colombiano.", "Monserrate é o morro com santuário.", "O ouro do Museu do Ouro é famoso."],
-      medium: ["La Candelaria é o centro histórico colorido.", "A Plaza Bolívar é o marco cívico.", "O TransMilenio é o BRT local.", "Usaquén tem feira aos domingos.", "O teleférico sobe ao Monserrate."],
-      hard: ["O Graffiti Tour do Bronx/Calleja é atrativo urbano.", "Zipaquirá tem a Catedral de Sal próxima.", "Chapinero mistura vida noturna e cafés.", "O Jardim Botânico fica na zona oeste.", "Andes e páramos cercam a sabana."],
+      easy: ["Capital da Colômbia.", "Fica a mais de 2.600 m de altitude.", "Café colombiano é daqui.", "Monserrate é aquele morro com santuário em cima.", "O Museu do Ouro é bem famoso."],
+      medium: ["La Candelaria é o centro histórico colorido.", "A Plaza Bolívar é a praça principal.", "O TransMilenio é o BRT da cidade.", "Usaquén tem feira aos domingos.", "Tem teleférico subindo até o Monserrate."],
+      hard: ["Tem tour de grafite no Bronx/Calleja.", "Perto daqui, Zipaquirá tem a Catedral de Sal.", "Chapinero mistura noite e café.", "O Jardim Botânico fica na zona oeste.", "Andes e páramos cercam a sabana."],
     },
   },
   {
@@ -90,9 +90,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "plaza",
     tier: "easy",
     clues: {
-      easy: ["É a capital do México.", "O Zócalo é uma das maiores praças do mundo.", "Tacos e comida de rua são marca registrada.", "Tem pirâmides maias/astecas no país.", "Fala-se espanhol mexicano."],
-      medium: ["O Museu de Antropologia é referência mundial.", "Coyoacán guarda o Museu Frida Kahlo.", "Xochimilco tem os trajineras coloridos.", "Chapultepec é o grande parque.", "Teotihuacán fica a pouco mais de 1h."],
-      hard: ["Roma-Condesa é polo de cafés e arte.", "O Palácio de Belas Artes tem cúpula icônica.", "Polanco concentra gastronomia e museus.", "O Angel de la Independencia marca a Reforma.", "Tlatelolco tem a praça das Três Culturas."],
+      easy: ["Capital do México.", "O Zócalo é uma das maiores praças do mundo.", "Taco e comida de rua são a alma daqui.", "No país tem pirâmide maia e asteca.", "Falam espanhol mexicano."],
+      medium: ["O Museu de Antropologia é dos melhores do mundo.", "Em Coyoacán fica o museu da Frida Kahlo.", "Xochimilco tem aqueles barquinhos coloridos.", "Chapultepec é o parque gigante.", "Teotihuacán fica a pouco mais de 1h."],
+      hard: ["Roma-Condesa é o polo de café e arte.", "O Palácio de Belas Artes tem aquela cúpula linda.", "Polanco é cheio de restaurante e museu.", "O Anjo da Independência fica na Reforma.", "Em Tlatelolco tem a praça das Três Culturas."],
     },
   },
   {
@@ -103,9 +103,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "sp",
     tier: "easy",
     clues: {
-      easy: ["É a maior cidade dos Estados Unidos.", "A Estátua da Liberdade fica na baía.", "Times Square brilha o tempo todo.", "Central Park é o parque no meio de Manhattan.", "Os arranha-céus formam a skyline famosa."],
-      medium: ["A Brooklyn Bridge liga Manhattan a Brooklyn.", "Broadway é o circuito dos musicais.", "O Empire State é o art déco clássico.", "O High Line é o parque elevado.", "Wall Street marca o distrito financeiro."],
-      hard: ["O One World Trade sobe no Ground Zero.", "Chelsea Market fica no Meatpacking.", "O Guggenheim tem a rampa espiral.", "DUMBO enquadra a ponte nas fotos.", "Harlem é berço do jazz e da cultura negra."],
+      easy: ["A maior cidade dos Estados Unidos.", "A Estátua da Liberdade fica na baía.", "Times Square brilha o tempo todo.", "Central Park é o parque no meio de Manhattan.", "Aquela skyline cheia de arranha-céu."],
+      medium: ["A Brooklyn Bridge liga Manhattan a Brooklyn.", "Broadway é o circuito dos musicais.", "O Empire State é o prédio art déco clássico.", "O High Line é aquele parque elevado.", "Wall Street é o centro financeiro."],
+      hard: ["O One World Trade sobe no Ground Zero.", "Chelsea Market fica no Meatpacking.", "O Guggenheim tem aquela rampa em espiral.", "DUMBO é o ponto clássico de foto da ponte.", "Harlem é berço do jazz e da cultura negra."],
     },
   },
   {
@@ -116,9 +116,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "sp",
     tier: "easy",
     clues: {
-      easy: ["É a maior cidade do Canadá.", "A CN Tower marca a skyline.", "Fica à beira do Lago Ontário.", "É muito multicultural.", "O inglês e o francês convivem no país."],
-      medium: ["A Ilha de Toronto fica de ferry.", "O Distillery District tem tijolos e bares.", "Kensington Market é boêmio.", "O Rogers Centre fica aos pés da torre.", "Niagara Falls fica a cerca de 2h."],
-      hard: ["Queen West concentra street art.", "Path é a rede subterrânea de shoppings.", "Casa Loma é o castelo da cidade.", "St. Lawrence Market vende food hall clássico.", "The Annex é bairro universitário."],
+      easy: ["A maior cidade do Canadá.", "A CN Tower é o marco da skyline.", "Fica na beira do Lago Ontário.", "Cidade bem multicultural.", "No país convivem inglês e francês."],
+      medium: ["A Ilha de Toronto fica de ferry.", "O Distillery District é tijolo e bar.", "Kensington Market é o bairro boêmio.", "O Rogers Centre fica aos pés da torre.", "Niagara Falls fica a umas 2h."],
+      hard: ["Queen West é cheia de street art.", "O Path é uma rede subterrânea de shopping.", "Casa Loma é o castelo da cidade.", "St. Lawrence Market é o food hall clássico.", "The Annex é bairro de universidade."],
     },
   },
   {
@@ -129,9 +129,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "paris",
     tier: "easy",
     clues: {
-      easy: ["É a capital de Portugal.", "O elétrico amarelo sobe as ladeiras.", "O pastel de nata é o doce famoso.", "Fica à beira do Tejo.", "O fado é a música tradicional."],
-      medium: ["Belém tem o Mosteiro dos Jerónimos.", "O elevador de Santa Justa liga Baixa ao Chiado.", "Alfama é o bairro de ruelas.", "A Praça do Comércio abre para o Tejo.", "O Cristo-Rei fica do outro lado do rio."],
-      hard: ["O LX Factory ocupa área industrial.", "O Oceanário nasceu da Expo 98.", "A Feira da Ladra é o mercado de pulgas.", "O Time Out Market fica na Ribeira.", "O Miradouro da Senhora do Monte é alto."],
+      easy: ["Capital de Portugal.", "Aquele elétrico amarelo subindo a ladeira.", "Pastel de nata é o doce da casa.", "Fica na beira do Tejo.", "Fado é a música tradicional."],
+      medium: ["Em Belém tem o Mosteiro dos Jerónimos.", "O elevador de Santa Justa liga a Baixa ao Chiado.", "Alfama é o bairro das ruelas.", "A Praça do Comércio abre pro Tejo.", "O Cristo-Rei fica do outro lado do rio."],
+      hard: ["O LX Factory ocupa uma área industrial antiga.", "O Oceanário nasceu na Expo 98.", "A Feira da Ladra é o mercado de pulgas.", "O Time Out Market fica na Ribeira.", "O Miradouro da Senhora do Monte é bem alto."],
     },
   },
   {
@@ -142,9 +142,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "paris",
     tier: "easy",
     clues: {
-      easy: ["É a capital da Espanha.", "A Plaza Mayor e a Puerta del Sol marcam o centro.", "O Museu do Prado é um dos maiores do mundo.", "Tapas e jamón fazem parte da noite madrileña.", "Fica no centro da península, longe do mar."],
-      medium: ["O Parque do Retiro tem o lago e o Palácio de Cristal.", "O Palácio Real é um dos maiores da Europa.", "Gran Vía é a avenida de teatros e lojas.", "O Santiago Bernabéu é a casa do Real Madrid.", "Malasaña e La Latina animam bares."],
-      hard: ["O Triângulo da Arte reúne Prado, Thyssen e Reina Sofía.", "Temple of Debod é o templo egípcio no parque.", "Lavapiés é o bairro multicultural.", "El Rastro é a feira de domingo.", "Círculo de Bellas Artes tem terraço com vista."],
+      easy: ["Capital da Espanha.", "Plaza Mayor e Puerta del Sol no centro.", "O Museu do Prado é um dos maiores do mundo.", "Tapas e jamón fazem a noite.", "Fica no meio da península, longe do mar."],
+      medium: ["No Retiro tem lago e o Palácio de Cristal.", "O Palácio Real é enorme.", "Gran Vía é avenida de teatro e loja.", "O Bernabéu é a casa do Real Madrid.", "Malasaña e La Latina são o rolê de bar."],
+      hard: ["O Triângulo da Arte: Prado, Thyssen e Reina Sofía.", "Tem um templo egípcio no parque — o Debod.", "Lavapiés é o bairro mais misturado.", "El Rastro é a feira de domingo.", "O Círculo de Bellas Artes tem terraço com vista."],
     },
   },
   {
@@ -155,9 +155,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "paris",
     tier: "easy",
     clues: {
-      easy: ["É a capital da França.", "A Torre Eiffel é o monumento mais famoso.", "Croissant e café na calçada são rotina.", "O rio Sena corta a cidade.", "O Louvre abriga a Mona Lisa."],
-      medium: ["O Arco do Triunfo fica nos Campos Elísios.", "Montmartre tem o Sacré-Cœur.", "Notre-Dame fica na Île de la Cité.", "O metrô tem entradas art nouveau.", "Versailles fica nos arredores."],
-      hard: ["O Marais mistura ruelas e museus.", "A Sainte-Chapelle tem vitrais intensos.", "O Canal Saint-Martin é de piquenique.", "Belleville guarda o Paris de bairro.", "A Fondation Louis Vuitton fica no Bois."],
+      easy: ["Capital da França.", "Todo mundo conhece a Torre Eiffel.", "Croissant e café na calçada são rotina.", "O Sena corta a cidade.", "A Mona Lisa fica no Louvre."],
+      medium: ["O Arco do Triunfo fica nos Campos Elísios.", "Em Montmartre tem o Sacré-Cœur.", "Notre-Dame fica na Île de la Cité.", "O metrô tem aquelas entradas art nouveau.", "Versailles fica nos arredores."],
+      hard: ["O Marais é ruela e museu.", "A Sainte-Chapelle tem vitral demais.", "No Canal Saint-Martin o povo faz piquenique.", "Belleville é o Paris de bairro.", "A Fondation Louis Vuitton fica no Bois."],
     },
   },
   {
@@ -168,9 +168,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "plaza",
     tier: "easy",
     clues: {
-      easy: ["É a capital do Reino Unido.", "O Big Ben e o Parlamento ficam no Tâmisa.", "Os ônibus vermelhos de dois andares são símbolo.", "Buckingham Palace é residência real.", "O metrô se chama Tube."],
-      medium: ["A London Eye é a roda-gigante.", "A Tower Bridge abre sobre o rio.", "O British Museum guarda a Pedra de Roseta.", "Camden Market é caos criativo.", "Hyde Park é um grande parque real."],
-      hard: ["Shoreditch concentra street art.", "Borough Market fica na margem sul.", "A Tate Modern ocupou uma usina.", "Notting Hill tem o Carnival.", "Greenwich marca o meridiano zero."],
+      easy: ["Capital do Reino Unido.", "Big Ben e Parlamento na beira do Tâmisa.", "Aqueles ônibus vermelhos de dois andares.", "Buckingham Palace é a casa da realeza.", "O metrô se chama Tube."],
+      medium: ["A London Eye é a roda-gigante.", "A Tower Bridge abre em cima do rio.", "No British Museum tem a Pedra de Roseta.", "Camden Market é um caos criativo.", "Hyde Park é o parque real gigante."],
+      hard: ["Shoreditch é cheia de street art.", "Borough Market fica na margem sul.", "A Tate Modern era uma usina.", "Notting Hill tem o Carnival.", "Greenwich é o meridiano zero."],
     },
   },
   {
@@ -181,9 +181,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "plaza",
     tier: "easy",
     clues: {
-      easy: ["É a capital da Itália.", "O Coliseu é o anfiteatro famoso.", "O Vaticano fica dentro da cidade.", "A Fontana di Trevi pede moedinha.", "Pizza, pasta e gelato estão em toda esquina."],
-      medium: ["O Panteão tem óculo na cúpula.", "A Piazza Navona tem a fonte de Bernini.", "O Fórum Romano fica junto ao Coliseu.", "Trastevere é o bairro boêmio.", "A Escadaria da Piazza di Spagna é clássica."],
-      hard: ["O Castel Sant’Angelo foi mausoléu.", "A Via Appia ainda tem pedras romanas.", "Testaccio é referência de comida.", "A Galleria Borghese fica no parque.", "Ostia Antica fica a um trem."],
+      easy: ["Capital da Itália.", "O Coliseu é o anfiteatro famoso.", "O Vaticano fica dentro da cidade.", "Na Fontana di Trevi o povo joga moedinha.", "Pizza, pasta e gelato em toda esquina."],
+      medium: ["O Panteão tem um buraco no meio da cúpula.", "Na Piazza Navona tem a fonte do Bernini.", "O Fórum Romano fica do lado do Coliseu.", "Trastevere é o bairro boêmio.", "A escadaria da Piazza di Spagna é clássica."],
+      hard: ["O Castel Sant’Angelo já foi mausoléu.", "A Via Appia ainda tem pedra romana.", "Testaccio é o lugar pra comer bem.", "A Galleria Borghese fica no parque.", "Ostia Antica fica a um trem."],
     },
   },
   {
@@ -194,9 +194,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "sp",
     tier: "easy",
     clues: {
-      easy: ["É a capital da Alemanha.", "O Portão de Brandemburgo é símbolo.", "O Muro de Berlim marcou a Guerra Fria.", "Tem vida noturna e arte de rua fortes.", "Fala-se alemão."],
-      medium: ["A East Side Gallery guarda grafites do muro.", "A Ilha dos Museus é patrimônio.", "Alexanderplatz tem a torre de TV.", "Checkpoint Charlie era posto fronteiriço.", "Tiergarten é o grande parque."],
-      hard: ["Kreuzberg e Neukölln são polos alternativos.", "O Reichstag tem a cúpula de vidro.", "Tempelhof virou parque em antigo aeroporto.", "Charlottenburg tem palácio barroco.", "Berghain é o clube mais mítico."],
+      easy: ["Capital da Alemanha.", "O Portão de Brandemburgo é o símbolo.", "O Muro marcou a Guerra Fria.", "Noite e arte de rua fortes pra caramba.", "Falam alemão."],
+      medium: ["A East Side Gallery tem os grafites do muro.", "A Ilha dos Museus é patrimônio.", "Alexanderplatz tem a torre de TV.", "Checkpoint Charlie era posto de fronteira.", "Tiergarten é o parque grande."],
+      hard: ["Kreuzberg e Neukölln são o lado alternativo.", "O Reichstag tem a cúpula de vidro.", "Tempelhof virou parque — era aeroporto.", "Charlottenburg tem palácio barroco.", "Berghain é o clube mais mítico."],
     },
   },
   {
@@ -207,9 +207,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "paris",
     tier: "easy",
     clues: {
-      easy: ["É a capital dos Países Baixos.", "Os canais formam anéis famosos.", "Bicicleta é meio de transporte principal.", "As casas estreitas têm frontões típicos.", "Os tulipas marcam o país na primavera."],
-      medium: ["O Museu Van Gogh é referência.", "A Casa de Anne Frank fica no canal.", "Dam Square é o centro.", "Os barcos fazem o canal cruise.", "Vondelpark é o parque urbano."],
-      hard: ["Jordaan é bairro de cafés.", "O Rijksmuseum guarda Rembrandt.", "Aelbert Cuyp é mercado de rua.", "Zaanse Schans tem moinhos próximos.", "Noord se liga pelo ferry gratuito."],
+      easy: ["Capital dos Países Baixos.", "Os canais formam aqueles anéis famosos.", "Bicicleta é o meio de transporte da casa.", "Casas estreitas com frontão típico.", "Tulipa é a cara do país na primavera."],
+      medium: ["O Museu Van Gogh é referência.", "A Casa de Anne Frank fica no canal.", "Dam Square é o centro.", "Tem passeio de barco pelos canais.", "Vondelpark é o parque urbano."],
+      hard: ["Jordaan é bairro de café.", "No Rijksmuseum tem Rembrandt.", "Aelbert Cuyp é mercado de rua.", "Zaanse Schans tem moinho perto.", "Noord se liga pelo ferry de graça."],
     },
   },
   {
@@ -220,9 +220,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "plaza",
     tier: "easy",
     clues: {
-      easy: ["É a capital da Grécia.", "A Acrópole e o Partenon são o cartão.", "É berço da democracia clássica.", "A comida tem azeite, feta e moussaká.", "Fala-se grego."],
-      medium: ["Plaka é o bairro sob a Acrópole.", "O Agora Antiga fica aos pés.", "O Estádio Panathinaiko reviveu as Olimpíadas.", "Monastiraki tem feira e vista.", "O Mar Egeu fica a poucos quilômetros."],
-      hard: ["Exarchia é polo alternativo.", "O Museu da Acrópole é moderno.", "Psyrri anima bares.", "Cape Sounion tem o templo de Poseidon.", "O monte Licabeto tem vista noturna."],
+      easy: ["Capital da Grécia.", "Acrópole e Partenon: o postal.", "Berço da democracia clássica.", "Comida com azeite, feta e moussaká.", "Falam grego."],
+      medium: ["Plaka é o bairro sob a Acrópole.", "A Ágora Antiga fica bem aos pés.", "O Estádio Panathinaiko reviveu as Olimpíadas.", "Monastiraki tem feira e vista.", "O Mar Egeu fica a poucos quilômetros."],
+      hard: ["Exarchia é o polo alternativo.", "O Museu da Acrópole é bem moderno.", "Psyrri é o rolê de bar.", "No Cabo Sounion tem o templo de Poseidon.", "Do monte Licabeto a vista à noite é linda."],
     },
   },
   {
@@ -233,9 +233,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "dubai",
     tier: "easy",
     clues: {
-      easy: ["Fica entre Europa e Ásia.", "A Santa Sofia é monumento icônico.", "O Grande Bazar é labirinto de lojas.", "O Bósforo corta a cidade.", "O chá e o café turco são rotina."],
-      medium: ["A Mesquita Azul fica perto da Sofia.", "O Palácio Topkapi foi sede otomana.", "Os ferry cruzam o Bósforo.", "Kadıköy fica no lado asiático.", "O baklava é doce clássico."],
-      hard: ["Balat tem casas coloridas.", "A Cisterna Basílica é subterrânea.", "Princes’ Islands ficam de ferry.", "Karaköy e Galata têm a torre.", "O Grand Horn é o Corno de Ouro."],
+      easy: ["Fica entre Europa e Ásia.", "A Santa Sofia é o monumento que todo mundo conhece.", "O Grande Bazar é um labirinto de loja.", "O Bósforo corta a cidade no meio.", "Chá e café turco são rotina."],
+      medium: ["A Mesquita Azul fica perto da Sofia.", "O Palácio Topkapi foi sede otomana.", "Ferry cruza o Bósforo o tempo todo.", "Kadıköy fica do lado asiático.", "Baklava é o doce clássico."],
+      hard: ["Balat tem casa colorida.", "A Cisterna Basílica é subterrânea.", "As Ilhas dos Príncipes ficam de ferry.", "Karaköy e Galata têm a torre.", "O Corno de Ouro é a baía famosa."],
     },
   },
   {
@@ -246,9 +246,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "dubai",
     tier: "easy",
     clues: {
-      easy: ["Fica nos Emirados Árabes.", "O Burj Khalifa é o prédio mais alto.", "A Palm Jumeirah é a ilha-palmeira.", "É famosa por luxo no deserto.", "O Dubai Mall é enorme."],
-      medium: ["A Dubai Fountain dança na lagoa.", "O metrô elevado corta a Sheikh Zayed.", "O Madinat replica um souk.", "O deserto oferece passeio de buggy.", "O Frame é o portal dourado."],
-      hard: ["Al Fahidi guarda souks no Creek.", "O Museum of the Future tem fachada oval.", "A Expo City nasceu da Expo 2020.", "JBR é a orla de calçadão.", "O DIFC é o centro financeiro."],
+      easy: ["Fica nos Emirados Árabes.", "O Burj Khalifa é o prédio mais alto do mundo.", "A Palm Jumeirah é a ilha em forma de palmeira.", "Luxo no meio do deserto.", "O Dubai Mall é enorme."],
+      medium: ["A Dubai Fountain dança na lagoa.", "O metrô elevado corta a Sheikh Zayed.", "O Madinat é tipo um souk.", "No deserto tem passeio de buggy.", "O Frame é aquele portal dourado."],
+      hard: ["Al Fahidi guarda os souks no Creek.", "O Museum of the Future tem fachada oval.", "A Expo City nasceu da Expo 2020.", "JBR é a orla de calçadão.", "O DIFC é o centro financeiro."],
     },
   },
   {
@@ -259,9 +259,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "dubai",
     tier: "easy",
     clues: {
-      easy: ["É a capital do Egito.", "As Pirâmides de Gizé ficam na região.", "O rio Nilo corta a cidade.", "A Esfinge guarda as pirâmides.", "Fala-se árabe."],
-      medium: ["O Museu Egípcio guarda tutmoseias.", "Khan el-Khalili é o bazaar.", "A Cidadela tem mesquitas no alto.", "O deserto chega perto da metrópole.", "Felucas navegam o Nilo."],
-      hard: ["Islamic Cairo tem mesquitas medievais.", "Saqqara fica logo ao sul.", "Zamalek é a ilha residencial.", "O Novo Museu Egípcio (GEM) fica em Gizé.", "Al-Azhar é mesquita e universidade."],
+      easy: ["Capital do Egito.", "As Pirâmides de Gizé ficam na região.", "O Nilo corta a cidade.", "A Esfinge guarda as pirâmides.", "Falam árabe."],
+      medium: ["O Museu Egípcio guarda as múmias e o ouro.", "Khan el-Khalili é o bazaar.", "A Cidadela tem mesquita no alto.", "O deserto chega perto da metrópole.", "Feluca navega o Nilo."],
+      hard: ["Islamic Cairo tem mesquita medieval.", "Saqqara fica logo ao sul.", "Zamalek é a ilha residencial.", "O Novo Museu Egípcio (GEM) fica em Gizé.", "Al-Azhar é mesquita e universidade."],
     },
   },
   {
@@ -272,9 +272,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "miami",
     tier: "easy",
     clues: {
-      easy: ["Fica na África do Sul.", "A Table Mountain marca a skyline.", "É perto da Ponta da África.", "Tem vinícolas nos arredores.", "O Cabo da Boa Esperança fica na região."],
-      medium: ["O teleférico sobe a Table Mountain.", "V&A Waterfront é o porto turístico.", "Robben Island foi prisão de Mandela.", "Camps Bay é praia com vista.", "Stellenbosch é rota do vinho."],
-      hard: ["Bo-Kaap tem casas coloridas.", "Chapman’s Peak é estrada cênica.", "Kirstenbosch é jardim botânico.", "Boulders Beach tem pinguins.", "Signal Hill vê o pôr do sol."],
+      easy: ["Fica na África do Sul.", "A Table Mountain é o marco da cidade.", "Perto da ponta da África.", "Tem vinícola nos arredores.", "O Cabo da Boa Esperança fica na região."],
+      medium: ["Tem teleférico subindo a Table Mountain.", "V&A Waterfront é o porto turístico.", "Robben Island foi a prisão do Mandela.", "Camps Bay é praia com vista.", "Stellenbosch é rota do vinho."],
+      hard: ["Bo-Kaap tem casa colorida.", "Chapman’s Peak é estrada de vista linda.", "Kirstenbosch é o jardim botânico.", "Em Boulders Beach tem pinguim.", "Do Signal Hill dá pra ver o pôr do sol."],
     },
   },
   {
@@ -285,9 +285,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "dubai",
     tier: "easy",
     clues: {
-      easy: ["É a capital do Japão.", "O cruzamento de Shibuya é famoso.", "Trens pontuais e néon marcam a cidade.", "Sushi e ramen são do dia a dia.", "O Monte Fuji aparece em dias limpos."],
-      medium: ["Asakusa tem o templo Sensō-ji.", "A Tokyo Skytree marca a skyline.", "Akihabara é o bairro otaku.", "O Palácio Imperial fica no centro.", "Harajuku é polo da moda jovem."],
-      hard: ["Meiji Jingu fica no bosque.", "Ginza é de vitrines clássicas.", "Yanaka guarda ruelas antigas.", "Tsukiji externo ainda vende peixe.", "O TeamLab é arte imersiva."],
+      easy: ["Capital do Japão.", "O cruzamento de Shibuya é famoso demais.", "Trem pontual e néon por todo lado.", "Sushi e ramen são do dia a dia.", "Em dia limpo aparece o Monte Fuji."],
+      medium: ["Em Asakusa tem o templo Sensō-ji.", "A Tokyo Skytree é o marco da skyline.", "Akihabara é o bairro otaku.", "O Palácio Imperial fica no centro.", "Harajuku é o polo da moda jovem."],
+      hard: ["Meiji Jingu fica no meio do bosque.", "Ginza é de vitrine clássica.", "Yanaka ainda tem ruela antiga.", "O mercado externo de Tsukiji ainda vende peixe.", "O TeamLab é arte imersiva."],
     },
   },
   {
@@ -298,9 +298,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "sp",
     tier: "easy",
     clues: {
-      easy: ["É a capital da Coreia do Sul.", "É berço do K-pop e da onda coreana.", "O rio Han corta a metrópole.", "Tem palácios da dinastia Joseon.", "O kimchi é marca da cozinha."],
-      medium: ["Gyeongbokgung é o grande palácio.", "Myеонгdong é rua de compras.", "Hongdae anima jovens e street.", "N Seoul Tower fica no Namsan.", "O DMZ fica a norte da cidade."],
-      hard: ["Bukchon tem casas hanok.", "Dongdaemun é mercado 24h.", "Itaewon é bairro internacional.", "O Han River Park tem bike path.", "Insadong vende artesanato."],
+      easy: ["Capital da Coreia do Sul.", "Berço do K-pop e da onda coreana.", "O rio Han corta a metrópole.", "Tem palácio da dinastia Joseon.", "Kimchi é a cara da cozinha."],
+      medium: ["Gyeongbokgung é o palácio grande.", "Myeongdong é rua de compra.", "Hongdae é o rolê jovem e street.", "A N Seoul Tower fica no Namsan.", "A DMZ fica a norte da cidade."],
+      hard: ["Bukchon tem casa hanok.", "Dongdaemun é mercado 24h.", "Itaewon é o bairro internacional.", "No Han River Park tem ciclovia.", "Insadong vende artesanato."],
     },
   },
   {
@@ -311,9 +311,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "miami",
     tier: "easy",
     clues: {
-      easy: ["É a cidade mais famosa da Austrália.", "A Ópera de Sydney é o cartão.", "A Harbour Bridge cruza o porto.", "Bondi Beach é praia icônica.", "Fala-se inglês."],
-      medium: ["Circular Quay concentra ferry e turismo.", "The Rocks é o bairro histórico.", "Manly fica de ferry.", "Taronga tem zoológico com vista.", "Uluru fica no mesmo país, longe."],
-      hard: ["Surry Hills é polo gastronômico.", "Blue Mountains ficam a oeste.", "Coogee é praia vizinha a Bondi.", "Barangaroo revitalizou a orla.", "Paddington tem casas geminadas."],
+      easy: ["A cidade mais famosa da Austrália.", "A Ópera de Sydney é o postal.", "A Harbour Bridge cruza o porto.", "Bondi Beach é a praia icônica.", "Falam inglês."],
+      medium: ["Circular Quay é ferry e turismo.", "The Rocks é o bairro histórico.", "Manly fica de ferry.", "Taronga tem zoológico com vista.", "Uluru fica no mesmo país, bem longe."],
+      hard: ["Surry Hills é polo gastronômico.", "As Blue Mountains ficam a oeste.", "Coogee é praia vizinha de Bondi.", "Barangaroo renovou a orla.", "Paddington tem casa geminada."],
     },
   },
   {
@@ -324,9 +324,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "plaza",
     tier: "easy",
     clues: {
-      easy: ["É a capital da Rússia.", "A Praça Vermelha é o cartão.", "O Kremlin fica ao lado.", "O metrô tem estações luxuosas.", "O frio de inverno é lendário."],
-      medium: ["A Catedral de São Basílio tem cúpulas coloridas.", "A GUM é a galeria comercial.", "O Parque Gorky é clássico.", "O Bolshoi é o teatro de balé.", "O rio Moscou corta a cidade."],
-      hard: ["VDNKh é complexo de exposições.", "Arbat é rua pedonal histórica.", "Kolomenskoye é reserva de igrejas.", "Moscow-City é o cluster de torres.", "Novodevichy é convento e cemitério."],
+      easy: ["Capital da Rússia.", "A Praça Vermelha é o postal.", "O Kremlin fica do lado.", "O metrô tem estação luxuosa demais.", "O frio de inverno é lendário."],
+      medium: ["A Catedral de São Basílio tem cúpula colorida.", "A GUM é a galeria comercial.", "O Parque Gorky é clássico.", "O Bolshoi é o teatro de balé.", "O rio Moscou corta a cidade."],
+      hard: ["VDNKh é um complexo de exposições.", "Arbat é rua pedonal histórica.", "Kolomenskoye é reserva de igreja.", "Moscow-City é o cluster de torres.", "Novodevichy é convento e cemitério."],
     },
   },
   {
@@ -337,9 +337,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "sp",
     tier: "medium",
     clues: {
-      easy: ["É a maior cidade do Brasil.", "A Avenida Paulista é cartão financeiro.", "O MASP tem o vão livre famoso.", "É conhecida pela garoa.", "O Mercadão vende o sanduíche de mortadela."],
-      medium: ["A Liberdade é o bairro oriental.", "O Ibirapuera é o parque mais visitado.", "A 25 de Março é caos de compras.", "A Pinacoteca fica perto da Luz.", "O Morumbi é grande estádio."],
-      hard: ["O Beco do Batman fica em Vila Madalena.", "O Minhocão vira parque aos domingos.", "O Copan tem fachada ondulada.", "A ponte estaiada marca o Pinheiros.", "O Teatro Municipal inspira-se em Paris."],
+      easy: ["A maior cidade do Brasil.", "A Paulista é o cartão financeiro.", "O MASP tem aquele vão livre famoso.", "Conhecida pela garoa.", "No Mercadão o sanduíche de mortadela é lei."],
+      medium: ["A Liberdade é o bairro oriental.", "O Ibirapuera é o parque que todo mundo vai.", "A 25 de Março é um caos de compra.", "A Pinacoteca fica perto da Luz.", "O Morumbi é o estádio grande."],
+      hard: ["O Beco do Batman fica em Vila Madalena.", "O Minhocão vira parque aos domingos.", "O Copan tem aquela fachada ondulada.", "A ponte estaiada é o marco do Pinheiros.", "O Teatro Municipal parece Paris."],
     },
   },
   {
@@ -350,9 +350,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "plaza",
     tier: "medium",
     clues: {
-      easy: ["É a capital federal do Brasil.", "Foi planejada em forma de avião.", "O Congresso tem torres e cúpulas.", "Fica no Planalto Central.", "A Catedral de Niemeyer é icônica."],
-      medium: ["O Eixo Monumental corta a cidade.", "A Esplanada reúne ministérios.", "O Palácio da Alvorada é residência oficial.", "O Lago Paranoá é artificial.", "A Rodoviária fica no centro do avião."],
-      hard: ["A Praça dos Três Poderes reúne os poderes.", "A Superquadra é módulo residencial.", "A Torre de TV tem mirante.", "O Itamaraty tem espelhos d’água.", "O Memorial JK homenageia o fundador."],
+      easy: ["Capital federal do Brasil.", "Foi planejada em forma de avião.", "O Congresso tem aquelas torres e cúpulas.", "Fica no Planalto Central.", "A Catedral do Niemeyer é icônica."],
+      medium: ["O Eixo Monumental corta a cidade.", "Na Esplanada ficam os ministérios.", "O Palácio da Alvorada é a residência oficial.", "O Lago Paranoá é artificial.", "A Rodoviária fica no miolo do avião."],
+      hard: ["Na Praça dos Três Poderes se encontram os poderes.", "A Superquadra é o módulo residencial.", "A Torre de TV tem mirante.", "O Itamaraty tem espelho d’água.", "O Memorial JK homenageia o fundador."],
     },
   },
   {
@@ -363,9 +363,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "rio",
     tier: "medium",
     clues: {
-      easy: ["É a capital da Bahia.", "O Pelourinho é o centro colorido.", "É berço do axé.", "Acarajé é quitute de rua.", "O Elevador Lacerda liga Alta e Baixa."],
-      medium: ["O Farol da Barra marca a baía.", "O Bonfim tem as fitinhas.", "O Mercado Modelo fica aos pés do elevador.", "Trios elétricos marcam o carnaval.", "Itapuã tem dunas e lagoa."],
-      hard: ["O Forte de São Marcelo fica na baía.", "Rio Vermelho é polo de noite.", "O Dique do Tororó tem orixás.", "São Francisco é igreja dourada.", "O Solar do Unhão abriga o MAM."],
+      easy: ["Capital da Bahia.", "O Pelourinho é o centro colorido.", "É de onde saiu o axé.", "Acarajé é o quitute de rua.", "O Elevador Lacerda liga a Cidade Alta à Baixa."],
+      medium: ["O Farol da Barra é o marco da baía.", "No Bonfim tem as fitinhas famosas.", "O Mercado Modelo fica aos pés do elevador.", "Trio elétrico é a cara do carnaval.", "Itapuã tem duna e lagoa."],
+      hard: ["O Forte de São Marcelo fica no meio da baía.", "Rio Vermelho é o polo da noite.", "No Dique do Tororó tem orixá.", "A igreja de São Francisco é toda dourada.", "No Solar do Unhão fica o MAM."],
     },
   },
   {
@@ -376,9 +376,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "plaza",
     tier: "medium",
     clues: {
-      easy: ["É a capital de Minas Gerais.", "Pão de queijo é o quitute associado.", "Fica cercada pela Serra do Curral.", "O Mineirão é o grande estádio.", "É terra de boteco e comida mineira."],
-      medium: ["A Praça da Liberdade concentra museus.", "A Pampulha tem a igrejinha do Niemeyer.", "O Mercado Central vende queijo e cachaça.", "A Savassi é polo comercial.", "O mirante da serra mostra a cidade."],
-      hard: ["São Francisco de Assis na Pampulha é Unesco.", "A Pampulha foi projeto de JK.", "O Palácio das Artes fica no centro cultural.", "A feira da Liberdade anima o fim de semana.", "O Circuito Cultural liga os museus."],
+      easy: ["Capital de Minas Gerais.", "Pão de queijo é o quitute da casa.", "Cercada pela Serra do Curral.", "O Mineirão é o estádio grande.", "Terra de boteco e comida mineira."],
+      medium: ["Na Praça da Liberdade tem um monte de museu.", "Na Pampulha tem a igrejinha do Niemeyer.", "No Mercado Central vende queijo e cachaça.", "A Savassi é o polo comercial.", "Do mirante da serra dá pra ver a cidade."],
+      hard: ["São Francisco de Assis na Pampulha é Unesco.", "A Pampulha foi projeto do JK.", "O Palácio das Artes fica no centro cultural.", "A feira da Liberdade é o rolê do fim de semana.", "O Circuito Cultural liga os museus."],
     },
   },
   {
@@ -389,8 +389,8 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "sp",
     tier: "medium",
     clues: {
-      easy: ["É a capital do Paraná.", "É famosa pelo frio e pelo ônibus-tubo.", "O Jardim Botânico é o postal.", "Tem fama de cidade planejada.", "O transporte coletivo é referência."],
-      medium: ["O Parque Tanguá tem mirante.", "O Museu Oscar Niemeyer é o Olho.", "A Rua das Flores foi pioneira.", "O Parque Barigui é de corrida e lago.", "A Ópera de Arame fica entre árvores."],
+      easy: ["Capital do Paraná.", "Famosa pelo frio e pelo ônibus-tubo.", "O Jardim Botânico é o postal.", "Tem fama de cidade planejada.", "O transporte coletivo é referência."],
+      medium: ["O Parque Tanguá tem mirante.", "O Museu Oscar Niemeyer é aquele Olho.", "A Rua das Flores foi pioneira.", "O Parque Barigui é de corrida e lago.", "A Ópera de Arame fica entre as árvores."],
       hard: ["O Bosque Alemão homenageia a imigração.", "O Memorial Ucraniano fica no Tingui.", "A Torre Panorâmica dá vista 360º.", "A UFPR tem prédio histórico.", "O programa de reciclagem é referência."],
     },
   },
@@ -402,9 +402,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "rio",
     tier: "medium",
     clues: {
-      easy: ["É a capital de Pernambuco.", "É a cidade dos rios e das pontes.", "Frevo e maracatu são marcas.", "Fica colada a Olinda.", "O Marco Zero marca o centro."],
-      medium: ["Brennand tem esculturas no mar.", "Boa Viagem é a praia urbana.", "O Recife Antigo anima shows.", "Pontes cruzam Capibaribe e Beberibe.", "Olinda tem bonecos e ladeiras."],
-      hard: ["O Instituto Ricardo Brennand tem castelo.", "O Paço Alfândega revitalizou o porto.", "Cinco Pontas abriga museu.", "A Casa da Cultura foi cadeia.", "O Porto Digital é hub de tech."],
+      easy: ["Capital de Pernambuco.", "Cidade dos rios e das pontes.", "Frevo e maracatu são a cara daqui.", "Fica colada em Olinda.", "O Marco Zero é o centro."],
+      medium: ["Brennand tem escultura no mar.", "Boa Viagem é a praia urbana.", "O Recife Antigo é o rolê de show.", "Ponte cruza Capibaribe e Beberibe.", "Olinda tem boneco e ladeira."],
+      hard: ["O Instituto Ricardo Brennand tem castelo.", "O Paço Alfândega renovou o porto.", "Cinco Pontas tem museu.", "A Casa da Cultura já foi cadeia.", "O Porto Digital é hub de tech."],
     },
   },
   {
@@ -415,9 +415,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "miami",
     tier: "medium",
     clues: {
-      easy: ["Fica na Flórida.", "South Beach é famosa.", "É destino clássico de brasileiros.", "Tem Art Déco colorido.", "Brickell marca a skyline."],
-      medium: ["Ocean Drive é a rua dos hotéis pastel.", "Little Havana é cultura cubana.", "Wynwood Walls é de murais.", "Biscayne Bay separa a ilha.", "O porto de cruzeiros é movimentado."],
-      hard: ["Vizcaya é villa à beira da baía.", "Design District é de luxo.", "Key Biscayne fica ao sul.", "Coral Gables tem Miracle Mile.", "Arsht Center é o complexo de artes."],
+      easy: ["Fica na Flórida.", "South Beach é famosa demais.", "Destino clássico de brasileiro.", "Tem Art Déco colorido.", "Brickell é a skyline moderna."],
+      medium: ["Ocean Drive é a rua dos hotéis pastel.", "Little Havana é cultura cubana.", "Wynwood Walls é muro e mural.", "Biscayne Bay separa a ilha.", "O porto de cruzeiro é movimentado."],
+      hard: ["Vizcaya é uma villa na beira da baía.", "Design District é de luxo.", "Key Biscayne fica ao sul.", "Coral Gables tem a Miracle Mile.", "Arsht Center é o complexo de artes."],
     },
   },
   {
@@ -428,9 +428,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "miami",
     tier: "medium",
     clues: {
-      easy: ["Fica na Califórnia.", "Hollywood é sinônimo de cinema.", "Tem praias como Santa Monica e Venice.", "O letreiro HOLLYWOOD marca as colinas.", "Os freeways dominam o trânsito."],
-      medium: ["Universal e Warner são estúdios famosos.", "Downtown tem o Walt Disney Concert Hall.", "Griffith Observatory vê a cidade.", "Malibu fica na Pacific Coast.", "Disneyland fica em Anaheim, perto."],
-      hard: ["Arts District concentra galerias.", "The Broad é museu contemporâneo.", "Runyon Canyon é trilha com vista.", "Koreatown é polo gastronômico.", "Getty Center fica no alto."],
+      easy: ["Fica na Califórnia.", "Hollywood é sinônimo de cinema.", "Tem praia tipo Santa Monica e Venice.", "Aquele letreiro HOLLYWOOD nas colinas.", "Freeway domina o trânsito."],
+      medium: ["Universal e Warner são estúdio famoso.", "No downtown tem o Walt Disney Concert Hall.", "Do Griffith Observatory dá pra ver a cidade.", "Malibu fica na Pacific Coast.", "A Disneyland fica em Anaheim, perto."],
+      hard: ["Arts District é cheio de galeria.", "The Broad é museu contemporâneo.", "Runyon Canyon é trilha com vista.", "Koreatown é o polo pra comer.", "O Getty Center fica no alto."],
     },
   },
   {
@@ -441,9 +441,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "sp",
     tier: "medium",
     clues: {
-      easy: ["Fica no meio-oeste americano.", "É a cidade do vento.", "Fica à beira do Lago Michigan.", "A arquitetura de arranha-céus é escola.", "Deep dish pizza é marca local."],
-      medium: ["Millennium Park tem o Bean.", "A Navy Pier avança no lago.", "O rio Chicago fica tingido de verde no St. Patrick.", "Willis Tower marca a skyline.", "O L é o metrô elevado."],
-      hard: ["Art Institute guarda o acervo clássico.", "Wicker Park é bairro hipster.", "Riverwalk segue o rio.", "Lincoln Park tem zoológico.", "Hyde Park abriga a universidade."],
+      easy: ["Fica no meio-oeste americano.", "É a cidade do vento.", "Fica na beira do Lago Michigan.", "A arquitetura de arranha-céu daqui é escola.", "Deep dish pizza é clássico local."],
+      medium: ["No Millennium Park tem o Bean.", "A Navy Pier avança dentro do lago.", "No St. Patrick o rio fica verde.", "A Willis Tower é o marco da skyline.", "O L é o metrô elevado."],
+      hard: ["No Art Institute tem o acervo clássico.", "Wicker Park é o bairro hipster.", "O Riverwalk acompanha o rio.", "Lincoln Park tem zoológico.", "Hyde Park é onde fica a universidade."],
     },
   },
   {
@@ -454,9 +454,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "miami",
     tier: "medium",
     clues: {
-      easy: ["Fica no Caribe mexicano.", "Água turquesa e areia branca.", "A Zona Hotelera é de resorts.", "É destino de lua de mel.", "Fica perto de ruínas maias."],
-      medium: ["Kukulcán corta a Zona Hotelera.", "Isla Mujeres fica de ferry.", "Chichén Itzá fica a poucas horas.", "Nichupté é a lagoa atrás dos hotéis.", "Playa Delfines tem o letreiro."],
-      hard: ["O Museo Maya fica na Zona Hotelera.", "Puerto Morelos é mais quieto.", "Riviera Maya começa ao sul.", "Xcaret fica no corredor sul.", "O aeroporto recebe charters o ano todo."],
+      easy: ["Fica no Caribe mexicano.", "Água turquesa e areia branca.", "A Zona Hotelera é só resort.", "Destino clássico de lua de mel.", "Fica perto de ruína maia."],
+      medium: ["A Kukulcán corta a Zona Hotelera.", "Isla Mujeres fica de ferry.", "Chichén Itzá fica a poucas horas.", "Nichupté é a lagoa atrás dos hotéis.", "Em Playa Delfines tem o letreiro famoso."],
+      hard: ["O Museo Maya fica na Zona Hotelera.", "Puerto Morelos é mais quieto.", "A Riviera Maya começa ao sul.", "Xcaret fica no corredor sul.", "O aeroporto recebe charter o ano todo."],
     },
   },
   {
@@ -467,9 +467,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "plaza",
     tier: "medium",
     clues: {
-      easy: ["É grande cidade do oeste mexicano.", "É berço do mariachi.", "A tequila vem da região.", "Tem catedral com torres amarelas.", "O jalisco marca o estado."],
-      medium: ["A Plaza de Armas é o centro.", "Tlaquepaque vende artesanato.", "O Instituto Cultural Cabañas é Unesco.", "Chapala é lago próximo.", "O mercado Libertad é clássico."],
-      hard: ["Zapopan tem a basílica.", "Expiatorio é templo neogótico.", "Andares é polo de compras.", "Tequila town fica a ~1h.", "Colonia Americana é boêmia."],
+      easy: ["Grande cidade do oeste mexicano.", "É de onde saiu o mariachi.", "A tequila vem da região.", "Tem catedral com torre amarela.", "Fica no estado de Jalisco."],
+      medium: ["A Plaza de Armas é o centro.", "Tlaquepaque vende artesanato.", "O Instituto Cultural Cabañas é Unesco.", "Chapala é o lago perto.", "O mercado Libertad é clássico."],
+      hard: ["Zapopan tem a basílica.", "O Expiatorio é templo neogótico.", "Andares é polo de compra.", "A cidade de Tequila fica a ~1h.", "Colonia Americana é boêmia."],
     },
   },
   {
@@ -480,9 +480,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "paris",
     tier: "medium",
     clues: {
-      easy: ["Fica na Catalunha.", "A Sagrada Família é o templo de Gaudí.", "Tem praia urbana.", "Tapas e sangria na mesa.", "Catalão aparece nas placas."],
-      medium: ["Park Güell é de mosaicos.", "Las Ramblas corta até o porto.", "Casa Batlló e Pedrera são modernistas.", "Camp Nou é casa do Barça.", "O Gótico tem ruas medievais."],
-      hard: ["Palau de la Música é de vitrais.", "Montjuïc tem museu e fonte.", "El Born fica junto à Ciutadella.", "Barceloneta tem paella.", "Tibidabo fica no alto."],
+      easy: ["Fica na Catalunha.", "A Sagrada Família é o templo do Gaudí.", "Tem praia urbana.", "Tapas e sangria na mesa.", "Catalão aparece nas placas."],
+      medium: ["Park Güell é todo de mosaico.", "Las Ramblas desce até o porto.", "Casa Batlló e Pedrera são modernistas.", "O Camp Nou é a casa do Barça.", "O Gótico tem rua medieval."],
+      hard: ["O Palau de la Música é de vitral.", "Montjuïc tem museu e fonte.", "El Born fica junto à Ciutadella.", "Barceloneta é o lugar da paella.", "Tibidabo fica no alto."],
     },
   },
   {
@@ -493,9 +493,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "paris",
     tier: "medium",
     clues: {
-      easy: ["Fica no leste da Espanha.", "A paella nasceu na região.", "A Cidade das Artes e das Ciências é futurista.", "Tem praia urbana.", "A Fallas é festa famosa."],
-      medium: ["O Oceanogràfic é enorme.", "O centro histórico tem a Lonja.", "Turia é parque em antigo leito de rio.", "A catedral guarda o Santo Graal segundo a tradição.", "Mercado Central vende produtos frescos."],
-      hard: ["Ruzafa é bairro hipster.", "Albufera é lagoa de arrozais.", "Bioparc é zoológico imersivo.", "Torres de Serranos marcam a muralha.", "El Cabanyal é bairro de pescadores."],
+      easy: ["Fica no leste da Espanha.", "A paella nasceu na região.", "A Cidade das Artes e das Ciências é futurista.", "Tem praia urbana.", "A Fallas é a festa famosa."],
+      medium: ["O Oceanogràfic é enorme.", "No centro histórico tem a Lonja.", "O Turia é parque em antigo leito de rio.", "Dizem que na catedral tem o Santo Graal.", "No Mercado Central vende produto fresco."],
+      hard: ["Ruzafa é o bairro hipster.", "Albufera é lagoa de arrozal.", "Bioparc é zoológico imersivo.", "As Torres de Serranos são da muralha.", "El Cabanyal é bairro de pescador."],
     },
   },
   {
@@ -506,9 +506,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "plaza",
     tier: "medium",
     clues: {
-      easy: ["É capital da moda italiana.", "O Duomo é a catedral gótica.", "A Galleria Vittorio Emanuele é icônica.", "A Santa Ceia de Leonardo fica na cidade.", "O San Siro é estádio clássico."],
-      medium: ["Navigli são os canais boêmios.", "La Scala é o teatro de ópera.", "Brera concentra arte.", "O Castello Sforzesco fica no centro.", "O Design Week anima abril."],
-      hard: ["Porta Nuova é skyline moderna.", "Fondazione Prada é museu.", "Isola é bairro criativo.", "Monza fica a poucos minutos.", "Corso Como é rua de moda."],
+      easy: ["Capital da moda italiana.", "O Duomo é a catedral gótica.", "A Galleria Vittorio Emanuele é icônica.", "A Santa Ceia do Leonardo fica aqui.", "O San Siro é o estádio clássico."],
+      medium: ["Navigli são os canais boêmios.", "La Scala é o teatro de ópera.", "Brera é cheio de arte.", "O Castello Sforzesco fica no centro.", "Em abril rola o Design Week."],
+      hard: ["Porta Nuova é a skyline moderna.", "Fondazione Prada é museu.", "Isola é o bairro criativo.", "Monza fica a poucos minutos.", "Corso Como é rua de moda."],
     },
   },
   {
@@ -519,9 +519,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "plaza",
     tier: "medium",
     clues: {
-      easy: ["Fica no sul da Itália.", "É o berço da pizza.", "O Vesúvio domina a baía.", "Pompeia fica nos arredores.", "O centro histórico é Unesco."],
-      medium: ["Spaccanapoli corta o centro.", "O lungomare olha o golfo.", "Capri e Ischia ficam de ferry.", "O Duomo guarda o milagre de São Januário.", "O Mergellina é orla clássica."],
-      hard: ["Quartieri Spagnoli são labirinto.", "O MANN guarda mosaicos de Pompeia.", "Vomero sobe de funicular.", "Herculano é sítio vizinho.", "Castel dell’Ovo fica na água."],
+      easy: ["Fica no sul da Itália.", "É o berço da pizza.", "O Vesúvio manda na baía.", "Pompeia fica nos arredores.", "O centro histórico é Unesco."],
+      medium: ["Spaccanapoli corta o centro.", "O lungomare olha o golfo.", "Capri e Ischia ficam de ferry.", "No Duomo tem o milagre de São Januário.", "Mergellina é a orla clássica."],
+      hard: ["Os Quartieri Spagnoli são um labirinto.", "No MANN tem mosaico de Pompeia.", "Vomero sobe de funicular.", "Herculano é sítio vizinho.", "O Castel dell’Ovo fica na água."],
     },
   },
   {
@@ -532,9 +532,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "paris",
     tier: "medium",
     clues: {
-      easy: ["É grande cidade do sudeste francês.", "É capital gastronômica da França.", "O rio Saône e o Ródano se encontram.", "A basilique de Fourvière fica no alto.", "Os traboules são passagens secretas."],
-      medium: ["Vieux Lyon é o centro renascentista.", "Les Halles Paul Bocuse é mercado gourmet.", "O Parc de la Tête d’Or é enorme.", "A festa das luzes anima dezembro.", "O mural dos famous Lyonnais é atrativo."],
-      hard: ["Confluence é bairro moderno.", "Croix-Rousse foi dos canuts.", "Institut Lumière homenageia o cinema.", "Pérouges fica próximo.", "Beaujolais é rota de vinho."],
+      easy: ["Grande cidade do sudeste francês.", "Capital gastronômica da França.", "O Saône e o Ródano se encontram aqui.", "A basilique de Fourvière fica no alto.", "Os traboules são passagem secreta."],
+      medium: ["Vieux Lyon é o centro renascentista.", "Les Halles Paul Bocuse é mercado gourmet.", "O Parc de la Tête d’Or é enorme.", "A festa das luzes é o rolê de dezembro.", "Tem o mural dos Lyonnais famosos."],
+      hard: ["Confluence é o bairro moderno.", "Croix-Rousse foi dos canuts.", "O Institut Lumière homenageia o cinema.", "Pérouges fica perto.", "Beaujolais é rota de vinho."],
     },
   },
   {
@@ -545,9 +545,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "sp",
     tier: "medium",
     clues: {
-      easy: ["Fica no norte da Inglaterra.", "É terra de United e City.", "Foi berço da Revolução Industrial.", "Oasis e a cena indie marcaram a música.", "Os canais cortam a cidade."],
-      medium: ["Old Trafford é teatro dos sonhos.", "Etihad é casa do City.", "Northern Quarter é boêmio.", "Science and Industry Museum conta a indústria.", "MediaCity fica em Salford."],
-      hard: ["John Rylands é biblioteca gótica.", "Castlefield tem canais romanos.", "Affleck’s é mercado alternativo.", "Trafford Centre é mega shopping.", "Peak District fica a um trem."],
+      easy: ["Fica no norte da Inglaterra.", "Terra do United e do City.", "Berço da Revolução Industrial.", "Oasis e a cena indie marcaram a música.", "Canal corta a cidade."],
+      medium: ["Old Trafford é o teatro dos sonhos.", "Etihad é a casa do City.", "Northern Quarter é boêmio.", "O Science and Industry Museum conta a indústria.", "MediaCity fica em Salford."],
+      hard: ["John Rylands é biblioteca gótica.", "Castlefield tem canal romano.", "Affleck’s é mercado alternativo.", "Trafford Centre é mega shopping.", "O Peak District fica a um trem."],
     },
   },
   {
@@ -558,9 +558,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "plaza",
     tier: "medium",
     clues: {
-      easy: ["É a capital da Escócia.", "O castelo domina a Old Town.", "O festival Fringe é enorme.", "O whisky escocês é marca do país.", "A Royal Mile liga castelo à Holyrood."],
-      medium: ["Arthur’s Seat é vulcão no parque.", "Calton Hill tem vista clássica.", "O museu nacional fica na Old Town.", "Harry Potter inspirou-se em ruelas locais.", "Leith é o porto revitalizado."],
-      hard: ["Dean Village é canto fotogênico.", "Stockbridge tem mercados.", "Holyrood Palace é residência real.", "Camera Obscura diverte turistas.", "Forth Bridge fica ao norte."],
+      easy: ["Capital da Escócia.", "O castelo manda na Old Town.", "O festival Fringe é enorme.", "Whisky escocês é a cara do país.", "A Royal Mile liga o castelo à Holyrood."],
+      medium: ["Arthur’s Seat é vulcão no parque.", "Calton Hill tem vista clássica.", "O museu nacional fica na Old Town.", "Harry Potter se inspirou nas ruelas daqui.", "Leith é o porto renovado."],
+      hard: ["Dean Village é canto fotogênico.", "Stockbridge tem mercado.", "Holyrood Palace é residência real.", "Camera Obscura diverte turista.", "A Forth Bridge fica ao norte."],
     },
   },
   {
@@ -571,9 +571,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "plaza",
     tier: "medium",
     clues: {
-      easy: ["É a capital da Áustria.", "É famosa por ópera e música clássica.", "Os cafés vienenses são patrimônio.", "Schönbrunn é o palácio imperial.", "A Sachertorte é o bolo clássico."],
-      medium: ["A Ópera Estatal é cartão.", "Stephansdom marca o centro.", "Prater tem a roda-gigante.", "Belvedere guarda o Klimt.", "O Danúbio passa pela cidade."],
-      hard: ["Naschmarkt é mercado.", "MuseumsQuartier concentra arte.", "Hundertwasserhaus é colorida.", "Grinzing serve Heuriger.", "Zentralfriedhof tem tumbas de compositores."],
+      easy: ["Capital da Áustria.", "Famosa por ópera e música clássica.", "Os cafés vienenses são patrimônio.", "Schönbrunn é o palácio imperial.", "Sachertorte é o bolo clássico."],
+      medium: ["A Ópera Estatal é o postal.", "Stephansdom é o marco do centro.", "No Prater tem a roda-gigante.", "No Belvedere tem Klimt.", "O Danúbio passa pela cidade."],
+      hard: ["Naschmarkt é o mercado.", "MuseumsQuartier é cheio de arte.", "Hundertwasserhaus é colorida.", "Grinzing serve Heuriger.", "Zentralfriedhof tem tumba de compositor."],
     },
   },
   {
@@ -584,9 +584,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "paris",
     tier: "medium",
     clues: {
-      easy: ["É a capital da Tchéquia.", "A Ponte Carlos é o cartão.", "O Castelo de Praga domina o rio.", "A cerveja tcheca é famosa.", "O Relógio Astronômico anima a praça."],
+      easy: ["Capital da Tchéquia.", "A Ponte Carlos é o postal.", "O Castelo de Praga manda no rio.", "A cerveja tcheca é famosa.", "O Relógio Astronômico é a atração da praça."],
       medium: ["Malá Strana fica sob o castelo.", "Old Town Square é o centro.", "Vltava é o rio.", "Josefov é o bairro judeu.", "Petřín tem a torre-mirante."],
-      hard: ["Vyšehrad é fortaleza sul.", "Žižkov tem a torre TV bebê.", "Letná vê a ponte de cima.", "Karlštejn fica nos arredores.", "Microcervejarias pipocam em Holešovice."],
+      hard: ["Vyšehrad é a fortaleza sul.", "Žižkov tem a torre de TV com bebê.", "De Letná dá pra ver a ponte de cima.", "Karlštejn fica nos arredores.", "Microcervejaria pipoca em Holešovice."],
     },
   },
   {
@@ -597,9 +597,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "sp",
     tier: "medium",
     clues: {
-      easy: ["É a capital da Polônia.", "O centro histórico foi reconstruído após a guerra.", "Chopin é o compositor associado.", "A Vístula corta a cidade.", "Pierogi são o prato clássico."],
-      medium: ["A Cidade Velha é Unesco.", "O Palácio da Cultura marca a skyline.", "Łazienki é parque com palácio.", "O Museu da Revolta conta 1944.", "Nowy Świat é rua comercial."],
-      hard: ["Praga district fica do outro lado do rio.", "Wilamów é palácio barroco.", "Neon Museum guarda letreiros.", "Copernicus Science Centre é interativo.", "Vodka museums animam a noite."],
+      easy: ["Capital da Polônia.", "O centro histórico foi reconstruído depois da guerra.", "Chopin é o compositor daqui.", "A Vístula corta a cidade.", "Pierogi é o prato clássico."],
+      medium: ["A Cidade Velha é Unesco.", "O Palácio da Cultura é o marco da skyline.", "Łazienki é parque com palácio.", "O Museu da Revolta conta 1944.", "Nowy Świat é rua comercial."],
+      hard: ["O distrito Praga fica do outro lado do rio.", "Wilamów é palácio barroco.", "O Neon Museum guarda letreiro antigo.", "Copernicus Science Centre é interativo.", "Tem museu de vodka pra noite."],
     },
   },
   {
@@ -610,9 +610,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "paris",
     tier: "medium",
     clues: {
-      easy: ["É a capital da Suécia.", "É construída sobre ilhas.", "O Prêmio Nobel é anunciado aqui.", "O design escandinavo é marca.", "As almôndegas suecas são clássicas."],
-      medium: ["Gamla Stan é a cidade velha.", "O Vasa Museum guarda o navio.", "ABBA The Museum diverte fãs.", "Djurgården é ilha-parque.", "O metrô tem estações-arte."],
-      hard: ["Södermalm é hipster.", "Fotógrafiska é museu de foto.", "Drottningholm é palácio Unesco.", "Archipelago fica de ferry.", "Östermalm é polo sofisticado."],
+      easy: ["Capital da Suécia.", "Construída em cima de ilha.", "O Prêmio Nobel é anunciado aqui.", "Design escandinavo é a cara daqui.", "Almôndega sueca é clássico."],
+      medium: ["Gamla Stan é a cidade velha.", "No Vasa Museum tem o navio.", "ABBA The Museum diverte fã.", "Djurgården é ilha-parque.", "O metrô tem estação-arte."],
+      hard: ["Södermalm é hipster.", "Fotógrafiska é museu de foto.", "Drottningholm é palácio Unesco.", "O arquipélago fica de ferry.", "Östermalm é o lado sofisticado."],
     },
   },
   {
@@ -623,9 +623,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "plaza",
     tier: "medium",
     clues: {
-      easy: ["É a capital da Noruega.", "Fica à beira do fiorde.", "O Nobel da Paz é entregue aqui.", "O Opera House inclina até a água.", "O salmão marca a cozinha."],
-      medium: ["Vigeland Park tem esculturas.", "O navio viking fica em museu.", "Karl Johans gate é a avenida.", "Holmenkollen é salto de esqui.", "Bygdøy concentra museus."],
-      hard: ["Munch Museum guarda O Grito.", "Aker Brygge é orla moderna.", "Grünerløkka é boêmia.", "Tromsø fica bem mais ao norte.", "Preikestolen é em outro fiorde, mas o país é de mirantes."],
+      easy: ["Capital da Noruega.", "Fica na beira do fiorde.", "O Nobel da Paz é entregue aqui.", "A Opera House desce até a água.", "Salmão é a cara da cozinha."],
+      medium: ["Vigeland Park tem escultura.", "O navio viking fica em museu.", "Karl Johans gate é a avenida.", "Holmenkollen é salto de esqui.", "Bygdøy é cheio de museu."],
+      hard: ["No Munch Museum tem O Grito.", "Aker Brygge é a orla moderna.", "Grünerløkka é boêmia.", "Tromsø fica bem mais ao norte.", "O país é cheio de mirante de fiorde."],
     },
   },
   {
@@ -636,9 +636,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "paris",
     tier: "medium",
     clues: {
-      easy: ["É a capital da Irlanda.", "A Guinness é a cerveja associada.", "Trinity College guarda o Book of Kells.", "Pubs e música ao vivo são rotina.", "Os escritores Joyce e Wilde são daqui."],
-      medium: ["Temple Bar é o bairro turístico.", "O rio Liffey corta a cidade.", "St. Patrick’s é catedral.", "Phoenix Park é enorme.", "Howth fica de trem à beira-mar."],
-      hard: ["Kilmainham Gaol é prisão-museu.", "EPIC conta a emigração.", "Grafton Street é pedonal.", "Cliff of Moher fica no oeste do país.", "Cassidy’s e pubs locais fogem do Temple Bar."],
+      easy: ["Capital da Irlanda.", "Guinness é a cerveja da casa.", "No Trinity College tem o Book of Kells.", "Pub e música ao vivo são rotina.", "Joyce e Wilde são daqui."],
+      medium: ["Temple Bar é o bairro turístico.", "O rio Liffey corta a cidade.", "St. Patrick’s é catedral.", "Phoenix Park é enorme.", "Howth fica de trem na beira-mar."],
+      hard: ["Kilmainham Gaol é prisão-museu.", "EPIC conta a emigração.", "Grafton Street é pedonal.", "Os Cliffs of Moher ficam no oeste do país.", "Tem pub local longe do Temple Bar."],
     },
   },
   {
@@ -649,9 +649,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "plaza",
     tier: "medium",
     clues: {
-      easy: ["É a maior cidade da Suíça.", "Fica à beira de um lago.", "É polo financeiro.", "O chocolate suíço é marca.", "Os Alpes ficam perto."],
-      medium: ["Bahnhofstrasse é rua de compras.", "Altstadt tem ruelas.", "O lago tem boat cruise.", "Kunsthaus é museu de arte.", "Uetliberg dá vista da cidade."],
-      hard: ["Langstrasse anima a noite.", "FIFA fica sediada aqui.", "Rietberg é museu não-europeu.", "Lucerna fica a 1h.", "Matterhorn fica em outro cantão, mas o país é alpino."],
+      easy: ["A maior cidade da Suíça.", "Fica na beira de um lago.", "Polo financeiro.", "Chocolate suíço é clássico.", "Os Alpes ficam perto."],
+      medium: ["Bahnhofstrasse é rua de compra.", "Altstadt tem ruela.", "No lago tem passeio de barco.", "Kunsthaus é museu de arte.", "Do Uetliberg dá pra ver a cidade."],
+      hard: ["Langstrasse é o rolê da noite.", "A FIFA tem sede aqui.", "Rietberg é museu não-europeu.", "Lucerna fica a 1h.", "O Matterhorn fica em outro cantão."],
     },
   },
   {
@@ -662,9 +662,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "sp",
     tier: "medium",
     clues: {
-      easy: ["É grande cidade do Quebec.", "O francês é língua dominante.", "O inverno é rigoroso.", "O bagel estilo Montreal é famoso.", "O festival de jazz é referência."],
-      medium: ["Old Montreal tem pedras e porto.", "Mount Royal sobe no meio da cidade.", "Underground City liga shoppings.", "Poutine é prato clássico do Quebec.", "St. Lawrence passa pela região."],
-      hard: ["Plateau é bairro boêmio.", "Jean-Talon é mercado.", "Notre-Dame Basilica é gótica.", "SAQ e terrasses animam o verão.", "Quebec City fica a ~3h."],
+      easy: ["Grande cidade do Quebec.", "Francês é a língua do dia a dia.", "O inverno é pesado.", "O bagel estilo Montreal é famoso.", "O festival de jazz é referência."],
+      medium: ["Old Montreal tem pedra e porto.", "Mount Royal sobe no meio da cidade.", "A Underground City liga shopping.", "Poutine é prato clássico do Quebec.", "O São Lourenço passa pela região."],
+      hard: ["Plateau é o bairro boêmio.", "Jean-Talon é o mercado.", "Notre-Dame Basilica é gótica.", "No verão as terrasses lotam.", "Quebec City fica a ~3h."],
     },
   },
   {
@@ -675,9 +675,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "miami",
     tier: "medium",
     clues: {
-      easy: ["Fica na costa do Pacífico canadense.", "Montanhas e oceano se encontram.", "É polo de filmagens.", "Stanley Park é o grande parque.", "O inglês predomina."],
-      medium: ["Granville Island é mercado.", "Capilano tem a ponte suspensa.", "Gastown tem o relógio a vapor.", "Seaplanes decolam da baía.", "Whistler fica a ~2h."],
-      hard: ["Yaletown é reurbanizado.", "Kitsilano é praia urbana.", "Sea-to-Sky é a estrada cênica.", "Grouse Mountain tem teleférico.", "Richmond serve dim sum famoso."],
+      easy: ["Fica na costa do Pacífico canadense.", "Montanha e oceano se encontram.", "Polo de filmagem.", "Stanley Park é o parque grande.", "Inglês predomina."],
+      medium: ["Granville Island é mercado.", "Capilano tem a ponte suspensa.", "Gastown tem o relógio a vapor.", "Hidroavião decola da baía.", "Whistler fica a ~2h."],
+      hard: ["Yaletown foi reurbanizado.", "Kitsilano é praia urbana.", "Sea-to-Sky é a estrada linda.", "Grouse Mountain tem teleférico.", "Richmond serve dim sum famoso."],
     },
   },
   {
@@ -688,8 +688,8 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "dubai",
     tier: "medium",
     clues: {
-      easy: ["É metrópole da Ásia oriental.", "A skyline no Victoria Harbour é famosa.", "Dim sum é ritual.", "O Peak Tram sobe o pico.", "Mistura influência britânica e chinesa."],
-      medium: ["Star Ferry cruza o porto.", "Temple Street é mercado noturno.", "Central-Mid-Levels tem escadas rolantes.", "Lantau tem o Buda gigante.", "Ngong Ping 360 é teleférico."],
+      easy: ["Metrópole da Ásia oriental.", "A skyline no Victoria Harbour é famosa.", "Dim sum é ritual.", "O Peak Tram sobe o pico.", "Mistura influência britânica e chinesa."],
+      medium: ["Star Ferry cruza o porto.", "Temple Street é mercado noturno.", "Central-Mid-Levels tem escada rolante.", "Em Lantau tem o Buda gigante.", "Ngong Ping 360 é teleférico."],
       hard: ["Kowloon Walled City Park lembra o passado.", "PMQ é polo de design.", "Sai Kung serve frutos do mar.", "M+ é museu contemporâneo.", "Macau fica de ferry."],
     },
   },
@@ -701,9 +701,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "dubai",
     tier: "medium",
     clues: {
-      easy: ["É cidade-Estado do sudeste asiático.", "Marina Bay Sands marca a skyline.", "Gardens by the Bay tem supersárvores.", "É famosa pela limpeza e ordem.", "O chilli crab é prato local."],
-      medium: ["Merlion é o símbolo.", "Sentosa é a ilha de lazer.", "Hawker centers servem comida de rua.", "Orchard Road é rua de compras.", "O aeroporto Changi é celebrado."],
-      hard: ["Kampong Glam tem a mesquita.", "Chinatown e Little India dividem bairros.", "Clarke Quay anima a noite.", "MacRitchie tem trilhas.", "Universal Studios fica em Sentosa."],
+      easy: ["Cidade-Estado do sudeste asiático.", "Marina Bay Sands é o marco da skyline.", "Gardens by the Bay tem supersárvore.", "Famosa pela limpeza e ordem.", "Chilli crab é o prato local."],
+      medium: ["Merlion é o símbolo.", "Sentosa é a ilha de lazer.", "Hawker center serve comida de rua.", "Orchard Road é rua de compra.", "O aeroporto Changi é celebrado."],
+      hard: ["Kampong Glam tem a mesquita.", "Chinatown e Little India dividem bairro.", "Clarke Quay é o rolê da noite.", "MacRitchie tem trilha.", "Universal Studios fica em Sentosa."],
     },
   },
   {
@@ -714,9 +714,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "dubai",
     tier: "medium",
     clues: {
-      easy: ["É a capital da Tailândia.", "Templos dourados marcam a cidade.", "Tuk-tuks circulam no trânsito.", "A street food é lendária.", "O rio Chao Phraya corta a metrópole."],
-      medium: ["Wat Arun é o templo do amanhecer.", "Grand Palace é complexo real.", "Khao San Road é mochileira.", "Chatuchak é mercado de fim de semana.", "Os malls de Siam animam compras."],
-      hard: ["Chin Chinatown (Yaowarat) brilha à noite.", "Jim Thompson House mostra seda.", "Ayutthaya fica a norte.", "Rooftop bars veem a cidade.", "Floating markets ficam nos arredores."],
+      easy: ["Capital da Tailândia.", "Templo dourado por todo lado.", "Tuk-tuk no trânsito.", "A street food é lendária.", "O rio Chao Phraya corta a metrópole."],
+      medium: ["Wat Arun é o templo do amanhecer.", "Grand Palace é o complexo real.", "Khao San Road é mochileira.", "Chatuchak é mercado de fim de semana.", "Os malls de Siam são o rolê de compra."],
+      hard: ["Yaowarat (Chinatown) brilha à noite.", "Jim Thompson House mostra seda.", "Ayutthaya fica a norte.", "Rooftop bar com vista da cidade.", "Floating market fica nos arredores."],
     },
   },
   {
@@ -727,9 +727,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "miami",
     tier: "medium",
     clues: {
-      easy: ["É a capital de Bali, na Indonésia.", "Bali é ilha hindu no arquipélago.", "Templos e terraços de arroz marcam a ilha.", "As praias de surf são famosas.", "O engarrafamento de scooters é típico."],
-      medium: ["Ubud é o centro cultural.", "Tanah Lot fica no mar.", "Seminyak e Canggu animam a noite.", "Mount Agung é vulcão sagrado.", "Nusa Penida fica de barco."],
-      hard: ["Tirta Empul é templo de banho.", "Tegallalang tem terraços icônicos.", "Jimbaran serve frutos do mar.", "Besakih é o templo-mãe.", "Gili Islands ficam próximas."],
+      easy: ["Capital de Bali, na Indonésia.", "Bali é ilha hindu no arquipélago.", "Templo e terraço de arroz por toda a ilha.", "Praia de surf famosa.", "Engarrafamento de scooter é típico."],
+      medium: ["Ubud é o centro cultural.", "Tanah Lot fica no mar.", "Seminyak e Canggu são o rolê da noite.", "Mount Agung é vulcão sagrado.", "Nusa Penida fica de barco."],
+      hard: ["Tirta Empul é templo de banho.", "Tegallalang tem terraço icônico.", "Jimbaran serve frutos do mar.", "Besakih é o templo-mãe.", "Gili Islands ficam perto."],
     },
   },
   {
@@ -740,9 +740,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "dubai",
     tier: "medium",
     clues: {
-      easy: ["É a capital do Quênia.", "Tem Parque Nacional na porta da cidade.", "É porta de entrada para safáris.", "O café queniano é celebrado.", "Fala-se inglês e suaíli."],
-      medium: ["Giraffes e leões aparecem no parque urbano.", "Karen Blixen lembra Out of Africa.", "Maasai Market vende artesanato.", "O Rift Valley fica perto.", "Mombasa é a costa."],
-      hard: ["Giraffe Centre permite alimentação.", "Carnivore restaurant é clássico turístico.", "Ngong Hills têm vista.", "David Sheldrick orfa elefantes.", "Amboseli e Maasai Mara ficam no país."],
+      easy: ["Capital do Quênia.", "Tem Parque Nacional na porta da cidade.", "Porta de entrada pra safári.", "Café queniano é celebrado.", "Falam inglês e suaíli."],
+      medium: ["Girafa e leão aparecem no parque urbano.", "Karen Blixen lembra Out of Africa.", "Maasai Market vende artesanato.", "O Rift Valley fica perto.", "Mombasa é a costa."],
+      hard: ["No Giraffe Centre dá pra alimentar girafa.", "Carnivore é restaurante clássico de turista.", "Ngong Hills tem vista.", "David Sheldrick orfa elefante.", "Amboseli e Maasai Mara ficam no país."],
     },
   },
   {
@@ -753,9 +753,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "paris",
     tier: "hard",
     clues: {
-      easy: ["É a segunda maior cidade de Portugal.", "Fica à beira do rio Douro, no norte do país.", "É a terra do vinho do Porto.", "As ribeiras com casarios coloridos são cartão-postal.", "A francesinha é o sanduíche local pesado."],
-      medium: ["A Ribeira é o bairro à beira-rio Unesco.", "A Livraria Lello inspirou turistas de Harry Potter.", "Os barcos rabelos lembram o transporte do vinho.", "Vila Nova de Gaia, do outro lado, guarda as caves.", "A estação de São Bento tem azulejos históricos."],
-      hard: ["A Casa da Música é o volume branco de Rem Koolhaas.", "O Palácio da Bolsa tem o Salão Árabe.", "Miragaia e a Vitória sobem as ladeiras.", "Matosinhos serve o peixe grelhado na orla.", "O funicular dos Guindais desce até a Ribeira."],
+      easy: ["A segunda maior cidade de Portugal.", "Fica na beira do Douro, no norte.", "Terra do vinho do Porto.", "Ribeira com casario colorido: o postal.", "Francesinha é o sanduíche pesado da casa."],
+      medium: ["A Ribeira é o bairro Unesco na beira do rio.", "A Livraria Lello inspirou fã de Harry Potter.", "Os barcos rabelos lembram o transporte do vinho.", "Do outro lado, em Gaia, ficam as caves.", "A estação de São Bento tem azulejo histórico."],
+      hard: ["A Casa da Música é aquele volume branco do Koolhaas.", "O Palácio da Bolsa tem o Salão Árabe.", "Miragaia e a Vitória sobem a ladeira.", "Em Matosinhos o forte é peixe grelhado na orla.", "O funicular dos Guindais desce até a Ribeira."],
     },
   },
   {
@@ -766,9 +766,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "miami",
     tier: "hard",
     clues: {
-      easy: ["É a capital do Algarve, no sul de Portugal.", "É a porta de entrada aérea para as praias algarvias.", "Tem Ria Formosa e ilhas-barreira à frente.", "O centro histórico tem muralhas e ruas calmas.", "O clima é mediterrânico, de muito sol."],
-      medium: ["A Cidade Velha se entra pelo Arco da Vila.", "As ilhas Deserta e Farol ficam de barco.", "Olhão, o mercado de peixe, fica ao lado.", "A Sé Catedral marca o Largo da Sé.", "Praia de Faro fica na ilha ligadas por ponte/estrada."],
-      hard: ["Estói tem o palácio e as ruínas romanas de Milreu.", "O Carmo tem a capela dos ossos.", "Tavira e as ilhas ficam a leste.", "O aeroporto fica colado à ria.", "São Lourenço e os flamingos animam a ria."],
+      easy: ["Capital do Algarve, no sul de Portugal.", "Porta aérea pras praias algarvias.", "Tem Ria Formosa e ilha-barreira na frente.", "Centro histórico com muralha e rua calma.", "Clima mediterrânico, sol pra caramba."],
+      medium: ["A Cidade Velha se entra pelo Arco da Vila.", "As ilhas Deserta e Farol ficam de barco.", "Olhão, do mercado de peixe, fica ao lado.", "A Sé fica no Largo da Sé.", "Praia de Faro fica na ilha, ligada por ponte."],
+      hard: ["Estói tem palácio e ruína romana de Milreu.", "No Carmo tem a capela dos ossos.", "Tavira e as ilhas ficam a leste.", "O aeroporto fica colado na ria.", "São Lourenço e flamingo na ria."],
     },
   },
   {
@@ -779,9 +779,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "paris",
     tier: "hard",
     clues: {
-      easy: ["É uma cidade andaluza famosa pelo flamenco.", "A Catedral de Sevilha é uma das maiores góticas do mundo.", "A Giralda é a torre-campanário icônica da cidade.", "A Plaza de España de azulejos é cartão-postal.", "O Alcázar é o palácio mourisco visitado por turistas."],
-      medium: ["O bairro de Triana é berço de cantaores e ceramistas.", "A Semana Santa e a Feria de Abril animam o calendário.", "O Guadalquivir corta a cidade.", "A Torre del Oro marca a beira do rio.", "O Metropol Parasol (Las Setas) cobre a Plaza de la Encarnación."],
-      hard: ["O Hospital de los Venerables fica no Barrio Santa Cruz.", "Italica, com anfiteatro romano, fica nos arredores.", "A Casa de Pilatos mistura mudéjar e renascimento.", "O Parque de María Luisa rodeia a Plaza de España.", "O Palácio de San Telmo hoje abriga o governo andaluz."],
+      easy: ["Cidade andaluza famosa pelo flamenco.", "A Catedral é uma das maiores góticas do mundo.", "A Giralda é a torre que todo mundo conhece.", "A Plaza de España de azulejo é o postal.", "O Alcázar é o palácio mourisco."],
+      medium: ["Triana é berço de cantaor e ceramista.", "Semana Santa e Feria de Abril lotam o calendário.", "O Guadalquivir corta a cidade.", "A Torre del Oro fica na beira do rio.", "Las Setas cobrem a Plaza de la Encarnación."],
+      hard: ["O Hospital de los Venerables fica no Barrio Santa Cruz.", "Itálica, com anfiteatro romano, fica nos arredores.", "A Casa de Pilatos mistura mudéjar e renascimento.", "O Parque de María Luisa cerca a Plaza de España.", "O Palácio de San Telmo hoje é o governo andaluz."],
     },
   },
   {
@@ -792,9 +792,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "sp",
     tier: "hard",
     clues: {
-      easy: ["Fica no País Basco, no norte da Espanha.", "O Museu Guggenheim de titânio é o cartão-postal.", "O rio Nervión atravessa a cidade.", "É conhecida pela pintxos (tapas bascas).", "O Athletic joga de camisa vermelha e branca em San Mamés."],
-      medium: ["O cão Puppy de flores fica na porta do Guggenheim.", "A Ponte Zubizuri é a passerelle branca de Calatrava.", "O Casco Viejo concentra as siete calles.", "O funicular sobe a Artxanda para a vista.", "O Mercado da Ribera é um dos maiores cobertos da Europa."],
-      hard: ["O Azkuna Zentroa é o antigo Alhóndiga reformado.", "A Isozaki Atea marca as torres gêmeas modernas.", "Portugalete e a Ponte Vizcaya ficam na foz do rio.", "O museu de Belas Artes tem coleção basca forte.", "A estação Abando tem o vitral clássico da chegada."],
+      easy: ["Fica no País Basco, no norte da Espanha.", "O Guggenheim de titânio é o postal.", "O rio Nervión atravessa a cidade.", "Pintxo (tapa basca) é a cara daqui.", "O Athletic joga de vermelho e branco em San Mamés."],
+      medium: ["O cão Puppy de flores fica na porta do Guggenheim.", "A Ponte Zubizuri é a passerelle branca do Calatrava.", "No Casco Viejo ficam as siete calles.", "O funicular sobe a Artxanda pra vista.", "O Mercado da Ribera é um dos maiores cobertos da Europa."],
+      hard: ["Azkuna Zentroa é o antigo Alhóndiga reformado.", "Isozaki Atea são as torres gêmeas modernas.", "Portugalete e a Ponte Vizcaya ficam na foz.", "O museu de Belas Artes tem coleção basca forte.", "A estação Abando tem vitral clássico."],
     },
   },
   {
@@ -805,9 +805,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "plaza",
     tier: "hard",
     clues: {
-      easy: ["É o berço do Renascimento italiano.", "O Duomo de Brunelleschi domina o horizonte.", "A Ponte Vecchio tem joalherias sobre o rio Arno.", "O David de Michelangelo é a escultura mais famosa da cidade.", "A Toscana cerca a cidade de colinas e vinhedos."],
-      medium: ["A Galeria Uffizi guarda Botticelli e Leonardo.", "A Piazza della Signoria tem a cópia do David ao ar livre.", "O Palazzo Pitti fica do outro lado do Arno.", "O batistério tem as Portas do Paraíso douradas.", "O gelato e a bistecca alla fiorentina são marca local."],
-      hard: ["O Corredor Vasariano liga Uffizi ao Pitti por cima da ponte.", "San Miniato al Monte fica no alto com vista da cidade.", "O Mercado Central (San Lorenzo) serve lampredotto.", "A Academia guarda o David original.", "Oltrarno é o lado artesão além do rio."],
+      easy: ["Berço do Renascimento italiano.", "O Duomo do Brunelleschi manda no horizonte.", "A Ponte Vecchio tem joalheria em cima do Arno.", "O David do Michelangelo é a escultura famosa.", "A Toscana cerca de colina e vinhedo."],
+      medium: ["Na Uffizi tem Botticelli e Leonardo.", "Na Piazza della Signoria tem a cópia do David.", "O Palazzo Pitti fica do outro lado do Arno.", "O batistério tem as Portas do Paraíso douradas.", "Gelato e bistecca alla fiorentina são clássico."],
+      hard: ["O Corredor Vasariano liga Uffizi ao Pitti por cima da ponte.", "San Miniato al Monte fica no alto com vista.", "No Mercado Central serve lampredotto.", "Na Academia fica o David original.", "Oltrarno é o lado artesão além do rio."],
     },
   },
   {
@@ -818,9 +818,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "paris",
     tier: "hard",
     clues: {
-      easy: ["É a cidade italiana das gôndolas e canais.", "Não tem carros — só barcos e pontes.", "A Praça de São Marcos é o cartão-postal.", "O Grande Canal é a avenida aquática principal.", "O Carnaval de máscaras é mundialmente famoso."],
-      medium: ["A Basílica de São Marcos tem cúpulas douradas.", "A Ponte dos Suspiros liga o palácio à antiga prisão.", "Murano é a ilha do vidro soprado.", "Burano é a ilha das casas coloridas e renda.", "O vaporetto é o ônibus aquático local."],
-      hard: ["O Rialto é a ponte mercante clássica sobre o Grande Canal.", "A Academia concentra a pintura veneziana.", "O Lido separa a lagoa do Adriático.", "Torcello guarda a igreja mais antiga da lagoa.", "O Arsenale foi o estaleiro da República Sereníssima."],
+      easy: ["A cidade italiana das gôndolas e canais.", "Não tem carro — só barco e ponte.", "A Praça de São Marcos é o postal.", "O Grande Canal é a avenida aquática.", "O Carnaval de máscara é famoso demais."],
+      medium: ["A Basílica de São Marcos tem cúpula dourada.", "A Ponte dos Suspiros liga o palácio à antiga prisão.", "Murano é a ilha do vidro soprado.", "Burano é a ilha das casas coloridas.", "O vaporetto é o ônibus aquático."],
+      hard: ["O Rialto é a ponte mercante clássica.", "A Academia é cheia de pintura veneziana.", "O Lido separa a lagoa do Adriático.", "Torcello tem a igreja mais antiga da lagoa.", "O Arsenale foi o estaleiro da República."],
     },
   },
   {
@@ -831,9 +831,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "plaza",
     tier: "hard",
     clues: {
-      easy: ["Fica no Piemonte, aos pés dos Alpes italianos.", "Foi a primeira capital da Itália unificada.", "É famosa pelo chocolate e pelo café histórico.", "A Mole Antonelliana marca a skyline.", "A Juventus é o clube de futebol mais associado."],
-      medium: ["O Museu do Cinema fica dentro da Mole.", "Os egípcios do Museu Egípcio são referência mundial.", "A Praça San Carlo é o salão elegante do centro.", "O rio Pó corta a cidade.", "O bairro de San Salvario anima a noite."],
-      hard: ["A capela do Santo Sudário fica na catedral.", "O Palácio Real e os jardins reais marcam o eixo barroco.", "Lingotto foi a fábrica Fiat com pista no terraço.", "Os pórticos cobertos somam quilômetros de caminhada seca.", "Superga, no alto, tem a basílica e vista dos Alpes."],
+      easy: ["Fica no Piemonte, aos pés dos Alpes.", "Foi a primeira capital da Itália unificada.", "Famosa pelo chocolate e pelo café histórico.", "A Mole Antonelliana é o marco da skyline.", "A Juventus é o clube da casa."],
+      medium: ["O Museu do Cinema fica dentro da Mole.", "O Museu Egípcio é dos melhores do mundo.", "A Praça San Carlo é o salão elegante do centro.", "O rio Pó corta a cidade.", "San Salvario é o rolê da noite."],
+      hard: ["A capela do Santo Sudário fica na catedral.", "O Palácio Real e os jardins são o eixo barroco.", "Lingotto foi a fábrica Fiat com pista no terraço.", "Os pórticos cobertos somam quilômetro de caminhada seca.", "Superga, no alto, tem basílica e vista dos Alpes."],
     },
   },
   {
@@ -844,9 +844,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "miami",
     tier: "hard",
     clues: {
-      easy: ["É a grande cidade portuária do sul da França.", "O Vieux-Port é o porto antigo cheio de barcos.", "A bouillabaisse é a sopa de peixe local.", "Fica na Côte d’Azur / Provença, à beira do Mediterrâneo.", "A basilique Notre-Dame de la Garde vê a cidade do alto."],
-      medium: ["O MuCEM é o museu moderno na ponta do porto.", "O bairro Le Panier é o mais antigo e colorido.", "As Ilhas do Frioul e o Castelo de If ficam de barco.", "A Canebière é a avenida histórica do centro.", "Os calanques são as enseadas de pedra perto da cidade."],
-      hard: ["La Joliette e o Euroméditerranée remodelaram o porto norte.", "O Palais Longchamp tem fontes e museus.", "Noailles é o mercado multicultural do centro.", "O Vallon des Auffes é a pequena enseada de barcos.", "A Cité Radieuse de Le Corbusier fica nos arredores."],
+      easy: ["A grande cidade portuária do sul da França.", "O Vieux-Port é o porto antigo cheio de barco.", "Bouillabaisse é a sopa de peixe local.", "Fica na Provença, na beira do Mediterrâneo.", "Notre-Dame de la Garde vê a cidade do alto."],
+      medium: ["O MuCEM é o museu moderno na ponta do porto.", "Le Panier é o bairro mais antigo e colorido.", "As Ilhas do Frioul e o Castelo de If ficam de barco.", "A Canebière é a avenida histórica do centro.", "Os calanques são as enseadas de pedra perto."],
+      hard: ["La Joliette renovou o porto norte.", "O Palais Longchamp tem fonte e museu.", "Noailles é o mercado multicultural do centro.", "Vallon des Auffes é a pequena enseada de barco.", "A Cité Radieuse do Le Corbusier fica nos arredores."],
     },
   },
   {
@@ -857,9 +857,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "miami",
     tier: "hard",
     clues: {
-      easy: ["Fica na Côte d’Azur francesa.", "A Promenade des Anglais acompanha a praia de seixos.", "É conhecida pelo sol, pelo azul do Mediterrâneo e pelo turismo.", "A salada niçoise leva o nome da cidade.", "Fica perto de Cannes e de Mônaco."],
-      medium: ["O Vieux Nice tem ruas estreitas e o Cours Saleya.", "A Colline du Château oferece vista da baía dos Anjos.", "O Negresco é o hotel branco de cúpula rosa na orla.", "O aeroporto fica colado à cidade, à beira-mar.", "O carnaval de Nice é um dos mais antigos da Europa."],
-      hard: ["Cimiez guarda as ruínas romanas e o museu Matisse.", "O bairro de Libération anima mercados e bares.", "A Place Masséna tem xadrez vermelho e fontes.", "O trem até Èze e Mônaco sobe a costa.", "O Museu Marc Chagall fica na colina."],
+      easy: ["Fica na Côte d’Azur francesa.", "A Promenade des Anglais acompanha a praia de seixo.", "Sol, azul do Mediterrâneo e turismo.", "A salada niçoise leva o nome da cidade.", "Fica perto de Cannes e de Mônaco."],
+      medium: ["Vieux Nice tem rua estreita e o Cours Saleya.", "Da Colline du Château dá pra ver a baía dos Anjos.", "O Negresco é o hotel branco de cúpula rosa.", "O aeroporto fica colado na cidade, na beira-mar.", "O carnaval de Nice é um dos mais antigos da Europa."],
+      hard: ["Cimiez tem ruína romana e o museu Matisse.", "Libération é mercado e bar.", "A Place Masséna tem xadrez vermelho e fonte.", "O trem até Èze e Mônaco sobe a costa.", "O Museu Marc Chagall fica na colina."],
     },
   },
   {
@@ -870,9 +870,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "plaza",
     tier: "hard",
     clues: {
-      easy: ["É a capital da Bélgica e sede de instituições da UE.", "O Atomium é o monumento em forma de átomo gigante.", "Waffles, chocolate e batata frita são marca belga.", "O Manneken Pis é a estátua do menino fazendo xixi.", "A Grand-Place é a praça histórica com fachadas douradas."],
-      medium: ["A Galeries Royales Saint-Hubert é o shopping coberto clássico.", "O Parque do Cinquentenário tem o arco triunfal.", "Ixelles e Saint-Gilles concentram vida boêmia.", "A Catedral de São Miguel e Santa Gúdula marca o centro.", "O Comic Strip Center celebra Tintin e a BD belga."],
-      hard: ["O bairro Europeu concentra a Commission e o Parlamento.", "Anderlecht e Molenbeek são comunas com cara própria.", "O Mont des Arts liga a biblioteca à vista da cidade baixa.", "Place Flagey anima o lago e os bares.", "O Palais de Justice domina a Marolles do alto."],
+      easy: ["Capital da Bélgica e sede da UE.", "O Atomium é aquele monumento em forma de átomo.", "Waffle, chocolate e batata frita são a cara belga.", "Manneken Pis é o menino fazendo xixi.", "A Grand-Place tem fachada dourada."],
+      medium: ["As Galeries Saint-Hubert são o shopping coberto clássico.", "O Parque do Cinquentenário tem o arco.", "Ixelles e Saint-Gilles são o lado boêmio.", "A Catedral de São Miguel é o marco do centro.", "O Comic Strip Center celebra Tintin."],
+      hard: ["O bairro Europeu é onde ficam Commission e Parlamento.", "Anderlecht e Molenbeek têm cara própria.", "O Mont des Arts liga a biblioteca à vista da cidade baixa.", "Place Flagey é lago e bar.", "O Palais de Justice manda na Marolles do alto."],
     },
   },
   {
@@ -883,9 +883,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "paris",
     tier: "hard",
     clues: {
-      easy: ["É a cidade medieval belga dos canais.", "Muitas vezes chamada de “Veneza do Norte”.", "O chocolate e a cerveja belga são onipresentes.", "O centro histórico é patrimônio da Unesco.", "Fica em Flandres, perto da costa do Mar do Norte."],
-      medium: ["O Markt tem o campanário (Belfort) que se sobe de escada.", "O Minnewater é o lago dos cisnes.", "O Basiliek van Het Heilig Bloed guarda a relíquia.", "Os passeios de barco pelos canais são o clássico turístico.", "O Begijnhof é o retiro silencioso das beguinas."],
-      hard: ["O Groeningemuseum guarda pintura flamenga primitiva.", "Damme fica a um passeio de canal nos arredores.", "O Spiegelrei é um dos trechos mais fotografados.", "A Igreja de Nossa Senhora tem um Michelangelo.", "O Concertgebouw moderno fica perto da estação."],
+      easy: ["A cidade medieval belga dos canais.", "Muita gente chama de “Veneza do Norte”.", "Chocolate e cerveja belga em toda esquina.", "O centro histórico é Unesco.", "Fica em Flandres, perto do Mar do Norte."],
+      medium: ["No Markt tem o campanário que se sobe de escada.", "Minnewater é o lago dos cisnes.", "A Basiliek van Het Heilig Bloed guarda a relíquia.", "Passeio de barco pelos canais é o clássico.", "O Begijnhof é o retiro silencioso."],
+      hard: ["No Groeningemuseum tem pintura flamenga primitiva.", "Damme fica a um passeio de canal.", "Spiegelrei é um dos trechos mais fotografados.", "A Igreja de Nossa Senhora tem um Michelangelo.", "O Concertgebouw moderno fica perto da estação."],
     },
   },
   {
@@ -896,9 +896,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "sp",
     tier: "hard",
     clues: {
-      easy: ["É o grande porto dos Países Baixos.", "A arquitetura moderna define a skyline.", "As casas cubo (Kubuswoningen) são cartão-postal.", "Foi reconstruída após bombardeios da Segunda Guerra.", "A ponte Erasmusbrug é apelidada de “O Cisne”."],
-      medium: ["O Markthal é o mercado coberto com murais no teto.", "O bairro de Delfshaven guarda o porto histórico.", "O Euromast oferece vista panorâmica da cidade.", "Spijkenisse e a região portuária estendem o complexo.", "O Museumpark concentra museus de arte contemporânea."],
-      hard: ["A Estação Central tem o teto triangular icônico.", "Katendrecht e o Fenix viraram polo gastronômico.", "O SS Rotterdam é o navio-hotel no porto.", "Kop van Zuid é a ponta moderna do outro lado do rio.", "O Depot Boijmans é o depósito de arte espelhado."],
+      easy: ["O grande porto dos Países Baixos.", "Arquitetura moderna define a skyline.", "As casas cubo são o postal.", "Foi reconstruída depois dos bombardeios da guerra.", "A Erasmusbrug é apelidada de “O Cisne”."],
+      medium: ["O Markthal é o mercado com mural no teto.", "Delfshaven tem o porto histórico.", "Do Euromast dá pra ver a cidade toda.", "A região portuária se estende longe.", "Museumpark é cheio de museu contemporâneo."],
+      hard: ["A Estação Central tem o teto triangular.", "Katendrecht e o Fenix viraram polo gastronômico.", "O SS Rotterdam é o navio-hotel no porto.", "Kop van Zuid é a ponta moderna do outro lado.", "O Depot Boijmans é o depósito de arte espelhado."],
     },
   },
   {
@@ -909,9 +909,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "plaza",
     tier: "hard",
     clues: {
-      easy: ["É a sede do governo dos Países Baixos (não a capital).", "Abriga a Corte Internacional de Justiça.", "Scheveningen é a praia do Mar do Norte ao lado.", "O Binnenhof é o complexo parlamentar histórico.", "Fica a poucos minutos de trem de Delft e Leiden."],
-      medium: ["O Mauritshuis guarda A Moça com o Brinco de Pérola.", "O Peace Palace (Palácio da Paz) é o símbolo jurídico.", "Madurodam é a Holanda em miniatura.", "O Pier de Scheveningen marca a orla.", "O Escher in Het Paleis celebra o artista gráfico."],
-      hard: ["Noordeinde é a avenida comercial com o palácio real.", "O Gemeentemuseum (Kunstmuseum) tem Mondrian.", "Louwman Museum reúne carros clássicos.", "O bairro Statenkwartier é residencial elegante.", "Clingendael e os jardins japoneses ficam nos arredores."],
+      easy: ["Sede do governo dos Países Baixos — não é a capital.", "Abriga a Corte Internacional de Justiça.", "Scheveningen é a praia do Mar do Norte ao lado.", "O Binnenhof é o complexo parlamentar.", "Fica a poucos minutos de Delft e Leiden."],
+      medium: ["No Mauritshuis tem A Moça com o Brinco de Pérola.", "O Palácio da Paz é o símbolo jurídico.", "Madurodam é a Holanda em miniatura.", "O Pier de Scheveningen é o marco da orla.", "Escher in Het Paleis celebra o artista gráfico."],
+      hard: ["Noordeinde é avenida comercial com palácio real.", "No Kunstmuseum tem Mondrian.", "Louwman Museum reúne carro clássico.", "Statenkwartier é residencial elegante.", "Clingendael tem jardim japonês nos arredores."],
     },
   },
   {
@@ -922,9 +922,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "plaza",
     tier: "hard",
     clues: {
-      easy: ["É a cidade alemã da grande catedral gótica às margens do Reno.", "A Kölner Dom é um dos cartões-postais da Alemanha.", "É famosa pelo perfume Eau de Cologne.", "O carnaval de rua é um dos maiores do país.", "O rio Reno corta o centro."],
-      medium: ["A estação fica praticamente colada à catedral.", "As pontes Hohenzollern têm cadeados de amor.", "O Museu Ludwig concentra arte moderna.", "O chocolate museum fica à beira do rio.", "O Altstadt tem cervejarias de Kölsch."],
-      hard: ["O romano Praetorium fica sob a prefeitura.", "Ehrenfeld é o bairro de street art e bares.", "O Rheinauhafen tem os “Kranhäuser” modernos.", "Brühl e o Palácio Augustusburg ficam perto de trem.", "O Farina-Haus conta a história do perfume."],
+      easy: ["Cidade alemã da grande catedral às margens do Reno.", "A Dom é um dos postais da Alemanha.", "Famosa pelo perfume Eau de Cologne.", "O carnaval de rua é um dos maiores do país.", "O Reno corta o centro."],
+      medium: ["A estação fica praticamente colada na catedral.", "Nas pontes Hohenzollern tem cadeado de amor.", "O Museu Ludwig é cheio de arte moderna.", "O museu do chocolate fica na beira do rio.", "No Altstadt tem cervejaria de Kölsch."],
+      hard: ["O Praetorium romano fica sob a prefeitura.", "Ehrenfeld é street art e bar.", "Rheinauhafen tem os Kranhäuser modernos.", "Brühl e o Palácio Augustusburg ficam de trem.", "O Farina-Haus conta a história do perfume."],
     },
   },
   {
@@ -935,9 +935,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "plaza",
     tier: "hard",
     clues: {
-      easy: ["É a capital da Baviera, na Alemanha.", "A Oktoberfest é a festa da cerveja mais famosa do mundo.", "Os Alpes ficam a poucas horas de distância.", "O Marienplatz tem o Glockenspiel do novo ayuntamiento.", "A BMW e a engenharia bávara marcam a identidade."],
-      medium: ["O Englischer Garten é um dos maiores parques urbanos da Europa.", "O Palácio de Nymphenburg fica nos arredores do centro.", "A Allianz Arena é o estádio do Bayern.", "A Viktualienmarkt é o mercado ao ar livre.", "Schwabing é o bairro boêmio clássico."],
-      hard: ["A Residenz foi a sede dos reis da Baviera.", "O Deutsches Museum é museu de ciência e técnica.", "Dachau, o memorial, fica nos arredores.", "A Pinakothek concentra arte europeia.", "O Olympiapark guarda a tenda de 1972."],
+      easy: ["Capital da Baviera, na Alemanha.", "Oktoberfest: a festa da cerveja mais famosa do mundo.", "Os Alpes ficam a poucas horas.", "No Marienplatz tem o Glockenspiel.", "BMW e engenharia bávara são a cara daqui."],
+      medium: ["O Englischer Garten é um dos maiores parques urbanos da Europa.", "O Palácio de Nymphenburg fica perto do centro.", "A Allianz Arena é o estádio do Bayern.", "Viktualienmarkt é o mercado ao ar livre.", "Schwabing é o bairro boêmio clássico."],
+      hard: ["A Residenz foi a sede dos reis da Baviera.", "O Deutsches Museum é de ciência e técnica.", "Dachau, o memorial, fica nos arredores.", "A Pinakothek é cheia de arte europeia.", "O Olympiapark guarda a tenda de 1972."],
     },
   },
   {
@@ -948,9 +948,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "sp",
     tier: "hard",
     clues: {
-      easy: ["É a grande cidade portuária do norte da Alemanha.", "O rio Elba e o porto definem a paisagem.", "A Elbphilharmonie é a sala de concertos na ponta do porto.", "Os canais e armazéns lembram uma Veneza do Norte alemã.", "O peixe e o brunch de domingo no porto são clássicos."],
-      medium: ["Speicherstadt é o bairro de armazéns em tijolo vermelho.", "St. Pauli e a Reeperbahn animam a noite.", "O lago Alster fica no meio da cidade.", "O Miniatur Wunderland é o maior modelo ferroviário do mundo.", "HafenCity é a expansão moderna ao lado do porto histórico."],
-      hard: ["O Landungsbrücken é o cais com elevadores e barcos.", "O bairro Schanzenviertel é alternativo e gastronômico.", "Blitz e bunkers lembram a guerra no centro.", "O Chilean Haus e o Chilehaus têm expressionismo em tijolo.", "Blankenese é o bairro de escadarias à beira do Elba."],
+      easy: ["A grande cidade portuária do norte da Alemanha.", "O Elba e o porto definem a paisagem.", "A Elbphilharmonie é a sala de concertos na ponta do porto.", "Canal e armazém lembram uma Veneza do Norte.", "Peixe e brunch de domingo no porto são clássico."],
+      medium: ["Speicherstadt é o bairro de armazém em tijolo vermelho.", "St. Pauli e a Reeperbahn são o rolê da noite.", "O lago Alster fica no meio da cidade.", "O Miniatur Wunderland é o maior modelo ferroviário do mundo.", "HafenCity é a expansão moderna ao lado do porto."],
+      hard: ["Landungsbrücken é o cais com elevador e barco.", "Schanzenviertel é alternativo e gastronômico.", "Bunker no centro lembra a guerra.", "O Chilehaus tem expressionismo em tijolo.", "Blankenese é o bairro de escadaria na beira do Elba."],
     },
   },
   {
@@ -961,9 +961,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "sp",
     tier: "hard",
     clues: {
-      easy: ["É o centro financeiro da Alemanha, com skyline de bancos.", "O euro e o BCE têm sede na cidade.", "O rio Meno (Main) corta o centro.", "O aeroporto é um dos maiores hubs da Europa.", "A Sachsenhausen é a margem das ciderias (Apfelwein)."],
-      medium: ["O Römerberg é a praça histórica reconstruída.", "A Paulskirche marca a história democrática alemã.", "O Main Tower tem mirante sobre os arranha-céus.", "O Museu Städel guarda arte europeia.", "A feira do livro é a mais importante do setor."],
-      hard: ["O Kleinmarkthalle é o mercado coberto do centro.", "Ostend e o ECB novo marcam a margem leste.", "O Palmengarten é o jardim botânico clássico.", "Höchst guarda um núcleo medieval nos arredores.", "A Alte Oper é a sala de concertos reconstruída."],
+      easy: ["Centro financeiro da Alemanha, skyline de banco.", "O euro e o BCE têm sede aqui.", "O rio Meno corta o centro.", "O aeroporto é um dos maiores hubs da Europa.", "Sachsenhausen é a margem das ciderias (Apfelwein)."],
+      medium: ["Römerberg é a praça histórica reconstruída.", "A Paulskirche é marco da história democrática alemã.", "Do Main Tower dá pra ver os arranha-céus.", "No Städel tem arte europeia.", "A feira do livro é a mais importante do setor."],
+      hard: ["Kleinmarkthalle é o mercado coberto do centro.", "Ostend e o ECB novo são a margem leste.", "Palmengarten é o jardim botânico clássico.", "Höchst tem um núcleo medieval nos arredores.", "A Alte Oper é a sala de concertos reconstruída."],
     },
   },
   {
@@ -974,9 +974,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "plaza",
     tier: "hard",
     clues: {
-      easy: ["É a cidade suíça à beira do lago Léman.", "Sedia várias agências da ONU e a Cruz Vermelha.", "O Jet d’Eau é o jato d’água cartão-postal.", "Fala-se francês na região.", "É conhecida pela diplomacia e pelos relógios."],
-      medium: ["O Palácio das Nações fica no Ariana Park.", "A Catedral de Saint-Pierre marca a velha cidade.", "Carouge tem ar de bairro boêmio.", "O CERN, da física de partículas, fica nos arredores.", "O Patek Philippe Museum celebra a relojoaria."],
-      hard: ["Plainpalais anima o mercado e a universidade.", "O bairro das Eaux-Vives acompanha a margem esquerda.", "O Conservatório e Jardim Botânicos ficam perto da ONU.", "Mont Salève, já na França, é o “balcón” da cidade.", "Bains des Pâquis é o balneário popular no lago."],
+      easy: ["Cidade suíça na beira do lago Léman.", "Sedia agência da ONU e a Cruz Vermelha.", "O Jet d’Eau é o jato d’água postal.", "Falam francês na região.", "Conhecida pela diplomacia e pelos relógios."],
+      medium: ["O Palácio das Nações fica no Ariana Park.", "A Catedral de Saint-Pierre é o marco da cidade velha.", "Carouge tem ar de bairro boêmio.", "O CERN fica nos arredores.", "O Patek Philippe Museum celebra a relojoaria."],
+      hard: ["Plainpalais é mercado e universidade.", "Eaux-Vives acompanha a margem esquerda.", "O Jardim Botânico fica perto da ONU.", "Mont Salève, já na França, é o “balcón” da cidade.", "Bains des Pâquis é o balneário popular no lago."],
     },
   },
   {
@@ -987,9 +987,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "plaza",
     tier: "hard",
     clues: {
-      easy: ["Fica no norte da Suíça, na tríplice fronteira com França e Alemanha.", "O rio Reno corta o centro.", "É um polo de arte e farmacêuticas.", "O Carnaval (Fasnacht) é patrimônio cultural.", "Fala-se alemão suíço na região."],
-      medium: ["A Fondation Beyeler é museu de arte moderna nos arredores.", "O Münster (catedral) vermelho marca a colina.", "A feira Art Basel é a mais famosa do circuito.", "O zoo de Basel é um dos mais antigos da Europa.", "O Ferry transversal cruza o Reno sem motor."],
-      hard: ["O bairro de Dreiländereck marca o encontro dos países.", "A Tinguely Fountain homenageia o artista cinético.", "Augusta Raurica guarda ruínas romanas perto.", "O Kunstmuseum tem uma das coleções mais antigas.", "St. Johann e o porto fluvial marcam o norte."],
+      easy: ["Norte da Suíça, na tríplice fronteira com França e Alemanha.", "O Reno corta o centro.", "Polo de arte e farmacêutica.", "O Carnaval (Fasnacht) é patrimônio.", "Falam alemão suíço na região."],
+      medium: ["A Fondation Beyeler é museu moderno nos arredores.", "O Münster vermelho é o marco da colina.", "Art Basel é a feira mais famosa do circuito.", "O zoo é um dos mais antigos da Europa.", "O ferry transversal cruza o Reno sem motor."],
+      hard: ["Dreiländereck é o encontro dos três países.", "A Tinguely Fountain homenageia o artista cinético.", "Augusta Raurica tem ruína romana perto.", "O Kunstmuseum tem uma das coleções mais antigas.", "St. Johann e o porto fluvial são o norte da cidade."],
     },
   },
   {
@@ -1000,9 +1000,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "plaza",
     tier: "hard",
     clues: {
-      easy: ["É a cidade austríaca natal de Mozart.", "A Fortaleza Hohensalzburg domina o alto.", "Os Alpes cercam a paisagem.", "O centro barroco é patrimônio da Unesco.", "A Softária e o “Sound of Music” puxam turismo."],
-      medium: ["A Residenzplatz tem a fonte e os eventos.", "O rio Salzach corta a cidade velha e a nova.", "Getreidegasse é a rua comercial onde Mozart nasceu.", "Os Mirabell Gardens aparecem em filmes clássicos.", "Hallstatt e o Salzkammergut ficam a um passeio."],
-      hard: ["O Hellbrunn tem fontes brincalhonas nos jardins.", "Mönchsberg é a colina com elevador panorâmico.", "O Festival de Salzburgo ocupa o verão lírico.", "Nonnberg é o convento ligado ao Sound of Music.", "O Untersberg é o pico de teleférico vizinho."],
+      easy: ["Cidade austríaca natal de Mozart.", "A Fortaleza Hohensalzburg manda no alto.", "Os Alpes cercam a paisagem.", "O centro barroco é Unesco.", "Sound of Music puxa turismo pra caramba."],
+      medium: ["Residenzplatz tem a fonte e os eventos.", "O Salzach corta a cidade velha e a nova.", "Getreidegasse é a rua onde Mozart nasceu.", "Os Mirabell Gardens aparecem em filme clássico.", "Hallstatt e o Salzkammergut ficam a um passeio."],
+      hard: ["Hellbrunn tem fonte brincalhona nos jardins.", "Mönchsberg é a colina com elevador panorâmico.", "O Festival de Salzburgo ocupa o verão lírico.", "Nonnberg é o convento ligado ao Sound of Music.", "Untersberg é o pico de teleférico vizinho."],
     },
   },
   {
@@ -1013,9 +1013,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "paris",
     tier: "hard",
     clues: {
-      easy: ["É a capital da Hungria, cortada pelo Danúbio.", "Buda e Peste são as duas margens unidas por pontes.", "É famosa pelos banhos termais.", "O Parlamento gótico à beira do rio é cartão-postal.", "A culinária inclui goulash e paprika."],
-      medium: ["A Ponte das Correntes (Széchenyi) é a mais fotografada.", "O Castelo de Buda fica no alto da margem oeste.", "A Ilha Margaret é o parque no meio do rio.", "O balneário Széchenyi fica no Parque da Cidade.", "A Grande Sinagoga é uma das maiores do mundo."],
-      hard: ["O bairro judeu anima ruin bars como o Szimpla.", "Gellért Hill tem a Estátua da Liberdade no alto.", "O Mercado Central (Nagyvásárcsarnok) fica junto à Liberty Bridge.", "Andrássy Avenue sobe até a Heroes’ Square.", "O Hospital na Rocha conta a história da guerra sob o castelo."],
+      easy: ["Capital da Hungria, cortada pelo Danúbio.", "Buda e Peste são as duas margens unidas por ponte.", "Famosa pelos banhos termais.", "O Parlamento na beira do rio é o postal.", "Goulash e paprika na mesa."],
+      medium: ["A Ponte das Correntes é a mais fotografada.", "O Castelo de Buda fica no alto da margem oeste.", "A Ilha Margaret é o parque no meio do rio.", "O balneário Széchenyi fica no Parque da Cidade.", "A Grande Sinagoga é uma das maiores do mundo."],
+      hard: ["O bairro judeu tem ruin bar tipo o Szimpla.", "Gellért Hill tem a Estátua da Liberdade no alto.", "O Mercado Central fica junto à Liberty Bridge.", "Andrássy Avenue sobe até a Heroes’ Square.", "O Hospital na Rocha conta a guerra sob o castelo."],
     },
   },
   {
@@ -1026,9 +1026,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "paris",
     tier: "hard",
     clues: {
-      easy: ["É a cidade histórica do sul da Polônia.", "A praça do mercado (Rynek) é uma das maiores da Europa.", "O Castelo Wawel fica sobre o rio Vístula.", "Foi capital da Polônia por séculos.", "Auschwitz fica a cerca de uma hora de distância."],
-      medium: ["O Cloth Hall (Sukiennice) corta o meio da praça.", "Kazimierz é o antigo bairro judeu revitalizado.", "A Trombeta de St. Mary toca a cada hora da torre.", "As minas de sal de Wieliczka ficam nos arredores.", "O rio Vístula tem bulevares para caminhar."],
-      hard: ["Nowa Huta é o bairro socialista planejado.", "O bairro de Podgórze guarda o gueto e a fábrica de Schindler.", "O Barbican e as muralhas medievais cercam o centro.", "Zakopane e os Tatras ficam a um passeio de montanha.", "O Collegium Maius é o núcleo da universidade jaguelônica."],
+      easy: ["Cidade histórica do sul da Polônia.", "A praça do mercado (Rynek) é uma das maiores da Europa.", "O Castelo Wawel fica sobre o Vístula.", "Foi capital da Polônia por séculos.", "Auschwitz fica a cerca de uma hora."],
+      medium: ["O Cloth Hall corta o meio da praça.", "Kazimierz é o antigo bairro judeu.", "A trombeta de St. Mary toca toda hora da torre.", "As minas de sal de Wieliczka ficam nos arredores.", "O Vístula tem bulevar pra caminhar."],
+      hard: ["Nowa Huta é o bairro socialista planejado.", "Podgórze tem o gueto e a fábrica de Schindler.", "O Barbican e as muralhas cercam o centro.", "Zakopane e os Tatras ficam a um passeio de montanha.", "Collegium Maius é o núcleo da universidade jaguelônica."],
     },
   },
   {
@@ -1039,9 +1039,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "paris",
     tier: "hard",
     clues: {
-      easy: ["É a cidade portuária da costa báltica polonesa.", "O centro histórico reconstruído tem fachadas coloridas.", "Foi berço do sindicato Solidariedade de Lech Wałęsa.", "O mar Báltico e as praias ficam ao lado.", "O âmbar (pedra) é souvenir típico."],
-      medium: ["A Porta Verde e a Rua Longa (Długa) marcam o eixo.", "O guindaste medieval (Żuraw) fica no Motława.", "Sopot e Gdynia formam a Tricidade com Gdansk.", "O Museu da Segunda Guerra Mundial é imponente.", "Neptune’s Fountain é o encontro clássico da praça."],
-      hard: ["Westerplatte marca o início da Segunda Guerra.", "O bairro de Oliwa tem catedral e parque.", "A Ilha Holandesa (Wyspa Spichrzów) foi revitalizada.", "Stutthof, o memorial, fica na região.", "O Fórum Gdańsk é o shopping moderno junto à estação."],
+      easy: ["Cidade portuária da costa báltica polonesa.", "Centro histórico reconstruído com fachada colorida.", "Berço do sindicato Solidariedade do Wałęsa.", "Mar Báltico e praia ao lado.", "Âmbar é o souvenir típico."],
+      medium: ["A Porta Verde e a Rua Longa são o eixo.", "O guindaste medieval (Żuraw) fica no Motława.", "Sopot e Gdynia formam a Tricidade.", "O Museu da Segunda Guerra Mundial é imponente.", "A fonte de Netuno é o encontro clássico da praça."],
+      hard: ["Westerplatte é onde começou a Segunda Guerra.", "Oliwa tem catedral e parque.", "A Ilha Holandesa foi renovada.", "Stutthof, o memorial, fica na região.", "O Fórum Gdańsk é o shopping junto à estação."],
     },
   },
   {
@@ -1052,9 +1052,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "plaza",
     tier: "hard",
     clues: {
-      easy: ["É a capital da Finlândia.", "É conhecida por design, sauna e mar Báltico.", "A Catedral branca marca a Praça do Senado.", "As ilhas e ferry fazem parte do dia a dia.", "O frio e a luz de verão definem o ritmo."],
-      medium: ["Suomenlinna é a fortaleza-ilha Patrimônio da Unesco.", "O Market Square vende peixe e berries à beira-mar.", "A Igreja de Pedra (Temppeliaukio) é escavada na rocha.", "O distrito de Design anima Kallio e Punavuori.", "Tallinn, na Estônia, fica a duas horas de ferry."],
-      hard: ["Löyly é a sauna moderna à beira-mar.", "O Museu Nacional e o Ateneum concentram arte finlandesa.", "Pasila e Kalasatama são eixos de crescimento.", "Porvoo, colonial, fica a um curto trem.", "O parque Sibelius tem o monumento de tubos de aço."],
+      easy: ["Capital da Finlândia.", "Design, sauna e mar Báltico.", "A Catedral branca é o marco da Praça do Senado.", "Ilha e ferry fazem parte do dia a dia.", "Frio e luz de verão definem o ritmo."],
+      medium: ["Suomenlinna é a fortaleza-ilha Unesco.", "No Market Square vende peixe e berry na beira-mar.", "A Igreja de Pedra é escavada na rocha.", "O distrito de Design é Kallio e Punavuori.", "Tallinn, na Estônia, fica a duas horas de ferry."],
+      hard: ["Löyly é a sauna moderna na beira-mar.", "O Museu Nacional e o Ateneum são cheios de arte finlandesa.", "Pasila e Kalasatama são eixos de crescimento.", "Porvoo, colonial, fica a um curto trem.", "O parque Sibelius tem o monumento de tubo de aço."],
     },
   },
   {
@@ -1065,9 +1065,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "paris",
     tier: "hard",
     clues: {
-      easy: ["É a capital da Dinamarca.", "A estátua da Pequena Sereia fica no porto.", "As bicicletas dominam o trânsito.", "Os canais de Nyhavn têm casas coloridas.", "É associada ao hygge e ao design nórdico."],
-      medium: ["Tivoli é o parque de diversões histórico no centro.", "Christiania é a comunidade alternativa.", "O castelo Rosenborg guarda as joias da coroa.", "A ponte Øresund liga a cidade a Malmö, na Suécia.", "O bairro de Vesterbro anima bares e comida."],
-      hard: ["Refshaleøen e o street food de Reffen ficam na ilha.", "O Louisiana Museum de arte moderna fica ao norte.", "Assistens Cemetery guarda Kierkegaard e Hans Christian Andersen.", "Islands Brygge é a praia urbana de verão.", "O Freetown e a Pusher Street têm regras próprias."],
+      easy: ["Capital da Dinamarca.", "A Pequena Sereia fica no porto.", "Bicicleta domina o trânsito.", "Nyhavn tem casa colorida no canal.", "Hygge e design nórdico."],
+      medium: ["Tivoli é o parque de diversões histórico no centro.", "Christiania é a comunidade alternativa.", "No castelo Rosenborg ficam as joias da coroa.", "A ponte Øresund liga a Malmö, na Suécia.", "Vesterbro é bar e comida."],
+      hard: ["Refshaleøen e o street food de Reffen ficam na ilha.", "O Louisiana Museum fica ao norte.", "No Assistens Cemetery estão Kierkegaard e Andersen.", "Islands Brygge é a praia urbana de verão.", "Freetown e a Pusher Street têm regra própria."],
     },
   },
   {
@@ -1078,9 +1078,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "plaza",
     tier: "hard",
     clues: {
-      easy: ["É a capital da Islândia.", "É porta de entrada para auroras boreais e gêiseres.", "A igreja Hallgrímskirkja marca a skyline.", "Águas termais e lagoas azuis ficam nos arredores.", "Fica isolada no Atlântico Norte."],
-      medium: ["A lagoa Blue Lagoon fica perto do aeroporto de Keflavík.", "O Círculo Dourado reúne Þingvellir, Geysir e Gullfoss.", "Harpa é a sala de concertos de vidro no porto.", "A Rua Laugavegur é o eixo comercial.", "Baleias e puffins saem de passeio do porto velho."],
-      hard: ["Sólfar (Sun Voyager) é a escultura à beira-mar.", "Perlan tem mirante e exposição de geleiras.", "Vesturbær e Grandi animam a zona portuária nova.", "A península de Snæfellsnes fica a um day trip.", "O lago Tjörnin fica no meio do centro cívico."],
+      easy: ["Capital da Islândia.", "Porta de entrada pra aurora boreal e gêiser.", "A Hallgrímskirkja é o marco da skyline.", "Água termal e lagoa azul nos arredores.", "Fica isolada no Atlântico Norte."],
+      medium: ["A Blue Lagoon fica perto do aeroporto de Keflavík.", "O Círculo Dourado reúne Þingvellir, Geysir e Gullfoss.", "Harpa é a sala de concertos de vidro no porto.", "Laugavegur é o eixo comercial.", "Passeio de baleia e puffin sai do porto velho."],
+      hard: ["Sun Voyager é a escultura na beira-mar.", "Perlan tem mirante e exposição de geleira.", "Vesturbær e Grandi são a zona portuária nova.", "Snæfellsnes fica a um day trip.", "O lago Tjörnin fica no meio do centro cívico."],
     },
   },
   {
@@ -1091,9 +1091,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "paris",
     tier: "hard",
     clues: {
-      easy: ["É a segunda maior cidade da Irlanda.", "Fica no sul da ilha, com porto atlântico.", "É conhecida pela cerveja local e pelo inglês irlandês.", "O rio Lee corta o centro.", "É porta para a costa de Cliffs e vilarejos do sul."],
-      medium: ["O English Market é o mercado coberto histórico.", "A University College Cork anima o campus.", "Blarney Castle, com a pedra do beijo, fica perto.", "Shandon tem o sino e a torrezinha colorida.", "Cobh, o porto do Titanic, fica a um curto trajeto."],
-      hard: ["Fitzgerald Park e o museu da cidade ficam juntos.", "The Butter Museum lembra o comércio de manteiga.", "Kinsale é a vila gastronômica da costa próxima.", "St. Fin Barre’s Cathedral marca o skyline.", "Oliver Plunkett Street é pedestre e comercial."],
+      easy: ["A segunda maior cidade da Irlanda.", "Fica no sul da ilha, com porto atlântico.", "Cerveja local e inglês irlandês.", "O rio Lee corta o centro.", "Porta pra costa e vilarejo do sul."],
+      medium: ["O English Market é o mercado coberto histórico.", "A University College Cork é o campus.", "Blarney Castle, com a pedra do beijo, fica perto.", "Shandon tem o sino e a torrezinha colorida.", "Cobh, o porto do Titanic, fica a um curto trajeto."],
+      hard: ["Fitzgerald Park e o museu da cidade ficam juntos.", "The Butter Museum lembra o comércio de manteiga.", "Kinsale é a vila gastronômica da costa.", "St. Fin Barre’s Cathedral é o marco do skyline.", "Oliver Plunkett Street é pedestre e comercial."],
     },
   },
   {
@@ -1104,9 +1104,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "sp",
     tier: "hard",
     clues: {
-      easy: ["É a maior cidade da Escócia.", "É conhecida por arte, música e arquitetura vitoriana.", "O rio Clyde corta a cidade.", "Difere de Edimburgo por ser mais industrial e informal.", "O sotaque escocês local é bem marcado."],
-      medium: ["A Catedral de Glasgow é medieval.", "O Kelvingrove Museum tem a salinha clássica.", "Charles Rennie Mackintosh marca o design local.", "As West End lanes animam bares e vintage.", "Loch Lomond fica a um curto passeio."],
-      hard: ["O Riverside Museum celebra transportes à beira do Clyde.", "Necropolis é o cemitério no alto com vista.", "Finnieston virou polo gastronômico.", "The Hydro e a SEC concentram shows.", "As Ilhas e o ferry para as Highlands saem da região."],
+      easy: ["A maior cidade da Escócia.", "Arte, música e arquitetura vitoriana.", "O rio Clyde corta a cidade.", "Mais industrial e informal que Edimburgo.", "O sotaque local é bem marcado."],
+      medium: ["A Catedral de Glasgow é medieval.", "O Kelvingrove Museum tem a salinha clássica.", "Charles Rennie Mackintosh é a cara do design local.", "As West End lanes são bar e vintage.", "Loch Lomond fica a um curto passeio."],
+      hard: ["O Riverside Museum celebra transporte na beira do Clyde.", "Necropolis é o cemitério no alto com vista.", "Finnieston virou polo gastronômico.", "The Hydro e a SEC são onde rolam os shows.", "Ferry pras Highlands sai da região."],
     },
   },
   {
@@ -1117,9 +1117,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "sp",
     tier: "hard",
     clues: {
-      easy: ["É a cidade inglesa dos Beatles.", "O porto do rio Mersey marca a história marítima.", "Anfield é a casa do Liverpool FC.", "As docas (Albert Dock) foram revitalizadas.", "Fica no noroeste da Inglaterra."],
-      medium: ["The Cavern Club é o berço beatlemaniaco.", "As “Three Graces” marcam o Pier Head.", "O Ferry Cross the Mersey é o clássico atravessar o rio.", "Mathew Street anima o turismo musical.", "Os museus do Liverpool waterfront são Unesco."],
-      hard: ["Speke Hall é a casa Tudor nos arredores.", "The Baltic Triangle é o polo criativo.", "Everton e o novo estádio animam o outro azul.", "Port Sunlight, modelo vitoriano, fica do outro lado.", "O Anglican Cathedral é uma das maiores da Grã-Bretanha."],
+      easy: ["A cidade inglesa dos Beatles.", "O porto do Mersey é a cara da história marítima.", "Anfield é a casa do Liverpool FC.", "As docas do Albert Dock foram renovadas.", "Fica no noroeste da Inglaterra."],
+      medium: ["The Cavern Club é o berço beatlemaníaco.", "As Three Graces são o marco do Pier Head.", "Ferry Cross the Mersey é o clássico de atravessar o rio.", "Mathew Street é o turismo musical.", "Os museus do waterfront são Unesco."],
+      hard: ["Speke Hall é a casa Tudor nos arredores.", "The Baltic Triangle é o polo criativo.", "Everton e o novo estádio são o outro azul.", "Port Sunlight, modelo vitoriano, fica do outro lado.", "A Anglican Cathedral é uma das maiores da Grã-Bretanha."],
     },
   },
   {
@@ -1130,9 +1130,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "sp",
     tier: "hard",
     clues: {
-      easy: ["É a cidade portuária do sudoeste da Inglaterra.", "É famosa pela street art (Banksy nasceu por aqui).", "O rio Avon e a Clifton Suspension Bridge marcam a vista.", "Tem cara jovem, universitária e criativa.", "Fica perto de Bath e do campo inglês."],
-      medium: ["O porto histórico (harbourside) foi revitalizado.", "Clifton é o bairro elegante no alto.", "O SS Great Britain de Brunel fica no dry dock.", "Stokes Croft concentra murais e cultura alternativa.", "O aeroporto e a ligação com Cardiff são fáceis."],
-      hard: ["Cabot Tower no Brandon Hill dá vista 360°.", "Bedminster e Southville animam a margem sul.", "O M Shed conta a história da cidade no porto.", "As Gorges de Cheddar ficam a um day trip.", "Park Street sobe do centro até a universidade."],
+      easy: ["Cidade portuária do sudoeste da Inglaterra.", "Famosa pela street art — Banksy nasceu por aqui.", "O Avon e a Clifton Suspension Bridge são a cara da vista.", "Cara jovem, universitária e criativa.", "Fica perto de Bath."],
+      medium: ["O porto histórico foi renovado.", "Clifton é o bairro elegante no alto.", "O SS Great Britain do Brunel fica no dry dock.", "Stokes Croft é mural e cultura alternativa.", "Ligação fácil com Cardiff."],
+      hard: ["Cabot Tower no Brandon Hill dá vista 360°.", "Bedminster e Southville são a margem sul.", "O M Shed conta a história da cidade no porto.", "As Gorges de Cheddar ficam a um day trip.", "Park Street sobe do centro até a universidade."],
     },
   },
   {
@@ -1143,9 +1143,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "sp",
     tier: "hard",
     clues: {
-      easy: ["É a capital de Massachusetts, no nordeste dos EUA.", "Tem papel central na independência americana.", "O baseball do Fenway Park é tradição.", "As universidades Harvard e MIT ficam do outro lado do rio.", "O clam chowder e a lagosta marcam a mesa."],
-      medium: ["O Freedom Trail liga locais históricos a pé.", "Beacon Hill tem ruas de tijolo e gaslights.", "O porto e o bairro italiano do North End animam comida.", "O Boston Common é o parque central histórico.", "Cambridge fica logo após a ponte."],
-      hard: ["A Isabella Stewart Gardner é o museu-casa famoso.", "Seaport e o Innovation District cresceram rápido.", "O bairro de Back Bay tem a Trinity Church.", "Quincy Market / Faneuil Hall é o mercado turístico.", "Cape Cod fica a um curto trajeto de verão."],
+      easy: ["Capital de Massachusetts, no nordeste dos EUA.", "Papel central na independência americana.", "Baseball no Fenway Park é tradição.", "Harvard e MIT ficam do outro lado do rio.", "Clam chowder e lagosta na mesa."],
+      medium: ["O Freedom Trail liga locais históricos a pé.", "Beacon Hill tem rua de tijolo e gaslight.", "North End é o bairro italiano pra comer.", "Boston Common é o parque central histórico.", "Cambridge fica logo após a ponte."],
+      hard: ["A Isabella Stewart Gardner é o museu-casa famoso.", "Seaport e o Innovation District cresceram rápido.", "Back Bay tem a Trinity Church.", "Quincy Market / Faneuil Hall é o mercado turístico.", "Cape Cod fica a um curto trajeto de verão."],
     },
   },
   {
@@ -1156,9 +1156,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "miami",
     tier: "hard",
     clues: {
-      easy: ["É a cidade da Golden Gate Bridge.", "Fica na Califórnia, à beira da baía.", "Os bondinhos (cable cars) sobem as colinas.", "Alcatraz é a ilha-prisão no meio da baía.", "Fog, tecnologia e colinas definem a cara."],
-      medium: ["Fisherman’s Wharf e o Pier 39 têm leões-marinhos.", "Chinatown é um dos mais antigos dos EUA.", "Haight-Ashbury lembra o movimento hippie.", "Mission District concentra tacos e murais.", "Twin Peaks dá vista da skyline."],
-      hard: ["Lombard Street é a rua “mais torta”.", "The Castro é marco da cultura LGBTQ+.", "Coit Tower fica no Telegraph Hill.", "Golden Gate Park guarda jardins e museus.", "Sausalito fica do outro lado da ponte, de ferry."],
+      easy: ["A cidade da Golden Gate Bridge.", "Fica na Califórnia, na beira da baía.", "Bondinho sobe as colinas.", "Alcatraz é a ilha-prisão no meio da baía.", "Neblina, tech e colina definem a cara."],
+      medium: ["Fisherman’s Wharf e o Pier 39 têm leão-marinho.", "Chinatown é um dos mais antigos dos EUA.", "Haight-Ashbury lembra o movimento hippie.", "Mission District é taco e mural.", "Twin Peaks dá vista da skyline."],
+      hard: ["Lombard Street é a rua “mais torta”.", "The Castro é marco da cultura LGBTQ+.", "Coit Tower fica no Telegraph Hill.", "Golden Gate Park tem jardim e museu.", "Sausalito fica do outro lado da ponte, de ferry."],
     },
   },
   {
@@ -1169,9 +1169,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "sp",
     tier: "hard",
     clues: {
-      easy: ["É a cidade do noroeste dos EUA famosa pelo café.", "A Space Needle marca a skyline.", "Fica entre o Puget Sound e as montanhas.", "A chuva fina e os pinheiros fazem parte da imagem.", "Starbucks nasceu aqui."],
-      medium: ["O Pike Place Market joga peixes para a plateia.", "Chihuly Garden celebra o vidro colorido.", "A baía e as ferries ligam as ilhas.", "Capitol Hill anima a vida noturna.", "Mount Rainier aparece no horizonte em dia limpo."],
-      hard: ["Fremont tem o troll debaixo da ponte.", "Ballard guarda o histórico e o domingo de farmers market.", "O Museum of Pop Culture fica aos pés da Needle.", "Bainbridge Island é o ferry clássico.", "Kerry Park é o mirante de postcard da skyline."],
+      easy: ["Cidade do noroeste dos EUA famosa pelo café.", "A Space Needle é o marco da skyline.", "Fica entre o Puget Sound e as montanhas.", "Chuva fina e pinheiro fazem parte da imagem.", "Starbucks nasceu aqui."],
+      medium: ["No Pike Place Market jogam peixe pra plateia.", "Chihuly Garden celebra o vidro colorido.", "Ferry liga as ilhas.", "Capitol Hill é a vida noturna.", "Mount Rainier aparece no horizonte em dia limpo."],
+      hard: ["Fremont tem o troll debaixo da ponte.", "Ballard tem o farmers market de domingo.", "O Museum of Pop Culture fica aos pés da Needle.", "Bainbridge Island é o ferry clássico.", "Kerry Park é o mirante postcard da skyline."],
     },
   },
   {
@@ -1182,9 +1182,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "dubai",
     tier: "hard",
     clues: {
-      easy: ["É a cidade dos cassinos no deserto de Nevada.", "A Strip concentra hotéis-tema e néon.", "É famosa por shows, casamentos rápidos e buffets.", "O slogan clássico é “o que acontece aqui, fica aqui”.", "Fica no meio do deserto de Mojave."],
-      medium: ["O Bellagio tem o show das fontes.", "Fremont Street é o centro antigo coberto de LED.", "O Grand Canyon fica a um day trip.", "Os cassinos-tema imitam Paris, Veneza e Nova York.", "O calor do verão é extremo."],
-      hard: ["Red Rock Canyon é a saída de trilhas perto da cidade.", "Arts District e 18b animam fora da Strip.", "Hoover Dam fica na fronteira com o Arizona.", "O Neon Museum guarda letreiros antigos.", "Summerlin e Henderson são os subúrbios residenciais."],
+      easy: ["A cidade dos cassinos no deserto de Nevada.", "A Strip é hotel-tema e néon.", "Show, casamento rápido e buffet.", "“O que acontece aqui, fica aqui.”", "Fica no meio do deserto de Mojave."],
+      medium: ["O Bellagio tem o show das fontes.", "Fremont Street é o centro antigo coberto de LED.", "O Grand Canyon fica a um day trip.", "Cassino-tema imita Paris, Veneza e Nova York.", "O calor do verão é extremo."],
+      hard: ["Red Rock Canyon é a saída de trilha perto.", "Arts District é o rolê fora da Strip.", "Hoover Dam fica na fronteira com o Arizona.", "O Neon Museum guarda letreiro antigo.", "Summerlin e Henderson são os subúrbios."],
     },
   },
   {
@@ -1195,9 +1195,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "sp",
     tier: "hard",
     clues: {
-      easy: ["É a maior cidade do Texas.", "É associada à NASA e ao espaço (Mission Control).", "O petróleo e a energia marcam a economia.", "Não tem zoning clássico — a cidade se espalha.", "O calor úmido do Golfo define o clima."],
-      medium: ["O Space Center Houston é o passeio da NASA.", "O Museum District concentra instituições culturais.", "O rodeo de Houston é um dos maiores do país.", "Buffalo Bayou corta o centro revitalizado.", "A culinária tex-mex e barbecue é marca registrada."],
-      hard: ["Montrose e Westheimer animam a vida boêmia.", "The Heights tem casas históricas e cafés.", "Kemah Boardwalk fica na baía.", "O Menil Collection é museu de arte moderna.", "Galveston, na praia, fica a cerca de 1h."],
+      easy: ["A maior cidade do Texas.", "Associada à NASA e ao espaço.", "Petróleo e energia são a cara da economia.", "Cidade que se espalha sem zoning clássico.", "Calor úmido do Golfo."],
+      medium: ["Space Center Houston é o passeio da NASA.", "Museum District é cheio de instituição cultural.", "O rodeo de Houston é um dos maiores do país.", "Buffalo Bayou corta o centro renovado.", "Tex-mex e barbecue são a cara da mesa."],
+      hard: ["Montrose e Westheimer são o lado boêmio.", "The Heights tem casa histórica e café.", "Kemah Boardwalk fica na baía.", "Menil Collection é museu de arte moderna.", "Galveston, na praia, fica a cerca de 1h."],
     },
   },
   {
@@ -1208,9 +1208,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "sp",
     tier: "hard",
     clues: {
-      easy: ["É a capital do estado da Geórgia, nos EUA.", "É um hub aéreo gigante (aeroporto Hartsfield-Jackson).", "Martin Luther King Jr. nasceu e pregou aqui.", "A Coca-Cola tem museu e raiz na cidade.", "É um polo do hip-hop e da cultura do Sul."],
-      medium: ["O Centennial Olympic Park lembra os Jogos de 1996.", "Piedmont Park é o parque central.", "Buckhead e Midtown marcam eixos de negócios.", "O Aquarium da Geórgia é um dos maiores do mundo.", "A BeltLine é a rede de trilhas em antigos trilhos."],
-      hard: ["Sweet Auburn guarda a história dos direitos civis.", "Little Five Points é o bolsão alternativo.", "O Mercedes-Benz Stadium tem o teto em pétala.", "Stone Mountain fica nos arredores.", "Inman Park anima casas vitorianas e cafés."],
+      easy: ["Capital da Geórgia, nos EUA.", "Hub aéreo gigante — Hartsfield-Jackson.", "Martin Luther King Jr. nasceu e pregou aqui.", "A Coca-Cola tem museu e raiz na cidade.", "Polo de hip-hop e cultura do Sul."],
+      medium: ["Centennial Olympic Park lembra os Jogos de 1996.", "Piedmont Park é o parque central.", "Buckhead e Midtown são eixos de negócio.", "O Aquarium da Geórgia é um dos maiores do mundo.", "A BeltLine é trilha em antigo trilho."],
+      hard: ["Sweet Auburn guarda a história dos direitos civis.", "Little Five Points é o bolsão alternativo.", "O Mercedes-Benz Stadium tem o teto em pétala.", "Stone Mountain fica nos arredores.", "Inman Park tem casa vitoriana e café."],
     },
   },
   {
@@ -1221,9 +1221,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "plaza",
     tier: "hard",
     clues: {
-      easy: ["É a capital do Colorado, nos EUA.", "Fica a cerca de 1.600 m de altitude (“Mile High City”).", "As Montanhas Rochosas ficam logo a oeste.", "É associada a cerveja artesanal e ar livre.", "O clima é seco, com muito sol."],
-      medium: ["O Capitol tem o marco da milha alta nos degraus.", "LoDo (Lower Downtown) concentra brewpubs.", "Red Rocks é o anfiteatro na pedra vermelha.", "O aeroporto DIA tem a tenda branca icônica.", "Boulder fica a cerca de 30–40 minutos."],
-      hard: ["RiNo (River North) é o distrito de arte e taprooms.", "Cherry Creek anima compras e parque.", "Union Station foi restaurada como hub.", "Golden e Coors ficam no caminho das montanhas.", "O Denver Art Museum tem a arquitetura angular."],
+      easy: ["Capital do Colorado.", "Fica a ~1.600 m — a Mile High City.", "As Rochosas ficam logo a oeste.", "Cerveja artesanal e ar livre.", "Clima seco, muito sol."],
+      medium: ["No Capitol tem o marco da milha alta nos degraus.", "LoDo é cheio de brewpub.", "Red Rocks é o anfiteatro na pedra vermelha.", "O aeroporto DIA tem a tenda branca.", "Boulder fica a uns 30–40 minutos."],
+      hard: ["RiNo é distrito de arte e taproom.", "Cherry Creek é compra e parque.", "Union Station foi restaurada como hub.", "Golden e Coors ficam no caminho das montanhas.", "O Denver Art Museum tem arquitetura angular."],
     },
   },
   {
@@ -1234,9 +1234,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "sp",
     tier: "hard",
     clues: {
-      easy: ["É a cidade da Independência e do Liberty Bell.", "Fica na Pensilvânia, no corredor do nordeste dos EUA.", "O cheesesteak é o sanduíche símbolo.", "Foi a capital temporária dos EUA no século XVIII.", "O rio Delaware marca a beira."],
-      medium: ["Independence Hall é onde a Declaração foi debatida.", "O Museum of Art tem a escadaria do Rocky.", "South Street anima a noite e as lojas.", "Reading Terminal Market é o mercado coberto clássico.", "University City concentra Penn e Drexel."],
-      hard: ["Old City e Elfreth’s Alley guardam o século XVIII.", "Fishtown virou polo hipster e cervejeiro.", "O Mural Arts Program cobre paredes da cidade.", "Valley Forge fica nos arredores históricos.", "Boathouse Row ilumina o rio Schuylkill."],
+      easy: ["A cidade da Independência e do Liberty Bell.", "Fica na Pensilvânia, no corredor do nordeste.", "Cheesesteak é o sanduíche símbolo.", "Foi capital temporária dos EUA no século XVIII.", "O rio Delaware é a beira."],
+      medium: ["Independence Hall é onde a Declaração foi debatida.", "O Museum of Art tem a escadaria do Rocky.", "South Street é noite e loja.", "Reading Terminal Market é o mercado coberto clássico.", "University City é Penn e Drexel."],
+      hard: ["Old City e Elfreth’s Alley guardam o século XVIII.", "Fishtown virou polo hipster e cervejeiro.", "O Mural Arts Program cobre parede da cidade.", "Valley Forge fica nos arredores.", "Boathouse Row ilumina o Schuylkill."],
     },
   },
   {
@@ -1247,9 +1247,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "miami",
     tier: "hard",
     clues: {
-      easy: ["É a cidade californiana perto da fronteira com o México.", "É famosa pelo zoo e pelo clima ameno.", "As praias e a baía marcam o lifestyle.", "Balboa Park concentra museus e jardins.", "Tem base naval importante."],
-      medium: ["Gaslamp Quarter anima o centro histórico.", "La Jolla tem falésias e leões-marinhos.", "Coronado tem o hotel vermelho icônico.", "Old Town conta a história mexicana-californiana.", "Tijuana fica imediatamente ao sul."],
-      hard: ["North Park e South Park animam craft beer.", "Point Loma tem o farol e a vista da baía.", "Torrey Pines é a reserva de penhascos e golfe.", "Little Italy concentra restaurantes no porto.", "USS Midway é o museu-porta-aviões."],
+      easy: ["Cidade californiana perto da fronteira com o México.", "Famosa pelo zoo e pelo clima ameno.", "Praia e baía são o lifestyle.", "Balboa Park é cheio de museu e jardim.", "Tem base naval importante."],
+      medium: ["Gaslamp Quarter é o centro histórico.", "La Jolla tem falésia e leão-marinho.", "Coronado tem o hotel vermelho.", "Old Town conta a história mexicana-californiana.", "Tijuana fica imediatamente ao sul."],
+      hard: ["North Park e South Park são craft beer.", "Point Loma tem farol e vista da baía.", "Torrey Pines é reserva de penhasco e golfe.", "Little Italy é restaurante no porto.", "USS Midway é o museu-porta-aviões."],
     },
   },
   {
@@ -1260,9 +1260,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "sp",
     tier: "hard",
     clues: {
-      easy: ["É a capital do Texas.", "É famosa por música ao vivo (“Live Music Capital”).", "O slogan é “Keep Austin Weird”.", "O churrasco texano e os food trucks são marca.", "Fica no Texas Hill Country."],
-      medium: ["O Congress Avenue Bridge tem o voo dos morcegos.", "South Congress (SoCo) anima lojas e cafés.", "SXSW e ACL são os grandes festivais.", "Lady Bird Lake é o lago para remar no centro.", "A Universidade do Texas domina o campus laranja."],
-      hard: ["Barton Springs é a piscina natural gelada.", "East Austin concentra craft e street art.", "The Domain é o polo norte de compras.", "Fredericksburg e os vinhedos ficam no Hill Country.", "O Capitol estadual de pedra rosa é imponente."],
+      easy: ["Capital do Texas.", "Famosa por música ao vivo — Live Music Capital.", "O slogan é “Keep Austin Weird”.", "Churrasco texano e food truck.", "Fica no Texas Hill Country."],
+      medium: ["Na Congress Avenue Bridge tem o voo dos morcegos.", "South Congress (SoCo) é loja e café.", "SXSW e ACL são os grandes festivais.", "Lady Bird Lake é o lago pra remar no centro.", "A Universidade do Texas manda no campus laranja."],
+      hard: ["Barton Springs é a piscina natural gelada.", "East Austin é craft e street art.", "The Domain é o polo norte de compra.", "Fredericksburg e os vinhedos ficam no Hill Country.", "O Capitol estadual de pedra rosa é imponente."],
     },
   },
   {
@@ -1273,8 +1273,8 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "paris",
     tier: "hard",
     clues: {
-      easy: ["É a capital da província de Quebec, no Canadá.", "O centro histórico murado lembra uma cidade europeia.", "Fala-se francês no dia a dia.", "O Château Frontenac é o hotel-cartão-postal.", "Os invernos são rigorosos e o Carnaval de inverno é clássico."],
-      medium: ["A Place Royale marca a fundação francesa.", "As muralhas ainda cercam o Vieux-Québec.", "O rio São Lourenço passa aos pés da cidade.", "Montmorency Falls fica nos arredores.", "A Haute-Ville e a Basse-Ville se ligam por funicular."],
+      easy: ["Capital da província de Quebec.", "Centro histórico murado com cara de Europa.", "Falam francês no dia a dia.", "O Château Frontenac é o hotel-postal.", "Inverno rigoroso e Carnaval de inverno clássico."],
+      medium: ["Place Royale é a fundação francesa.", "As muralhas ainda cercam o Vieux-Québec.", "O São Lourenço passa aos pés da cidade.", "Montmorency Falls fica nos arredores.", "Haute-Ville e Basse-Ville se ligam por funicular."],
       hard: ["Île d’Orléans fica logo após as quedas.", "A Batalha das Planícies de Abraão marcou a história.", "Petit-Champlain é a rua comercial charmosa.", "Lévis fica do outro lado do rio, de ferry.", "O Observatório da Capital fica na Édifice Marie-Guyart."],
     },
   },
@@ -1286,9 +1286,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "plaza",
     tier: "hard",
     clues: {
-      easy: ["É a cidade das pradarias canadenses aos pés das Rochosas.", "O Calgary Stampede é o rodeio famoso.", "É polo de petróleo e energia no Alberta.", "Banff e os lagos turquesa ficam a cerca de 1–1,5h.", "Os invernos são frios e secos."],
-      medium: ["A Calgary Tower marca o downtown.", "O Bow River corta a cidade.", "Kensington e Inglewood animam bairros.", "O Heritage Park recria o oeste canadense.", "O aeroporto é hub para as Rochosas."],
-      hard: ["Prince’s Island Park fica no meio do rio.", "Stephen Avenue é a rua pedestre do centro.", "Canada Olympic Park lembra os Jogos de 1988.", "Drumheller e os dinossauros ficam a leste.", "The +15 é a rede de passarelas aquecidas."],
+      easy: ["Cidade das pradarias canadenses aos pés das Rochosas.", "O Calgary Stampede é o rodeio famoso.", "Polo de petróleo e energia no Alberta.", "Banff e os lagos turquesa ficam a ~1–1,5h.", "Inverno frio e seco."],
+      medium: ["A Calgary Tower é o marco do downtown.", "O Bow River corta a cidade.", "Kensington e Inglewood são os bairros animados.", "Heritage Park recria o oeste canadense.", "O aeroporto é hub pras Rochosas."],
+      hard: ["Prince’s Island Park fica no meio do rio.", "Stephen Avenue é a rua pedestre do centro.", "Canada Olympic Park lembra os Jogos de 1988.", "Drumheller e os dinossauros ficam a leste.", "O +15 é a rede de passarela aquecida."],
     },
   },
   {
@@ -1299,9 +1299,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "plaza",
     tier: "hard",
     clues: {
-      easy: ["É a capital do Canadá.", "O Parlamento fica sobre o rio Ottawa.", "Inverno traz patinação no canal Rideau.", "Inglês e francês convivem na região.", "Fica na fronteira entre Ontário e Quebec."],
-      medium: ["O Canal Rideau é patrimônio da Unesco.", "ByWard Market anima comida e vida noturna.", "A National Gallery tem a catedral de vidro.", "Gatineau, do outro lado do rio, tem museus e parques.", "A Changing of the Guard acontece no verão."],
-      hard: ["The Glebe e Westboro são bairros residenciais charmosos.", "Major’s Hill Park vê o Parlamento e o Château Laurier.", "Dows Lake anima o Winterlude.", "Kanata é o polo tech dos arredores.", "Parliament Hill tem as torres neogóticas."],
+      easy: ["Capital do Canadá.", "O Parlamento fica sobre o rio Ottawa.", "No inverno dá pra patinar no canal Rideau.", "Inglês e francês convivem na região.", "Fica na fronteira entre Ontário e Quebec."],
+      medium: ["O Canal Rideau é Unesco.", "ByWard Market é comida e noite.", "A National Gallery tem a catedral de vidro.", "Gatineau, do outro lado, tem museu e parque.", "A Changing of the Guard acontece no verão."],
+      hard: ["The Glebe e Westboro são bairros charmosos.", "Major’s Hill Park vê o Parlamento e o Château Laurier.", "Dows Lake é o rolê do Winterlude.", "Kanata é o polo tech dos arredores.", "Parliament Hill tem as torres neogóticas."],
     },
   },
   {
@@ -1312,9 +1312,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "sp",
     tier: "hard",
     clues: {
-      easy: ["É a grande cidade industrial do norte do México.", "Fica cercada por montanhas, inclusive o Cerro de la Silla.", "É conhecida pelo carne asada e pela cultura norteña.", "O rio Santa Catarina corta a área metropolitana.", "É polo de negócios e universidades."],
-      medium: ["A Macroplaza é uma das praças mais amplas do país.", "O Faro del Comercio marca o centro.", "Barrio Antiguo anima a noite.", "O Parque Fundidora reaproveita a antiga siderúrgica.", "Chipinque e a Sierra Madre são a saída de trilhas."],
-      hard: ["San Pedro Garza García é o município abastado vizinho.", "O Museo de Historia Mexicana fica no Paseo Santa Lucía.", "O teleférico do Parque Estrella sobe a serra.", "Obispado tem o mirante e o palácio.", "Santiago e Cola de Caballo ficam nos arredores."],
+      easy: ["Grande cidade industrial do norte do México.", "Cercada de montanha — inclusive o Cerro de la Silla.", "Carne asada e cultura norteña.", "O rio Santa Catarina corta a área metropolitana.", "Polo de negócio e universidade."],
+      medium: ["A Macroplaza é uma das praças mais amplas do país.", "O Faro del Comercio é o marco do centro.", "Barrio Antiguo é a noite.", "O Parque Fundidora reaproveita a antiga siderúrgica.", "Chipinque e a Sierra Madre são a saída de trilha."],
+      hard: ["San Pedro Garza García é o município abastado vizinho.", "O Museo de Historia Mexicana fica no Paseo Santa Lucía.", "O teleférico do Parque Estrella sobe a serra.", "Obispado tem mirante e palácio.", "Santiago e Cola de Caballo ficam nos arredores."],
     },
   },
   {
@@ -1325,9 +1325,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "plaza",
     tier: "hard",
     clues: {
-      easy: ["É a capital do estado de Oaxaca, no sul do México.", "É famosa pelo mole, pelo mezcal e pela gastronomia.", "O centro colonial tem praças e igrejas coloridas.", "Monte Albán, a cidade zapoteca, fica nos arredores.", "A Guelaguetza é a grande festa cultural."],
-      medium: ["O Zócalo anima a vida pública.", "Santo Domingo de Guzmán é a igreja/museu icônica.", "Hierve el Agua são as cascadas petrificadas próximas.", "O mercado 20 de Noviembre serve passagens de comida.", "Teotitlán del Valle é a vila dos tapetes."],
-      hard: ["Jalatlaco é o bairro de murais e calçadas.", "Mitla guarda os mosaicos geométricos pré-hispânicos.", "O Instituto de Artes Gráficas tem pátio calmo.", "Puerto Escondido, no litoral, fica a algumas horas.", "O mezcal de Matatlán é rota clássica."],
+      easy: ["Capital do estado de Oaxaca, no sul do México.", "Mole, mezcal e gastronomia.", "Centro colonial com praça e igreja colorida.", "Monte Albán, a cidade zapoteca, fica nos arredores.", "A Guelaguetza é a grande festa cultural."],
+      medium: ["O Zócalo é a vida pública.", "Santo Domingo de Guzmán é a igreja/museu.", "Hierve el Agua são as cascadas petrificadas.", "O mercado 20 de Noviembre serve passagem de comida.", "Teotitlán del Valle é a vila dos tapetes."],
+      hard: ["Jalatlaco é o bairro de mural e calçada.", "Mitla tem mosaico geométrico pré-hispânico.", "O Instituto de Artes Gráficas tem pátio calmo.", "Puerto Escondido, no litoral, fica a algumas horas.", "O mezcal de Matatlán é rota clássica."],
     },
   },
   {
@@ -1338,9 +1338,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "miami",
     tier: "hard",
     clues: {
-      easy: ["É a capital do Yucatán, no México.", "Tem centro colonial branco e calmo.", "É porta para as ruínas maias da região.", "A culinária yucateca inclui cochinita pibil.", "O calor é intenso a maior parte do ano."],
-      medium: ["O Paseo de Montejo é o boulevard das mansões.", "Chichén Itzá fica a cerca de 2h.", "Uxmal é outro sítio maia próximo.", "Os cenotes (poços de água) cercam a cidade.", "A Plaza Grande marca o centro histórico."],
-      hard: ["Izamal, a cidade amarela, fica a um passeio.", "Progreso é a praia do Golfo mais próxima.", "O Mercado Lucas de Gálvez é o caos saboroso.", "Santa Lucía anima serenatas e jantares.", "Valladolid é parada clássica no caminho a Cancún."],
+      easy: ["Capital do Yucatán, no México.", "Centro colonial branco e calmo.", "Porta pras ruínas maias da região.", "Cochinita pibil na mesa.", "Calor intenso a maior parte do ano."],
+      medium: ["Paseo de Montejo é o boulevard das mansões.", "Chichén Itzá fica a cerca de 2h.", "Uxmal é outro sítio maia perto.", "Cenote (poço de água) cerca a cidade.", "A Plaza Grande é o marco do centro histórico."],
+      hard: ["Izamal, a cidade amarela, fica a um passeio.", "Progreso é a praia do Golfo mais perto.", "O Mercado Lucas de Gálvez é o caos saboroso.", "Santa Lucía é serenata e jantar.", "Valladolid é parada clássica no caminho a Cancún."],
     },
   },
   {
@@ -1351,8 +1351,8 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "miami",
     tier: "hard",
     clues: {
-      easy: ["É a cidade murada caribenha da Colômbia.", "O centro colonial é patrimônio da Unesco.", "As muralhas (las murallas) são o passeio do pôr do sol.", "O calor úmido e o mar Caribe definem o clima.", "Aparece em crônicas de García Márquez."],
-      medium: ["Getsêmani é o bairro boêmio ao lado do centro.", "A Torre del Reloj marca a porta da cidade velha.", "As Ilhas do Rosário ficam de barco.", "San Felipe é o forte no alto.", "Bocagrande é a faixa de hotéis modernos."],
+      easy: ["A cidade murada caribenha da Colômbia.", "Centro colonial Unesco.", "As muralhas são o passeio do pôr do sol.", "Calor úmido e mar Caribe.", "Aparece em crônica do García Márquez."],
+      medium: ["Getsêmani é o bairro boêmio ao lado do centro.", "A Torre del Reloj é a porta da cidade velha.", "As Ilhas do Rosário ficam de barco.", "San Felipe é o forte no alto.", "Bocagrande é a faixa de hotel moderno."],
       hard: ["La Popa tem o convento com vista 360°.", "Bazurto é o mercado popular fora do circuito.", "Barú e Playa Blanca são a praia de day trip.", "O Palácio da Inquisição conta a história colonial.", "Manga e Pie de la Popa são bairros residenciais."],
     },
   },
@@ -1364,9 +1364,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "plaza",
     tier: "hard",
     clues: {
-      easy: ["É a cidade colombiana do eterno clima de primavera.", "Fica no vale do Aburrá, cercada de morros.", "O metrô e os teleféricos (Metrocable) são cartão-postal.", "É associada à transformação urbana e às comunas.", "A floricultura e a Feria de las Flores marcam o ano."],
-      medium: ["Comuna 13 tem os grafites e as escadas elétricas.", "El Poblado concentra hotéis e vida noturna.", "O Parque Explora e o Jardín Botánico ficam juntos.", "Guatapé e a Pedra do Peñol ficam a um day trip.", "Laureles é bairro residencial charmoso."],
-      hard: ["El Parche e Envigado animam a margem sul.", "O Pueblito Paisa no cerro Nutibara tem vista.", "Arví é o parque ecológico no fim do cable.", "Plaza Botero reúne as esculturas volumosas.", "Santa Fe de Antioquia fica a oeste, colonial."],
+      easy: ["Cidade colombiana do eterno clima de primavera.", "Fica no vale do Aburrá, cercada de morro.", "Metrô e Metrocable são o postal.", "Associada à transformação urbana e às comunas.", "Floricultura e Feria de las Flores são a cara do ano."],
+      medium: ["Comuna 13 tem grafite e escada elétrica.", "El Poblado é hotel e noite.", "Parque Explora e Jardín Botánico ficam juntos.", "Guatapé e a Pedra do Peñol ficam a um day trip.", "Laureles é bairro residencial charmoso."],
+      hard: ["El Parche e Envigado são a margem sul.", "O Pueblito Paisa no cerro Nutibara tem vista.", "Arví é o parque ecológico no fim do cable.", "Plaza Botero reúne as esculturas volumosas.", "Santa Fe de Antioquia fica a oeste, colonial."],
     },
   },
   {
@@ -1377,9 +1377,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "plaza",
     tier: "hard",
     clues: {
-      easy: ["É a capital do Equador.", "Fica a ~2.800 m de altitude nos Andes.", "O centro histórico é um dos mais bem preservados da América.", "A Mitad del Mundo marca a linha do equador nos arredores.", "O vulcão Pichincha domina o horizonte."],
-      medium: ["A Calle La Ronda é o passeio boêmio.", "O teleférico sobe o flanco do Pichincha.", "A Basílica del Voto Nacional tem gárgulas locais.", "Otavalo, o mercado indígena, fica a norte.", "O Panecillo tem a Virgen alada no alto."],
-      hard: ["Guápulo é o bairro de mirante e arte.", "La Floresta anima cafés.", "Mindo, de floresta nublada, fica a oeste.", "O Museu da Casa da Cultura concentra arte.", "Cotopaxi, o vulcão, é day trip clássico."],
+      easy: ["Capital do Equador.", "Fica a ~2.800 m nos Andes.", "Centro histórico dos mais bem preservados da América.", "A Mitad del Mundo é a linha do equador nos arredores.", "O vulcão Pichincha manda no horizonte."],
+      medium: ["Calle La Ronda é o passeio boêmio.", "O teleférico sobe o flanco do Pichincha.", "A Basílica del Voto Nacional tem gárgula local.", "Otavalo, o mercado indígena, fica a norte.", "O Panecillo tem a Virgen alada no alto."],
+      hard: ["Guápulo é mirante e arte.", "La Floresta é café.", "Mindo, de floresta nublada, fica a oeste.", "O Museu da Casa da Cultura é cheio de arte.", "Cotopaxi é day trip clássico."],
     },
   },
   {
@@ -1390,9 +1390,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "plaza",
     tier: "hard",
     clues: {
-      easy: ["É a sede de governo da Bolívia, numa bacia andina.", "É uma das capitais mais altas do mundo.", "O teleférico (Mi Teleférico) colorido corta os morros.", "O Illimani nevado aparece no horizonte.", "A culinária inclui salteñas e chuño."],
-      medium: ["El Alto fica ainda mais alto, na orla do altiplano.", "A Calle Jaén é a rua colonial museu.", "O Valle de la Luna tem formações de argila.", "O Mercado das Bruxas vende amuletos.", "O Lago Titicaca fica a algumas horas."],
-      hard: ["Sopocachi anima a vida boêmia.", "A Plaza Murillo concentra o poder político.", "Copacabana (Bolívia) é o porto do Titicaca.", "O bairro de Miraflores tem o estádio Hernando Siles.", "Uyuni, o salar, exige voo ou noite de ônibus."],
+      easy: ["Sede de governo da Bolívia, numa bacia andina.", "Uma das capitais mais altas do mundo.", "O teleférico colorido (Mi Teleférico) corta os morros.", "O Illimani nevado aparece no horizonte.", "Salteña e chuño na mesa."],
+      medium: ["El Alto fica ainda mais alto, na orla do altiplano.", "Calle Jaén é a rua colonial museu.", "O Valle de la Luna tem formação de argila.", "O Mercado das Bruxas vende amuleto.", "O Lago Titicaca fica a algumas horas."],
+      hard: ["Sopocachi é o lado boêmio.", "Plaza Murillo é onde fica o poder político.", "Copacabana (Bolívia) é o porto do Titicaca.", "Miraflores tem o estádio Hernando Siles.", "Uyuni, o salar, exige voo ou noite de ônibus."],
     },
   },
   {
@@ -1403,9 +1403,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "plaza",
     tier: "hard",
     clues: {
-      easy: ["É a capital do Paraguai.", "Fica à beira do rio Paraguai.", "O guarani e o espanhol convivem no dia a dia.", "É uma das capitais mais antigas da região.", "O chipa e a sopa paraguaia marcam a mesa."],
-      medium: ["O Palácio de López é a sede do Executivo.", "A Costanera anima caminhadas à beira-rio.", "O Mercado 4 é o caos comercial multicultural.", "A Bahía de Asunción concentra aves e pôr do sol.", "Ciudad del Este e as Cataratas ficam a leste do país."],
-      hard: ["Loma San Jerónimo é o mirante colorido.", "O Cabildo hoje é centro cultural.", "San Bernardino, no lago Ypacaraí, é refúgio de verão.", "O barrio Manora anima a noite.", "A Catedral Metropolitana fica na Plaza de Armas."],
+      easy: ["Capital do Paraguai.", "Fica na beira do rio Paraguai.", "Guarani e espanhol no dia a dia.", "Uma das capitais mais antigas da região.", "Chipa e sopa paraguaia na mesa."],
+      medium: ["O Palácio de López é a sede do Executivo.", "A Costanera é caminhada na beira-rio.", "O Mercado 4 é o caos comercial multicultural.", "A Bahía de Asunción tem ave e pôr do sol.", "Ciudad del Este e as Cataratas ficam a leste do país."],
+      hard: ["Loma San Jerónimo é o mirante colorido.", "O Cabildo hoje é centro cultural.", "San Bernardino, no lago Ypacaraí, é refúgio de verão.", "Manora é o rolê da noite.", "A Catedral Metropolitana fica na Plaza de Armas."],
     },
   },
   {
@@ -1416,9 +1416,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "miami",
     tier: "hard",
     clues: {
-      easy: ["É a capital do Uruguai.", "A Rambla acompanha o Rio da Prata por quilômetros.", "O carnaval uruguaio (murga e candombe) é tradição.", "O mate e o asado fazem parte do cotidiano.", "Fica a poucas horas de Buenos Aires de barco ou ônibus."],
-      medium: ["A Ciudad Vieja concentra o centro histórico.", "O Mercado del Puerto serve o churrasco clássico.", "Pocitos e Punta Carretas são bairros da orla.", "O Estádio Centenário lembra a primeira Copa do Mundo.", "Colonia del Sacramento fica a oeste, colonial."],
-      hard: ["Palermo e Parque Rodó animam a vida cultural.", "O Cerro da cidade tem a fortaleza e a bandeira.", "Tristán Narvaja é o mercado de domingo.", "Punta del Este fica a leste na temporada.", "O Teatro Solís é a casa lírica."],
+      easy: ["Capital do Uruguai.", "A Rambla acompanha o Rio da Prata por quilômetro.", "Carnaval uruguaio — murga e candombe.", "Mate e asado no cotidiano.", "Fica a poucas horas de Buenos Aires."],
+      medium: ["Ciudad Vieja é o centro histórico.", "No Mercado del Puerto o forte é churrasco.", "Pocitos e Punta Carretas são bairros da orla.", "O Estádio Centenário lembra a primeira Copa.", "Colonia del Sacramento fica a oeste, colonial."],
+      hard: ["Palermo e Parque Rodó são a vida cultural.", "O Cerro tem a fortaleza e a bandeira.", "Tristán Narvaja é o mercado de domingo.", "Punta del Este fica a leste na temporada.", "O Teatro Solís é a casa lírica."],
     },
   },
   {
@@ -1429,9 +1429,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "miami",
     tier: "hard",
     clues: {
-      easy: ["É o porto chileno dos cerros coloridos.", "Os elevadores (ascensores) sobem as ladeiras.", "É patrimônio da Unesco pelo conjunto portuário.", "Fica a cerca de 1,5h de Santiago.", "O grafite e a poesia de Neruda marcam a identidade."],
-      medium: ["Cerro Alegre e Cerro Concepción são os mais turísticos.", "La Sebastiana foi a casa de Pablo Neruda.", "O porto e os navios aparecem em cada mirante.", "Viña del Mar, a vizinha, tem praia e cassino.", "O Plan (cidade baixa) concentra o comércio."],
-      hard: ["Artillería tem o mirante e o museu naval.", "Playa Ancha é o cerro amplo do sul.", "O Congreso Nacional fica em Valparaíso desde os anos 90.", "Quintana e Bellavista são cerros com miradas próprias.", "Isla Negra, outra casa de Neruda, fica no litoral sul."],
+      easy: ["O porto chileno dos cerros coloridos.", "Ascensor sobe as ladeiras.", "Patrimônio Unesco pelo conjunto portuário.", "Fica a ~1,5h de Santiago.", "Grafite e poesia do Neruda são a cara daqui."],
+      medium: ["Cerro Alegre e Cerro Concepción são os mais turísticos.", "La Sebastiana foi a casa do Pablo Neruda.", "Porto e navio aparecem em cada mirante.", "Viña del Mar, a vizinha, tem praia e cassino.", "O Plan (cidade baixa) é o comércio."],
+      hard: ["Artillería tem mirante e museu naval.", "Playa Ancha é o cerro amplo do sul.", "O Congreso Nacional fica aqui desde os anos 90.", "Quintana e Bellavista são cerros com vista própria.", "Isla Negra, outra casa do Neruda, fica no litoral sul."],
     },
   },
   {
@@ -1442,9 +1442,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "plaza",
     tier: "hard",
     clues: {
-      easy: ["É a porta de entrada para Machu Picchu, no Peru.", "Foi a capital do Império Inca.", "Fica a cerca de 3.400 m de altitude nos Andes.", "Pedras incas e igrejas coloniais se misturam no centro.", "O Vale Sagrado cerca a cidade."],
-      medium: ["A Plaza de Armas é o coração do centro.", "Sacsayhuamán fica no alto com muralhas em zigue-zague.", "O trem para Aguas Calientes sai da região.", "San Blas é o bairro dos artesãos.", "Rainbow Mountain e lagunas são day trips de altitude."],
-      hard: ["Qorikancha foi o templo do Sol, sob o convento.", "Pisac e Ollantaytambo marcam o Vale Sagrado.", "O Mercado San Pedro alimenta a cidade.", "Maras e as salinas ficam no caminho do vale.", "Cristo Blanco ilumina o alto à noite."],
+      easy: ["Porta de entrada pra Machu Picchu, no Peru.", "Foi a capital do Império Inca.", "Fica a ~3.400 m nos Andes.", "Pedra inca e igreja colonial se misturam no centro.", "O Vale Sagrado cerca a cidade."],
+      medium: ["A Plaza de Armas é o coração do centro.", "Sacsayhuamán fica no alto com muralha em zigue-zague.", "O trem pra Aguas Calientes sai da região.", "San Blas é o bairro dos artesãos.", "Rainbow Mountain e laguna são day trip de altitude."],
+      hard: ["Qorikancha foi o templo do Sol, sob o convento.", "Pisac e Ollantaytambo são o Vale Sagrado.", "O Mercado San Pedro alimenta a cidade.", "Maras e as salinas ficam no caminho do vale.", "Cristo Blanco ilumina o alto à noite."],
     },
   },
   {
@@ -1455,9 +1455,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "miami",
     tier: "hard",
     clues: {
-      easy: ["É a capital de Cuba.", "Os carros clássicos coloridos são cartão-postal.", "O Malecón é a avenida à beira-mar.", "A Habana Vieja tem praças coloniais.", "O mojito, o rum e o tabaco marcam a mesa."],
-      medium: ["A Plaza de la Catedral e a Plaza Vieja animam o centro.", "O Capitolio lembra o de Washington.", "Vedado é o bairro de avenidas e casas.", "A música ao vivo sai de cada esquina.", "O Morro e a baía marcam a entrada do porto."],
-      hard: ["Fusterlandia, em Jaimanitas, é o mosaico de Fuster.", "Miramar tem as embaixadas e o ocêano.", "O Cementerio de Colón é monumental.", "Trinidad, colonial, fica no centro-sul da ilha.", "La Guarida é restaurante famoso numa mansão."],
+      easy: ["Capital de Cuba.", "Carro clássico colorido: o postal.", "O Malecón é a avenida na beira-mar.", "Habana Vieja tem praça colonial.", "Mojito, rum e tabaco na mesa."],
+      medium: ["Plaza de la Catedral e Plaza Vieja são o centro.", "O Capitolio lembra o de Washington.", "Vedado é avenida e casa.", "Música ao vivo sai de cada esquina.", "O Morro e a baía são a entrada do porto."],
+      hard: ["Fusterlandia, em Jaimanitas, é o mosaico do Fuster.", "Miramar tem embaixada e oceano.", "O Cementerio de Colón é monumental.", "Trinidad, colonial, fica no centro-sul da ilha.", "La Guarida é restaurante famoso numa mansão."],
     },
   },
   {
@@ -1468,9 +1468,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "rio",
     tier: "hard",
     clues: {
-      easy: ["É a capital do Ceará, no Nordeste do Brasil.", "É famosa pelas praias urbanas e pelo sol forte.", "A Ponte dos Ingleses e a Beira Mar marcam a orla.", "O cuscuz, a carne de sol e o peixe são da mesa.", "É porta para Jericoacoara e o litoral oeste."],
-      medium: ["O Mercado Central vende renda e cachaça.", "Iracema é o bairro boêmio da orla.", "O Centro Dragão do Mar concentra cultura.", "Cumbuco e as dunas ficam perto.", "O Estádio Arena Castelão recebeu Copa."],
-      hard: ["Varjota e Meireles animam a noite gastronômica.", "Morro Branco e as falésias ficam a leste.", "O Beach Park é o parque aquático famoso.", "Messejana e a lagoa ficam na zona sul.", "A Feira da Beira Mar acontece aos fins de semana."],
+      easy: ["Capital do Ceará.", "Famosa pelas praias urbanas e pelo sol forte.", "A Beira Mar e a Ponte dos Ingleses são a cara da orla.", "Cuscuz, carne de sol e peixe na mesa.", "Porta pra Jericoacoara e o litoral oeste."],
+      medium: ["No Mercado Central vende renda e cachaça.", "Iracema é o bairro boêmio da orla.", "O Centro Dragão do Mar é cultura.", "Cumbuco e as dunas ficam perto.", "A Arena Castelão recebeu Copa."],
+      hard: ["Varjota e Meireles são a noite gastronômica.", "Morro Branco e as falésias ficam a leste.", "Beach Park é o parque aquático famoso.", "Messejana e a lagoa ficam na zona sul.", "A Feira da Beira Mar rola nos fins de semana."],
     },
   },
   {
@@ -1481,9 +1481,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "plaza",
     tier: "hard",
     clues: {
-      easy: ["É a capital do Amazonas, no meio da floresta.", "O Encontro das Águas (Negro e Solimões) é cartão-postal.", "O Teatro Amazonas de cúpula colorida marca o centro.", "É porta de entrada para a Amazônia brasileira.", "O calor úmido é constante."],
-      medium: ["O Mercado Municipal Adolpho Lisboa fica à beira do rio.", "O Museu da Amazônia (MUSA) tem torre na floresta.", "Passeios de barco saem do porto da cidade.", "A Zona Franca marca a economia local.", "Praias de rio como Ponta Negra animam o fim de semana."],
-      hard: ["O Palácio Rio Negro é museu na avenida.", "O Largo de São Sebastião cerca o teatro.", "Presidente Figueiredo, das cachoeiras, fica a norte.", "O INPA pesquisa a biodiversidade.", "Anavilhanas e o Rio Negro são destinos de barco."],
+      easy: ["Capital do Amazonas, no meio da floresta.", "O Encontro das Águas (Negro e Solimões) é o postal.", "O Teatro Amazonas de cúpula colorida é o marco do centro.", "Porta de entrada pra Amazônia brasileira.", "Calor úmido constante."],
+      medium: ["O Mercado Adolpho Lisboa fica na beira do rio.", "O MUSA tem torre na floresta.", "Passeio de barco sai do porto.", "A Zona Franca é a cara da economia local.", "Praia de rio tipo Ponta Negra é o fim de semana."],
+      hard: ["O Palácio Rio Negro é museu na avenida.", "O Largo de São Sebastião cerca o teatro.", "Presidente Figueiredo, das cachoeiras, fica a norte.", "O INPA pesquisa a biodiversidade.", "Anavilhanas e o Rio Negro são destino de barco."],
     },
   },
   {
@@ -1494,9 +1494,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "rio",
     tier: "hard",
     clues: {
-      easy: ["É a capital de Santa Catarina, numa ilha.", "É famosa pelas dezenas de praias.", "O Hercílio Luz é a ponte histórica.", "O samba e o surfe convivem com o friozinho sulista.", "É chamada de Floripa pelos brasileiros."],
-      medium: ["Lagoa da Conceição anima bares e kite.", "Jurerê e Joaquina são praias famosas.", "O centro fica na baía voltada ao continente.", "O Ribeirão da Ilha serve ostras.", "O Mercado Público marca o centro histórico."],
-      hard: ["Costa da Lagoa se chega de barco.", "Campeche tem a ilha e a faixa larga.", "Santo Antônio de Lisboa é o vilarejo açoriano.", "Mole e Galheta são praias de perfil jovem.", "O Parque do Rio Vermelho guarda a restinga."],
+      easy: ["Capital de Santa Catarina, numa ilha.", "Famosa pelas dezenas de praias.", "A Hercílio Luz é a ponte histórica.", "Samba e surfe com o friozinho sulista.", "O pessoal chama de Floripa."],
+      medium: ["Lagoa da Conceição é bar e kite.", "Jurerê e Joaquina são praia famosa.", "O centro fica na baía voltada ao continente.", "No Ribeirão da Ilha o forte é ostra.", "O Mercado Público é o marco do centro histórico."],
+      hard: ["Costa da Lagoa se chega de barco.", "Campeche tem a ilha e a faixa larga.", "Santo Antônio de Lisboa é o vilarejo açoriano.", "Mole e Galheta são praia de perfil jovem.", "No Parque do Rio Vermelho tem a restinga."],
     },
   },
   {
@@ -1507,9 +1507,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "plaza",
     tier: "hard",
     clues: {
-      easy: ["É a capital de Goiás, no Centro-Oeste do Brasil.", "Foi cidade planejada no século XX.", "É associada ao cerrado e ao sertanejo.", "O clima é seco na maior parte do ano.", "Fica a cerca de 200 km de Brasília."],
-      medium: ["O Parque Vaca Brava é o ponto de corrida e happy hour.", "O Mercado Da Gaúcha / Feira da Lua animam a noite.", "O Memorial do Cerrado e museus contam a região.", "A praça cívica marca o centro planejado.", "Caldas Novas, de águas quentes, fica no estado."],
-      hard: ["Setor Bueno concentra a vida noturna.", "O Bosque dos Buritis é parque central.", "Pirenópolis, colonial, fica a cerca de 2h.", "O Estádio Serra Dourada marca o futebol local.", "A Feira do Sol vende artesanato aos domingos."],
+      easy: ["Capital de Goiás, no Centro-Oeste.", "Cidade planejada do século XX.", "Associada ao cerrado e ao sertanejo.", "Clima seco a maior parte do ano.", "Fica a ~200 km de Brasília."],
+      medium: ["Parque Vaca Brava é corrida e happy hour.", "Feira da Lua é o rolê da noite.", "Memorial do Cerrado e museus contam a região.", "A praça cívica é o centro planejado.", "Caldas Novas, de águas quentes, fica no estado."],
+      hard: ["Setor Bueno é a vida noturna.", "O Bosque dos Buritis é parque central.", "Pirenópolis, colonial, fica a ~2h.", "O Serra Dourada é o marco do futebol local.", "A Feira do Sol vende artesanato aos domingos."],
     },
   },
   {
@@ -1520,9 +1520,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "rio",
     tier: "hard",
     clues: {
-      easy: ["É a capital do Pará, na foz da Amazônia.", "O Mercado Ver-o-Peso é o cartão-postal.", "O açaí de tigela salgada é tradição local.", "O Círio de Nazaré é a grande festa religiosa.", "Fica à beira da Baía do Guajará."],
-      medium: ["O Centro Histórico tem casarões e azulejos.", "A Estação das Docas anima a orla revitalizada.", "O Museu Emílio Goeldi tem parque zoológico-botânico.", "Ilha do Combu serve chocolate e açaí de barco.", "O Mangal das Garças é o parque urbano."],
-      hard: ["O Teatro da Paz é a casa lírica da borracha.", "Mosqueiro e as praias de rio ficam perto.", "O Mercado de São Brás anima o cotidiano.", "Alter do Chão exige voo ou viagem longa no estado.", "A Feira do Açaí madruga junto ao Ver-o-Peso."],
+      easy: ["Capital do Pará, na foz da Amazônia.", "O Ver-o-Peso é o postal.", "Açaí de tigela salgada é tradição.", "O Círio de Nazaré é a grande festa.", "Fica na beira da Baía do Guajará."],
+      medium: ["O Centro Histórico tem casarão e azulejo.", "A Estação das Docas é a orla renovada.", "O Museu Emílio Goeldi tem parque zoológico-botânico.", "Ilha do Combu serve chocolate e açaí de barco.", "O Mangal das Garças é o parque urbano."],
+      hard: ["O Teatro da Paz é a casa lírica da borracha.", "Mosqueiro e as praias de rio ficam perto.", "O Mercado de São Brás é o cotidiano.", "Alter do Chão exige voo ou viagem longa.", "A Feira do Açaí madruga junto ao Ver-o-Peso."],
     },
   },
   {
@@ -1533,9 +1533,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "dubai",
     tier: "hard",
     clues: {
-      easy: ["É a grande cidade do Kansai, no Japão.", "É famosa pelo takoyaki e pela comida de rua.", "O Castelo de Osaka marca o parque central.", "Tem fama de gente aberta e falante (kansai-ben).", "Fica perto de Quioto e de Nara."],
-      medium: ["Dotonbori é o neon e as placas de comida.", "Shinsekai e a Torre Tsūtenkaku lembram o Japão popular.", "Universal Studios Japan fica na baía.", "O aquário Kaiyukan é um dos maiores do mundo.", "Umeda tem o mirante flutuante."],
-      hard: ["Namba Yasaka tem o santuário da cabeça de leão.", "Kuromon Market alimenta o centro.", "Sumiyoshi Taisha é o santuário de telhado especial.", "Tempozan e o porto animam a baía.", "Den Den Town é o Akihabara local."],
+      easy: ["Grande cidade do Kansai, no Japão.", "Famosa pelo takoyaki e pela comida de rua.", "O Castelo de Osaka é o marco do parque central.", "Fama de gente aberta — kansai-ben.", "Fica perto de Quioto e de Nara."],
+      medium: ["Dotonbori é neon e placa de comida.", "Shinsekai e a Torre Tsūtenkaku lembram o Japão popular.", "Universal Studios Japan fica na baía.", "O aquário Kaiyukan é um dos maiores do mundo.", "Umeda tem o mirante flutuante."],
+      hard: ["Namba Yasaka tem o santuário da cabeça de leão.", "Kuromon Market alimenta o centro.", "Sumiyoshi Taisha é o santuário de telhado especial.", "Tempozan e o porto são o rolê da baía.", "Den Den Town é o Akihabara local."],
     },
   },
   {
@@ -1546,9 +1546,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "plaza",
     tier: "hard",
     clues: {
-      easy: ["Foi a capital imperial do Japão por séculos.", "É a cidade dos templos, santuários e gueixas.", "O Torii vermelho de Fushimi Inari sobe o morro.", "O outono e as cerejeiras puxam turismo intenso.", "Fica a menos de 1h de Osaka de trem."],
-      medium: ["Arashiyama tem o bosque de bambu.", "Gion é o bairro das casas de chá.", "Kinkaku-ji é o Pavilhão Dourado.", "O filosofal Path acompanha o canal.", "Nishiki Market é a “cozinha” da cidade."],
-      hard: ["Kiyomizu-dera tem o terraço de madeira na colina.", "Uji é a rota clássica do chá matchá.", "Nijo Castle guarda os corredores que ‘cantam’.", "Higashiyama concentra ruas de pedra e lojinhas.", "Kurama e Kibune são escapes de montanha."],
+      easy: ["Foi a capital imperial do Japão por séculos.", "Cidade de templo, santuário e gueixa.", "O Torii vermelho de Fushimi Inari sobe o morro.", "Outono e cerejeira puxam turismo demais.", "Fica a menos de 1h de Osaka de trem."],
+      medium: ["Arashiyama tem o bosque de bambu.", "Gion é o bairro das casas de chá.", "Kinkaku-ji é o Pavilhão Dourado.", "O Path of Philosophy acompanha o canal.", "Nishiki Market é a “cozinha” da cidade."],
+      hard: ["Kiyomizu-dera tem o terraço de madeira na colina.", "Uji é a rota clássica do chá matcha.", "Nijo Castle tem os corredores que ‘cantam’.", "Higashiyama é rua de pedra e lojinha.", "Kurama e Kibune são escape de montanha."],
     },
   },
   {
@@ -1559,9 +1559,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "miami",
     tier: "hard",
     clues: {
-      easy: ["É a segunda maior cidade da Coreia do Sul.", "É o grande porto do país, à beira do mar.", "Haeundae e Gwangalli são praias famosas.", "O Jagalchi é o mercado de peixe.", "Tem festivais de cinema reconhecidos."],
-      medium: ["A Ponte Gwangan ilumina a baía à noite.", "Gamcheon Culture Village tem casas coloridas na ladeira.", "O templo Haedong Yonggungsa fica na pedra à beira-mar.", "BIFF Square lembra o festival de cinema.", "O metrô e o KTX ligam rápido a Seul."],
-      hard: ["Taejongdae são as falésias do sul.", "Nampo e o International Market animam o comércio.", "Songdo Beach fica do outro lado da baía.", "O UN Memorial Cemetery marca a Guerra da Coreia.", "Seomyeon é o cruzamento comercial moderno."],
+      easy: ["A segunda maior cidade da Coreia do Sul.", "O grande porto do país, na beira do mar.", "Haeundae e Gwangalli são praia famosa.", "Jagalchi é o mercado de peixe.", "Tem festival de cinema reconhecido."],
+      medium: ["A Ponte Gwangan ilumina a baía à noite.", "Gamcheon Culture Village tem casa colorida na ladeira.", "Haedong Yonggungsa fica na pedra na beira-mar.", "BIFF Square lembra o festival de cinema.", "Metrô e KTX ligam rápido a Seul."],
+      hard: ["Taejongdae são as falésias do sul.", "Nampo e o International Market são o comércio.", "Songdo Beach fica do outro lado da baía.", "O UN Memorial Cemetery lembra a Guerra da Coreia.", "Seomyeon é o cruzamento comercial moderno."],
     },
   },
   {
@@ -1572,9 +1572,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "dubai",
     tier: "hard",
     clues: {
-      easy: ["É a capital de Taiwan.", "O Taipei 101 foi um dos arranha-céus mais altos do mundo.", "Os night markets são marca registrada.", "O bubble tea nasceu na ilha.", "Temperaturas amenas e chuva fina fazem parte do clima."],
-      medium: ["O Mercado Noturno de Shilin é o mais famoso.", "O Memorial de Chiang Kai-shek marca a praça.", "Jiufen, a cidade na colina, fica a um day trip.", "O distrito de Ximending anima a juventude.", "As fontes termais de Beitou ficam no norte."],
-      hard: ["O Museu Nacional do Palácio guarda arte chinesa.", "Elephant Mountain (Xiangshan) é o mirante do 101.", "DiHua Street guarda o comércio antigo.", "Maokong tem teleférico e casas de chá.", "Tamsui fica na foz, com pôr do sol no rio."],
+      easy: ["Capital de Taiwan.", "O Taipei 101 foi um dos arranha-céus mais altos do mundo.", "Night market é a cara daqui.", "Bubble tea nasceu na ilha.", "Temperatura amena e chuva fina."],
+      medium: ["O Mercado Noturno de Shilin é o mais famoso.", "O Memorial de Chiang Kai-shek é o marco da praça.", "Jiufen, a cidade na colina, fica a um day trip.", "Ximending é o rolê da juventude.", "As fontes termais de Beitou ficam no norte."],
+      hard: ["O Museu Nacional do Palácio guarda arte chinesa.", "Elephant Mountain é o mirante do 101.", "DiHua Street tem o comércio antigo.", "Maokong tem teleférico e casa de chá.", "Tamsui fica na foz, com pôr do sol no rio."],
     },
   },
   {
@@ -1585,9 +1585,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "dubai",
     tier: "hard",
     clues: {
-      easy: ["É a capital da Malásia.", "As Torres Petronas são o cartão-postal gêmeo.", "O satay e a comida de rua malaia/indiana/chinesa misturam sabores.", "O clima é equatorial — quente e úmido.", "Mesquitas, templos e igrejas convivem na cidade."],
-      medium: ["O Batu Caves tem o escadório colorido hindu.", "Bukit Bintang anima compras e comida.", "O rio Klang e o centro histórico guardam a Merdeka Square.", "Chinatown (Petaling Street) é o caos comercial.", "O KL Tower (Menara) tem mirante."],
-      hard: ["Kampung Baru guarda casas de madeira no meio da metrópole.", "Thean Hou é o templo chinês no alto.", "Jalan Alor é a rua de food stalls.", "Putrajaya, a capital administrativa, fica ao sul.", "Botânico de Perdana e o Bird Park ficam no lago."],
+      easy: ["Capital da Malásia.", "As Torres Petronas são o postal gêmeo.", "Satay e comida de rua malaia/indiana/chinesa.", "Clima equatorial — quente e úmido.", "Mesquita, templo e igreja convivem na cidade."],
+      medium: ["Batu Caves tem o escadório colorido hindu.", "Bukit Bintang é compra e comida.", "Merdeka Square fica no centro histórico.", "Petaling Street (Chinatown) é o caos comercial.", "A KL Tower tem mirante."],
+      hard: ["Kampung Baru tem casa de madeira no meio da metrópole.", "Thean Hou é o templo chinês no alto.", "Jalan Alor é a rua de food stall.", "Putrajaya, a capital administrativa, fica ao sul.", "Botânico de Perdana e o Bird Park ficam no lago."],
     },
   },
   {
@@ -1598,9 +1598,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "sp",
     tier: "hard",
     clues: {
-      easy: ["É a capital da Indonésia (em transição com Nusantara).", "É uma megacidade do arquipélago.", "O trânsito e a densidade são lendários.", "Tem mesquitas, templos e influência holandesa colonial.", "A gastronomia inclui nasi goreng e satay."],
-      medium: ["Kota Tua é o centro colonial holandês.", "Monas (Monumen Nasional) marca a praça central.", "Istíqlal é uma das maiores mesquitas do Sudeste Asiático.", "Ancol e a orla norte animam o lazer.", "Bogor e as montanhas ficam a sul."],
-      hard: ["Glodok é o Chinatown.", "Kemang anima a vida expatriada e os cafés.", "Taman Mini Indonesia recapitula o arquipélago.", "Thousand Islands ficam de barco ao norte.", "Sunda Kelapa é o porto de schooners de madeira."],
+      easy: ["Capital da Indonésia (em transição com Nusantara).", "Megacidade do arquipélago.", "Trânsito e densidade lendários.", "Mesquita, templo e influência holandesa colonial.", "Nasi goreng e satay na mesa."],
+      medium: ["Kota Tua é o centro colonial holandês.", "Monas é o marco da praça central.", "Istíqlal é uma das maiores mesquitas do Sudeste Asiático.", "Ancol e a orla norte são o lazer.", "Bogor e as montanhas ficam a sul."],
+      hard: ["Glodok é o Chinatown.", "Kemang é café e vida expatriada.", "Taman Mini Indonesia recapitula o arquipélago.", "Thousand Islands ficam de barco ao norte.", "Sunda Kelapa é o porto de schooner de madeira."],
     },
   },
   {
@@ -1611,9 +1611,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "plaza",
     tier: "hard",
     clues: {
-      easy: ["É a capital do Vietnã.", "É famosa pelos lagos e pelo pho.", "O Bairro Antigo tem ruas estreitas e comércio.", "Tem influência francesa nas avenidas e no café.", "Fica no norte do país, no delta do Rio Vermelho."],
-      medium: ["O Lago Hoan Kiem é o coração simbólico.", "O Templo da Literatura é a antiga universidade.", "A Baía de Ha Long fica a algumas horas.", "O Mausoléu de Ho Chi Minh marca a praça Ba Dinh.", "Os trens de rua (train street) viraram atrativo."],
-      hard: ["West Lake (Tay Ho) anima cafés e templos.", "O Mercado Dong Xuan é o caos atacadista.", "Ninh Binh e Tam Coc são day trips de paisagem.", "A Ópera de Hanoi lembra a arquitetura colonial.", "O Museu de Etnologia conta as minorias do país."],
+      easy: ["Capital do Vietnã.", "Famosa pelos lagos e pelo pho.", "O Bairro Antigo tem rua estreita e comércio.", "Influência francesa nas avenidas e no café.", "Fica no norte, no delta do Rio Vermelho."],
+      medium: ["O Lago Hoan Kiem é o coração simbólico.", "O Templo da Literatura é a antiga universidade.", "A Baía de Ha Long fica a algumas horas.", "O Mausoléu de Ho Chi Minh é o marco da praça Ba Dinh.", "A train street virou atrativo."],
+      hard: ["West Lake (Tay Ho) é café e templo.", "Dong Xuan é o caos atacadista.", "Ninh Binh e Tam Coc são day trip de paisagem.", "A Ópera de Hanoi lembra a arquitetura colonial.", "O Museu de Etnologia conta as minorias do país."],
     },
   },
   {
@@ -1624,9 +1624,9 @@ export const CITY_CATALOG: CityRecord[] = [
     sceneKey: "sp",
     tier: "hard",
     clues: {
-      easy: ["É a maior cidade do Vietnã (antiga Saigon).", "As scooters dominam o trânsito.", "É o polo econômico do sul do país.", "Tem marcas da guerra do Vietnã e da era colonial francesa.", "A gastronomia de rua é intensa e barata."],
-      medium: ["O Mercado Ben Thanh é o cartão turístico.", "O Palácio da Reunificação abre os salões dos anos 60–70.", "Os túneis de Cu Chi ficam nos arredores.", "District 1 concentra hotéis e a Notre-Dame de tijolos.", "O rio Saigon corta o centro."],
-      hard: ["Bui Vien é a street party de mochileiros.", "District 3 e o café egg são clássicos locais.", "O Museu dos Vestígios de Guerra é contundente.", "Can Tho e o Delta do Mekong ficam a sul.", "Bitexco e Landmark 81 marcam a skyline nova."],
+      easy: ["A maior cidade do Vietnã — a antiga Saigon.", "Scooter domina o trânsito.", "Polo econômico do sul do país.", "Ainda dá pra ver marcas da guerra e da era colonial francesa.", "Comida de rua intensa e barata."],
+      medium: ["O Mercado Ben Thanh é o ponto turístico clássico.", "O Palácio da Reunificação abre os salões dos anos 60–70.", "Os túneis de Cu Chi ficam nos arredores.", "District 1 é hotel e a Notre-Dame de tijolo.", "O rio Saigon corta o centro."],
+      hard: ["Bui Vien é a street party de mochileiro.", "District 3 e o café egg são clássico local.", "O Museu dos Vestígios de Guerra é contundente.", "Can Tho e o Delta do Mekong ficam a sul.", "Bitexco e Landmark 81 são a cara da skyline nova."],
     },
   }
 ];
