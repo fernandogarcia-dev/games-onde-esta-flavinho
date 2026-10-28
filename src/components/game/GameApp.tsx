@@ -266,11 +266,8 @@ export function GameApp() {
     setTriedCities((prev) => (prev.includes(id) ? prev : [...prev, id]));
     const unlockedNew = clueIndex < level.clues.length - 1;
     const nextClue = Math.min(clueIndex + 1, level.clues.length - 1);
-    const wrong = level.wrongHints[id] || "Rastro frio. Outra cidade.";
-    const clueNote = unlockedNew
-      ? ` Nova pista liberada (${nextClue + 1} de ${level.clues.length}) — olha acima!`
-      : ` As ${level.clues.length} pistas já estão na mesa — não tem mais.`;
-    setFeedback(wrong + clueNote);
+    // Keep the board clean — no error banners. Just unlock + highlight the tip.
+    setFeedback("");
     setScore((s) => Math.max(0, s - CITY_MISS_PENALTY));
     setLives((l) => {
       const next = l - 1;
@@ -520,17 +517,6 @@ export function GameApp() {
                 </p>
               </div>
 
-              {feedback && (
-                <p className="mt-3 rounded-xl border-2 border-[#c2410c] bg-[#fde8e4] px-4 py-3 text-sm font-semibold text-[#9a3412] shadow-[3px_3px_0_var(--ink)]">
-                  {feedback}
-                </p>
-              )}
-              {freshClue != null && (
-                <p className="mt-3 animate-pulse rounded-xl border-2 border-[var(--ink)] bg-[#fff4d6] px-4 py-2.5 text-center text-sm font-black uppercase tracking-wide text-[var(--ink)] shadow-[3px_3px_0_var(--ink)]">
-                  Nova pista liberada · leia abaixo
-                </p>
-              )}
-
               <ul className="mt-3 space-y-3">
                 {level.clues.map((clue, i) => {
                   const unlocked = i <= clueIndex;
@@ -541,7 +527,7 @@ export function GameApp() {
                       ref={isFresh ? freshClueRef : undefined}
                       className={`rounded-2xl border-[3px] px-4 py-4 transition ${
                         isFresh
-                          ? "border-[var(--ink)] bg-[#fff4d6] text-[var(--ink)] shadow-[5px_5px_0_var(--ink)] ring-2 ring-[#d4a017] animate-pulse"
+                          ? "border-[var(--ink)] bg-[#fff4d6] text-[var(--ink)] shadow-[5px_5px_0_var(--ink)]"
                           : unlocked
                             ? "border-[var(--ink)] bg-[#e8f6ef] text-[var(--ink)] shadow-[5px_5px_0_var(--ink)]"
                             : "border-dashed border-[var(--ink)]/30 bg-white/70 text-[var(--muted)]"
@@ -593,12 +579,6 @@ export function GameApp() {
                   );
                 })}
               </ul>
-
-              {clueIndex >= level.clues.length - 1 && (
-                <p className="mt-4 rounded-xl border-2 border-[#1f8a5b] bg-[#e8f6ef] px-4 py-3 text-sm font-semibold text-[#145c3d] shadow-[3px_3px_0_var(--ink)]">
-                  Todas as pistas na mesa — cruze e marque a cidade.
-                </p>
-              )}
             </div>
 
             <div className="rounded-3xl border-[3px] border-[var(--ink)] bg-[var(--paper)] p-5 shadow-[6px_6px_0_var(--ink)] sm:p-6">
