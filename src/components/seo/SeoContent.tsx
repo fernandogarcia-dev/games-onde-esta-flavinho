@@ -38,13 +38,13 @@ export function SeoContent() {
           </li>
           <li>
             <strong className="text-[var(--ink)]">Rua da Amargura</strong> —
-            Street View e pin no mapa-múndi.
+            Street View e um único pin no mapa-múndi.
           </li>
           <li>
             <strong className="text-[var(--ink)]">
               Diga-me com Quem Andas…
             </strong>{" "}
-            — descubra quem era o parça da fuga.
+            — descubra quem o Flavinho levou na fuga.
           </li>
         </ul>
 

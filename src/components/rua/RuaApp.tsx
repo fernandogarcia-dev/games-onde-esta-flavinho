@@ -31,6 +31,7 @@ import { formatClock } from "@/lib/scoring";
 import type { Difficulty } from "@/lib/types";
 import { cityCatalogSize } from "@/lib/deck";
 import { buildInviteText } from "@/lib/share";
+import { hasGoogleMapsKey } from "@/lib/google-maps";
 
 const GuessMap = dynamic(
   () => import("@/components/rua/GuessMap").then((m) => m.GuessMap),
@@ -60,22 +61,24 @@ const StreetView = dynamic(
   },
 );
 
-type Phase = "landing" | "guess" | "reveal" | "win" | "fail";
+type Phase = "landing" | "guess" | "result";
 
 type Pin = { lat: number; lng: number };
 
 const modeMeta = getMode("rua");
 
+/** Acertou se ficou perto o bastante pra pontuar. */
+function isHit(pts: number) {
+  return pts > 0;
+}
+
 export function RuaApp({ onBack }: { onBack: () => void }) {
   const [phase, setPhase] = useState<Phase>("landing");
   const [difficulty, setDifficulty] = useState<Difficulty>("medium");
-  const [run, setRun] = useState<CityGeo[]>([]);
-  const [index, setIndex] = useState(0);
+  const [city, setCity] = useState<CityGeo | null>(null);
   const [score, setScore] = useState(0);
-  const [lives, setLives] = useState(3);
   const [guess, setGuess] = useState<Pin | null>(null);
   const [lastKm, setLastKm] = useState(0);
-  const [lastPts, setLastPts] = useState(0);
   const [elapsed, setElapsed] = useState(0);
   const [running, setRunning] = useState(false);
   const [best, setBest] = useState(0);
@@ -86,8 +89,8 @@ export function RuaApp({ onBack }: { onBack: () => void }) {
   const [myRank, setMyRank] = useState<number | null>(null);
   const [showPix, setShowPix] = useState(false);
   const [showRank, setShowRank] = useState(false);
+  const [won, setWon] = useState(false);
 
-  const city = run[index] ?? null;
   const citiesTotal = cityCatalogSize(difficulty);
 
   useEffect(() => {
@@ -102,23 +105,18 @@ export function RuaApp({ onBack }: { onBack: () => void }) {
     return () => window.clearInterval(id);
   }, [running]);
 
-  const livesFor = (d: Difficulty) =>
-    d === "easy" ? 5 : d === "medium" ? 3 : 2;
-
   function startGame(d: Difficulty) {
-    const dealt = dealRuaRun(d);
+    const dealt = dealRuaRun(d, 1);
     setDifficulty(d);
-    setRun(dealt);
-    setIndex(0);
+    setCity(dealt[0] ?? null);
     setScore(0);
-    setLives(livesFor(d));
     setGuess(null);
     setLastKm(0);
-    setLastPts(0);
     setElapsed(0);
     setRunning(true);
     setNeedsName(false);
     setMyRank(null);
+    setWon(false);
     setPhase("guess");
   }
 
@@ -126,42 +124,16 @@ export function RuaApp({ onBack }: { onBack: () => void }) {
     setRunning(false);
     setPhase("landing");
     setGuess(null);
+    setCity(null);
     setBoard(readModeBoard("rua"));
     setBest(getModeBest("rua"));
   }
 
-  function confirmGuess() {
-    if (!city || !guess) return;
-    const km = distanceKm(guess, { lat: city.lat, lng: city.lng });
-    const pts = ruaScoreForDistance(km, difficulty);
-    setLastKm(km);
-    setLastPts(pts);
-    setScore((s) => s + pts);
-    if (pts <= 0) {
-      const nextLives = lives - 1;
-      setLives(nextLives);
-      if (nextLives <= 0) {
-        setRunning(false);
-        setPhase("fail");
-        return;
-      }
-    }
-    setPhase("reveal");
-  }
-
-  function advance() {
-    if (index + 1 >= run.length) {
-      finishRun(score);
-      return;
-    }
-    setIndex((i) => i + 1);
-    setGuess(null);
-    setPhase("guess");
-  }
-
-  function finishRun(finalScore: number) {
+  function finish(finalScore: number, hit: boolean) {
     setRunning(false);
-    setPhase("win");
+    setWon(hit);
+    setPhase("result");
+    if (!hit || finalScore <= 0) return;
     const name = getPlayerName();
     if (!name) {
       setNeedsName(true);
@@ -171,6 +143,15 @@ export function RuaApp({ onBack }: { onBack: () => void }) {
     setBoard(res.entries);
     setMyRank(res.rank);
     setBest(getModeBest("rua"));
+  }
+
+  function confirmGuess() {
+    if (!city || !guess) return;
+    const km = distanceKm(guess, { lat: city.lat, lng: city.lng });
+    const pts = ruaScoreForDistance(km, difficulty);
+    setLastKm(km);
+    setScore(pts);
+    finish(pts, isHit(pts));
   }
 
   function saveNameAndRank() {
@@ -185,11 +166,11 @@ export function RuaApp({ onBack }: { onBack: () => void }) {
   }
 
   const shareText = useMemo(() => {
-    if (phase === "win") {
-      return `Rua da Amargura · ${score.toLocaleString("pt-BR")} pts · ${formatClock(elapsed)}\nAcha a cidade pela foto?\n${buildInviteText().split("\n").pop()}`;
+    if (phase === "result" && city) {
+      return `Rua da Amargura · ${won ? "achei" : "errei"} · ${formatDistance(lastKm)} · ${score.toLocaleString("pt-BR")} pts\n${buildInviteText().split("\n").pop()}`;
     }
-    return `Rua da Amargura no Cadê Flavinho — marca no mapa onde ele sumiu.\n${buildInviteText().split("\n").pop()}`;
-  }, [phase, score, elapsed]);
+    return `Rua da Amargura no Cadê Flavinho — uma rua, um chute.\n${buildInviteText().split("\n").pop()}`;
+  }, [phase, score, lastKm, won, city]);
 
   return (
     <div className="relative min-h-full">
@@ -213,23 +194,12 @@ export function RuaApp({ onBack }: { onBack: () => void }) {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          {phase !== "landing" && (
-            <>
-              <div className="hidden items-center gap-2 rounded-full border border-[var(--ink)]/15 bg-white/80 px-3 py-1 text-xs font-semibold text-[var(--ink)] sm:flex">
-                <span>
-                  Ep {Math.min(index + 1, run.length)}/{run.length || 6}
-                </span>
-                <span className="text-[var(--muted)]">·</span>
-                <span className="tabular-nums text-[var(--brand)]">
-                  {score.toLocaleString("pt-BR")} pts
-                </span>
-                <span className="text-[var(--muted)]">·</span>
-                <span>{lives} vida{lives === 1 ? "" : "s"}</span>
-              </div>
-              <Button variant="secondary" size="sm" onClick={restartToMenu}>
-                Recomeçar
-              </Button>
-            </>
+          {phase === "guess" && (
+            <div className="hidden items-center gap-2 rounded-full border border-[var(--ink)]/15 bg-white/80 px-3 py-1 text-xs font-semibold text-[var(--ink)] sm:flex">
+              <span>1 chute</span>
+              <span className="text-[var(--muted)]">·</span>
+              <span className="tabular-nums">{formatClock(elapsed)}</span>
+            </div>
           )}
           <Button variant="secondary" size="sm" onClick={onBack}>
             Modos
@@ -252,23 +222,20 @@ export function RuaApp({ onBack }: { onBack: () => void }) {
           <div className="space-y-6">
             <section className="animate-rise rounded-[2rem] border-[3px] border-[var(--ink)] bg-[var(--paper)] p-6 shadow-[10px_10px_0_var(--ink)] sm:p-10">
               <p className="text-sm font-bold uppercase tracking-[0.22em] text-[var(--brand)]">
-                {modeMeta.badge} · mapa grátis
+                {modeMeta.badge} · uma tentativa
               </p>
               <h1 className="mt-3 font-[family-name:var(--font-display)] text-4xl text-[var(--ink)] sm:text-5xl">
                 {modeMeta.name}
               </h1>
               <p className="mt-3 max-w-xl text-lg text-[var(--muted)]">
-                {modeMeta.blurb} Street View pra olhar a rua (gira, anda um
-                pouco) e pin no mapa-múndi. Mesmas cidades do modo clássico.
+                {modeMeta.blurb}
               </p>
-              <p className="mt-2 max-w-xl text-sm text-[var(--muted)]">
-                Precisa de{" "}
-                <code className="rounded bg-white/80 px-1">
-                  NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
-                </code>{" "}
-                (Maps JavaScript API). Cadastro no Google Cloud — o uso típico
-                cabe no crédito grátis.
-              </p>
+              {!hasGoogleMapsKey() && (
+                <p className="mt-2 max-w-xl rounded-xl border-2 border-[var(--alert)]/40 bg-[#fde8e4] px-3 py-2 text-sm text-[var(--ink)]">
+                  Street View precisa da chave Google no servidor (já configurada
+                  no deploy se você ativou as APIs no Cloud).
+                </p>
+              )}
 
               <DifficultyPicker
                 difficulty={difficulty}
@@ -278,7 +245,7 @@ export function RuaApp({ onBack }: { onBack: () => void }) {
 
               <div className="mt-7 flex flex-wrap gap-3">
                 <Button size="lg" onClick={() => startGame(difficulty)}>
-                  Abrir o mapa
+                  Abrir a rua
                 </Button>
                 <Button variant="secondary" onClick={onBack}>
                   Voltar aos modos
@@ -287,7 +254,7 @@ export function RuaApp({ onBack }: { onBack: () => void }) {
               <p className="mt-4 text-sm text-[var(--muted)]">
                 {best > 0
                   ? `Seu recorde neste modo: ${best.toLocaleString("pt-BR")} pts`
-                  : "Toque no mapa pra marcar o chute. Perto = pontos. Longe demais = perde vida."}
+                  : "Um Street View. Um pin no mapa. Acertou ou errou — acabou."}
               </p>
               <div className="mt-5">
                 <ShareBar text={shareText} label="Chama a galera" compact />
@@ -305,67 +272,37 @@ export function RuaApp({ onBack }: { onBack: () => void }) {
           </div>
         )}
 
-        {(phase === "guess" || phase === "reveal") && city && (
+        {phase === "guess" && city && (
           <section className="animate-rise grid gap-5 lg:grid-cols-[1.05fr_0.95fr]">
-            <div className="space-y-3">
-              <div className="overflow-hidden rounded-3xl border-[3px] border-[var(--ink)] bg-[var(--paper)] shadow-[6px_6px_0_var(--ink)]">
-                <StreetView
-                  lat={city.lat}
-                  lng={city.lng}
-                  seed={`${city.id}-${index}-${difficulty}`}
-                />
-                <div className="border-t-2 border-[var(--ink)]/10 px-4 py-3">
-                  <p className="text-xs font-bold uppercase tracking-[0.16em] text-[var(--brand)]">
-                    Episódio {index + 1}/{run.length}
-                  </p>
-                  <h2 className="mt-1 font-[family-name:var(--font-display)] text-xl text-[var(--ink)]">
-                    {phase === "reveal"
-                      ? `${city.name} · ${city.country}`
-                      : "Onde fica essa rua?"}
-                  </h2>
-                  <p className="mt-1 text-sm text-[var(--muted)]">
-                    {phase === "reveal"
-                      ? `${formatDistance(lastKm)} do alvo · +${lastPts.toLocaleString("pt-BR")} pts`
-                      : "Gira o Street View, anda um pouco e marca no mapa."}
-                  </p>
-                </div>
+            <div className="overflow-hidden rounded-3xl border-[3px] border-[var(--ink)] bg-[var(--paper)] shadow-[6px_6px_0_var(--ink)]">
+              <StreetView
+                lat={city.lat}
+                lng={city.lng}
+                seed={`${city.id}-${difficulty}`}
+              />
+              <div className="border-t-2 border-[var(--ink)]/10 px-4 py-3">
+                <p className="text-xs font-bold uppercase tracking-[0.16em] text-[var(--brand)]">
+                  Única tentativa
+                </p>
+                <h2 className="mt-1 font-[family-name:var(--font-display)] text-xl text-[var(--ink)]">
+                  Onde o Flavinho sumiu?
+                </h2>
+                <p className="mt-1 text-sm text-[var(--muted)]">
+                  Gira o Street View, anda um pouco e marca no mapa. Sem segunda
+                  chance.
+                </p>
               </div>
             </div>
 
             <div className="space-y-3">
-              <GuessMap
-                guess={guess}
-                answer={
-                  phase === "reveal"
-                    ? { lat: city.lat, lng: city.lng }
-                    : null
-                }
-                locked={phase === "reveal"}
-                onGuess={setGuess}
-              />
+              <GuessMap guess={guess} locked={false} onGuess={setGuess} />
               <div className="flex flex-wrap items-center gap-2">
-                {phase === "guess" ? (
-                  <>
-                    <Button
-                      size="lg"
-                      disabled={!guess}
-                      onClick={confirmGuess}
-                    >
-                      Confirmar chute
-                    </Button>
-                    <p className="text-sm text-[var(--muted)]">
-                      {guess
-                        ? "Pin plantado. Confirma?"
-                        : "Toque no mapa pra chutar."}
-                    </p>
-                  </>
-                ) : (
-                  <Button size="lg" onClick={advance}>
-                    {index + 1 >= run.length
-                      ? "Ver placar"
-                      : "Próxima rua"}
-                  </Button>
-                )}
+                <Button size="lg" disabled={!guess} onClick={confirmGuess}>
+                  Confirmar chute
+                </Button>
+                <p className="text-sm text-[var(--muted)]">
+                  {guess ? "Pin plantado. Confirma?" : "Toque no mapa pra chutar."}
+                </p>
               </div>
               <p className="text-[11px] text-[var(--muted)]">
                 Street View © Google · mapa de chute © OpenStreetMap
@@ -374,80 +311,62 @@ export function RuaApp({ onBack }: { onBack: () => void }) {
           </section>
         )}
 
-        {phase === "win" && (
-          <section className="animate-rise mx-auto max-w-xl rounded-3xl border-[3px] border-[var(--ink)] bg-[var(--paper)] p-6 text-center shadow-[8px_8px_0_var(--ink)]">
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-[var(--brand)]">
-              Rota completa
-            </p>
-            <h2 className="mt-2 font-[family-name:var(--font-display)] text-3xl text-[var(--ink)]">
-              Achou as ruas
-            </h2>
-            <p className="mt-2 text-[var(--muted)]">
-              {score.toLocaleString("pt-BR")} pts · {formatClock(elapsed)}
-              {myRank ? ` · #${myRank} neste modo` : ""}
-            </p>
-            {needsName && (
-              <div className="mt-5 flex flex-col items-stretch gap-2 sm:flex-row">
-                <input
-                  value={nameDraft}
-                  onChange={(e) => setNameDraft(sanitizeName(e.target.value))}
-                  placeholder="Seu apelido no ranking"
-                  maxLength={16}
-                  className="min-w-0 flex-1 rounded-xl border-2 border-[var(--ink)] bg-white px-3 py-2.5 font-semibold text-[var(--ink)] outline-none focus:border-[var(--brand)]"
-                />
-                <Button onClick={saveNameAndRank}>Salvar</Button>
+        {phase === "result" && city && (
+          <section className="animate-rise mx-auto max-w-2xl space-y-5">
+            <div className="overflow-hidden rounded-3xl border-[3px] border-[var(--ink)] bg-[var(--paper)] shadow-[8px_8px_0_var(--ink)]">
+              <GuessMap
+                guess={guess}
+                answer={{ lat: city.lat, lng: city.lng }}
+                locked
+                onGuess={() => {}}
+              />
+            </div>
+            <div className="rounded-3xl border-[3px] border-[var(--ink)] bg-[var(--paper)] p-6 text-center shadow-[8px_8px_0_var(--ink)]">
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-[var(--brand)]">
+                {won ? "Quase na porta" : "Se perdeu"}
+              </p>
+              <h2 className="mt-2 font-[family-name:var(--font-display)] text-3xl text-[var(--ink)]">
+                {won ? "Acertou a rua!" : "Errou o paradeiro"}
+              </h2>
+              <p className="mt-2 text-[var(--muted)]">
+                Era <strong className="text-[var(--ink)]">{city.name}</strong> ·{" "}
+                {city.country}. Você ficou a {formatDistance(lastKm)}.
+              </p>
+              <p className="mt-2 font-semibold text-[var(--ink)]">
+                {score.toLocaleString("pt-BR")} pts · {formatClock(elapsed)}
+                {myRank ? ` · #${myRank} neste modo` : ""}
+              </p>
+              {needsName && won && (
+                <div className="mt-5 flex flex-col items-stretch gap-2 sm:flex-row">
+                  <input
+                    value={nameDraft}
+                    onChange={(e) => setNameDraft(sanitizeName(e.target.value))}
+                    placeholder="Seu apelido no ranking"
+                    maxLength={16}
+                    className="min-w-0 flex-1 rounded-xl border-2 border-[var(--ink)] bg-white px-3 py-2.5 font-semibold text-[var(--ink)] outline-none focus:border-[var(--brand)]"
+                  />
+                  <Button onClick={saveNameAndRank}>Salvar</Button>
+                </div>
+              )}
+              <div className="mt-6 flex flex-wrap justify-center gap-3">
+                <Button size="lg" onClick={() => startGame(difficulty)}>
+                  Tentar de novo
+                </Button>
+                <Button variant="secondary" onClick={restartToMenu}>
+                  Menu do modo
+                </Button>
+                <Button variant="ghost" onClick={onBack}>
+                  Trocar modo
+                </Button>
               </div>
-            )}
-            <div className="mt-6 flex flex-wrap justify-center gap-3">
-              <Button size="lg" onClick={() => startGame(difficulty)}>
-                Jogar de novo
-              </Button>
-              <Button variant="secondary" onClick={restartToMenu}>
-                Menu do modo
-              </Button>
-              <Button variant="ghost" onClick={onBack}>
-                Trocar modo
-              </Button>
-            </div>
-            <div className="mt-5 border-t border-[var(--ink)]/10 pt-4">
-              <ShareBar
-                text={shareText}
-                label="Desafia alguém"
-                align="center"
-                compact
-              />
-            </div>
-            <div className="mt-6">
-              <Leaderboard
-                entries={board}
-                global={false}
-                highlight={playerName || nameDraft}
-                myRank={myRank}
-                myScore={score}
-                compact
-                shareText={shareText}
-                onViewFull={() => setShowRank(true)}
-              />
-            </div>
-          </section>
-        )}
-
-        {phase === "fail" && (
-          <section className="animate-rise mx-auto max-w-xl rounded-3xl border-[3px] border-[var(--ink)] bg-[var(--paper)] p-6 text-center shadow-[8px_8px_0_var(--ink)]">
-            <h2 className="font-[family-name:var(--font-display)] text-3xl text-[var(--ink)]">
-              Se perdeu na rua
-            </h2>
-            <p className="mt-2 text-[var(--muted)]">
-              As vidas acabaram. Pontuação: {score.toLocaleString("pt-BR")} ·{" "}
-              {formatClock(elapsed)}
-            </p>
-            <div className="mt-6 flex flex-wrap justify-center gap-3">
-              <Button size="lg" onClick={() => startGame(difficulty)}>
-                Tentar de novo
-              </Button>
-              <Button variant="secondary" onClick={restartToMenu}>
-                Menu
-              </Button>
+              <div className="mt-5 border-t border-[var(--ink)]/10 pt-4">
+                <ShareBar
+                  text={shareText}
+                  label="Desafia alguém"
+                  align="center"
+                  compact
+                />
+              </div>
             </div>
           </section>
         )}
@@ -487,7 +406,7 @@ function DifficultyPicker({
     {
       id: "easy",
       label: "Fácil",
-      hint: "24 cidades · mira mais generosa",
+      hint: "24 cidades · mira generosa",
       tone: "bg-[#e8f6ef] border-[#1f8a5b]",
     },
     {

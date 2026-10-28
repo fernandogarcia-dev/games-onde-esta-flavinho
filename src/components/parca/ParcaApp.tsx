@@ -31,15 +31,14 @@ import { formatClock } from "@/lib/scoring";
 import type { Difficulty } from "@/lib/types";
 import { buildInviteText } from "@/lib/share";
 
-type Phase = "landing" | "clues" | "win" | "fail";
+type Phase = "landing" | "clues" | "result";
 
 const modeMeta = getMode("parca");
 
 export function ParcaApp({ onBack }: { onBack: () => void }) {
   const [phase, setPhase] = useState<Phase>("landing");
   const [difficulty, setDifficulty] = useState<Difficulty>("medium");
-  const [run, setRun] = useState<ParcaPerson[]>([]);
-  const [index, setIndex] = useState(0);
+  const [person, setPerson] = useState<ParcaPerson | null>(null);
   const [clueIndex, setClueIndex] = useState(0);
   const [tried, setTried] = useState<string[]>([]);
   const [score, setScore] = useState(0);
@@ -55,18 +54,14 @@ export function ParcaApp({ onBack }: { onBack: () => void }) {
   const [myRank, setMyRank] = useState<number | null>(null);
   const [showPix, setShowPix] = useState(false);
   const [showRank, setShowRank] = useState(false);
+  const [won, setWon] = useState(false);
 
-  const person = run[index] ?? null;
   const clues = person ? cluesFor(person, difficulty) : [];
 
   const options = useMemo(() => {
     if (!person) return [];
-    return pickParcaOptions(
-      person,
-      `${person.id}-${index}-${difficulty}`,
-      6,
-    );
-  }, [person, index, difficulty]);
+    return pickParcaOptions(person, `${person.id}-${difficulty}`, 6);
+  }, [person, difficulty]);
 
   useEffect(() => {
     setBest(getModeBest("parca"));
@@ -84,9 +79,9 @@ export function ParcaApp({ onBack }: { onBack: () => void }) {
     d === "easy" ? 5 : d === "medium" ? 3 : 2;
 
   function startGame(d: Difficulty) {
+    const dealt = dealParcaRun(1);
     setDifficulty(d);
-    setRun(dealParcaRun());
-    setIndex(0);
+    setPerson(dealt[0] ?? null);
     setClueIndex(0);
     setTried([]);
     setScore(0);
@@ -96,18 +91,36 @@ export function ParcaApp({ onBack }: { onBack: () => void }) {
     setRunning(true);
     setNeedsName(false);
     setMyRank(null);
+    setWon(false);
     setPhase("clues");
   }
 
   function restartToMenu() {
     setRunning(false);
     setPhase("landing");
+    setPerson(null);
     setBoard(readModeBoard("parca"));
     setBest(getModeBest("parca"));
   }
 
+  function finish(finalScore: number, hit: boolean) {
+    setRunning(false);
+    setWon(hit);
+    setPhase("result");
+    if (!hit || finalScore <= 0) return;
+    const name = getPlayerName();
+    if (!name) {
+      setNeedsName(true);
+      return;
+    }
+    const res = submitModeScore("parca", name, finalScore);
+    setBoard(res.entries);
+    setMyRank(res.rank);
+    setBest(getModeBest("parca"));
+  }
+
   function pickPerson(id: string) {
-    if (!person || tried.includes(id)) return;
+    if (!person || tried.includes(id) || phase !== "clues") return;
 
     if (id === person.id) {
       const openClues = clueIndex + 1;
@@ -115,21 +128,9 @@ export function ParcaApp({ onBack }: { onBack: () => void }) {
         200,
         PARCA_HIT_BONUS[difficulty] - (openClues - 1) * PARCA_CLUE_PENALTY,
       );
-      const nextScore = score + bonus;
-      setScore(nextScore);
-      setFeedback(`Era ${person.name}! +${bonus.toLocaleString("pt-BR")} pts`);
-
-      if (index + 1 >= run.length) {
-        finishRun(nextScore);
-        return;
-      }
-
-      window.setTimeout(() => {
-        setIndex((i) => i + 1);
-        setClueIndex(0);
-        setTried([]);
-        setFeedback("");
-      }, 700);
+      setScore(bonus);
+      setFeedback(`Era ${person.name}! O Flavinho levou esse parça.`);
+      finish(bonus, true);
       return;
     }
 
@@ -140,29 +141,15 @@ export function ParcaApp({ onBack }: { onBack: () => void }) {
 
     if (clueIndex + 1 < clues.length) {
       setClueIndex((c) => c + 1);
-      setFeedback("Não era esse. Nova dica liberada.");
+      setFeedback("Não foi esse. Mais uma dica do sumiço.");
     } else {
-      setFeedback("Não era esse. Sem dicas novas.");
+      setFeedback("Não foi esse.");
     }
 
     if (nextLives <= 0) {
-      setRunning(false);
-      setPhase("fail");
+      setFeedback(`As vidas acabaram. O parça era ${person.name}.`);
+      finish(0, false);
     }
-  }
-
-  function finishRun(finalScore: number) {
-    setRunning(false);
-    setPhase("win");
-    const name = getPlayerName();
-    if (!name) {
-      setNeedsName(true);
-      return;
-    }
-    const res = submitModeScore("parca", name, finalScore);
-    setBoard(res.entries);
-    setMyRank(res.rank);
-    setBest(getModeBest("parca"));
   }
 
   function saveNameAndRank() {
@@ -177,11 +164,11 @@ export function ParcaApp({ onBack }: { onBack: () => void }) {
   }
 
   const shareText = useMemo(() => {
-    if (phase === "win") {
-      return `Diga-me com Quem Andas… · ${score.toLocaleString("pt-BR")} pts\nDescobre o parça do Flavinho!\n${buildInviteText().split("\n").pop()}`;
+    if (phase === "result") {
+      return `Diga-me com Quem Andas… · ${won ? "descobri o parça" : "o parça escapou"} · ${score.toLocaleString("pt-BR")} pts\n${buildInviteText().split("\n").pop()}`;
     }
-    return `Diga-me com Quem Andas… no Cadê Flavinho — quem era o parça da fuga?\n${buildInviteText().split("\n").pop()}`;
-  }, [phase, score]);
+    return `Diga-me com Quem Andas… — quem o Flavinho levou na fuga?\n${buildInviteText().split("\n").pop()}`;
+  }, [phase, score, won]);
 
   return (
     <div className="relative min-h-full">
@@ -205,25 +192,14 @@ export function ParcaApp({ onBack }: { onBack: () => void }) {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          {phase !== "landing" && (
-            <>
-              <div className="hidden items-center gap-2 rounded-full border border-[var(--ink)]/15 bg-white/80 px-3 py-1 text-xs font-semibold text-[var(--ink)] sm:flex">
-                <span>
-                  Ep {Math.min(index + 1, run.length)}/{run.length || 6}
-                </span>
-                <span className="text-[var(--muted)]">·</span>
-                <span className="tabular-nums text-[var(--brand)]">
-                  {score.toLocaleString("pt-BR")} pts
-                </span>
-                <span className="text-[var(--muted)]">·</span>
-                <span>
-                  {lives} vida{lives === 1 ? "" : "s"}
-                </span>
-              </div>
-              <Button variant="secondary" size="sm" onClick={restartToMenu}>
-                Recomeçar
-              </Button>
-            </>
+          {phase === "clues" && (
+            <div className="hidden items-center gap-2 rounded-full border border-[var(--ink)]/15 bg-white/80 px-3 py-1 text-xs font-semibold text-[var(--ink)] sm:flex">
+              <span>
+                {lives} vida{lives === 1 ? "" : "s"}
+              </span>
+              <span className="text-[var(--muted)]">·</span>
+              <span className="tabular-nums">{formatClock(elapsed)}</span>
+            </div>
           )}
           <Button variant="secondary" size="sm" onClick={onBack}>
             Modos
@@ -246,14 +222,16 @@ export function ParcaApp({ onBack }: { onBack: () => void }) {
           <div className="space-y-6">
             <section className="animate-rise rounded-[2rem] border-[3px] border-[var(--ink)] bg-[var(--paper)] p-6 shadow-[10px_10px_0_var(--ink)] sm:p-10">
               <p className="text-sm font-bold uppercase tracking-[0.22em] text-[var(--brand)]">
-                {modeMeta.badge} · 150 parças
+                {modeMeta.badge} · um parça · uma fuga
               </p>
               <h1 className="mt-3 font-[family-name:var(--font-display)] text-4xl text-[var(--ink)] sm:text-5xl">
                 {modeMeta.name}
               </h1>
               <p className="mt-3 max-w-xl text-lg text-[var(--muted)]">
-                {modeMeta.blurb} Até 3 dicas por rodada — quanto menos dica,
-                mais ponto.
+                O Flavinho não sumiu sozinho. Ele{" "}
+                <strong className="text-[var(--ink)]">levou alguém</strong> na
+                fuga. Pelas dicas, descobre quem foi o parça. Uma rodada só —
+                acertou ou errou, acabou.
               </p>
 
               <DifficultyPicker
@@ -263,7 +241,7 @@ export function ParcaApp({ onBack }: { onBack: () => void }) {
 
               <div className="mt-7 flex flex-wrap gap-3">
                 <Button size="lg" onClick={() => startGame(difficulty)}>
-                  Quem era o parça?
+                  Quem ele levou?
                 </Button>
                 <Button variant="secondary" onClick={onBack}>
                   Voltar aos modos
@@ -272,7 +250,7 @@ export function ParcaApp({ onBack }: { onBack: () => void }) {
               <p className="mt-4 text-sm text-[var(--muted)]">
                 {best > 0
                   ? `Seu recorde neste modo: ${best.toLocaleString("pt-BR")} pts`
-                  : "Errar libera a próxima dica e gasta uma vida."}
+                  : "Quanto menos dica você abrir, mais ponto. Errar gasta vida e libera pista."}
               </p>
               <div className="mt-5">
                 <ShareBar text={shareText} label="Chama a galera" compact />
@@ -293,23 +271,16 @@ export function ParcaApp({ onBack }: { onBack: () => void }) {
         {phase === "clues" && person && (
           <section className="animate-rise grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
             <div className="rounded-3xl border-[3px] border-[var(--ink)] bg-[var(--paper)] p-5 shadow-[6px_6px_0_var(--ink)] sm:p-6">
-              <div className="flex flex-wrap items-end justify-between gap-2">
-                <div>
-                  <p className="text-sm font-bold uppercase tracking-[0.18em] text-[var(--brand)]">
-                    Parça {index + 1}/{run.length}
-                  </p>
-                  <h2 className="mt-2 font-[family-name:var(--font-display)] text-2xl text-[var(--ink)] sm:text-3xl">
-                    Com quem ele andava?
-                  </h2>
-                  <p className="mt-1 text-sm text-[var(--muted)]">
-                    Lê as dicas e marca o nome. Errou? Abre a próxima.
-                  </p>
-                </div>
-                <p className="text-[11px] font-semibold text-[var(--muted)]">
-                  {lives} vida{lives === 1 ? "" : "s"} ·{" "}
-                  {score.toLocaleString("pt-BR")} pts
-                </p>
-              </div>
+              <p className="text-sm font-bold uppercase tracking-[0.18em] text-[var(--brand)]">
+                Boletim da fuga
+              </p>
+              <h2 className="mt-2 font-[family-name:var(--font-display)] text-2xl text-[var(--ink)] sm:text-3xl">
+                Quem o Flavinho levou com ele?
+              </h2>
+              <p className="mt-1 text-sm text-[var(--muted)]">
+                Não foi viagem solo. Tem um parça no banco do carona. Lê as
+                dicas e marca o nome.
+              </p>
 
               <ul className="mt-5 space-y-3">
                 {clues.map((clue, i) => {
@@ -325,7 +296,7 @@ export function ParcaApp({ onBack }: { onBack: () => void }) {
                     >
                       <p className="text-xs font-bold uppercase tracking-wide">
                         {unlocked
-                          ? `Dica ${i + 1}`
+                          ? `Dica do parça ${i + 1}`
                           : `Dica ${i + 1} bloqueada`}
                       </p>
                       <p
@@ -337,7 +308,7 @@ export function ParcaApp({ onBack }: { onBack: () => void }) {
                       >
                         {unlocked
                           ? clue
-                          : "Erra um nome pra liberar."}
+                          : "Erra um nome pra liberar mais rastro."}
                       </p>
                     </li>
                   );
@@ -352,10 +323,10 @@ export function ParcaApp({ onBack }: { onBack: () => void }) {
 
             <div className="rounded-3xl border-[3px] border-[var(--ink)] bg-[var(--paper)] p-5 shadow-[6px_6px_0_var(--ink)] sm:p-6">
               <h3 className="font-[family-name:var(--font-display)] text-xl text-[var(--ink)]">
-                Marque o parça
+                Lista de suspeitos
               </h3>
               <p className="mt-1 text-xs text-[var(--muted)]">
-                Seis nomes. Um certo.
+                Um desses foi embora com o Flavinho.
               </p>
               <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2">
                 {options.map((opt) => {
@@ -376,7 +347,7 @@ export function ParcaApp({ onBack }: { onBack: () => void }) {
                         {opt.name}
                       </div>
                       <div className="mt-0.5 text-xs text-[var(--muted)]">
-                        {dead ? "Descartado." : opt.blurb}
+                        {dead ? "Não foi esse." : opt.blurb}
                       </div>
                     </button>
                   );
@@ -386,19 +357,24 @@ export function ParcaApp({ onBack }: { onBack: () => void }) {
           </section>
         )}
 
-        {phase === "win" && (
+        {phase === "result" && person && (
           <section className="animate-rise mx-auto max-w-xl rounded-3xl border-[3px] border-[var(--ink)] bg-[var(--paper)] p-6 text-center shadow-[8px_8px_0_var(--ink)]">
             <p className="text-xs font-bold uppercase tracking-[0.2em] text-[var(--brand)]">
-              Fuga desvendada
+              {won ? "Parça identificado" : "Fuga completa"}
             </p>
             <h2 className="mt-2 font-[family-name:var(--font-display)] text-3xl text-[var(--ink)]">
-              Você sabe com quem ele anda
+              {won ? "Era esse que ele levou!" : "O parça escapou"}
             </h2>
             <p className="mt-2 text-[var(--muted)]">
+              O Flavinho saiu com{" "}
+              <strong className="text-[var(--ink)]">{person.name}</strong>
+              {person.blurb ? ` — ${person.blurb}` : ""}.
+            </p>
+            <p className="mt-2 font-semibold text-[var(--ink)]">
               {score.toLocaleString("pt-BR")} pts · {formatClock(elapsed)}
               {myRank ? ` · #${myRank} neste modo` : ""}
             </p>
-            {needsName && (
+            {needsName && won && (
               <div className="mt-5 flex flex-col items-stretch gap-2 sm:flex-row">
                 <input
                   value={nameDraft}
@@ -412,7 +388,7 @@ export function ParcaApp({ onBack }: { onBack: () => void }) {
             )}
             <div className="mt-6 flex flex-wrap justify-center gap-3">
               <Button size="lg" onClick={() => startGame(difficulty)}>
-                Jogar de novo
+                Tentar de novo
               </Button>
               <Button variant="secondary" onClick={restartToMenu}>
                 Menu do modo
@@ -428,41 +404,6 @@ export function ParcaApp({ onBack }: { onBack: () => void }) {
                 align="center"
                 compact
               />
-            </div>
-            <div className="mt-6">
-              <Leaderboard
-                entries={board}
-                global={false}
-                highlight={playerName || nameDraft}
-                myRank={myRank}
-                myScore={score}
-                compact
-                shareText={shareText}
-                onViewFull={() => setShowRank(true)}
-              />
-            </div>
-          </section>
-        )}
-
-        {phase === "fail" && (
-          <section className="animate-rise mx-auto max-w-xl rounded-3xl border-[3px] border-[var(--ink)] bg-[var(--paper)] p-6 text-center shadow-[8px_8px_0_var(--ink)]">
-            <h2 className="font-[family-name:var(--font-display)] text-3xl text-[var(--ink)]">
-              Perdeu o rastro do parça
-            </h2>
-            <p className="mt-2 text-[var(--muted)]">
-              {person
-                ? `Era ${person.name}. `
-                : ""}
-              Pontuação: {score.toLocaleString("pt-BR")} ·{" "}
-              {formatClock(elapsed)}
-            </p>
-            <div className="mt-6 flex flex-wrap justify-center gap-3">
-              <Button size="lg" onClick={() => startGame(difficulty)}>
-                Tentar de novo
-              </Button>
-              <Button variant="secondary" onClick={restartToMenu}>
-                Menu
-              </Button>
             </div>
           </section>
         )}

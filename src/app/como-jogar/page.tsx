@@ -46,8 +46,9 @@ export default function ComoJogarPage() {
           2. Rua da Amargura
         </h2>
         <p className="mt-3 text-[var(--muted)]">
-          Olhe o Street View (gira e anda um pouco), depois marque no mapa-múndi
-          onde você acha que está. Quanto mais perto, mais pontos.
+          Uma rua no Street View. Gira, anda um pouco e marca{" "}
+          <strong>um único chute</strong> no mapa-múndi. Acertou ou errou —
+          acabou a rodada. Quanto mais perto, mais pontos.
         </p>
       </section>
 
@@ -56,8 +57,9 @@ export default function ComoJogarPage() {
           3. Diga-me com Quem Andas…
         </h2>
         <p className="mt-3 text-[var(--muted)]">
-          Leia as dicas meme e descubra qual figura pública era o parça da fuga.
-          Menos dicas abertas = mais pontos.
+          O Flavinho não sumiu sozinho: ele{" "}
+          <strong>levou um parça</strong> na fuga. Uma rodada, um suspeito
+          certo. Menos dicas abertas = mais pontos.
         </p>
       </section>
 

@@ -48,8 +48,8 @@ export function ModePicker({ onPick }: Props) {
                   Três caçadas. Um sumiço.
                 </p>
                 <p className="mt-4 max-w-md text-lg text-[var(--muted)]">
-                  Ache o Flavinho na multidão, no Street View ou descubra o
-                  parça da fuga. Sem cadastro — escolhe o modo e joga.
+                  Ache o Flavinho na multidão, no Street View ou descubra quem
+                  ele levou na fuga. Sem cadastro — escolhe o modo e joga.
                 </p>
               </div>
               <div className="animate-float relative w-28 shrink-0 sm:w-36">
@@ -71,25 +71,37 @@ export function ModePicker({ onPick }: Props) {
                   key={mode.id}
                   type="button"
                   onClick={() => onPick(mode.id)}
-                  className={`animate-rise group rounded-3xl border-[3px] p-5 text-left shadow-[6px_6px_0_var(--ink)] transition hover:-translate-y-1 hover:shadow-[8px_8px_0_var(--ink)] ${mode.tone}`}
+                  className={`animate-rise group overflow-hidden rounded-3xl border-[3px] text-left shadow-[6px_6px_0_var(--ink)] transition hover:-translate-y-1 hover:shadow-[8px_8px_0_var(--ink)] ${mode.tone}`}
                   style={{ animationDelay: `${i * 80}ms` }}
                 >
-                  <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[var(--ink)]/70">
-                    {mode.badge}
-                  </p>
-                  <h2 className="mt-2 font-[family-name:var(--font-display)] text-xl leading-tight text-[var(--ink)] sm:text-2xl">
-                    {mode.name}
-                  </h2>
-                  <p className="mt-2 text-sm font-semibold text-[var(--ink)]">
-                    {mode.tagline}
-                  </p>
-                  <p className="mt-2 text-sm leading-snug text-[var(--ink)]/75">
-                    {mode.blurb}
-                  </p>
-                  <span className="mt-5 inline-flex items-center gap-2 rounded-xl border-2 border-[var(--ink)] bg-white px-3 py-2 text-sm font-[family-name:var(--font-display)] text-[var(--ink)] shadow-[3px_3px_0_var(--ink)] transition group-hover:translate-x-[1px] group-hover:translate-y-[1px] group-hover:shadow-[2px_2px_0_var(--ink)]">
-                    Entrar
-                    <span aria-hidden>→</span>
-                  </span>
+                  <div className="relative aspect-[4/3] w-full overflow-hidden border-b-[3px] border-[var(--ink)]/20 bg-[var(--sand)]">
+                    <Image
+                      src={mode.art}
+                      alt={mode.artAlt}
+                      fill
+                      sizes="(max-width: 640px) 100vw, 33vw"
+                      className="object-cover transition duration-500 group-hover:scale-[1.04]"
+                      priority={i === 0}
+                    />
+                  </div>
+                  <div className="p-5">
+                    <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[var(--ink)]/70">
+                      {mode.badge}
+                    </p>
+                    <h2 className="mt-2 font-[family-name:var(--font-display)] text-xl leading-tight text-[var(--ink)] sm:text-2xl">
+                      {mode.name}
+                    </h2>
+                    <p className="mt-2 text-sm font-semibold text-[var(--ink)]">
+                      {mode.tagline}
+                    </p>
+                    <p className="mt-2 text-sm leading-snug text-[var(--ink)]/75">
+                      {mode.blurb}
+                    </p>
+                    <span className="mt-5 inline-flex items-center gap-2 rounded-xl border-2 border-[var(--ink)] bg-white px-3 py-2 text-sm font-[family-name:var(--font-display)] text-[var(--ink)] shadow-[3px_3px_0_var(--ink)] transition group-hover:translate-x-[1px] group-hover:translate-y-[1px] group-hover:shadow-[2px_2px_0_var(--ink)]">
+                      Entrar
+                      <span aria-hidden>→</span>
+                    </span>
+                  </div>
                 </button>
               ))}
             </div>
