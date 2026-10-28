@@ -28,26 +28,6 @@ export function SeoContent() {
           <li>Entre no ranking com um apelido único e desafie a galera.</li>
         </ol>
 
-        <h3 className="mt-6 font-[family-name:var(--font-display)] text-xl">
-          Modos
-        </h3>
-        <ul className="mt-2 list-disc space-y-1 pl-5 text-sm leading-relaxed text-[var(--muted)] sm:text-base">
-          <li>
-            <strong className="text-[var(--ink)]">O Mestre dos Disfarces</strong>{" "}
-            — clássico: pistas + mar de Flavinhos.
-          </li>
-          <li>
-            <strong className="text-[var(--ink)]">Rua da Amargura</strong> —
-            Street View e um único pin no mapa-múndi.
-          </li>
-          <li>
-            <strong className="text-[var(--ink)]">
-              Diga-me com Quem Andas…
-            </strong>{" "}
-            — descubra quem o Flavinho levou na fuga.
-          </li>
-        </ul>
-
         <p className="mt-6 text-sm text-[var(--muted)]">
           Obra ficcional de sátira humorística. Sem vínculo com partidos ou
           campanhas.{" "}
