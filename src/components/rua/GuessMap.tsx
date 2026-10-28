@@ -14,6 +14,27 @@ type Props = {
   className?: string;
 };
 
+type CountryProps = {
+  name?: string;
+  iso?: string;
+};
+
+const BORDER_STYLE: L.PathOptions = {
+  color: "#0b1320",
+  weight: 1,
+  opacity: 0.45,
+  fillColor: "#1d6fd8",
+  fillOpacity: 0.02,
+};
+
+const HOVER_STYLE: L.PathOptions = {
+  color: "#1d6fd8",
+  weight: 2,
+  opacity: 0.9,
+  fillColor: "#1d6fd8",
+  fillOpacity: 0.12,
+};
+
 export function GuessMap({
   guess,
   answer,
@@ -53,6 +74,10 @@ export function GuessMap({
       maxZoom: 19,
     }).addTo(map);
 
+    map.createPane("countryBorders");
+    const borderPane = map.getPane("countryBorders");
+    if (borderPane) borderPane.style.zIndex = "350";
+
     map.on("click", (e: L.LeafletMouseEvent) => {
       if (lockedRef.current) return;
       onGuessRef.current({ lat: e.latlng.lat, lng: e.latlng.lng });
@@ -60,12 +85,61 @@ export function GuessMap({
 
     mapRef.current = map;
 
+    let cancelled = false;
+
+    void (async () => {
+      try {
+        const res = await fetch("/geo/countries.geojson");
+        if (!res.ok || cancelled) return;
+        const data = (await res.json()) as GeoJSON.FeatureCollection;
+        if (cancelled || !mapRef.current) return;
+
+        L.geoJSON(data, {
+          pane: "countryBorders",
+          style: () => BORDER_STYLE,
+          onEachFeature: (feature, layer) => {
+            const props = (feature.properties || {}) as CountryProps;
+            const name = props.name?.trim() || "País";
+
+            layer.bindTooltip(name, {
+              sticky: true,
+              direction: "top",
+              opacity: 0.95,
+              className: "cade-country-tip",
+            });
+
+            layer.on({
+              mouseover: (e) => {
+                const target = e.target as L.Path;
+                target.setStyle(HOVER_STYLE);
+                target.bringToFront();
+              },
+              mouseout: (e) => {
+                const target = e.target as L.Path;
+                target.setStyle(BORDER_STYLE);
+              },
+              click: (e) => {
+                // Keep country hover clicks as map guesses.
+                L.DomEvent.stopPropagation(e);
+                if (lockedRef.current) return;
+                const ll = (e as L.LeafletMouseEvent).latlng;
+                onGuessRef.current({ lat: ll.lat, lng: ll.lng });
+              },
+            });
+          },
+        }).addTo(map);
+      } catch (err) {
+        console.error("[guess-map] borders", err);
+      }
+    })();
+
     const ro = new ResizeObserver(() => {
       map.invalidateSize();
     });
     ro.observe(containerRef.current);
 
     return () => {
+      cancelled = true;
       ro.disconnect();
       map.remove();
       mapRef.current = null;

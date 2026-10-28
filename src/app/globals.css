@@ -87,3 +87,18 @@ body {
     animation: none;
   }
 }
+
+.cade-country-tip {
+  border: 2px solid var(--ink) !important;
+  border-radius: 10px !important;
+  background: #fff !important;
+  color: var(--ink) !important;
+  font-weight: 700;
+  font-size: 12px;
+  padding: 4px 8px !important;
+  box-shadow: 3px 3px 0 var(--ink);
+}
+
+.cade-country-tip::before {
+  border-top-color: var(--ink) !important;
+}
