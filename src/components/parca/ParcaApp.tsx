@@ -10,8 +10,8 @@ import { RankModal } from "@/components/game/RankModal";
 import { ShareBar } from "@/components/game/ShareBar";
 import { getMode } from "@/lib/modes";
 import {
+  fetchModeLeaderboard,
   getModeBest,
-  readModeBoard,
   submitModeScore,
 } from "@/lib/mode-ranking";
 import { ModeTheme } from "@/components/home/ModeTheme";
@@ -25,6 +25,8 @@ import {
   type ParcaPerson,
 } from "@/lib/parcas";
 import {
+  checkNameAvailable,
+  clearPlayerName,
   getPlayerName,
   sanitizeName,
   setPlayerName,
@@ -49,13 +51,17 @@ export function ParcaApp({ onBack }: { onBack: () => void }) {
   const [running, setRunning] = useState(false);
   const [best, setBest] = useState(0);
   const [board, setBoard] = useState<RankEntry[]>([]);
+  const [boardGlobal, setBoardGlobal] = useState(false);
+  const [boardError, setBoardError] = useState<string | null>(null);
   const [playerName, setPlayerNameState] = useState("");
   const [nameDraft, setNameDraft] = useState("");
+  const [nameFeedback, setNameFeedback] = useState("");
   const [needsName, setNeedsName] = useState(false);
   const [myRank, setMyRank] = useState<number | null>(null);
   const [showPix, setShowPix] = useState(false);
   const [showRank, setShowRank] = useState(false);
   const [won, setWon] = useState(false);
+  const [savingRank, setSavingRank] = useState(false);
 
   const clues = person ? cluesFor(person, difficulty) : [];
 
@@ -64,10 +70,21 @@ export function ParcaApp({ onBack }: { onBack: () => void }) {
     return pickParcaOptions(person, `${person.id}-${difficulty}`, 4);
   }, [person, difficulty]);
 
+  async function refreshBoard() {
+    const res = await fetchModeLeaderboard("parca", getPlayerName());
+    setBoard(res.entries);
+    setBoardGlobal(res.global);
+    setBoardError(res.error || null);
+    if (res.myRank && res.myRank > 0) setMyRank(res.myRank);
+    if (typeof res.myScore === "number" && res.myScore > 0) {
+      setBest((b) => Math.max(b, res.myScore!));
+    }
+  }
+
   useEffect(() => {
     setBest(getModeBest("parca"));
     setPlayerNameState(getPlayerName());
-    setBoard(readModeBoard("parca"));
+    void refreshBoard();
   }, []);
 
   useEffect(() => {
@@ -85,12 +102,54 @@ export function ParcaApp({ onBack }: { onBack: () => void }) {
     setElapsed(0);
     setRunning(true);
     setNeedsName(false);
+    setNameFeedback("");
     setMyRank(null);
     setWon(false);
     setPhase("clues");
   }
 
-  function finish(finalScore: number, hit: boolean) {
+  async function publishScore(
+    total: number,
+    name: string,
+    opts?: { isNewName?: boolean },
+  ) {
+    setSavingRank(true);
+    try {
+      const result = await submitModeScore("parca", name, total, opts);
+      if (result.entries.length > 0) {
+        setBoard(result.entries);
+        setBoardGlobal(result.global);
+      } else if (result.global) {
+        setBoardGlobal(true);
+        void refreshBoard();
+      } else {
+        setBoardGlobal(false);
+      }
+      setBoardError(result.error || null);
+      setMyRank(result.rank > 0 ? result.rank : null);
+      if (typeof result.bestScore === "number" && result.bestScore > 0) {
+        setBest((b) => Math.max(b, result.bestScore!));
+      }
+      if (result.code === "name_taken") {
+        clearPlayerName();
+        setPlayerNameState("");
+        setNeedsName(true);
+        setNameDraft("");
+        setMyRank(null);
+        setNameFeedback(
+          result.ownerScore
+            ? `Apelido já escolhido (recorde ${result.ownerScore.toLocaleString("pt-BR")} pts). Escolhe outro.`
+            : "Esse apelido já foi escolhido. Escolhe outro.",
+        );
+        return false;
+      }
+      return !result.error;
+    } finally {
+      setSavingRank(false);
+    }
+  }
+
+  async function finish(finalScore: number, hit: boolean) {
     setRunning(false);
     setWon(hit);
     setPhase("result");
@@ -100,10 +159,7 @@ export function ParcaApp({ onBack }: { onBack: () => void }) {
       setNeedsName(true);
       return;
     }
-    const res = submitModeScore("parca", name, finalScore);
-    setBoard(res.entries);
-    setMyRank(res.rank);
-    setBest(getModeBest("parca"));
+    await publishScore(finalScore, name);
   }
 
   function pickPerson(id: string) {
@@ -113,23 +169,51 @@ export function ParcaApp({ onBack }: { onBack: () => void }) {
     if (id === person.id) {
       const bonus = PARCA_HIT_BONUS[difficulty];
       setScore(bonus);
-      finish(bonus, true);
+      void finish(bonus, true);
       return;
     }
 
     setScore(0);
-    finish(0, false);
+    void finish(0, false);
   }
 
-  function saveNameAndRank() {
-    const clean = setPlayerName(nameDraft);
-    if (!clean) return;
+  async function saveNameAndRank() {
+    const clean = sanitizeName(nameDraft);
+    if (!clean || clean.length < 2) return;
+
+    const alreadyMine =
+      getPlayerName().toLowerCase() === clean.toLowerCase();
+    const isNewName = !alreadyMine;
+
+    if (isNewName) {
+      const check = await checkNameAvailable(clean);
+      if (check.error && check.taken === false && check.available === false) {
+        const localHit = board.find(
+          (e) => e.name.toLowerCase() === clean.toLowerCase(),
+        );
+        if (localHit) {
+          setNameFeedback(
+            `"${localHit.name}" já foi escolhido. Escolhe outro apelido.`,
+          );
+          return;
+        }
+      } else if (check.taken || !check.available) {
+        setNameFeedback(
+          check.ownerScore
+            ? `"${check.name || clean}" já foi escolhido (${check.ownerScore.toLocaleString("pt-BR")} pts). Escolhe outro.`
+            : `"${clean}" já foi escolhido. Escolhe outro apelido.`,
+        );
+        return;
+      }
+    }
+
+    setPlayerName(clean);
     setPlayerNameState(clean);
-    setNeedsName(false);
-    const res = submitModeScore("parca", clean, score);
-    setBoard(res.entries);
-    setMyRank(res.rank);
-    setBest(getModeBest("parca"));
+    const ok = await publishScore(score, clean, { isNewName });
+    if (ok) {
+      setNeedsName(false);
+      setNameFeedback("");
+    }
   }
 
   const shareText = useMemo(() => {
@@ -171,8 +255,7 @@ export function ParcaApp({ onBack }: { onBack: () => void }) {
             variant="secondary"
             size="sm"
             onClick={() => {
-              setBoard(readModeBoard("parca"));
-              setShowRank(true);
+              void refreshBoard().then(() => setShowRank(true));
             }}
           >
             Ranking
@@ -237,10 +320,11 @@ export function ParcaApp({ onBack }: { onBack: () => void }) {
             </section>
             <Leaderboard
               entries={board}
-              global={false}
+              global={boardGlobal}
               highlight={playerName}
               myRank={myRank}
               myScore={best > 0 ? best : null}
+              error={boardError}
               shareText={shareText}
               onViewFull={() => setShowRank(true)}
             />
@@ -426,21 +510,33 @@ export function ParcaApp({ onBack }: { onBack: () => void }) {
 
               <p className="mt-4 inline-flex rounded-full border-2 border-[var(--ink)] bg-white px-4 py-1.5 text-sm font-bold text-[var(--ink)] shadow-[3px_3px_0_var(--ink)]">
                 {score.toLocaleString("pt-BR")} pts · {formatClock(elapsed)}
-                {myRank ? ` · #${myRank}` : ""}
+                {myRank ? ` · #${myRank} mundial` : ""}
               </p>
 
               {needsName && won && (
-                <div className="mt-5 flex flex-col items-stretch gap-2 sm:flex-row">
-                  <input
-                    value={nameDraft}
-                    onChange={(e) =>
-                      setNameDraft(sanitizeName(e.target.value))
-                    }
-                    placeholder="Seu apelido no ranking"
-                    maxLength={16}
-                    className="min-w-0 flex-1 rounded-xl border-2 border-[var(--ink)] bg-white px-3 py-2.5 font-semibold text-[var(--ink)] outline-none focus:border-[var(--brand)]"
-                  />
-                  <Button onClick={saveNameAndRank}>Salvar</Button>
+                <div className="mt-5 space-y-2">
+                  {nameFeedback ? (
+                    <p className="text-sm font-semibold text-[var(--alert)]">
+                      {nameFeedback}
+                    </p>
+                  ) : null}
+                  <div className="flex flex-col items-stretch gap-2 sm:flex-row">
+                    <input
+                      value={nameDraft}
+                      onChange={(e) =>
+                        setNameDraft(sanitizeName(e.target.value))
+                      }
+                      placeholder="Seu apelido no ranking mundial"
+                      maxLength={16}
+                      className="min-w-0 flex-1 rounded-xl border-2 border-[var(--ink)] bg-white px-3 py-2.5 font-semibold text-[var(--ink)] outline-none focus:border-[var(--brand)]"
+                    />
+                    <Button
+                      onClick={() => void saveNameAndRank()}
+                      disabled={savingRank || nameDraft.trim().length < 2}
+                    >
+                      {savingRank ? "Salvando…" : "Salvar"}
+                    </Button>
+                  </div>
                 </div>
               )}
               <div className="mt-6 flex flex-wrap justify-center gap-3">
@@ -469,10 +565,11 @@ export function ParcaApp({ onBack }: { onBack: () => void }) {
         open={showRank}
         onClose={() => setShowRank(false)}
         entries={board}
-        global={false}
+        global={boardGlobal}
         highlight={playerName || nameDraft}
         myRank={myRank}
         myScore={Math.max(score, best) > 0 ? Math.max(score, best) : null}
+        error={boardError}
         shareText={shareText}
       />
       <LegalNotice onSupport={() => setShowPix(true)} />

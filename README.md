@@ -6,9 +6,7 @@ Jogo satírico / meme com **três modos**:
 2. **Rua da Amargura** — Google Street View → pin no mapa (Leaflet + OSM).
 3. **Diga-me com Quem Andas…** — dicas meme pra achar o parça da fuga (150 nomes).
 
-Site publicado (modo clássico): [cadeflavinho.com.br](https://cadeflavinho.com.br)
-
-> Os modos 2 e 3 estão em teste **local**. Não sobem online até OK explícito.
+Site publicado: [cadeflavinho.com.br](https://cadeflavinho.com.br)
 
 > Obra ficcional de sátira humorística. Não é notícia, denúncia, biografia, campanha eleitoral nem afiliação partidária.
 > Qualquer PIX cobre só infraestrutura/custos do desenvolvedor — sem vínculo com imagem de terceiros, partidos ou campanhas.
@@ -73,17 +71,18 @@ Ninguém controla o 1º lugar do Google só com código: backlinks, buscas reais
 Projeto: **CadeFlavinho** → `https://elpxkbcnaexbkyynclaf.supabase.co`
 
 1. No Supabase → **SQL Editor** → rode `supabase/migrations/001_leaderboard.sql`
-2. Depois rode também `supabase/migrations/002_leaderboard_device.sql` (trava apelido por aparelho — evita print falso de 1º lugar)
-3. **Project Settings → API** → copie:
+2. Depois `supabase/migrations/002_leaderboard_device.sql` (trava apelido por aparelho — evita print falso de 1º lugar)
+3. Depois `supabase/migrations/003_leaderboard_modes.sql` (placar separado por modo: mestre / rua / parca). Sem essa migration o app ainda funciona com prefixo `rua::` / `parca::` no `name_key`.
+4. **Project Settings → API** → copie:
    - `anon` `public` → `NEXT_PUBLIC_SUPABASE_ANON_KEY`
    - `service_role` → `SUPABASE_SERVICE_ROLE_KEY` (só server / Vercel env — nunca no browser)
-4. Na Vercel (e no `.env.local`):
+5. Na Vercel (e no `.env.local`):
    - `NEXT_PUBLIC_SUPABASE_URL=https://elpxkbcnaexbkyynclaf.supabase.co`
    - `NEXT_PUBLIC_SUPABASE_ANON_KEY=...`
    - `SUPABASE_SERVICE_ROLE_KEY=...`
-5. Redeploy
+6. Redeploy
 
-A API `/api/rank` grava/lê a tabela `leaderboard` (nome + pontuação + `device_key`). É ranking **mundial**, com apelido amarrado ao aparelho.
+A API `/api/rank?mode=` grava/lê a tabela `leaderboard` (nome + pontuação + `device_key` + modo). Os **três modos** usam ranking **mundial**, com apelido amarrado ao aparelho.
 
 ## DNS no Registro.br (`cadeflavinho.com.br`)
 
@@ -133,4 +132,4 @@ Pistas usam marcas famosas e reconhecíveis (nunca charadas).
 
 - Next.js + TypeScript + Tailwind
 - Google Analytics (`G-5C6WTLVDH2`)
-- Sem banco / sem login (ranking local; Upstash opcional pro global)
+- Supabase pro ranking mundial dos 3 modos (apelido amarrado ao aparelho)

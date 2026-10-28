@@ -4,26 +4,36 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Leaderboard } from "@/components/game/Leaderboard";
 import { GAME_MODES, type GameModeId } from "@/lib/modes";
-import { readModeBoard } from "@/lib/mode-ranking";
-import {
-  fetchLeaderboard,
-  getPlayerName,
-  type RankEntry,
-} from "@/lib/ranking";
+import { fetchModeLeaderboard } from "@/lib/mode-ranking";
+import { getPlayerName, type RankEntry } from "@/lib/ranking";
 
 type Props = {
   open: boolean;
   onClose: () => void;
 };
 
+type BoardState = {
+  entries: RankEntry[];
+  global: boolean;
+  myRank: number | null;
+  error: string | null;
+};
+
+const emptyBoard = (): BoardState => ({
+  entries: [],
+  global: false,
+  myRank: null,
+  error: null,
+});
+
 export function HomeRankingsModal({ open, onClose }: Props) {
   const [tab, setTab] = useState<GameModeId>("mestre");
   const [playerName, setPlayerName] = useState("");
-  const [mestreBoard, setMestreBoard] = useState<RankEntry[]>([]);
-  const [mestreRank, setMestreRank] = useState<number | null>(null);
-  const [mestreError, setMestreError] = useState<string | null>(null);
-  const [ruaBoard, setRuaBoard] = useState<RankEntry[]>([]);
-  const [parcaBoard, setParcaBoard] = useState<RankEntry[]>([]);
+  const [boards, setBoards] = useState<Record<GameModeId, BoardState>>({
+    mestre: emptyBoard(),
+    rua: emptyBoard(),
+    parca: emptyBoard(),
+  });
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -44,23 +54,44 @@ export function HomeRankingsModal({ open, onClose }: Props) {
     if (!open) return;
     const name = getPlayerName();
     setPlayerName(name);
-    setRuaBoard(readModeBoard("rua"));
-    setParcaBoard(readModeBoard("parca"));
     setLoading(true);
-    void fetchLeaderboard(name)
-      .then((res) => {
-        setMestreBoard(res.entries);
-        setMestreRank(res.myRank ?? null);
-        setMestreError(res.error ?? null);
+    let cancelled = false;
+
+    void Promise.all(
+      (["mestre", "rua", "parca"] as GameModeId[]).map(async (mode) => {
+        const res = await fetchModeLeaderboard(mode, name);
+        return [
+          mode,
+          {
+            entries: res.entries,
+            global: res.global,
+            myRank: res.myRank && res.myRank > 0 ? res.myRank : null,
+            error: res.error ?? null,
+          } satisfies BoardState,
+        ] as const;
+      }),
+    )
+      .then((rows) => {
+        if (cancelled) return;
+        setBoards({
+          mestre: rows.find((r) => r[0] === "mestre")?.[1] ?? emptyBoard(),
+          rua: rows.find((r) => r[0] === "rua")?.[1] ?? emptyBoard(),
+          parca: rows.find((r) => r[0] === "parca")?.[1] ?? emptyBoard(),
+        });
       })
-      .finally(() => setLoading(false));
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
   }, [open]);
 
   if (!open) return null;
 
   const active = GAME_MODES.find((m) => m.id === tab) ?? GAME_MODES[0];
-  const board =
-    tab === "mestre" ? mestreBoard : tab === "rua" ? ruaBoard : parcaBoard;
+  const board = boards[tab];
 
   return (
     <div
@@ -83,7 +114,7 @@ export function HomeRankingsModal({ open, onClose }: Props) {
               Rankings dos modos
             </h2>
             <p className="mt-1 text-sm text-[var(--muted)]">
-              Quem manda em cada caçada — troca a aba e compara.
+              Três placares mundiais — troca a aba e compara.
             </p>
           </div>
           <Button variant="secondary" size="sm" onClick={onClose}>
@@ -141,21 +172,23 @@ export function HomeRankingsModal({ open, onClose }: Props) {
           className="mt-4 rounded-2xl border-2 p-1"
           style={{ borderColor: `${active.accent}55`, background: active.soft }}
         >
-          <p className="px-3 pt-2 text-xs font-bold uppercase tracking-[0.16em]" style={{ color: active.accent }}>
-            {active.name}
-            {tab === "mestre" ? " · mundial" : " · neste aparelho"}
+          <p
+            className="px-3 pt-2 text-xs font-bold uppercase tracking-[0.16em]"
+            style={{ color: active.accent }}
+          >
+            {active.name} · mundial
           </p>
-          {loading && tab === "mestre" ? (
+          {loading ? (
             <p className="px-3 py-8 text-center text-sm text-[var(--muted)]">
               Carregando ranking mundial…
             </p>
           ) : (
             <Leaderboard
-              entries={board}
-              global={tab === "mestre"}
+              entries={board.entries}
+              global={board.global}
               highlight={playerName}
-              myRank={tab === "mestre" ? mestreRank : null}
-              error={tab === "mestre" ? mestreError : null}
+              myRank={board.myRank}
+              error={board.error}
               compact
               full
             />

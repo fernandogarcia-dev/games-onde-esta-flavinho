@@ -1,13 +1,17 @@
+import type { GameModeId } from "@/lib/modes";
 import type { RankEntry } from "@/lib/ranking";
 import { getSupabaseAdmin, supabaseConfigured } from "@/lib/supabase";
 
 const MAX = 100;
+const MODES: GameModeId[] = ["mestre", "rua", "parca"];
 
 type Row = {
   name: string;
+  name_key: string;
   score: number;
   updated_at: string;
   device_key?: string | null;
+  mode?: string | null;
 };
 
 export class RankNameTakenError extends Error {
@@ -21,6 +25,8 @@ export class RankNameTakenError extends Error {
   }
 }
 
+/** Prefer coluna `mode`; se o banco ainda não tiver, usa prefixo no name_key. */
+let modeColumnSupported: boolean | null = null;
 let deviceKeySupported: boolean | null = null;
 
 function sortBoard(entries: RankEntry[]): RankEntry[] {
@@ -43,97 +49,189 @@ export function isGlobalRankEnabled() {
   return supabaseConfigured();
 }
 
-export async function listRanks(): Promise<RankEntry[]> {
+export function normalizeRankMode(raw: unknown): GameModeId {
+  const m = String(raw || "mestre").trim().toLowerCase();
+  if (m === "rua" || m === "parca" || m === "mestre") return m;
+  return "mestre";
+}
+
+/** Chave legada quando não há coluna mode: rua::apelido / parca::apelido */
+function prefixedKey(mode: GameModeId, nameKey: string): string {
+  return mode === "mestre" ? nameKey : `${mode}::${nameKey}`;
+}
+
+function isPrefixedForMode(nameKey: string, mode: GameModeId): boolean {
+  if (mode === "mestre") {
+    return !nameKey.includes("::");
+  }
+  return nameKey.startsWith(`${mode}::`);
+}
+
+export async function listRanks(
+  mode: GameModeId = "mestre",
+): Promise<RankEntry[]> {
   const sb = getSupabaseAdmin();
   if (!sb) return [];
 
-  const { data, error } = await sb
-    .from("leaderboard")
-    .select("name, score, updated_at")
-    .order("score", { ascending: false })
-    .order("updated_at", { ascending: true })
-    .limit(MAX);
-
-  if (error) {
-    console.error("[rank] list", error.message);
-    throw new Error(error.message);
-  }
-  return rowsToEntries((data || []) as Row[]);
-}
-
-/** Absolute 1-based rank + entry for a player name (any position). */
-export async function lookupPlayer(
-  name: string,
-): Promise<{ entry: RankEntry | null; rank: number }> {
-  const sb = getSupabaseAdmin();
-  if (!sb) return { entry: null, rank: 0 };
-  const nameKey = name.trim().toLowerCase();
-  if (!nameKey) return { entry: null, rank: 0 };
-
-  const { data, error } = await sb
-    .from("leaderboard")
-    .select("name, score, updated_at")
-    .eq("name_key", nameKey)
-    .maybeSingle();
-  if (error) {
-    console.error("[rank] lookup", error.message);
-    throw new Error(error.message);
-  }
-  if (!data) return { entry: null, rank: 0 };
-
-  const entry: RankEntry = {
-    name: data.name,
-    score: data.score,
-    at: new Date(data.updated_at).getTime() || Date.now(),
-  };
-  const { count, error: countErr } = await sb
-    .from("leaderboard")
-    .select("name_key", { count: "exact", head: true })
-    .gt("score", entry.score);
-  if (countErr) {
-    console.error("[rank] lookup count", countErr.message);
-  }
-  return { entry, rank: (count ?? 0) + 1 };
-}
-
-function normalizeDeviceKey(raw: string | undefined): string {
-  return (raw || "").trim().slice(0, 64);
-}
-
-async function readExisting(
-  nameKey: string,
-): Promise<{ row: Row | null; withDevice: boolean }> {
-  const sb = getSupabaseAdmin();
-  if (!sb) return { row: null, withDevice: false };
-
-  if (deviceKeySupported !== false) {
+  if (modeColumnSupported !== false) {
     const { data, error } = await sb
       .from("leaderboard")
-      .select("name, score, updated_at, device_key")
-      .eq("name_key", nameKey)
-      .maybeSingle();
+      .select("name, score, updated_at, name_key, mode")
+      .eq("mode", mode)
+      .order("score", { ascending: false })
+      .order("updated_at", { ascending: true })
+      .limit(MAX);
+
     if (!error) {
-      deviceKeySupported = true;
-      return { row: (data as Row | null) ?? null, withDevice: true };
+      modeColumnSupported = true;
+      return rowsToEntries((data || []) as Row[]);
     }
-    if (/device_key/i.test(error.message)) {
-      deviceKeySupported = false;
+    if (/column .*mode/i.test(error.message) || /mode/i.test(error.message)) {
+      modeColumnSupported = false;
     } else {
-      console.error("[rank] read", error.message);
+      console.error("[rank] list", error.message);
       throw new Error(error.message);
     }
   }
 
   const { data, error } = await sb
     .from("leaderboard")
-    .select("name, score, updated_at")
-    .eq("name_key", nameKey)
-    .maybeSingle();
+    .select("name, score, updated_at, name_key")
+    .order("score", { ascending: false })
+    .order("updated_at", { ascending: true })
+    .limit(400);
+
   if (error) {
-    console.error("[rank] read", error.message);
+    console.error("[rank] list", error.message);
     throw new Error(error.message);
   }
-  return { row: (data as Row | null) ?? null, withDevice: false };
+
+  const filtered = ((data || []) as Row[]).filter((r) =>
+    isPrefixedForMode(r.name_key, mode),
+  );
+  return rowsToEntries(filtered).slice(0, MAX);
+}
+
+async function findRowsForBareName(nameKey: string): Promise<Row[]> {
+  const sb = getSupabaseAdmin();
+  if (!sb || !nameKey) return [];
+
+  if (modeColumnSupported !== false) {
+    const { data, error } = await sb
+      .from("leaderboard")
+      .select("name, score, updated_at, name_key, device_key, mode")
+      .eq("name_key", nameKey);
+    if (!error) {
+      modeColumnSupported = true;
+      return (data || []) as Row[];
+    }
+    if (/column .*mode/i.test(error.message) || /mode/i.test(error.message)) {
+      modeColumnSupported = false;
+    } else {
+      console.error("[rank] findRows", error.message);
+      throw new Error(error.message);
+    }
+  }
+
+  const keys = MODES.map((m) => prefixedKey(m, nameKey));
+  const { data, error } = await sb
+    .from("leaderboard")
+    .select("name, score, updated_at, name_key, device_key")
+    .in("name_key", keys);
+  if (error) {
+    // device_key may be missing on very old schemas
+    if (/device_key/i.test(error.message)) {
+      deviceKeySupported = false;
+      const { data: d2, error: e2 } = await sb
+        .from("leaderboard")
+        .select("name, score, updated_at, name_key")
+        .in("name_key", keys);
+      if (e2) throw new Error(e2.message);
+      return (d2 || []) as Row[];
+    }
+    console.error("[rank] findRows", error.message);
+    throw new Error(error.message);
+  }
+  deviceKeySupported = true;
+  return (data || []) as Row[];
+}
+
+/** Absolute 1-based rank + entry for a player name in a mode. */
+export async function lookupPlayer(
+  name: string,
+  mode: GameModeId = "mestre",
+): Promise<{ entry: RankEntry | null; rank: number }> {
+  const sb = getSupabaseAdmin();
+  if (!sb) return { entry: null, rank: 0 };
+  const bare = name.trim().toLowerCase();
+  if (!bare) return { entry: null, rank: 0 };
+
+  let row: Row | null = null;
+
+  if (modeColumnSupported !== false) {
+    const { data, error } = await sb
+      .from("leaderboard")
+      .select("name, score, updated_at, name_key, mode")
+      .eq("name_key", bare)
+      .eq("mode", mode)
+      .maybeSingle();
+    if (!error) {
+      modeColumnSupported = true;
+      row = (data as Row | null) ?? null;
+    } else if (
+      /column .*mode/i.test(error.message) ||
+      /mode/i.test(error.message)
+    ) {
+      modeColumnSupported = false;
+    } else {
+      console.error("[rank] lookup", error.message);
+      throw new Error(error.message);
+    }
+  }
+
+  if (modeColumnSupported === false) {
+    const key = prefixedKey(mode, bare);
+    const { data, error } = await sb
+      .from("leaderboard")
+      .select("name, score, updated_at, name_key")
+      .eq("name_key", key)
+      .maybeSingle();
+    if (error) {
+      console.error("[rank] lookup", error.message);
+      throw new Error(error.message);
+    }
+    row = (data as Row | null) ?? null;
+  }
+
+  if (!row) return { entry: null, rank: 0 };
+
+  const entry: RankEntry = {
+    name: row.name,
+    score: row.score,
+    at: new Date(row.updated_at).getTime() || Date.now(),
+  };
+
+  const entries = await listRanks(mode);
+  const inList =
+    entries.findIndex((e) => e.name.toLowerCase() === bare) + 1;
+  if (inList > 0) return { entry, rank: inList };
+
+  // Fallback count for players outside top MAX
+  if (modeColumnSupported) {
+    const { count, error: countErr } = await sb
+      .from("leaderboard")
+      .select("name_key", { count: "exact", head: true })
+      .eq("mode", mode)
+      .gt("score", entry.score);
+    if (countErr) console.error("[rank] lookup count", countErr.message);
+    return { entry, rank: (count ?? 0) + 1 };
+  }
+
+  return { entry, rank: entries.length + 1 };
+}
+
+function normalizeDeviceKey(raw: string | undefined): string {
+  return (raw || "").trim().slice(0, 64);
 }
 
 export async function isNameTaken(
@@ -141,24 +239,27 @@ export async function isNameTaken(
 ): Promise<{ taken: boolean; score: number; name?: string }> {
   const clean = name.trim().slice(0, 16);
   if (!clean) return { taken: false, score: 0 };
-  const { entry } = await lookupPlayer(clean);
-  if (!entry) return { taken: false, score: 0 };
-  return { taken: true, score: entry.score, name: entry.name };
+  const bare = clean.toLowerCase();
+  const rows = await findRowsForBareName(bare);
+  if (!rows.length) return { taken: false, score: 0 };
+  const best = rows.reduce((m, r) => Math.max(m, r.score), 0);
+  return { taken: true, score: best, name: rows[0]?.name || clean };
 }
 
 export async function upsertRank(
   name: string,
   score: number,
   deviceKeyRaw?: string,
-  opts?: { isNewName?: boolean },
+  opts?: { isNewName?: boolean; mode?: GameModeId },
 ): Promise<{ entries: RankEntry[]; rank: number; bestScore: number }> {
   const sb = getSupabaseAdmin();
   if (!sb) {
     throw new Error("Supabase não configurado");
   }
 
+  const mode = normalizeRankMode(opts?.mode);
   const clean = name.trim().slice(0, 16);
-  const nameKey = clean.toLowerCase();
+  const bare = clean.toLowerCase();
   const deviceKey = normalizeDeviceKey(deviceKeyRaw);
   const isNewName = Boolean(opts?.isNewName);
   if (deviceKey.length < 8) {
@@ -167,73 +268,102 @@ export async function upsertRank(
     );
   }
 
-  const { row, withDevice } = await readExisting(nameKey);
-  const prevScore = row?.score ?? 0;
-  const ownerDevice = (row?.device_key || "").trim();
+  const related = await findRowsForBareName(bare);
+  const modeRow =
+    related.find((r) =>
+      modeColumnSupported
+        ? (r.mode || "mestre") === mode
+        : isPrefixedForMode(r.name_key, mode),
+    ) || null;
+  const prevScore = modeRow?.score ?? 0;
+  const ownerDevice = (
+    related.find((r) => (r.device_key || "").trim())?.device_key ||
+    modeRow?.device_key ||
+    ""
+  ).trim();
 
-  if (row) {
-    // Escolher apelido que já existe no placar: bloqueado.
+  if (related.length > 0) {
     if (isNewName) {
-      throw new RankNameTakenError(prevScore);
+      throw new RankNameTakenError(prevScore || related[0].score);
     }
-    // Mesmo apelido de sempre, mas outro aparelho.
-    if (withDevice && ownerDevice && ownerDevice !== deviceKey) {
-      throw new RankNameTakenError(prevScore);
+    if (ownerDevice && ownerDevice !== deviceKey) {
+      throw new RankNameTakenError(prevScore || related[0].score);
     }
   }
 
   const best = Math.max(score, prevScore);
   const scoreImproved = best > prevScore;
+
+  // Detect mode column if still unknown by probing once
+  if (modeColumnSupported === null) {
+    await listRanks("mestre");
+  }
+
+  const useModeCol = modeColumnSupported === true;
+  const storageKey = useModeCol ? bare : prefixedKey(mode, bare);
+
   const payload: Record<string, unknown> = {
     name: clean,
-    name_key: nameKey,
+    name_key: storageKey,
     score: best,
   };
-  if (!row || scoreImproved) {
+  if (useModeCol) {
+    payload.mode = mode;
+  }
+  if (!modeRow || scoreImproved) {
     payload.updated_at = new Date().toISOString();
   }
-  if (withDevice || deviceKeySupported) {
+  if (deviceKeySupported !== false) {
     payload.device_key = deviceKey;
   }
 
+  const onConflict = useModeCol ? "name_key,mode" : "name_key";
   const { error: upsertErr } = await sb.from("leaderboard").upsert(payload, {
-    onConflict: "name_key",
+    onConflict,
   });
 
   if (upsertErr) {
     console.error("[rank] upsert", upsertErr.message);
     if (/device_key/i.test(upsertErr.message)) {
       deviceKeySupported = false;
-      const { error: fallbackErr } = await sb.from("leaderboard").upsert(
-        {
-          name: clean,
-          name_key: nameKey,
-          score: best,
-          updated_at: new Date().toISOString(),
-        },
-        { onConflict: "name_key" },
-      );
+      delete payload.device_key;
+      const { error: fallbackErr } = await sb
+        .from("leaderboard")
+        .upsert(payload, { onConflict });
       if (fallbackErr) {
         console.error("[rank] upsert fallback", fallbackErr.message);
         throw new Error(fallbackErr.message);
+      }
+    } else if (
+      useModeCol &&
+      (/onConflict|mode|unique/i.test(upsertErr.message) ||
+        upsertErr.message.includes("name_key"))
+    ) {
+      // Conflict target may not exist yet — try name_key only with prefix
+      modeColumnSupported = false;
+      const legacyPayload = {
+        name: clean,
+        name_key: prefixedKey(mode, bare),
+        score: best,
+        updated_at: new Date().toISOString(),
+        ...(deviceKeySupported !== false ? { device_key: deviceKey } : {}),
+      };
+      const { error: legacyErr } = await sb
+        .from("leaderboard")
+        .upsert(legacyPayload, { onConflict: "name_key" });
+      if (legacyErr) {
+        console.error("[rank] upsert legacy", legacyErr.message);
+        throw new Error(legacyErr.message);
       }
     } else {
       throw new Error(upsertErr.message);
     }
   }
 
-  const entries = await listRanks();
+  const entries = await listRanks(mode);
   const inList =
-    entries.findIndex((e) => e.name.toLowerCase() === nameKey) + 1;
+    entries.findIndex((e) => e.name.toLowerCase() === bare) + 1;
   if (inList > 0) return { entries, rank: inList, bestScore: best };
 
-  const { count, error: countErr } = await sb
-    .from("leaderboard")
-    .select("name_key", { count: "exact", head: true })
-    .gt("score", best);
-  if (countErr) {
-    console.error("[rank] count", countErr.message);
-  }
-  const rank = (count ?? entries.length) + 1;
-  return { entries, rank, bestScore: best };
+  return { entries, rank: entries.length + 1, bestScore: best };
 }

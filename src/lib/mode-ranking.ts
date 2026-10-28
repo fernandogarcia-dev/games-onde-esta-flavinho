@@ -1,57 +1,25 @@
 import type { GameModeId } from "@/lib/modes";
 import {
+  fetchLeaderboard,
   getPlayerName,
   sanitizeName,
+  submitScore,
   type RankEntry,
 } from "@/lib/ranking";
 
-const MAX_BOARD = 20;
+const bestKey = (mode: GameModeId) => `flavinho_best_${mode}`;
 
-function storageKey(mode: GameModeId) {
-  return `flavinho_board_${mode}`;
-}
-
-function bestKey(mode: GameModeId) {
-  return `flavinho_best_${mode}`;
-}
-
+/** @deprecated local only — prefer fetchModeLeaderboard */
 export function readModeBoard(mode: GameModeId): RankEntry[] {
   if (typeof window === "undefined") return [];
   try {
-    const raw = window.localStorage.getItem(storageKey(mode));
+    const raw = window.localStorage.getItem(`flavinho_board_${mode}`);
     if (!raw) return [];
     const parsed = JSON.parse(raw) as RankEntry[];
     return Array.isArray(parsed) ? parsed : [];
   } catch {
     return [];
   }
-}
-
-function writeModeBoard(mode: GameModeId, entries: RankEntry[]) {
-  window.localStorage.setItem(
-    storageKey(mode),
-    JSON.stringify(entries.slice(0, MAX_BOARD)),
-  );
-}
-
-export function upsertModeBoard(
-  mode: GameModeId,
-  name: string,
-  score: number,
-): RankEntry[] {
-  const clean = sanitizeName(name);
-  if (!clean || score <= 0) return readModeBoard(mode);
-  const board = readModeBoard(mode).filter(
-    (e) => e.name.toLowerCase() !== clean.toLowerCase(),
-  );
-  const prev = readModeBoard(mode).find(
-    (e) => e.name.toLowerCase() === clean.toLowerCase(),
-  );
-  const best = Math.max(score, prev?.score ?? 0);
-  board.push({ name: clean, score: best, at: Date.now() });
-  board.sort((a, b) => b.score - a.score || a.at - b.at);
-  writeModeBoard(mode, board);
-  return board;
 }
 
 export function getModeBest(mode: GameModeId): number {
@@ -67,15 +35,39 @@ export function saveModeBest(mode: GameModeId, score: number): number {
   return next;
 }
 
-export function submitModeScore(
+export async function fetchModeLeaderboard(
+  mode: GameModeId,
+  playerName?: string,
+): Promise<{
+  entries: RankEntry[];
+  global: boolean;
+  myRank?: number;
+  myScore?: number;
+  error?: string;
+}> {
+  return fetchLeaderboard(playerName || getPlayerName(), mode);
+}
+
+export async function submitModeScore(
   mode: GameModeId,
   name: string,
   score: number,
-): { entries: RankEntry[]; rank: number } {
+  opts?: { isNewName?: boolean },
+): Promise<{
+  entries: RankEntry[];
+  rank: number;
+  global: boolean;
+  bestScore?: number;
+  error?: string;
+  code?: string;
+  ownerScore?: number;
+}> {
   const clean = sanitizeName(name) || getPlayerName();
-  const entries = upsertModeBoard(mode, clean, score);
-  saveModeBest(mode, score);
-  const rank =
-    entries.findIndex((e) => e.name.toLowerCase() === clean.toLowerCase()) + 1;
-  return { entries, rank: rank > 0 ? rank : 0 };
+  const result = await submitScore(clean, score, {
+    isNewName: opts?.isNewName,
+    mode,
+  });
+  if (result.bestScore) saveModeBest(mode, result.bestScore);
+  else if (score > 0) saveModeBest(mode, score);
+  return result;
 }

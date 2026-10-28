@@ -105,7 +105,7 @@ export function Leaderboard({
         <p className="mt-4 text-sm text-[var(--muted)]">
           {global
             ? "Ninguém no placar ainda. Achou o rastro? Entra na história."
-            : "Ninguém pontuou neste modo ainda neste aparelho. Joga uma rodada!"}
+            : "Ranking offline — joga uma rodada quando a rede voltar."}
         </p>
       ) : (
         <ol

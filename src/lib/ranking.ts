@@ -1,4 +1,5 @@
 import { getDeviceKey } from "@/lib/device";
+import type { GameModeId } from "@/lib/modes";
 
 export type RankEntry = {
   name: string;
@@ -70,7 +71,10 @@ export function upsertLocalBoard(name: string, score: number): RankEntry[] {
   return board;
 }
 
-export async function fetchLeaderboard(playerName?: string): Promise<{
+export async function fetchLeaderboard(
+  playerName?: string,
+  mode: GameModeId = "mestre",
+): Promise<{
   entries: RankEntry[];
   global: boolean;
   myRank?: number;
@@ -79,8 +83,9 @@ export async function fetchLeaderboard(playerName?: string): Promise<{
 }> {
   try {
     const who = sanitizeName(playerName || getPlayerName());
-    const qs = who ? `?name=${encodeURIComponent(who)}` : "";
-    const res = await fetch(`/api/rank${qs}`, { cache: "no-store" });
+    const params = new URLSearchParams({ mode });
+    if (who) params.set("name", who);
+    const res = await fetch(`/api/rank?${params}`, { cache: "no-store" });
     const data = (await res.json()) as {
       entries?: RankEntry[];
       global?: boolean;
@@ -160,7 +165,7 @@ export async function checkNameAvailable(name: string): Promise<{
 export async function submitScore(
   name: string,
   score: number,
-  opts?: { isNewName?: boolean },
+  opts?: { isNewName?: boolean; mode?: GameModeId },
 ): Promise<{
   entries: RankEntry[];
   rank: number;
@@ -173,14 +178,15 @@ export async function submitScore(
   const clean = sanitizeName(name);
   const deviceKey = getDeviceKey();
   const isNewName = Boolean(opts?.isNewName);
+  const mode = opts?.mode || "mestre";
   // espelho local só como cache; a fonte da verdade é o Supabase
-  upsertLocalBoard(clean, score);
+  if (mode === "mestre") upsertLocalBoard(clean, score);
 
   try {
     const res = await fetch("/api/rank", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name: clean, score, deviceKey, isNewName }),
+      body: JSON.stringify({ name: clean, score, deviceKey, isNewName, mode }),
     });
     const data = (await res.json()) as {
       entries?: RankEntry[];

@@ -5,6 +5,7 @@ import {
   isNameTaken,
   listRanks,
   lookupPlayer,
+  normalizeRankMode,
   RankNameTakenError,
   upsertRank,
 } from "@/lib/rank-store";
@@ -24,11 +25,13 @@ export async function GET(req: Request) {
 
   try {
     const url = new URL(req.url);
+    const mode = normalizeRankMode(url.searchParams.get("mode"));
     const check = sanitizeName(url.searchParams.get("check") || "");
     if (check) {
       const hit = await isNameTaken(check);
       return NextResponse.json({
         global: true,
+        mode,
         available: !hit.taken,
         taken: hit.taken,
         name: hit.name,
@@ -37,7 +40,7 @@ export async function GET(req: Request) {
     }
 
     const who = sanitizeName(url.searchParams.get("name") || "");
-    const entries = await listRanks();
+    const entries = await listRanks(mode);
     let myRank = 0;
     let myEntry = null as { name: string; score: number; at: number } | null;
 
@@ -49,7 +52,7 @@ export async function GET(req: Request) {
         myRank = hit + 1;
         myEntry = entries[hit];
       } else {
-        const looked = await lookupPlayer(who);
+        const looked = await lookupPlayer(who, mode);
         myRank = looked.rank;
         myEntry = looked.entry;
       }
@@ -58,6 +61,7 @@ export async function GET(req: Request) {
     return NextResponse.json({
       entries,
       global: true,
+      mode,
       myRank: myRank > 0 ? myRank : undefined,
       myEntry: myEntry || undefined,
     });
@@ -83,6 +87,7 @@ export async function POST(req: Request) {
     score?: number;
     deviceKey?: string;
     isNewName?: boolean;
+    mode?: string;
   };
   try {
     body = (await req.json()) as {
@@ -90,6 +95,7 @@ export async function POST(req: Request) {
       score?: number;
       deviceKey?: string;
       isNewName?: boolean;
+      mode?: string;
     };
   } catch {
     return NextResponse.json({ error: "JSON inválido" }, { status: 400 });
@@ -99,6 +105,7 @@ export async function POST(req: Request) {
   const score = Math.floor(Number(body.score));
   const deviceKey = String(body.deviceKey || "").trim();
   const isNewName = Boolean(body.isNewName);
+  const mode = normalizeRankMode(body.mode);
 
   if (!name || name.length < 2) {
     return NextResponse.json({ error: "Nome curto demais" }, { status: 400 });
@@ -118,13 +125,14 @@ export async function POST(req: Request) {
       name,
       score,
       deviceKey,
-      { isNewName },
+      { isNewName, mode },
     );
     return NextResponse.json({
       entries,
       rank,
       bestScore,
       global: true,
+      mode,
     });
   } catch (e) {
     if (e instanceof RankNameTakenError) {
@@ -134,11 +142,15 @@ export async function POST(req: Request) {
           code: e.code,
           ownerScore: e.ownerScore,
           global: true,
+          mode,
         },
         { status: 409 },
       );
     }
     const message = e instanceof Error ? e.message : "Falha ao gravar";
-    return NextResponse.json({ error: message, global: true }, { status: 500 });
+    return NextResponse.json(
+      { error: message, global: true, mode },
+      { status: 500 },
+    );
   }
 }
