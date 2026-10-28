@@ -39,22 +39,22 @@ export function ModePicker({ onPick }: Props) {
           </div>
 
           <div className="relative px-6 py-10 sm:px-10 sm:py-12">
-            <div className="animate-rise flex flex-col items-start gap-6 sm:flex-row sm:items-end sm:justify-between">
-              <div className="max-w-xl">
-                <p className="text-sm font-bold uppercase tracking-[0.25em] text-[var(--brand)]">
+            <div className="animate-rise flex flex-row items-start justify-between gap-3 sm:gap-6 sm:items-end">
+              <div className="min-w-0 flex-1 max-w-xl">
+                <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--brand)] sm:text-sm sm:tracking-[0.25em]">
                   Jogo satírico grátis · ranking mundial
                 </p>
-                <h1 className="mt-3 font-[family-name:var(--font-display)] text-5xl leading-[0.95] text-[var(--ink)] sm:text-6xl">
+                <h1 className="mt-2 font-[family-name:var(--font-display)] text-4xl leading-[0.95] text-[var(--ink)] sm:mt-3 sm:text-5xl md:text-6xl">
                   Cadê Flavinho?
                 </h1>
-                <p className="mt-3 font-[family-name:var(--font-display)] text-2xl leading-tight text-[var(--ink)]/80 sm:text-3xl">
+                <p className="mt-2 font-[family-name:var(--font-display)] text-xl leading-tight text-[var(--ink)]/80 sm:mt-3 sm:text-2xl md:text-3xl">
                   Três caçadas. Um sumiço.
                 </p>
-                <p className="mt-4 max-w-md text-lg text-[var(--muted)]">
+                <p className="mt-3 max-w-md text-sm text-[var(--muted)] sm:mt-4 sm:text-lg">
                   Ache o Flavinho na multidão, no Street View ou descubra quem
                   ele levou na fuga. Sem cadastro — escolhe o modo e joga.
                 </p>
-                <div className="mt-5">
+                <div className="mt-4 sm:mt-5">
                   <Button
                     variant="secondary"
                     size="md"
@@ -64,7 +64,7 @@ export function ModePicker({ onPick }: Props) {
                   </Button>
                 </div>
               </div>
-              <div className="animate-float relative w-28 shrink-0 sm:w-36">
+              <div className="animate-float relative w-24 shrink-0 sm:w-32 md:w-36">
                 <Image
                   src="/game/disguises/real.webp"
                   alt="Flavinho"
@@ -72,7 +72,7 @@ export function ModePicker({ onPick }: Props) {
                   height={220}
                   priority
                   unoptimized
-                  className="rounded-2xl border-[3px] border-[var(--ink)] bg-[var(--sand)] object-contain p-2 shadow-[6px_6px_0_var(--ink)]"
+                  className="rounded-2xl border-[3px] border-[var(--ink)] bg-[var(--sand)] object-contain p-1.5 shadow-[5px_5px_0_var(--ink)] sm:p-2 sm:shadow-[6px_6px_0_var(--ink)]"
                 />
               </div>
             </div>
