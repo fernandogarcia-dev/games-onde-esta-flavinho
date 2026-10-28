@@ -41,11 +41,7 @@ import {
   labelFindTime,
   PERFECT_FIND_BONUS,
 } from "@/lib/scoring";
-import {
-  getBestScore,
-  hasUnlockedHints,
-  saveBestScore,
-} from "@/lib/monetization";
+import { getBestScore, saveBestScore } from "@/lib/monetization";
 import { resolveClueTier } from "@/lib/city-clues";
 import { crowdParamsFor, lookTip } from "@/lib/crowd";
 import {
@@ -74,8 +70,6 @@ export function GameApp() {
   const [lives, setLives] = useState(3);
   const [streak, setStreak] = useState(0);
   const [feedback, setFeedback] = useState("");
-  const [showHint, setShowHint] = useState(false);
-  const [hintUnlocked, setHintUnlocked] = useState(false);
   const [best, setBest] = useState(0);
   const [showPix, setShowPix] = useState(false);
   const [showRank, setShowRank] = useState(false);
@@ -197,7 +191,6 @@ export function GameApp() {
     setRun(dealt);
     rememberEpisode(dealt[0].id);
     setBest(getBestScore());
-    setHintUnlocked(hasUnlockedHints());
     setPhase("clues");
     setLevelIndex(0);
     setClueIndex(0);
@@ -208,7 +201,6 @@ export function GameApp() {
     setLives(LIVES_BY_DIFFICULTY[diff]);
     setFeedback("");
     setFreshClue(null);
-    setShowHint(false);
     setElapsed(0);
     setRunning(true);
     setLastFindBonus(0);
@@ -224,7 +216,6 @@ export function GameApp() {
     setPhase("landing");
     setRunning(false);
     setFeedback("");
-    setShowHint(false);
     setShowPix(false);
     setNeedsName(false);
     stopFindTimer();
@@ -358,7 +349,6 @@ export function GameApp() {
     setMisses(0);
     setLives(LIVES_BY_DIFFICULTY[difficulty]);
     setFeedback("");
-    setShowHint(false);
     setLastFindBonus(0);
     setLastFindSec(0);
     setLastPerfect(false);
@@ -386,14 +376,6 @@ export function GameApp() {
     rank: myRank,
     best,
   });
-
-  function unlockVisualHint() {
-    if (hintUnlocked) {
-      setShowHint(true);
-      return;
-    }
-    setShowPix(true);
-  }
 
   const urgent = findActive && findRemaining <= Math.max(10, findLimit * 0.2);
 
@@ -447,7 +429,7 @@ export function GameApp() {
             Ranking
           </Button>
           <Button variant="money" size="sm" onClick={() => setShowPix((v) => !v)}>
-            Apoiar
+            Apoio voluntário
           </Button>
         </div>
       </header>
@@ -713,9 +695,6 @@ export function GameApp() {
                 <span className="hidden text-xs font-semibold text-[var(--muted)] sm:inline">
                   {score.toLocaleString("pt-BR")} pts
                 </span>
-                <Button variant="secondary" size="sm" onClick={unlockVisualHint}>
-                  {showHint ? "Dica ativa" : "Pedir dica"}
-                </Button>
               </div>
             </div>
 
@@ -730,7 +709,6 @@ export function GameApp() {
               lookTier={lookTier}
               onFound={() => void onFound()}
               onMiss={onMiss}
-              showHint={showHint}
               disabled={!findActive}
             />
           </section>
@@ -919,15 +897,7 @@ export function GameApp() {
         )}
       </main>
 
-      <PixModal
-        open={showPix}
-        onClose={() => setShowPix(false)}
-        mode={phase === "find" ? "hint" : "support"}
-        onHintUnlocked={() => {
-          setHintUnlocked(true);
-          setShowHint(true);
-        }}
-      />
+      <PixModal open={showPix} onClose={() => setShowPix(false)} />
 
       <RankModal
         open={showRank}
@@ -941,9 +911,11 @@ export function GameApp() {
         shareText={rankShareText}
       />
 
-      <footer className="relative z-10 border-t border-[var(--ink)]/10 px-4 py-6 text-center text-xs text-[var(--muted)]">
-        Sátira / humor. Não é notícia, denúncia, campanha eleitoral nem afiliação
-        partidária. Apoio via PIX é voluntário.
+      <footer className="relative z-10 mx-auto max-w-3xl border-t border-[var(--ink)]/10 px-4 py-6 text-center text-xs leading-relaxed text-[var(--muted)]">
+        Sátira / humor. Não é notícia, denúncia, biografia, campanha eleitoral
+        nem afiliação partidária. Qualquer PIX é apoio 100% voluntário e vai
+        apenas ao desenvolvedor do jogo — não vai para político, partido,
+        candidato nem campanha de ninguém. Jogar é grátis.
       </footer>
     </div>
   );
@@ -1024,6 +996,10 @@ function Landing({
             {topName
               ? `Bata ${topName} (${topScore.toLocaleString("pt-BR")} pts).`
               : "Seja o primeiro no placar."}
+          </p>
+          <p className="mt-3 max-w-md text-sm text-[var(--muted)]">
+            Jogo satírico de humor — grátis. Qualquer apoio via PIX é voluntário
+            e vai só ao desenvolvedor, não a político nem campanha.
           </p>
 
           <div className="mt-6">

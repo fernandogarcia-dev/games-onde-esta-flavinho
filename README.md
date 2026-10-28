@@ -6,14 +6,16 @@ Site: [cadeflavinho.com.br](https://cadeflavinho.com.br)
 
 1. Recortes e pistas levam a uma cidade.
 2. Se o mapa fechar, ele ainda está escondido na multidão — com timer e pontos derretendo.
-3. Apoio voluntário via PIX (botão **Apoiar**).
+3. Apoio voluntário via PIX (botão **Apoio voluntário**), valor livre, sem obrigação.
 
 > Humor/sátira. Não é notícia, denúncia, campanha eleitoral nem afiliação política.
+> Qualquer PIX vai apenas ao desenvolvedor do jogo — não a político, partido nem campanha.
 
 ## PIX
 
-Chave exclusiva do jogo: `cadeflavinho@gmail.com`  
-Apoio voluntário (“Apoiar”). Jogo continua grátis.
+Chave: `cadeflavinho@gmail.com`  
+Apoio 100% voluntário ao desenvolvedor. Sem valores predefinidos, sem cobrança por dica.
+O jogo continua inteiro de graça.
 
 ## Rodar local
 

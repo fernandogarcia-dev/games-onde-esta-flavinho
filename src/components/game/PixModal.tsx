@@ -6,16 +6,9 @@ import { PixPanel } from "@/components/game/PixPanel";
 type Props = {
   open: boolean;
   onClose: () => void;
-  mode?: "support" | "hint";
-  onHintUnlocked?: () => void;
 };
 
-export function PixModal({
-  open,
-  onClose,
-  mode = "support",
-  onHintUnlocked,
-}: Props) {
+export function PixModal({ open, onClose }: Props) {
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
@@ -43,7 +36,7 @@ export function PixModal({
       <div
         role="dialog"
         aria-modal="true"
-        aria-label="Apoiar com PIX"
+        aria-label="Apoio voluntário via PIX"
         className="animate-rise relative z-[81] w-full max-w-md"
       >
         <button
@@ -54,7 +47,7 @@ export function PixModal({
         >
           ×
         </button>
-        <PixPanel mode={mode} onHintUnlocked={onHintUnlocked} />
+        <PixPanel />
       </div>
     </div>
   );

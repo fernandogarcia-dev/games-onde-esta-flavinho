@@ -26,7 +26,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: "Cadê Flavinho?",
   description:
-    "Você consegue achar o Flavinho na multidão antes do tempo zerar? Entra e joga agora em cadeflavinho.com.br.",
+    "Jogo satírico de humor: ache o Flavinho na multidão antes do tempo zerar. Grátis — cadeflavinho.com.br",
   alternates: {
     canonical: SITE_URL,
   },
@@ -35,7 +35,7 @@ export const metadata: Metadata = {
     locale: "pt_BR",
     title: "Cadê Flavinho?",
     description:
-      "Desafia um amigo: ache o Flavinho na multidão. Joga grátis em cadeflavinho.com.br",
+      "Jogo satírico: ache o Flavinho na multidão. Grátis — cadeflavinho.com.br",
     url: SITE_URL,
     siteName: "Cadê Flavinho",
     images: [OG_IMAGE],
@@ -44,7 +44,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Cadê Flavinho?",
     description:
-      "Você consegue achar ele? Entra em cadeflavinho.com.br e joga.",
+      "Jogo satírico e grátis. Você consegue achar ele? cadeflavinho.com.br",
     images: [OG_IMAGE.url],
   },
 };

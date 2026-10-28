@@ -30,7 +30,6 @@ type Props = {
   lookTier?: LookTier;
   onFound: () => void;
   onMiss: () => void;
-  showHint: boolean;
   disabled?: boolean;
 };
 
@@ -42,7 +41,6 @@ export function CrowdScene({
   lookTier = "medium",
   onFound,
   onMiss,
-  showHint,
   disabled,
 }: Props) {
   const [portrait, setPortrait] = useState(false);
@@ -158,11 +156,7 @@ export function CrowdScene({
               key={item.id}
               type="button"
               aria-label="Flavinho"
-              className={`absolute focus:outline-none ${
-                showHint
-                  ? "animate-pulse ring-4 ring-[var(--brand)] ring-offset-2 rounded-md"
-                  : ""
-              }`}
+              className="absolute focus:outline-none"
               style={style}
               onClick={handleFlavinhoClick}
             >

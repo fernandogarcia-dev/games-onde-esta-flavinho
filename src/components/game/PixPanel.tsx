@@ -2,28 +2,14 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/Button";
-import {
-  HINT_PRICE_LABEL,
-  PIX_KEY,
-  PIX_NAME,
-  SUPPORT_PRESETS,
-  copyPixKey,
-  unlockHints,
-} from "@/lib/monetization";
+import { PIX_KEY, PIX_NAME, copyPixKey } from "@/lib/monetization";
 
 type Props = {
-  mode?: "support" | "hint";
-  onHintUnlocked?: () => void;
   compact?: boolean;
 };
 
-export function PixPanel({
-  mode = "support",
-  onHintUnlocked,
-  compact = false,
-}: Props) {
+export function PixPanel({ compact = false }: Props) {
   const [copied, setCopied] = useState(false);
-  const [confirmed, setConfirmed] = useState(false);
   const isPlaceholder =
     !PIX_KEY || PIX_KEY.includes("COLOQUE_SUA") || PIX_KEY.includes("sua-chave");
 
@@ -31,12 +17,6 @@ export function PixPanel({
     const ok = await copyPixKey();
     setCopied(ok);
     window.setTimeout(() => setCopied(false), 2000);
-  }
-
-  function handleConfirmPaid() {
-    unlockHints();
-    setConfirmed(true);
-    onHintUnlocked?.();
   }
 
   return (
@@ -48,14 +28,10 @@ export function PixPanel({
       <div className="flex items-start justify-between gap-3">
         <div>
           <p className="font-[family-name:var(--font-display)] text-lg text-[var(--ink)]">
-            {mode === "hint"
-              ? `Dica opcional · ${HINT_PRICE_LABEL}`
-              : "Apoio voluntário"}
+            Apoio voluntário
           </p>
           <p className="mt-1 text-sm text-[var(--muted)]">
-            {mode === "hint"
-              ? "Valor sugerido. Sem obrigação. Sem sorteio."
-              : "Café pro criador. Sem obrigação, sem recompensa prometida."}
+            Só se quiser. Valor livre. Sem obrigação e sem recompensa prometida.
           </p>
         </div>
         <span className="rounded-full bg-[var(--pix)] px-2.5 py-1 text-xs font-bold uppercase tracking-wide text-white">
@@ -63,18 +39,10 @@ export function PixPanel({
         </span>
       </div>
 
-      {!compact && mode === "support" && (
-        <div className="mt-3 flex flex-wrap gap-2">
-          {SUPPORT_PRESETS.map((value) => (
-            <span
-              key={value}
-              className="rounded-lg border border-[var(--ink)]/20 bg-[var(--sand)] px-2.5 py-1 text-sm font-semibold text-[var(--ink)]"
-            >
-              {value}
-            </span>
-          ))}
-        </div>
-      )}
+      <p className="mt-3 rounded-xl border border-[var(--ink)]/10 bg-[var(--sand)] px-3 py-2 text-sm leading-relaxed text-[var(--ink)]">
+        Qualquer valor vai <strong>apenas para o desenvolvedor do jogo</strong>.
+        Não vai para político, partido, candidato nem campanha de ninguém.
+      </p>
 
       <div className="mt-3 rounded-xl bg-[var(--sand)] px-3 py-2">
         <p className="text-xs uppercase tracking-wide text-[var(--muted)]">
@@ -95,21 +63,12 @@ export function PixPanel({
         <Button variant="money" size="sm" onClick={handleCopy}>
           {copied ? "Copiado!" : "Copiar chave PIX"}
         </Button>
-        {mode === "hint" && (
-          <Button
-            variant="secondary"
-            size="sm"
-            onClick={handleConfirmPaid}
-            disabled={confirmed}
-          >
-            {confirmed ? "Dica liberada" : "Já enviei · liberar dica"}
-          </Button>
-        )}
       </div>
 
       <p className="mt-3 text-[11px] leading-relaxed text-[var(--muted)]">
-        Apoio voluntário entre adultos. Não é doação a instituição, rifa, aposta
-        nem campanha eleitoral. O jogo continua jogável de graça.
+        Apoio 100% voluntário entre adultos. Não é doação a instituição, rifa,
+        aposta, vaquinha eleitoral nem financiamento de campanha. O jogo
+        continua inteiro de graça — jogar não exige pagar nada.
       </p>
     </div>
   );
