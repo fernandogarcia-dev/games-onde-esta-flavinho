@@ -38,7 +38,7 @@ const GuessMap = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="flex h-[280px] items-center justify-center rounded-2xl border-[3px] border-[var(--ink)] bg-white sm:h-[360px]">
+      <div className="flex h-[300px] items-center justify-center rounded-2xl border-[3px] border-[var(--ink)] bg-white sm:h-[420px]">
         <p className="text-sm font-semibold text-[var(--muted)]">
           Carregando mapa…
         </p>
@@ -273,13 +273,14 @@ export function RuaApp({ onBack }: { onBack: () => void }) {
         )}
 
         {phase === "guess" && city && (
-          <section className="animate-rise grid gap-5 lg:grid-cols-[1.05fr_0.95fr]">
+          <section className="animate-rise mx-auto flex max-w-3xl flex-col gap-5">
             <div className="overflow-hidden rounded-3xl border-[3px] border-[var(--ink)] bg-[var(--paper)] shadow-[6px_6px_0_var(--ink)]">
               <StreetView
                 lat={city.lat}
                 lng={city.lng}
                 seed={`${city.id}-${difficulty}`}
                 fallbackPhoto={city.photo}
+                className="!aspect-[16/10] sm:!aspect-[2/1]"
               />
               <div className="border-t-2 border-[var(--ink)]/10 px-4 py-3">
                 <p className="text-xs font-bold uppercase tracking-[0.16em] text-[var(--brand)]">
