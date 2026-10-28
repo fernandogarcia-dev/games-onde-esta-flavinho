@@ -4,6 +4,7 @@ import {
   isGlobalRankEnabled,
   listRanks,
   lookupPlayer,
+  RankNameTakenError,
   upsertRank,
 } from "@/lib/rank-store";
 
@@ -64,15 +65,20 @@ export async function POST(req: Request) {
     );
   }
 
-  let body: { name?: string; score?: number };
+  let body: { name?: string; score?: number; deviceKey?: string };
   try {
-    body = (await req.json()) as { name?: string; score?: number };
+    body = (await req.json()) as {
+      name?: string;
+      score?: number;
+      deviceKey?: string;
+    };
   } catch {
     return NextResponse.json({ error: "JSON inválido" }, { status: 400 });
   }
 
   const name = sanitizeName(String(body.name || ""));
   const score = Math.floor(Number(body.score));
+  const deviceKey = String(body.deviceKey || "").trim();
 
   if (!name || name.length < 2) {
     return NextResponse.json({ error: "Nome curto demais" }, { status: 400 });
@@ -80,15 +86,37 @@ export async function POST(req: Request) {
   if (!Number.isFinite(score) || score < 1 || score > 1_000_000) {
     return NextResponse.json({ error: "Pontuação inválida" }, { status: 400 });
   }
+  if (deviceKey.length < 8) {
+    return NextResponse.json(
+      { error: "Aparelho sem identificação. Atualiza a página." },
+      { status: 400 },
+    );
+  }
 
   try {
-    const { entries, rank } = await upsertRank(name, score);
+    const { entries, rank, bestScore } = await upsertRank(
+      name,
+      score,
+      deviceKey,
+    );
     return NextResponse.json({
       entries,
       rank,
+      bestScore,
       global: true,
     });
   } catch (e) {
+    if (e instanceof RankNameTakenError) {
+      return NextResponse.json(
+        {
+          error: e.message,
+          code: e.code,
+          ownerScore: e.ownerScore,
+          global: true,
+        },
+        { status: 409 },
+      );
+    }
     const message = e instanceof Error ? e.message : "Falha ao gravar";
     return NextResponse.json({ error: message, global: true }, { status: 500 });
   }

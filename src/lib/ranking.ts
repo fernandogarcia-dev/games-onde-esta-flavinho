@@ -1,3 +1,5 @@
+import { getDeviceKey } from "@/lib/device";
+
 export type RankEntry = {
   name: string;
   score: number;
@@ -20,6 +22,11 @@ export function setPlayerName(name: string) {
   return clean;
 }
 
+export function clearPlayerName() {
+  if (typeof window === "undefined") return;
+  window.localStorage.removeItem(STORAGE_NAME);
+}
+
 export function sanitizeName(raw: string): string {
   return raw
     .replace(/[^\p{L}\p{N}\s._\-']/gu, "")
@@ -40,15 +47,22 @@ export function readLocalBoard(): RankEntry[] {
 }
 
 function writeLocalBoard(entries: RankEntry[]) {
-  window.localStorage.setItem(STORAGE_LOCAL_BOARD, JSON.stringify(entries.slice(0, MAX_BOARD)));
+  window.localStorage.setItem(
+    STORAGE_LOCAL_BOARD,
+    JSON.stringify(entries.slice(0, MAX_BOARD)),
+  );
 }
 
-/** Upsert by name: keep highest score. */
+/** Upsert by name: keep highest score. Local mirror only. */
 export function upsertLocalBoard(name: string, score: number): RankEntry[] {
   const clean = sanitizeName(name);
   if (!clean || score <= 0) return readLocalBoard();
-  const board = readLocalBoard().filter((e) => e.name.toLowerCase() !== clean.toLowerCase());
-  const prev = readLocalBoard().find((e) => e.name.toLowerCase() === clean.toLowerCase());
+  const board = readLocalBoard().filter(
+    (e) => e.name.toLowerCase() !== clean.toLowerCase(),
+  );
+  const prev = readLocalBoard().find(
+    (e) => e.name.toLowerCase() === clean.toLowerCase(),
+  );
   const best = Math.max(score, prev?.score ?? 0);
   board.push({ name: clean, score: best, at: Date.now() });
   board.sort((a, b) => b.score - a.score || a.at - b.at);
@@ -100,44 +114,64 @@ export async function fetchLeaderboard(playerName?: string): Promise<{
 export async function submitScore(
   name: string,
   score: number,
-): Promise<{ entries: RankEntry[]; rank: number; global: boolean; error?: string }> {
+): Promise<{
+  entries: RankEntry[];
+  rank: number;
+  global: boolean;
+  bestScore?: number;
+  error?: string;
+  code?: string;
+  ownerScore?: number;
+}> {
   const clean = sanitizeName(name);
-  // espelho local só como cache visual; a fonte da verdade é o Supabase
+  const deviceKey = getDeviceKey();
+  // espelho local só como cache; a fonte da verdade é o Supabase
   upsertLocalBoard(clean, score);
 
   try {
     const res = await fetch("/api/rank", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name: clean, score }),
+      body: JSON.stringify({ name: clean, score, deviceKey }),
     });
     const data = (await res.json()) as {
       entries?: RankEntry[];
       rank?: number;
+      bestScore?: number;
       global?: boolean;
       error?: string;
+      code?: string;
+      ownerScore?: number;
     };
     if (!res.ok) {
+      // Nunca devolve board local como se fosse mundial.
       return {
-        entries: readLocalBoard(),
+        entries: [],
         rank: 0,
         global: Boolean(data.global),
         error: data.error || "Falha ao gravar no ranking mundial",
+        code: data.code,
+        ownerScore:
+          typeof data.ownerScore === "number" ? data.ownerScore : undefined,
       };
     }
     const entries = Array.isArray(data.entries) ? data.entries : [];
     const rank =
       typeof data.rank === "number"
         ? data.rank
-        : entries.findIndex((e) => e.name.toLowerCase() === clean.toLowerCase()) + 1;
+        : entries.findIndex(
+            (e) => e.name.toLowerCase() === clean.toLowerCase(),
+          ) + 1;
     return {
       entries,
       rank: rank > 0 ? rank : 0,
       global: true,
+      bestScore:
+        typeof data.bestScore === "number" ? data.bestScore : undefined,
     };
   } catch {
     return {
-      entries: readLocalBoard(),
+      entries: [],
       rank: 0,
       global: false,
       error: "Falha de rede no ranking mundial",

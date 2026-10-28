@@ -7,7 +7,23 @@ type Row = {
   name: string;
   score: number;
   updated_at: string;
+  device_key?: string | null;
 };
+
+export class RankNameTakenError extends Error {
+  readonly code = "name_taken" as const;
+  readonly ownerScore: number;
+
+  constructor(ownerScore: number) {
+    super(
+      "Esse apelido já está no placar de outro aparelho. Escolhe outro nome.",
+    );
+    this.name = "RankNameTakenError";
+    this.ownerScore = ownerScore;
+  }
+}
+
+let deviceKeySupported: boolean | null = null;
 
 function sortBoard(entries: RankEntry[]): RankEntry[] {
   return [...entries]
@@ -82,10 +98,51 @@ export async function lookupPlayer(
   return { entry, rank: (count ?? 0) + 1 };
 }
 
+function normalizeDeviceKey(raw: string | undefined): string {
+  return (raw || "").trim().slice(0, 64);
+}
+
+async function readExisting(
+  nameKey: string,
+): Promise<{ row: Row | null; withDevice: boolean }> {
+  const sb = getSupabaseAdmin();
+  if (!sb) return { row: null, withDevice: false };
+
+  if (deviceKeySupported !== false) {
+    const { data, error } = await sb
+      .from("leaderboard")
+      .select("name, score, updated_at, device_key")
+      .eq("name_key", nameKey)
+      .maybeSingle();
+    if (!error) {
+      deviceKeySupported = true;
+      return { row: (data as Row | null) ?? null, withDevice: true };
+    }
+    if (/device_key/i.test(error.message)) {
+      deviceKeySupported = false;
+    } else {
+      console.error("[rank] read", error.message);
+      throw new Error(error.message);
+    }
+  }
+
+  const { data, error } = await sb
+    .from("leaderboard")
+    .select("name, score, updated_at")
+    .eq("name_key", nameKey)
+    .maybeSingle();
+  if (error) {
+    console.error("[rank] read", error.message);
+    throw new Error(error.message);
+  }
+  return { row: (data as Row | null) ?? null, withDevice: false };
+}
+
 export async function upsertRank(
   name: string,
   score: number,
-): Promise<{ entries: RankEntry[]; rank: number }> {
+  deviceKeyRaw?: string,
+): Promise<{ entries: RankEntry[]; rank: number; bestScore: number }> {
   const sb = getSupabaseAdmin();
   if (!sb) {
     throw new Error("Supabase não configurado");
@@ -93,42 +150,70 @@ export async function upsertRank(
 
   const clean = name.trim().slice(0, 16);
   const nameKey = clean.toLowerCase();
-
-  const { data: existing, error: readErr } = await sb
-    .from("leaderboard")
-    .select("name, score, updated_at")
-    .eq("name_key", nameKey)
-    .maybeSingle();
-
-  if (readErr) {
-    console.error("[rank] read", readErr.message);
-    throw new Error(readErr.message);
+  const deviceKey = normalizeDeviceKey(deviceKeyRaw);
+  if (deviceKey.length < 8) {
+    throw new Error(
+      "Aparelho sem identificação — atualiza a página e tenta de novo.",
+    );
   }
 
-  const prevScore = existing?.score ?? 0;
-  const best = Math.max(score, prevScore);
+  const { row, withDevice } = await readExisting(nameKey);
+  const prevScore = row?.score ?? 0;
+  const ownerDevice = (row?.device_key || "").trim();
 
-  const { error: upsertErr } = await sb.from("leaderboard").upsert(
-    {
-      name: clean,
-      name_key: nameKey,
-      score: best,
-      updated_at: new Date().toISOString(),
-    },
-    { onConflict: "name_key" },
-  );
+  if (row && withDevice) {
+    // Apelido já vinculado a outro aparelho.
+    if (ownerDevice && ownerDevice !== deviceKey) {
+      throw new RankNameTakenError(prevScore);
+    }
+    // Legado (device_key null): primeiro aparelho que gravar reivindica o apelido.
+  }
+
+  const best = Math.max(score, prevScore);
+  const scoreImproved = best > prevScore;
+  const payload: Record<string, unknown> = {
+    name: clean,
+    name_key: nameKey,
+    score: best,
+  };
+  if (!row || scoreImproved) {
+    payload.updated_at = new Date().toISOString();
+  }
+  if (withDevice || deviceKeySupported) {
+    payload.device_key = deviceKey;
+  }
+
+  const { error: upsertErr } = await sb.from("leaderboard").upsert(payload, {
+    onConflict: "name_key",
+  });
 
   if (upsertErr) {
     console.error("[rank] upsert", upsertErr.message);
-    throw new Error(upsertErr.message);
+    if (/device_key/i.test(upsertErr.message)) {
+      deviceKeySupported = false;
+      const { error: fallbackErr } = await sb.from("leaderboard").upsert(
+        {
+          name: clean,
+          name_key: nameKey,
+          score: best,
+          updated_at: new Date().toISOString(),
+        },
+        { onConflict: "name_key" },
+      );
+      if (fallbackErr) {
+        console.error("[rank] upsert fallback", fallbackErr.message);
+        throw new Error(fallbackErr.message);
+      }
+    } else {
+      throw new Error(upsertErr.message);
+    }
   }
 
   const entries = await listRanks();
   const inList =
     entries.findIndex((e) => e.name.toLowerCase() === nameKey) + 1;
-  if (inList > 0) return { entries, rank: inList };
+  if (inList > 0) return { entries, rank: inList, bestScore: best };
 
-  // Outside the cached top list — count how many beat this score.
   const { count, error: countErr } = await sb
     .from("leaderboard")
     .select("name_key", { count: "exact", head: true })
@@ -137,5 +222,5 @@ export async function upsertRank(
     console.error("[rank] count", countErr.message);
   }
   const rank = (count ?? entries.length) + 1;
-  return { entries, rank };
+  return { entries, rank, bestScore: best };
 }

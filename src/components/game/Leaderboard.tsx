@@ -124,7 +124,6 @@ export function Leaderboard({
               );
             }
             const { rank, entry, mine } = row;
-            const label = mine ? "Você" : entry.name;
             return (
               <li
                 key={`${entry.name}-${entry.score}-${rank}`}
@@ -150,7 +149,17 @@ export function Leaderboard({
                   {rank}
                 </span>
                 <span className="min-w-0 flex-1 truncate font-bold text-[var(--ink)]">
-                  {label}
+                  {mine ? (
+                    <>
+                      Você
+                      <span className="font-semibold text-[var(--muted)]">
+                        {" "}
+                        · {entry.name}
+                      </span>
+                    </>
+                  ) : (
+                    entry.name
+                  )}
                 </span>
                 <span className="font-[family-name:var(--font-display)] text-lg tabular-nums text-[var(--brand)]">
                   {entry.score.toLocaleString("pt-BR")}

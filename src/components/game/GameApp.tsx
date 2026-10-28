@@ -23,6 +23,7 @@ import {
 } from "@/lib/levels";
 import type { Difficulty } from "@/lib/types";
 import {
+  clearPlayerName,
   fetchLeaderboard,
   getPlayerName,
   sanitizeName,
@@ -284,10 +285,37 @@ export function GameApp({
 
   async function publishScore(total: number, name: string) {
     const result = await submitScore(name, total);
-    setBoard(result.entries);
-    setBoardGlobal(result.global);
+    if (result.entries.length > 0) {
+      setBoard(result.entries);
+      setBoardGlobal(result.global);
+    } else if (result.global) {
+      // Mantém o placar mundial que já tínhamos; não troca por board local.
+      setBoardGlobal(true);
+      void refreshBoard();
+    } else {
+      setBoardGlobal(false);
+    }
     setBoardError(result.error || null);
     setMyRank(result.rank > 0 ? result.rank : null);
+    if (typeof result.bestScore === "number" && result.bestScore > 0) {
+      setBest((b) => Math.max(b, result.bestScore!));
+    }
+
+    // Apelido já é de outro aparelho — pede outro nome.
+    if (result.code === "name_taken") {
+      clearPlayerName();
+      setPlayerNameState("");
+      setNeedsName(true);
+      setNameDraft("");
+      setMyRank(null);
+      setFeedback(
+        result.ownerScore
+          ? `Apelido em uso (recorde ${result.ownerScore.toLocaleString("pt-BR")} pts). Escolhe outro.`
+          : "Apelido em uso noutro aparelho. Escolhe outro.",
+      );
+      return false;
+    }
+    return !result.error;
   }
 
   async function onFound() {
@@ -309,10 +337,11 @@ export function GameApp({
     setLastPerfect(perfect);
     setScore(nextScore);
     setRunning(false);
-    saveBestScore(nextScore);
     const prevBest = getBestScore();
-    setBest(prevBest);
-    setNewRecord(nextScore >= prevBest && nextScore > 0);
+    const isNew = nextScore > prevBest && nextScore > 0;
+    saveBestScore(nextScore);
+    setBest(Math.max(prevBest, nextScore));
+    setNewRecord(isNew);
 
     const existing = getPlayerName();
     if (!existing) {
@@ -331,11 +360,36 @@ export function GameApp({
   }
 
   async function confirmName() {
-    const clean = setPlayerName(nameDraft);
+    const clean = sanitizeName(nameDraft);
     if (!clean || clean.length < 2) return;
+
+    const taken = board.find(
+      (e) => e.name.toLowerCase() === clean.toLowerCase(),
+    );
+    const alreadyMine =
+      getPlayerName().toLowerCase() === clean.toLowerCase();
+
+    // Impede se passar pelo dono do apelido só digitando o nome dele.
+    if (taken && !alreadyMine && score < taken.score) {
+      setFeedback(
+        `"${taken.name}" já tem ${taken.score.toLocaleString("pt-BR")} pts. Escolhe outro apelido (ou bate esse recorde).`,
+      );
+      return;
+    }
+    if (taken && !alreadyMine) {
+      const ok = window.confirm(
+        `Já existe "${taken.name}" com ${taken.score.toLocaleString("pt-BR")} pts.\n\nSó confirma se for VOCÊ batendo o próprio recorde. Senão cancela e escolhe outro nome.`,
+      );
+      if (!ok) return;
+    }
+
+    setPlayerName(clean);
     setPlayerNameState(clean);
-    setNeedsName(false);
-    await publishScore(score, clean);
+    const ok = await publishScore(score, clean);
+    if (ok) {
+      setNeedsName(false);
+      setFeedback("");
+    }
   }
 
   function nextLevel() {
@@ -788,8 +842,23 @@ export function GameApp({
                 {lastPerfect ? "Achado limpo · " : ""}
                 {streak > 1 ? `sequência x${streak} · ` : ""}
                 corrida {formatClock(elapsed)}
-                {myRank != null ? ` · você #${myRank}` : ""}
               </p>
+              <p className="mt-1 text-sm font-semibold text-[var(--ink)]">
+                Esta caçada: {score.toLocaleString("pt-BR")} pts
+                {best > score
+                  ? ` · seu recorde: ${best.toLocaleString("pt-BR")}`
+                  : ""}
+                {playerName && myRank != null
+                  ? ` · ${playerName} #${myRank}`
+                  : myRank != null
+                    ? ` · #${myRank} no placar`
+                    : ""}
+              </p>
+              {feedback && needsName && (
+                <p className="mt-2 text-sm font-semibold text-[var(--alert)]">
+                  {feedback}
+                </p>
+              )}
 
               {needsName ? (
                 <div className="mx-auto mt-5 max-w-sm text-left">
@@ -797,7 +866,8 @@ export function GameApp({
                     Entra no placar pra desafiar a galera
                   </p>
                   <p className="text-xs text-[var(--muted)]">
-                    Só um apelido. Sem login, sem frescura.
+                    Apelido único neste aparelho. Não use o nome de outra
+                    pessoa do ranking.
                   </p>
                   <div className="mt-3 flex gap-2">
                     <input

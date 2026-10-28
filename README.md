@@ -45,17 +45,18 @@ Abra [http://127.0.0.1:43127](http://127.0.0.1:43127).
 
 Projeto: **CadeFlavinho** → `https://elpxkbcnaexbkyynclaf.supabase.co`
 
-1. No Supabase → **SQL Editor** → cole e rode `supabase/migrations/001_leaderboard.sql`
-2. **Project Settings → API** → copie:
+1. No Supabase → **SQL Editor** → rode `supabase/migrations/001_leaderboard.sql`
+2. Depois rode também `supabase/migrations/002_leaderboard_device.sql` (trava apelido por aparelho — evita print falso de 1º lugar)
+3. **Project Settings → API** → copie:
    - `anon` `public` → `NEXT_PUBLIC_SUPABASE_ANON_KEY`
    - `service_role` → `SUPABASE_SERVICE_ROLE_KEY` (só server / Vercel env — nunca no browser)
-3. Na Vercel (e no `.env.local`):
+4. Na Vercel (e no `.env.local`):
    - `NEXT_PUBLIC_SUPABASE_URL=https://elpxkbcnaexbkyynclaf.supabase.co`
    - `NEXT_PUBLIC_SUPABASE_ANON_KEY=...`
    - `SUPABASE_SERVICE_ROLE_KEY=...`
-4. Redeploy
+5. Redeploy
 
-A API `/api/rank` grava/lê a tabela `leaderboard` (nome + pontuação). É ranking **mundial**, não por aparelho.
+A API `/api/rank` grava/lê a tabela `leaderboard` (nome + pontuação + `device_key`). É ranking **mundial**, com apelido amarrado ao aparelho.
 
 ## DNS no Registro.br (`cadeflavinho.com.br`)
 
