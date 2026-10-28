@@ -65,26 +65,26 @@ export function ModePicker({ onPick }: Props) {
               </div>
             </div>
 
-            <div className="relative mt-10 grid gap-4 sm:grid-cols-3">
+            <div className="relative mt-10 grid items-stretch gap-4 sm:grid-cols-3">
               {GAME_MODES.map((mode, i) => (
                 <button
                   key={mode.id}
                   type="button"
                   onClick={() => onPick(mode.id)}
-                  className={`animate-rise group overflow-hidden rounded-3xl border-[3px] text-left shadow-[6px_6px_0_var(--ink)] transition hover:-translate-y-1 hover:shadow-[8px_8px_0_var(--ink)] ${mode.tone}`}
+                  className={`animate-rise group flex h-full flex-col overflow-hidden rounded-3xl border-[3px] text-left shadow-[6px_6px_0_var(--ink)] transition hover:-translate-y-1 hover:shadow-[8px_8px_0_var(--ink)] ${mode.tone}`}
                   style={{ animationDelay: `${i * 80}ms` }}
                 >
-                  <div className="relative aspect-[4/3] w-full overflow-hidden border-b-[3px] border-[var(--ink)]/20 bg-[var(--sand)]">
+                  <div className="relative h-44 w-full shrink-0 overflow-hidden border-b-[3px] border-[var(--ink)]/20 bg-[var(--sand)] sm:h-48">
                     <Image
                       src={mode.art}
                       alt={mode.artAlt}
                       fill
                       sizes="(max-width: 640px) 100vw, 33vw"
-                      className="object-cover transition duration-500 group-hover:scale-[1.04]"
+                      className="object-cover object-center transition duration-500 group-hover:scale-[1.04]"
                       priority={i === 0}
                     />
                   </div>
-                  <div className="p-5">
+                  <div className="flex flex-1 flex-col p-5">
                     <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[var(--ink)]/70">
                       {mode.badge}
                     </p>
@@ -97,7 +97,7 @@ export function ModePicker({ onPick }: Props) {
                     <p className="mt-2 text-sm leading-snug text-[var(--ink)]/75">
                       {mode.blurb}
                     </p>
-                    <span className="mt-5 inline-flex items-center gap-2 rounded-xl border-2 border-[var(--ink)] bg-white px-3 py-2 text-sm font-[family-name:var(--font-display)] text-[var(--ink)] shadow-[3px_3px_0_var(--ink)] transition group-hover:translate-x-[1px] group-hover:translate-y-[1px] group-hover:shadow-[2px_2px_0_var(--ink)]">
+                    <span className="mt-auto inline-flex w-fit items-center gap-2 rounded-xl border-2 border-[var(--ink)] bg-white px-3 py-2 text-sm font-[family-name:var(--font-display)] text-[var(--ink)] shadow-[3px_3px_0_var(--ink)] transition group-hover:translate-x-[1px] group-hover:translate-y-[1px] group-hover:shadow-[2px_2px_0_var(--ink)] pt-5">
                       Entrar
                       <span aria-hidden>→</span>
                     </span>
