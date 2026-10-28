@@ -336,87 +336,129 @@ export function ParcaApp({ onBack }: { onBack: () => void }) {
         )}
 
         {phase === "result" && person && (
-          <section className="animate-rise mx-auto max-w-xl rounded-3xl border-[3px] border-[var(--ink)] bg-[var(--paper)] p-6 text-center shadow-[8px_8px_0_var(--ink)]">
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-[var(--brand)]">
-              {won ? "Parça identificado" : "Errou o passageiro"}
-            </p>
-            <h2 className="mt-2 font-[family-name:var(--font-display)] text-3xl text-[var(--ink)]">
-              {won
-                ? "Era esse que ele levou!"
-                : "Não foi quem ele levou"}
-            </h2>
-
-            <div className="mt-5 flex items-end justify-center gap-3 sm:gap-5">
-              <div className="relative h-28 w-28 overflow-hidden rounded-2xl border-[3px] border-[var(--ink)] bg-[var(--sand)] shadow-[4px_4px_0_var(--ink)] sm:h-32 sm:w-32">
-                <Image
-                  src="/game/parcas/_flavinho.webp"
-                  alt="Flavinho"
-                  fill
-                  unoptimized
-                  className="object-contain object-bottom p-1"
-                />
-              </div>
-              <div
-                className="mb-10 flex h-10 w-10 items-center justify-center rounded-full border-[3px] border-[var(--ink)] bg-[#fff4d6] font-[family-name:var(--font-display)] text-xl text-[var(--ink)] shadow-[3px_3px_0_var(--ink)] sm:mb-12"
-                aria-hidden
-              >
-                +
-              </div>
-              <ParcaPortrait
-                id={person.id}
-                name={person.name}
-                className="h-28 w-28 sm:h-32 sm:w-32"
-              />
+          <section
+            className={`animate-rise mx-auto max-w-xl overflow-hidden rounded-3xl border-[3px] border-[var(--ink)] text-center shadow-[8px_8px_0_var(--ink)] ${
+              won ? "bg-[#e8f6ef]" : "bg-[#fde8e4]"
+            }`}
+          >
+            <div
+              className={`border-b-[3px] border-[var(--ink)] px-4 py-4 ${
+                won ? "bg-[#1f8a5b] text-white" : "bg-[#c2410c] text-white"
+              }`}
+            >
+              <p className="text-xs font-bold uppercase tracking-[0.22em] text-white/85">
+                {won ? "Resultado · acerto" : "Resultado · erro"}
+              </p>
+              <p className="mt-1 font-[family-name:var(--font-display)] text-4xl leading-none sm:text-5xl">
+                {won ? "Acertou!" : "Errou!"}
+              </p>
+              <p className="mt-2 text-sm font-semibold text-white/95">
+                {won
+                  ? "Você descobriu quem entrou no carro."
+                  : "Esse não era o passageiro da fuga."}
+              </p>
             </div>
 
-            <p className="mt-4 text-sm font-semibold uppercase tracking-[0.14em] text-[var(--muted)]">
-              O Flavinho saiu com
-            </p>
-            <p className="mt-1 font-[family-name:var(--font-display)] text-4xl leading-tight text-[var(--ink)] sm:text-5xl">
-              {person.name}
-            </p>
-            {person.blurb ? (
-              <p className="mt-2 text-base font-semibold text-[var(--brand)]">
-                {person.blurb}
-              </p>
-            ) : null}
-            {!won && picked && (
-              <p className="mt-2 text-sm text-[var(--muted)]">
-                Seu chute:{" "}
-                <strong className="text-[var(--ink)]">{picked.name}</strong>.
-              </p>
-            )}
-            <p className="mt-3 font-semibold text-[var(--ink)]">
-              {score.toLocaleString("pt-BR")} pts · {formatClock(elapsed)}
-              {myRank ? ` · #${myRank} neste modo` : ""}
-            </p>
-            {needsName && won && (
-              <div className="mt-5 flex flex-col items-stretch gap-2 sm:flex-row">
-                <input
-                  value={nameDraft}
-                  onChange={(e) => setNameDraft(sanitizeName(e.target.value))}
-                  placeholder="Seu apelido no ranking"
-                  maxLength={16}
-                  className="min-w-0 flex-1 rounded-xl border-2 border-[var(--ink)] bg-white px-3 py-2.5 font-semibold text-[var(--ink)] outline-none focus:border-[var(--brand)]"
-                />
-                <Button onClick={saveNameAndRank}>Salvar</Button>
+            <div className="p-6">
+              <div className="relative mx-auto flex w-fit items-end justify-center gap-3 sm:gap-5">
+                <div className="relative h-28 w-28 overflow-hidden rounded-2xl border-[3px] border-[var(--ink)] bg-white shadow-[4px_4px_0_var(--ink)] sm:h-32 sm:w-32">
+                  <Image
+                    src="/game/parcas/_flavinho.webp"
+                    alt="Flavinho"
+                    fill
+                    unoptimized
+                    className="object-contain object-bottom p-1"
+                  />
+                </div>
+                <div
+                  className="mb-10 flex h-10 w-10 items-center justify-center rounded-full border-[3px] border-[var(--ink)] bg-white font-[family-name:var(--font-display)] text-xl text-[var(--ink)] shadow-[3px_3px_0_var(--ink)] sm:mb-12"
+                  aria-hidden
+                >
+                  +
+                </div>
+                <div className="relative">
+                  <ParcaPortrait
+                    id={person.id}
+                    name={person.name}
+                    className={`h-28 w-28 sm:h-32 sm:w-32 ${
+                      won
+                        ? "ring-4 ring-[#1f8a5b]"
+                        : "ring-4 ring-[#c2410c] opacity-95"
+                    }`}
+                  />
+                  <span
+                    className={`absolute -right-2 -top-2 flex h-11 w-11 items-center justify-center rounded-full border-[3px] border-[var(--ink)] font-[family-name:var(--font-display)] text-2xl text-white shadow-[3px_3px_0_var(--ink)] ${
+                      won ? "bg-[#1f8a5b]" : "bg-[#c2410c]"
+                    }`}
+                    aria-hidden
+                  >
+                    {won ? "✓" : "✕"}
+                  </span>
+                </div>
               </div>
-            )}
-            <div className="mt-6 flex flex-wrap justify-center gap-3">
-              <Button size="lg" onClick={() => startGame(difficulty)}>
-                Tentar de novo
-              </Button>
-              <Button variant="secondary" onClick={onBack}>
-                Trocar modo
-              </Button>
-            </div>
-            <div className="mt-5 border-t border-[var(--ink)]/10 pt-4">
-              <ShareBar
-                text={shareText}
-                label="Desafia alguém"
-                align="center"
-                compact
-              />
+
+              <p className="mt-5 text-sm font-semibold uppercase tracking-[0.14em] text-[var(--muted)]">
+                {won ? "O Flavinho saiu com" : "Na verdade ele saiu com"}
+              </p>
+              <p className="mt-1 font-[family-name:var(--font-display)] text-4xl leading-tight text-[var(--ink)] sm:text-5xl">
+                {person.name}
+              </p>
+              {person.blurb ? (
+                <p
+                  className={`mt-2 text-base font-bold ${
+                    won ? "text-[#1f8a5b]" : "text-[#c2410c]"
+                  }`}
+                >
+                  {person.blurb}
+                </p>
+              ) : null}
+
+              {!won && picked && (
+                <div className="mt-4 rounded-2xl border-[3px] border-dashed border-[#c2410c]/60 bg-white/80 px-4 py-3">
+                  <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#c2410c]">
+                    Seu chute
+                  </p>
+                  <p className="mt-1 font-[family-name:var(--font-display)] text-xl text-[var(--ink)] line-through decoration-[#c2410c] decoration-2">
+                    {picked.name}
+                  </p>
+                </div>
+              )}
+
+              <p className="mt-4 inline-flex rounded-full border-2 border-[var(--ink)] bg-white px-4 py-1.5 text-sm font-bold text-[var(--ink)] shadow-[3px_3px_0_var(--ink)]">
+                {score.toLocaleString("pt-BR")} pts · {formatClock(elapsed)}
+                {myRank ? ` · #${myRank}` : ""}
+              </p>
+
+              {needsName && won && (
+                <div className="mt-5 flex flex-col items-stretch gap-2 sm:flex-row">
+                  <input
+                    value={nameDraft}
+                    onChange={(e) =>
+                      setNameDraft(sanitizeName(e.target.value))
+                    }
+                    placeholder="Seu apelido no ranking"
+                    maxLength={16}
+                    className="min-w-0 flex-1 rounded-xl border-2 border-[var(--ink)] bg-white px-3 py-2.5 font-semibold text-[var(--ink)] outline-none focus:border-[var(--brand)]"
+                  />
+                  <Button onClick={saveNameAndRank}>Salvar</Button>
+                </div>
+              )}
+              <div className="mt-6 flex flex-wrap justify-center gap-3">
+                <Button size="lg" onClick={() => startGame(difficulty)}>
+                  Tentar de novo
+                </Button>
+                <Button variant="secondary" onClick={onBack}>
+                  Trocar modo
+                </Button>
+              </div>
+              <div className="mt-5 border-t border-[var(--ink)]/10 pt-4">
+                <ShareBar
+                  text={shareText}
+                  label="Desafia alguém"
+                  align="center"
+                  compact
+                />
+              </div>
             </div>
           </section>
         )}
