@@ -3,7 +3,7 @@
 Jogo satírico / meme com **três modos**:
 
 1. **O Mestre dos Disfarces** — pistas da cidade + ache ele na multidão.
-2. **Rua da Amargura** — foto da rua → marca no mapa (Leaflet + OSM, sem cadastro).
+2. **Rua da Amargura** — Google Street View → pin no mapa (Leaflet + OSM).
 3. **Diga-me com Quem Andas…** — dicas meme pra achar o parça da fuga (150 nomes).
 
 Site publicado (modo clássico): [cadeflavinho.com.br](https://cadeflavinho.com.br)
@@ -29,6 +29,19 @@ npm run dev -- --port 43127
 ```
 
 Abra [http://127.0.0.1:43127](http://127.0.0.1:43127).
+
+### Street View (Rua da Amargura)
+
+1. [Google Cloud Console](https://console.cloud.google.com/) → criar projeto (e ligar billing; o crédito mensal grátis costuma bastar).
+2. Ativar **Maps JavaScript API**.
+3. Criar uma **API key**, restringir à Maps JavaScript API e aos seus domínios (`localhost`, `cadeflavinho.com.br`, etc.).
+4. No `.env.local` (e na Vercel):
+
+```bash
+NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=sua_chave_aqui
+```
+
+5. Reiniciar o `npm run dev` (ou redeploy).
 
 ## Deploy na Vercel
 

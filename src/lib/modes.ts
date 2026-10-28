@@ -22,9 +22,9 @@ export const GAME_MODES: GameModeMeta[] = [
   {
     id: "rua",
     name: "Rua da Amargura",
-    tagline: "Olha a foto. Marca no mapa.",
+    tagline: "Street View. Marca no mapa.",
     blurb:
-      "Uma foto da rua (ou do marco famoso). Você aponta no mapa-múndi onde o Flavinho sumiu.",
+      "Panorama 360° da rua. Gira, anda um pouco e aponta no mapa-múndi onde o Flavinho sumiu.",
     tone: "bg-[#fff4d6] border-[#d4a017]",
     badge: "Modo 2",
   },

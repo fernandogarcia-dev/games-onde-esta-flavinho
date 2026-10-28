@@ -46,6 +46,20 @@ const GuessMap = dynamic(
   },
 );
 
+const StreetView = dynamic(
+  () => import("@/components/rua/StreetView").then((m) => m.StreetView),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="flex aspect-[4/3] items-center justify-center bg-[var(--sand)]">
+        <p className="text-sm font-semibold text-[var(--muted)]">
+          Abrindo a rua…
+        </p>
+      </div>
+    ),
+  },
+);
+
 type Phase = "landing" | "guess" | "reveal" | "win" | "fail";
 
 type Pin = { lat: number; lng: number };
@@ -244,8 +258,16 @@ export function RuaApp({ onBack }: { onBack: () => void }) {
                 {modeMeta.name}
               </h1>
               <p className="mt-3 max-w-xl text-lg text-[var(--muted)]">
-                {modeMeta.blurb} Mesmas cidades do modo clássico. Sem cadastro —
-                OpenStreetMap + foto Wikimedia.
+                {modeMeta.blurb} Street View pra olhar a rua (gira, anda um
+                pouco) e pin no mapa-múndi. Mesmas cidades do modo clássico.
+              </p>
+              <p className="mt-2 max-w-xl text-sm text-[var(--muted)]">
+                Precisa de{" "}
+                <code className="rounded bg-white/80 px-1">
+                  NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
+                </code>{" "}
+                (Maps JavaScript API). Cadastro no Google Cloud — o uso típico
+                cabe no crédito grátis.
               </p>
 
               <DifficultyPicker
@@ -287,19 +309,11 @@ export function RuaApp({ onBack }: { onBack: () => void }) {
           <section className="animate-rise grid gap-5 lg:grid-cols-[1.05fr_0.95fr]">
             <div className="space-y-3">
               <div className="overflow-hidden rounded-3xl border-[3px] border-[var(--ink)] bg-[var(--paper)] shadow-[6px_6px_0_var(--ink)]">
-                <div className="relative aspect-[4/3] w-full bg-[var(--sand)]">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={city.photo}
-                    alt={
-                      phase === "reveal"
-                        ? `Foto em ${city.name}`
-                        : "Foto misteriosa da cidade"
-                    }
-                    className="h-full w-full object-cover"
-                    referrerPolicy="no-referrer"
-                  />
-                </div>
+                <StreetView
+                  lat={city.lat}
+                  lng={city.lng}
+                  seed={`${city.id}-${index}-${difficulty}`}
+                />
                 <div className="border-t-2 border-[var(--ink)]/10 px-4 py-3">
                   <p className="text-xs font-bold uppercase tracking-[0.16em] text-[var(--brand)]">
                     Episódio {index + 1}/{run.length}
@@ -312,7 +326,7 @@ export function RuaApp({ onBack }: { onBack: () => void }) {
                   <p className="mt-1 text-sm text-[var(--muted)]">
                     {phase === "reveal"
                       ? `${formatDistance(lastKm)} do alvo · +${lastPts.toLocaleString("pt-BR")} pts`
-                      : "Olha a foto e marca no mapa. Pode arrastar e dar zoom."}
+                      : "Gira o Street View, anda um pouco e marca no mapa."}
                   </p>
                 </div>
               </div>
@@ -349,12 +363,12 @@ export function RuaApp({ onBack }: { onBack: () => void }) {
                   <Button size="lg" onClick={advance}>
                     {index + 1 >= run.length
                       ? "Ver placar"
-                      : "Próxima foto"}
+                      : "Próxima rua"}
                   </Button>
                 )}
               </div>
               <p className="text-[11px] text-[var(--muted)]">
-                Mapa © OpenStreetMap · foto Wikimedia (uso local / MVP)
+                Street View © Google · mapa de chute © OpenStreetMap
               </p>
             </div>
           </section>

@@ -14,16 +14,15 @@
 
 ---
 
-## Modo 2 — Rua da Amargura (MVP)
+## Modo 2 — Rua da Amargura
 
-Sem cadastro, sem Google pago:
-
-1. **Mapa** Leaflet + OpenStreetMap (pin no mapa-múndi).
-2. **Foto** por cidade via Wikimedia (estático).
+1. **Street View** (Google Maps JavaScript API) — panorama 360°, sem labels de rua.
+2. **Mapa de chute** Leaflet + OpenStreetMap.
 3. Mesmas cidades/tiers do modo 1: Fácil 24 · Médio 56 · Difícil 124.
 4. Pontuação por distância (km) do alvo.
 
-Dados: `src/lib/city-geo-data.json`.
+Dados de cidade: `src/lib/city-geo-data.json`.  
+Chave: `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` (ver README).
 
 ---
 
@@ -38,4 +37,5 @@ Dados: `src/lib/city-geo-data.json`.
 
 ## Cadastro de serviços?
 
-**Não**, para este MVP local. Não precisa Mapillary / Google / nada pago.
+- Modo 1 e 3: não.
+- Modo 2 (Street View): **sim** — API key no Google Cloud (Maps JavaScript API). Billing ligado no projeto; uso típico cabe no crédito grátis.
