@@ -38,42 +38,42 @@ export function ModePicker({ onPick }: Props) {
             <div className="absolute inset-0 bg-gradient-to-b from-[var(--paper)] via-[var(--paper)]/92 to-[var(--paper)]/75" />
           </div>
 
-          <div className="relative px-6 py-10 sm:px-10 sm:py-12">
-            <div className="animate-rise flex flex-row items-start justify-between gap-3 sm:gap-6 sm:items-end">
-              <div className="min-w-0 flex-1 max-w-xl">
-                <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--brand)] sm:text-sm sm:tracking-[0.25em]">
-                  Jogo satírico grátis · ranking mundial
-                </p>
-                <h1 className="mt-2 font-[family-name:var(--font-display)] text-4xl leading-[0.95] text-[var(--ink)] sm:mt-3 sm:text-5xl md:text-6xl">
-                  Cadê Flavinho?
-                </h1>
-                <p className="mt-2 font-[family-name:var(--font-display)] text-xl leading-tight text-[var(--ink)]/80 sm:mt-3 sm:text-2xl md:text-3xl">
-                  Três caçadas. Um sumiço.
-                </p>
-                <p className="mt-3 max-w-md text-sm text-[var(--muted)] sm:mt-4 sm:text-lg">
-                  Ache o Flavinho na multidão, no Street View ou descubra quem
-                  ele levou na fuga. Sem cadastro — escolhe o modo e joga.
-                </p>
-                <div className="mt-4 sm:mt-5">
-                  <Button
-                    variant="secondary"
-                    size="md"
-                    onClick={() => setShowRanks(true)}
-                  >
-                    Ver rankings
-                  </Button>
+          <div className="relative px-5 py-8 sm:px-10 sm:py-12">
+            <div className="animate-rise grid grid-cols-[minmax(0,1fr)_5.75rem] items-start gap-x-3 gap-y-3 sm:grid-cols-[minmax(0,1fr)_9rem] sm:gap-x-6 sm:gap-y-4">
+              <p className="col-start-1 row-start-1 text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--brand)] sm:text-sm sm:tracking-[0.25em]">
+                Jogo satírico grátis · ranking mundial
+              </p>
+              <div className="col-start-2 row-span-4 row-start-1 justify-self-end self-start sm:row-span-5">
+                <div className="animate-float relative h-[5.75rem] w-[5.75rem] overflow-hidden rounded-2xl border-[3px] border-[var(--ink)] bg-[var(--sand)] shadow-[5px_5px_0_var(--ink)] sm:h-36 sm:w-36 sm:shadow-[6px_6px_0_var(--ink)]">
+                  <Image
+                    src="/game/parcas/_flavinho.webp"
+                    alt="Flavinho"
+                    fill
+                    priority
+                    unoptimized
+                    className="object-contain object-bottom p-1"
+                    sizes="144px"
+                  />
                 </div>
               </div>
-              <div className="animate-float relative w-24 shrink-0 sm:w-32 md:w-36">
-                <Image
-                  src="/game/disguises/real.webp"
-                  alt="Flavinho"
-                  width={180}
-                  height={220}
-                  priority
-                  unoptimized
-                  className="rounded-2xl border-[3px] border-[var(--ink)] bg-[var(--sand)] object-contain p-1.5 shadow-[5px_5px_0_var(--ink)] sm:p-2 sm:shadow-[6px_6px_0_var(--ink)]"
-                />
+              <h1 className="col-start-1 row-start-2 font-[family-name:var(--font-display)] text-[2.1rem] leading-[0.95] text-[var(--ink)] sm:text-5xl md:text-6xl">
+                Cadê Flavinho?
+              </h1>
+              <p className="col-start-1 row-start-3 font-[family-name:var(--font-display)] text-xl leading-tight text-[var(--ink)]/80 sm:text-2xl md:text-3xl">
+                Três caçadas. Um sumiço.
+              </p>
+              <p className="col-start-1 row-start-4 max-w-md text-sm leading-snug text-[var(--muted)] sm:col-span-1 sm:text-lg">
+                Ache o Flavinho na multidão, no Street View ou descubra quem ele
+                levou na fuga. Sem cadastro — escolhe o modo e joga.
+              </p>
+              <div className="col-span-2 row-start-5 sm:col-span-1 sm:row-start-5">
+                <Button
+                  variant="secondary"
+                  size="md"
+                  onClick={() => setShowRanks(true)}
+                >
+                  Ver rankings
+                </Button>
               </div>
             </div>
 
