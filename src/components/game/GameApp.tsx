@@ -504,44 +504,14 @@ export function GameApp() {
                     Cruze as pistas e chute a cidade. Errou? Libera a próxima.
                   </p>
                 </div>
+                <p className="text-[11px] font-semibold text-[var(--muted)]">
+                  {labelMode(difficulty)} · {labelFindTime(difficulty)} ·{" "}
+                  {lives} vida{lives === 1 ? "" : "s"} ·{" "}
+                  {score.toLocaleString("pt-BR")} pts
+                </p>
               </div>
 
-              <div className="mt-4 grid grid-cols-3 gap-2 rounded-2xl border-2 border-dashed border-[var(--ink)]/35 bg-white/70 p-2">
-                <div
-                  className={`rounded-xl border-2 px-2.5 py-2.5 ${difficultyTone(difficulty)} shadow-[2px_2px_0_var(--ink)]`}
-                >
-                  <p className="text-[10px] font-bold uppercase tracking-wide text-[var(--ink)]/70">
-                    Modo
-                  </p>
-                  <p className="font-[family-name:var(--font-display)] text-base text-[var(--ink)]">
-                    {labelMode(difficulty)}
-                  </p>
-                </div>
-                <div className="rounded-xl border-2 border-[#0f766e] bg-[#e6f7f5] px-2.5 py-2.5 shadow-[2px_2px_0_var(--ink)]">
-                  <p className="text-[10px] font-bold uppercase tracking-wide text-[var(--ink)]/70">
-                    Relógio
-                  </p>
-                  <p className="font-[family-name:var(--font-display)] text-base text-[var(--ink)]">
-                    {labelFindTime(difficulty)}
-                  </p>
-                </div>
-                <div
-                  className={`rounded-xl border-2 px-2.5 py-2.5 shadow-[2px_2px_0_var(--ink)] ${
-                    lives <= 1
-                      ? "border-[#c2410c] bg-[#fde8e4]"
-                      : "border-[#d4a017] bg-[#fff4d6]"
-                  }`}
-                >
-                  <p className="text-[10px] font-bold uppercase tracking-wide text-[var(--ink)]/70">
-                    Vidas
-                  </p>
-                  <p className="font-[family-name:var(--font-display)] text-base text-[var(--ink)]">
-                    {lives} · {score.toLocaleString("pt-BR")} pts
-                  </p>
-                </div>
-              </div>
-
-              <div className="mt-4 flex items-end justify-between gap-2">
+              <div className="mt-5 flex items-end justify-between gap-2">
                 <p className="text-sm font-bold uppercase tracking-[0.16em] text-[var(--ink)]">
                   Pistas da cidade
                 </p>
@@ -549,12 +519,9 @@ export function GameApp() {
                   {clueIndex + 1}/{level.clues.length} abertas
                 </p>
               </div>
-              <p className="mt-1 text-sm text-[var(--muted)]">
-                A primeira já está aberta. Erre no mapa pra liberar as outras.
-              </p>
 
               {feedback && (
-                <p className="mt-4 rounded-xl border-2 border-[#c2410c] bg-[#fde8e4] px-4 py-3 text-sm font-semibold text-[#9a3412] shadow-[3px_3px_0_var(--ink)]">
+                <p className="mt-3 rounded-xl border-2 border-[#c2410c] bg-[#fde8e4] px-4 py-3 text-sm font-semibold text-[#9a3412] shadow-[3px_3px_0_var(--ink)]">
                   {feedback}
                 </p>
               )}
@@ -564,7 +531,7 @@ export function GameApp() {
                 </p>
               )}
 
-              <ul className="mt-4 space-y-2.5 rounded-2xl border-2 border-dashed border-[var(--ink)]/35 bg-white/70 p-2">
+              <ul className="mt-3 space-y-3">
                 {level.clues.map((clue, i) => {
                   const unlocked = i <= clueIndex;
                   const isFresh = freshClue === i;
@@ -572,18 +539,18 @@ export function GameApp() {
                     <li
                       key={`${level.id}-${i}`}
                       ref={isFresh ? freshClueRef : undefined}
-                      className={`rounded-xl border-2 px-3 py-3 transition ${
+                      className={`rounded-2xl border-[3px] px-4 py-4 transition ${
                         isFresh
-                          ? "border-[var(--ink)] bg-[#fff4d6] text-[var(--ink)] shadow-[3px_3px_0_var(--ink)] ring-2 ring-[#d4a017] animate-pulse"
+                          ? "border-[var(--ink)] bg-[#fff4d6] text-[var(--ink)] shadow-[5px_5px_0_var(--ink)] ring-2 ring-[#d4a017] animate-pulse"
                           : unlocked
-                            ? "border-[#1f8a5b] bg-[#e8f6ef] text-[var(--ink)] shadow-[2px_2px_0_var(--ink)]"
-                            : "border-dashed border-[var(--ink)]/25 bg-white/80 text-[var(--muted)] opacity-80"
+                            ? "border-[var(--ink)] bg-[#e8f6ef] text-[var(--ink)] shadow-[5px_5px_0_var(--ink)]"
+                            : "border-dashed border-[var(--ink)]/30 bg-white/70 text-[var(--muted)]"
                       }`}
                     >
-                      <div className="flex items-start gap-2.5">
+                      <div className="flex items-start gap-3">
                         <span
                           aria-hidden
-                          className={`mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 text-[11px] font-black ${
+                          className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-2 text-sm font-black ${
                             isFresh
                               ? "border-[var(--ink)] bg-[var(--ink)] text-white"
                               : unlocked
@@ -595,7 +562,7 @@ export function GameApp() {
                         </span>
                         <div className="min-w-0 flex-1">
                           <p
-                            className={`text-[10px] font-bold uppercase tracking-wide ${
+                            className={`text-xs font-bold uppercase tracking-wide ${
                               isFresh
                                 ? "text-[#9a7b0a]"
                                 : unlocked
@@ -606,10 +573,16 @@ export function GameApp() {
                             {isFresh
                               ? "Nova pista"
                               : unlocked
-                                ? `Pista ${i + 1} liberada`
+                                ? `Pista ${i + 1}`
                                 : `Pista ${i + 1} bloqueada`}
                           </p>
-                          <p className="mt-0.5 text-sm font-medium leading-snug">
+                          <p
+                            className={`mt-1 leading-snug ${
+                              unlocked
+                                ? "text-base font-semibold sm:text-lg"
+                                : "text-sm font-medium"
+                            }`}
+                          >
                             {unlocked
                               ? clue
                               : "Erra uma cidade no mapa pra abrir."}
@@ -622,7 +595,7 @@ export function GameApp() {
               </ul>
 
               {clueIndex >= level.clues.length - 1 && (
-                <p className="mt-3 rounded-xl border-2 border-[#1f8a5b] bg-[#e8f6ef] px-4 py-3 text-sm font-semibold text-[#145c3d] shadow-[2px_2px_0_var(--ink)]">
+                <p className="mt-4 rounded-xl border-2 border-[#1f8a5b] bg-[#e8f6ef] px-4 py-3 text-sm font-semibold text-[#145c3d] shadow-[3px_3px_0_var(--ink)]">
                   Todas as pistas na mesa — cruze e marque a cidade.
                 </p>
               )}
@@ -1143,8 +1116,3 @@ function labelMode(d: Difficulty) {
   return "Difícil";
 }
 
-function difficultyTone(d: Difficulty) {
-  if (d === "easy") return "border-[#1f8a5b] bg-[#e8f6ef]";
-  if (d === "hard") return "border-[#c2410c] bg-[#fde8e4]";
-  return "border-[#d4a017] bg-[#fff4d6]";
-}
