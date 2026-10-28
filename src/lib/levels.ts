@@ -66,12 +66,17 @@ function buildWrongHints(
   return out;
 }
 
+/** Never put the answer city in the title — that spoils the map guess. */
 function episodeTitle(city: CityRecord): string {
   const titles = [
-    `Sumiço em ${city.name}`,
-    `Rastro em ${city.name}`,
-    `Cadê ele em ${city.name}?`,
-    `Pista quente: ${city.name}`,
+    "Sumiço confirmado",
+    "Rastro quente",
+    "Ele sumiu de novo",
+    "Pista na mesa",
+    "Cadê o cara?",
+    "Operação disfarce",
+    "Alerta de paradeiro",
+    "Último sinal",
   ];
   let h = 0;
   for (let i = 0; i < city.id.length; i++) h = (h * 33 + city.id.charCodeAt(i)) | 0;
