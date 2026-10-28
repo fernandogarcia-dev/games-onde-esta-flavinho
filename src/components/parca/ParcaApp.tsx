@@ -14,6 +14,7 @@ import {
   readModeBoard,
   submitModeScore,
 } from "@/lib/mode-ranking";
+import { ParcaPortrait } from "@/components/parca/ParcaPortrait";
 import {
   cluesFor,
   dealParcaRun,
@@ -354,18 +355,48 @@ export function ParcaApp({ onBack }: { onBack: () => void }) {
                 ? "Era esse que ele levou!"
                 : "Não foi quem ele levou"}
             </h2>
-            <p className="mt-3 text-[var(--muted)]">
-              O Flavinho saiu com{" "}
-              <strong className="text-[var(--ink)]">{person.name}</strong>
-              {person.blurb ? ` — ${person.blurb}` : ""}.
+
+            <div className="mt-5 flex items-end justify-center gap-3 sm:gap-5">
+              <div className="relative h-28 w-28 overflow-hidden rounded-2xl border-[3px] border-[var(--ink)] bg-[var(--sand)] shadow-[4px_4px_0_var(--ink)] sm:h-32 sm:w-32">
+                <Image
+                  src="/game/parcas/_flavinho.webp"
+                  alt="Flavinho"
+                  fill
+                  unoptimized
+                  className="object-contain object-bottom p-1"
+                />
+              </div>
+              <div
+                className="mb-10 flex h-10 w-10 items-center justify-center rounded-full border-[3px] border-[var(--ink)] bg-[#fff4d6] font-[family-name:var(--font-display)] text-xl text-[var(--ink)] shadow-[3px_3px_0_var(--ink)] sm:mb-12"
+                aria-hidden
+              >
+                +
+              </div>
+              <ParcaPortrait
+                id={person.id}
+                name={person.name}
+                className="h-28 w-28 sm:h-32 sm:w-32"
+              />
+            </div>
+
+            <p className="mt-4 text-sm font-semibold uppercase tracking-[0.14em] text-[var(--muted)]">
+              O Flavinho saiu com
             </p>
+            <p className="mt-1 font-[family-name:var(--font-display)] text-4xl leading-tight text-[var(--ink)] sm:text-5xl">
+              {person.name}
+            </p>
+            {person.blurb ? (
+              <p className="mt-2 text-base font-semibold text-[var(--brand)]">
+                {person.blurb}
+              </p>
+            ) : null}
             {!won && picked && (
               <p className="mt-2 text-sm text-[var(--muted)]">
                 Seu chute:{" "}
                 <strong className="text-[var(--ink)]">{picked.name}</strong>.
               </p>
             )}
-            <p className="mt-2 font-semibold text-[var(--ink)]">
+            <p className="mt-3 font-semibold text-[var(--ink)]">
               {score.toLocaleString("pt-BR")} pts · {formatClock(elapsed)}
               {myRank ? ` · #${myRank} neste modo` : ""}
             </p>

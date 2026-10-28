@@ -79,3 +79,8 @@ export const PARCA_HIT_BONUS: Record<Difficulty, number> = {
 };
 
 export const PARCA_CLUE_PENALTY = 120;
+
+/** Caricatura do parça (webp em /public/game/parcas). */
+export function parcaArtSrc(id: string): string {
+  return `/game/parcas/${id}.webp`;
+}
