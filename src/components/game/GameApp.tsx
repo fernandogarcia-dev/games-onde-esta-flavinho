@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/Button";
 import { CrowdScene } from "@/components/game/CrowdScene";
 import { Leaderboard } from "@/components/game/Leaderboard";
 import { PixModal } from "@/components/game/PixModal";
+import { RankModal } from "@/components/game/RankModal";
 import { ShareBar } from "@/components/game/ShareBar";
 import {
   cityCatalogSize,
@@ -76,6 +77,7 @@ export function GameApp() {
   const [hintUnlocked, setHintUnlocked] = useState(false);
   const [best, setBest] = useState(0);
   const [showPix, setShowPix] = useState(false);
+  const [showRank, setShowRank] = useState(false);
   const [elapsed, setElapsed] = useState(0);
   const [running, setRunning] = useState(false);
   const [findRemaining, setFindRemaining] = useState(0);
@@ -441,6 +443,16 @@ export function GameApp() {
               </Button>
             </>
           )}
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={() => {
+              void refreshBoard();
+              setShowRank(true);
+            }}
+          >
+            Ranking
+          </Button>
           <Button variant="money" size="sm" onClick={() => setShowPix((v) => !v)}>
             Apoiar
           </Button>
@@ -469,6 +481,7 @@ export function GameApp() {
               myScore={best > 0 ? best : null}
               error={boardError}
               shareText={rankShareText}
+              onViewFull={() => setShowRank(true)}
             />
           </div>
         )}
@@ -482,54 +495,76 @@ export function GameApp() {
               <div className="flex flex-wrap items-end justify-between gap-2">
                 <div>
                   <p className="text-sm font-bold uppercase tracking-[0.18em] text-[var(--brand)]">
-                    Caçada {levelIndex + 1}/{run.length} ·{" "}
-                    {labelMode(difficulty)}
+                    Caçada {levelIndex + 1}/{run.length}
                   </p>
                   <h2 className="mt-2 font-[family-name:var(--font-display)] text-2xl text-[var(--ink)] sm:text-3xl">
                     {level.title}
                   </h2>
                   <p className="mt-1 text-sm text-[var(--muted)]">
-                    São características famosas da cidade — modo{" "}
-                    <strong>{labelMode(difficulty)}</strong>. Depois:{" "}
-                    <strong>{labelFindTime(difficulty)}</strong> na multidão.
+                    Cruze as pistas e chute a cidade. Errou? Libera a próxima.
                   </p>
                 </div>
-                <span className="rounded-full border border-[var(--ink)]/15 bg-[var(--sand)] px-3 py-1 text-xs font-bold text-[var(--ink)]">
-                  {clueIndex + 1} de {level.clues.length} liberadas
-                </span>
               </div>
-              <div className="mt-3 flex flex-wrap gap-2 text-xs font-semibold sm:text-sm">
-                <span className="rounded-lg bg-[var(--sand)] px-2.5 py-1">
-                  Pistas {labelClueTier(difficulty)}
-                </span>
-                <span className="rounded-lg bg-[var(--sand)] px-2.5 py-1">
-                  Timer {labelFindTime(difficulty)}
-                </span>
-                <span className="rounded-lg bg-[var(--sand)] px-2.5 py-1">
-                  Tentativas: {lives}
-                </span>
-                {streak > 0 && (
-                  <span className="rounded-lg bg-[var(--accent)]/15 px-2.5 py-1 text-[var(--accent)]">
-                    Sequência 🔥 {streak}
-                  </span>
-                )}
+
+              <div className="mt-4 grid grid-cols-3 gap-2 rounded-2xl border-2 border-dashed border-[var(--ink)]/35 bg-white/70 p-2">
+                <div
+                  className={`rounded-xl border-2 px-2.5 py-2.5 ${difficultyTone(difficulty)} shadow-[2px_2px_0_var(--ink)]`}
+                >
+                  <p className="text-[10px] font-bold uppercase tracking-wide text-[var(--ink)]/70">
+                    Modo
+                  </p>
+                  <p className="font-[family-name:var(--font-display)] text-base text-[var(--ink)]">
+                    {labelMode(difficulty)}
+                  </p>
+                </div>
+                <div className="rounded-xl border-2 border-[#0f766e] bg-[#e6f7f5] px-2.5 py-2.5 shadow-[2px_2px_0_var(--ink)]">
+                  <p className="text-[10px] font-bold uppercase tracking-wide text-[var(--ink)]/70">
+                    Relógio
+                  </p>
+                  <p className="font-[family-name:var(--font-display)] text-base text-[var(--ink)]">
+                    {labelFindTime(difficulty)}
+                  </p>
+                </div>
+                <div
+                  className={`rounded-xl border-2 px-2.5 py-2.5 shadow-[2px_2px_0_var(--ink)] ${
+                    lives <= 1
+                      ? "border-[#c2410c] bg-[#fde8e4]"
+                      : "border-[#d4a017] bg-[#fff4d6]"
+                  }`}
+                >
+                  <p className="text-[10px] font-bold uppercase tracking-wide text-[var(--ink)]/70">
+                    Vidas
+                  </p>
+                  <p className="font-[family-name:var(--font-display)] text-base text-[var(--ink)]">
+                    {lives} · {score.toLocaleString("pt-BR")} pts
+                  </p>
+                </div>
               </div>
-              <p className="mt-3 text-sm text-[var(--muted)]">
-                Este modo tem <strong>{level.clues.length} pistas</strong> — o
-                mesmo número de tentativas no mapa. A primeira já está aberta;
-                as outras liberam quando você erra uma cidade.
+
+              <div className="mt-4 flex items-end justify-between gap-2">
+                <p className="text-sm font-bold uppercase tracking-[0.16em] text-[var(--ink)]">
+                  Pistas da cidade
+                </p>
+                <p className="text-[11px] font-semibold text-[var(--muted)]">
+                  {clueIndex + 1}/{level.clues.length} abertas
+                </p>
+              </div>
+              <p className="mt-1 text-sm text-[var(--muted)]">
+                A primeira já está aberta. Erre no mapa pra liberar as outras.
               </p>
+
               {feedback && (
-                <p className="mt-4 rounded-xl bg-[var(--alert)]/10 px-4 py-3 text-sm font-medium text-[var(--alert)]">
+                <p className="mt-4 rounded-xl border-2 border-[#c2410c] bg-[#fde8e4] px-4 py-3 text-sm font-semibold text-[#9a3412] shadow-[3px_3px_0_var(--ink)]">
                   {feedback}
                 </p>
               )}
               {freshClue != null && (
-                <p className="mt-3 animate-pulse rounded-xl border-2 border-[var(--brand)] bg-[var(--brand)] px-4 py-2.5 text-center text-sm font-black uppercase tracking-wide text-white shadow-[3px_3px_0_var(--ink)]">
+                <p className="mt-3 animate-pulse rounded-xl border-2 border-[var(--ink)] bg-[#fff4d6] px-4 py-2.5 text-center text-sm font-black uppercase tracking-wide text-[var(--ink)] shadow-[3px_3px_0_var(--ink)]">
                   Nova pista liberada · leia abaixo
                 </p>
               )}
-              <ul className="mt-4 space-y-3">
+
+              <ul className="mt-4 space-y-2.5 rounded-2xl border-2 border-dashed border-[var(--ink)]/35 bg-white/70 p-2">
                 {level.clues.map((clue, i) => {
                   const unlocked = i <= clueIndex;
                   const isFresh = freshClue === i;
@@ -537,83 +572,117 @@ export function GameApp() {
                     <li
                       key={`${level.id}-${i}`}
                       ref={isFresh ? freshClueRef : undefined}
-                      className={`rounded-2xl border px-4 py-3 transition ${
+                      className={`rounded-xl border-2 px-3 py-3 transition ${
                         isFresh
-                          ? "border-[var(--brand)] bg-[var(--brand)]/15 text-[var(--ink)] shadow-[4px_4px_0_var(--ink)] ring-2 ring-[var(--brand)] animate-pulse"
+                          ? "border-[var(--ink)] bg-[#fff4d6] text-[var(--ink)] shadow-[3px_3px_0_var(--ink)] ring-2 ring-[#d4a017] animate-pulse"
                           : unlocked
-                            ? "border-[var(--ink)]/10 bg-[var(--sand)] text-[var(--ink)]"
-                            : "border-dashed border-[var(--ink)]/20 bg-white/50 text-[var(--muted)]"
+                            ? "border-[#1f8a5b] bg-[#e8f6ef] text-[var(--ink)] shadow-[2px_2px_0_var(--ink)]"
+                            : "border-dashed border-[var(--ink)]/25 bg-white/80 text-[var(--muted)] opacity-80"
                       }`}
                     >
-                      <span
-                        className={`mr-2 text-xs font-bold uppercase ${
-                          isFresh ? "text-[var(--brand)]" : "text-[var(--muted)]"
-                        }`}
-                      >
-                        {isFresh
-                          ? "Nova · "
-                          : ""}
-                        Pista {i + 1} de {level.clues.length}
-                      </span>
-                      {unlocked
-                        ? clue
-                        : "Bloqueada — erra uma cidade para liberar."}
+                      <div className="flex items-start gap-2.5">
+                        <span
+                          aria-hidden
+                          className={`mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 text-[11px] font-black ${
+                            isFresh
+                              ? "border-[var(--ink)] bg-[var(--ink)] text-white"
+                              : unlocked
+                                ? "border-[#1f8a5b] bg-[#1f8a5b] text-white"
+                                : "border-[var(--ink)]/30 bg-white text-[var(--muted)]"
+                          }`}
+                        >
+                          {unlocked ? (isFresh ? "!" : "✓") : i + 1}
+                        </span>
+                        <div className="min-w-0 flex-1">
+                          <p
+                            className={`text-[10px] font-bold uppercase tracking-wide ${
+                              isFresh
+                                ? "text-[#9a7b0a]"
+                                : unlocked
+                                  ? "text-[#1f8a5b]"
+                                  : "text-[var(--muted)]"
+                            }`}
+                          >
+                            {isFresh
+                              ? "Nova pista"
+                              : unlocked
+                                ? `Pista ${i + 1} liberada`
+                                : `Pista ${i + 1} bloqueada`}
+                          </p>
+                          <p className="mt-0.5 text-sm font-medium leading-snug">
+                            {unlocked
+                              ? clue
+                              : "Erra uma cidade no mapa pra abrir."}
+                          </p>
+                        </div>
+                      </div>
                     </li>
                   );
                 })}
               </ul>
+
               {clueIndex >= level.clues.length - 1 && (
-                <p className="mt-3 rounded-xl bg-[var(--brand)]/10 px-4 py-3 text-sm font-semibold text-[var(--brand)]">
-                  Acabaram as pistas. Cruze as {level.clues.length} e marque no
-                  mapa.
+                <p className="mt-3 rounded-xl border-2 border-[#1f8a5b] bg-[#e8f6ef] px-4 py-3 text-sm font-semibold text-[#145c3d] shadow-[2px_2px_0_var(--ink)]">
+                  Todas as pistas na mesa — cruze e marque a cidade.
                 </p>
               )}
-              <div className="mt-4 flex flex-wrap gap-2 text-sm font-semibold text-[var(--muted)]">
-                <span>Tentativas restantes: {lives}</span>
-                <span>·</span>
-                <span className="text-[var(--brand)]">
-                  {score.toLocaleString("pt-BR")} pts
-                </span>
-              </div>
             </div>
 
             <div className="rounded-3xl border-[3px] border-[var(--ink)] bg-[var(--paper)] p-5 shadow-[6px_6px_0_var(--ink)] sm:p-6">
-              <h3 className="font-[family-name:var(--font-display)] text-xl text-[var(--ink)]">
-                Marque no mapa
-              </h3>
-              <p className="mt-1 text-xs text-[var(--muted)]">
-                Seis cidades nesta rodada. Cidade errada fica bloqueada.
-              </p>
-              <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2">
+              <div className="flex items-end justify-between gap-2">
+                <div>
+                  <h3 className="font-[family-name:var(--font-display)] text-xl text-[var(--ink)]">
+                    Marque no mapa
+                  </h3>
+                  <p className="mt-1 text-xs text-[var(--muted)]">
+                    Toque numa cidade. Errada fica fora.
+                  </p>
+                </div>
+                <p className="text-[11px] font-semibold text-[var(--muted)]">
+                  toque pra chutar
+                </p>
+              </div>
+              <div
+                role="list"
+                className="mt-4 grid grid-cols-1 gap-2 rounded-2xl border-2 border-dashed border-[var(--ink)]/35 bg-white/70 p-2 sm:grid-cols-2"
+              >
                 {cityOptions.map((c) => {
                   const tried = triedCities.includes(c.id);
                   return (
                     <button
                       key={c.id}
                       type="button"
+                      role="listitem"
                       disabled={tried}
                       onClick={() => pickCity(c.id)}
-                      className={`rounded-2xl border-2 px-3 py-3 text-left transition ${
+                      className={`rounded-xl border-2 px-3 py-3 text-left transition ${
                         tried
-                          ? "cursor-not-allowed border-[var(--ink)]/20 bg-[var(--sand)]/70 opacity-55"
-                          : "border-[var(--ink)] bg-white hover:-translate-y-0.5 hover:bg-[var(--brand)]/15"
+                          ? "cursor-not-allowed border-[var(--ink)]/20 bg-[#f3f4f6] opacity-60"
+                          : "border-[var(--ink)]/25 bg-white hover:-translate-y-0.5 hover:border-[var(--ink)] hover:bg-[#fff4d6] hover:shadow-[3px_3px_0_var(--ink)]"
                       }`}
                     >
-                      <div className="flex items-start justify-between gap-2">
-                        <div className="font-bold text-[var(--ink)]">
-                          {c.name}
-                          <span className="ml-1 text-xs font-semibold text-[var(--muted)]">
-                            · {c.country}
-                          </span>
+                      <div className="flex items-start gap-2">
+                        <span
+                          aria-hidden
+                          className={`mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full border-2 ${
+                            tried
+                              ? "border-[var(--alert)] bg-[var(--alert)] text-[8px] font-black text-white"
+                              : "border-[var(--ink)]/35 bg-white"
+                          }`}
+                        >
+                          {tried ? "×" : null}
+                        </span>
+                        <div className="min-w-0 flex-1">
+                          <div className="font-bold text-[var(--ink)]">
+                            {c.name}
+                            <span className="ml-1 text-xs font-semibold text-[var(--muted)]">
+                              · {c.country}
+                            </span>
+                          </div>
+                          <div className="mt-0.5 text-xs text-[var(--muted)]">
+                            {tried ? "Descartada nesta rodada." : c.blurb}
+                          </div>
                         </div>
-                        {tried && (
-                          <span className="shrink-0 rounded-md bg-[var(--alert)]/15 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-[var(--alert)]">
-                            Já tentou
-                          </span>
-                        )}
-                      </div>
-                      <div className="text-xs text-[var(--muted)]">
-                        {tried ? "Já descartada nesta rodada." : c.blurb}
                       </div>
                     </button>
                   );
@@ -824,6 +893,7 @@ export function GameApp() {
               compact
               error={boardError}
               shareText={rankShareText}
+              onViewFull={() => setShowRank(true)}
             />
           </section>
         )}
@@ -868,6 +938,18 @@ export function GameApp() {
           setHintUnlocked(true);
           setShowHint(true);
         }}
+      />
+
+      <RankModal
+        open={showRank}
+        onClose={() => setShowRank(false)}
+        entries={board}
+        global={boardGlobal}
+        highlight={playerName || nameDraft}
+        myRank={myRank}
+        myScore={Math.max(score, best) > 0 ? Math.max(score, best) : null}
+        error={boardError}
+        shareText={rankShareText}
       />
 
       <footer className="relative z-10 border-t border-[var(--ink)]/10 px-4 py-6 text-center text-xs text-[var(--muted)]">
@@ -1061,8 +1143,8 @@ function labelMode(d: Difficulty) {
   return "Difícil";
 }
 
-function labelClueTier(game: Difficulty) {
-  if (game === "easy") return "fáceis";
-  if (game === "hard") return "difíceis";
-  return "médias";
+function difficultyTone(d: Difficulty) {
+  if (d === "easy") return "border-[#1f8a5b] bg-[#e8f6ef]";
+  if (d === "hard") return "border-[#c2410c] bg-[#fde8e4]";
+  return "border-[#d4a017] bg-[#fff4d6]";
 }

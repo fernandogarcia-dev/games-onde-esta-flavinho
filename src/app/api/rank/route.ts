@@ -42,7 +42,7 @@ export async function GET(req: Request) {
     }
 
     return NextResponse.json({
-      entries: entries.slice(0, 20),
+      entries,
       global: true,
       myRank: myRank > 0 ? myRank : undefined,
       myEntry: myEntry || undefined,
@@ -84,7 +84,7 @@ export async function POST(req: Request) {
   try {
     const { entries, rank } = await upsertRank(name, score);
     return NextResponse.json({
-      entries: entries.slice(0, 20),
+      entries,
       rank,
       global: true,
     });

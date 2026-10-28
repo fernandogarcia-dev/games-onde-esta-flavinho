@@ -12,9 +12,12 @@ function buildRows(
   highlight?: string,
   myRank?: number | null,
   myScore?: number | null,
+  limit = 10,
+  full = false,
 ): Row[] {
   const me = highlight?.trim().toLowerCase() || "";
-  const top = entries.slice(0, 10);
+  const cut = full ? entries.length : Math.min(limit, entries.length);
+  const top = entries.slice(0, cut);
   const rows: Row[] = top.map((entry, i) => ({
     type: "entry" as const,
     rank: i + 1,
@@ -22,26 +25,26 @@ function buildRows(
     mine: Boolean(me && entry.name.toLowerCase() === me),
   }));
 
-  const inTop10 = me
-    ? top.some((e) => e.name.toLowerCase() === me)
-    : false;
-  if (inTop10 || !me) return rows;
+  if (full) return rows;
+
+  const inTop = me ? top.some((e) => e.name.toLowerCase() === me) : false;
+  if (inTop || !me) return rows;
 
   const idx = entries.findIndex((e) => e.name.toLowerCase() === me);
-  let rank =
+  const rank =
     typeof myRank === "number" && myRank > 0
       ? myRank
       : idx >= 0
         ? idx + 1
         : 0;
-  let entry: RankEntry | null =
+  const entry: RankEntry | null =
     idx >= 0
       ? entries[idx]
       : typeof myScore === "number" && myScore > 0
         ? { name: highlight!.trim(), score: myScore, at: Date.now() }
         : null;
 
-  if (rank <= 10 || !entry) return rows;
+  if (rank <= limit || !entry) return rows;
 
   rows.push({ type: "gap" });
   rows.push({ type: "entry", rank, entry, mine: true });
@@ -55,8 +58,10 @@ export function Leaderboard({
   myRank,
   myScore,
   compact = false,
+  full = false,
   error,
   shareText,
+  onViewFull,
 }: {
   entries: RankEntry[];
   global: boolean;
@@ -65,10 +70,14 @@ export function Leaderboard({
   myRank?: number | null;
   myScore?: number | null;
   compact?: boolean;
+  /** Show every returned entry instead of top-10 + you. */
+  full?: boolean;
   error?: string | null;
   shareText?: string;
+  onViewFull?: () => void;
 }) {
-  const rows = buildRows(entries, highlight, myRank, myScore);
+  const rows = buildRows(entries, highlight, myRank, myScore, 10, full);
+  const canExpand = Boolean(onViewFull) && !full && entries.length > 0;
 
   return (
     <div
@@ -86,7 +95,7 @@ export function Leaderboard({
           </h3>
         </div>
         <span className="rounded-lg bg-[var(--sand)] px-2 py-1 text-[10px] font-bold uppercase tracking-wide text-[var(--muted)]">
-          top 10 · você
+          {full ? `lista · ${entries.length}` : "top 10 · você"}
         </span>
       </div>
 
@@ -99,7 +108,9 @@ export function Leaderboard({
             : "Ranking global ainda não conectou. Confira as chaves do Supabase."}
         </p>
       ) : (
-        <ol className="mt-4 space-y-2">
+        <ol
+          className={`mt-4 space-y-2 ${full ? "max-h-[min(60vh,28rem)] overflow-y-auto pr-1" : ""}`}
+        >
           {rows.map((row) => {
             if (row.type === "gap") {
               return (
@@ -119,7 +130,7 @@ export function Leaderboard({
                 key={`${entry.name}-${entry.score}-${rank}`}
                 className={`flex items-center gap-3 rounded-2xl border px-3 py-2 ${
                   mine
-                    ? "border-[var(--brand)] bg-[var(--brand)]/10"
+                    ? "border-[var(--ink)] bg-[#fff4d6] shadow-[2px_2px_0_var(--ink)]"
                     : "border-[var(--ink)]/10 bg-white/70"
                 }`}
               >
@@ -132,7 +143,7 @@ export function Leaderboard({
                         : rank === 3
                           ? "bg-[#d4a574] text-[var(--ink)]"
                           : mine
-                            ? "bg-[var(--brand)] text-white"
+                            ? "bg-[var(--ink)] text-white"
                             : "bg-[var(--sand)] text-[var(--muted)]"
                   }`}
                 >
@@ -148,6 +159,16 @@ export function Leaderboard({
             );
           })}
         </ol>
+      )}
+
+      {canExpand && (
+        <button
+          type="button"
+          onClick={onViewFull}
+          className="mt-4 w-full rounded-xl border-2 border-dashed border-[var(--ink)]/40 bg-[#fff4d6] px-3 py-2.5 text-sm font-black uppercase tracking-wide text-[var(--ink)] shadow-[3px_3px_0_var(--ink)] transition hover:-translate-y-0.5 hover:bg-[#ffe9a8]"
+        >
+          Ver ranking completo
+        </button>
       )}
 
       {shareText && (

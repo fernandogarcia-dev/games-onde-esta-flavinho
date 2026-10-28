@@ -1,7 +1,7 @@
 import type { RankEntry } from "@/lib/ranking";
 import { getSupabaseAdmin, supabaseConfigured } from "@/lib/supabase";
 
-const MAX = 50;
+const MAX = 100;
 
 type Row = {
   name: string;
