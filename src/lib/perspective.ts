@@ -28,6 +28,9 @@ export const PERSPECTIVE = {
   /** Minimum rendered width (% of board) — keep tiny so depth survives. */
   minWidthPct: 0.95,
   propMinWidthPct: 1.1,
+  /** Hard ceiling so a bad scale never covers the whole board. */
+  maxWidthPct: 9.5,
+  propMaxWidthPct: 8,
 } as const;
 
 export type PerspectiveGround = {

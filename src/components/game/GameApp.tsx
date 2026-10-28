@@ -125,12 +125,12 @@ export function GameApp() {
   );
 
   const crowdCount = useMemo(() => {
-    if (!level) return 56;
+    if (!level) return 40;
     const base = level.scene.crowdCount;
-    // Balanced ladder: easy readable → medium busy → hard sea of twins.
-    if (lookTier === "easy") return Math.max(18, Math.floor(base * 0.28));
-    if (lookTier === "hard") return Math.floor(base * 1.75);
-    return Math.floor(base * 0.78);
+    // Busy enough to hide, sparse enough to click — never a sticker pile.
+    if (lookTier === "easy") return Math.max(14, Math.floor(base * 0.32));
+    if (lookTier === "hard") return Math.floor(base * 1.15);
+    return Math.floor(base * 0.7);
   }, [level, lookTier]);
 
   useEffect(() => {

@@ -55,28 +55,27 @@ export function CrowdScene({
     return () => mq.removeEventListener("change", apply);
   }, []);
 
-  // Desktop uses full flavinhoScale. On narrow screens, pull back so twins
-  // stay scannable without covering the whole board.
-  const mobileBoost = portrait ? 0.72 : 1;
+  // Keep twins readable without burying the plate under a sticker pile.
+  const mobileBoost = portrait ? 0.9 : 1;
   const scale =
     flavinhoScale *
     (lookTier === "easy"
       ? portrait
-        ? 1.06
-        : 1.12
+        ? 1.04
+        : 1.08
       : lookTier === "hard"
         ? portrait
-          ? 0.88
-          : 0.96
+          ? 0.82
+          : 0.88
         : portrait
-          ? 0.96
-          : 1.02);
+          ? 0.94
+          : 1);
   const count = portrait
     ? Math.max(
-        lookTier === "easy" ? 14 : lookTier === "hard" ? 32 : 22,
+        lookTier === "easy" ? 12 : lookTier === "hard" ? 24 : 18,
         Math.floor(
           crowdCount *
-            (lookTier === "easy" ? 0.85 : lookTier === "hard" ? 0.8 : 0.82),
+            (lookTier === "easy" ? 0.8 : lookTier === "hard" ? 0.7 : 0.78),
         ),
       )
     : crowdCount;

@@ -144,14 +144,16 @@ function decoyLook(
   return { src };
 }
 
-/** Packing density only — size always comes from Y perspective. */
+/** Packing density only — size always comes from Y perspective.
+ * Higher overlap = more horizontal clearance between feet.
+ */
 export function densityFor(tier: LookTier): {
   overlap: number;
   rows: number;
 } {
-  if (tier === "hard") return { overlap: 0.34, rows: 9 };
-  if (tier === "medium") return { overlap: 0.58, rows: 6 };
-  return { overlap: 0.92, rows: 3 };
+  if (tier === "hard") return { overlap: 0.72, rows: 7 };
+  if (tier === "medium") return { overlap: 0.78, rows: 5 };
+  return { overlap: 0.95, rows: 3 };
 }
 
 function twinJitter(tier: LookTier, isFlavinho: boolean, rand: () => number) {
@@ -167,6 +169,7 @@ function twinJitter(tier: LookTier, isFlavinho: boolean, rand: () => number) {
 
 /**
  * Percent box from scale. NO large baseMin — that was flattening perspective.
+ * Hard max width keeps twins playable even if scale drifts high.
  * Must stay in sync with CrowdScene.
  */
 export function spriteBox(
@@ -176,7 +179,10 @@ export function spriteBox(
 ) {
   const floor =
     kind === "prop" ? PERSPECTIVE.propMinWidthPct : PERSPECTIVE.minWidthPct;
-  const widthPct = Math.max(scale * 100 * mobileBoost, floor * mobileBoost);
+  const ceiling =
+    kind === "prop" ? PERSPECTIVE.propMaxWidthPct : PERSPECTIVE.maxWidthPct;
+  const raw = Math.max(scale * 100 * mobileBoost, floor * mobileBoost);
+  const widthPct = Math.min(raw, ceiling);
   const heightPct = widthPct * (kind === "prop" ? 1.05 : 1.55);
   return { widthPct, heightPct };
 }
@@ -212,7 +218,8 @@ function tooClose(
 ) {
   for (const p of placed) {
     const dx = p.x - x;
-    const dy = (p.y - y) * 0.65;
+    // Keep depth separation honest — don't squash Y or twins stack into a blob.
+    const dy = (p.y - y) * 1.15;
     if (dx * dx + dy * dy < minDist * minDist) return true;
   }
   return false;
@@ -238,7 +245,7 @@ export function buildCrowd(
   const mobileBoost = opts?.mobileBoost ?? 1;
   const lookTier = opts?.lookTier ?? "medium";
   const dens = densityFor(lookTier);
-  const rand = mulberry32(hashSeed(`${seed}:crowd-v9-unique:${lookTier}`));
+  const rand = mulberry32(hashSeed(`${seed}:crowd-v10-space:${lookTier}`));
   const items: CrowdItem[] = [];
   const xMin = ground.xMin ?? PERSPECTIVE.xMin;
   const xMax = ground.xMax ?? PERSPECTIVE.xMax;
@@ -281,18 +288,20 @@ export function buildCrowd(
       x = c.x;
       y = c.y;
       // Collision uses feet distance; scale with local width.
-      const minDist = Math.max(box.widthPct * dens.overlap, 1.4);
-      const relax = attempt > 40 ? 0.72 : 1;
+      const minDist = Math.max(box.widthPct * dens.overlap, 2.2);
+      const relax = attempt > 50 ? 0.85 : 1;
       if (!tooClose(x, y, placed, minDist * relax)) {
         ok = true;
         break;
       }
     }
+    // Better to drop a decoy than force a pile on top of others.
+    if (!ok && !isFlavinho) continue;
     if (!ok) {
       scale = scaleAtDepth(rowY, flavinhoScale, ground) * jitterOnce;
       box = spriteBox(scale, kind, mobileBoost);
       const c = clampInside(
-        xMin + rand() * (xMax - xMin),
+        xMin + 8 + rand() * (xMax - xMin - 16),
         rowY,
         box.widthPct,
         box.heightPct,
@@ -305,7 +314,7 @@ export function buildCrowd(
     // Hard lock: size is ONLY f(feetY) × one jitter sampled above.
     scale = scaleAtDepth(y, flavinhoScale, ground) * jitterOnce;
     box = spriteBox(scale, kind, mobileBoost);
-    placed.push({ x, y, r: Math.max(box.widthPct, box.heightPct) * 0.3 });
+    placed.push({ x, y, r: Math.max(box.widthPct, box.heightPct) * 0.35 });
 
     const look = isFlavinho
       ? { src: FLAVINHO_SRC as string, filter: undefined as string | undefined }
