@@ -9,6 +9,7 @@ import { LegalNotice } from "@/components/game/LegalNotice";
 import { PixModal } from "@/components/game/PixModal";
 import { RankModal } from "@/components/game/RankModal";
 import { ShareBar } from "@/components/game/ShareBar";
+import { ModeTheme } from "@/components/home/ModeTheme";
 import {
   cityCatalogSize,
   dealNewRun,
@@ -451,13 +452,7 @@ export function GameApp({
   const urgent = findActive && findRemaining <= Math.max(10, findLimit * 0.2);
 
   return (
-    <div className="relative min-h-full">
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute -left-20 top-10 h-64 w-64 rounded-full bg-[var(--brand)]/20 blur-3xl" />
-        <div className="absolute right-0 top-40 h-72 w-72 rounded-full bg-[var(--accent)]/20 blur-3xl" />
-        <div className="map-grid absolute inset-0 opacity-[0.06]" />
-      </div>
-
+    <ModeTheme mode="mestre">
       <header className="relative z-10 mx-auto flex w-full max-w-5xl items-center justify-between gap-3 px-4 py-4 sm:px-6">
         <div className="min-w-0">
           <button
@@ -1005,7 +1000,7 @@ export function GameApp({
       />
 
       <LegalNotice onSupport={() => setShowPix(true)} />
-    </div>
+    </ModeTheme>
   );
 }
 

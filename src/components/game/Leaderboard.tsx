@@ -88,7 +88,7 @@ export function Leaderboard({
       <div className="flex items-end justify-between gap-2">
         <div>
           <p className="text-xs font-bold uppercase tracking-[0.18em] text-[var(--brand)]">
-            Ranking mundial
+            {global ? "Ranking mundial" : "Ranking do modo"}
           </p>
           <h3 className="font-[family-name:var(--font-display)] text-2xl text-[var(--ink)]">
             Caçadores de Flavinho
@@ -105,7 +105,7 @@ export function Leaderboard({
         <p className="mt-4 text-sm text-[var(--muted)]">
           {global
             ? "Ninguém no placar ainda. Achou o rastro? Entra na história."
-            : "Ranking global ainda não conectou. Confira as chaves do Supabase."}
+            : "Ninguém pontuou neste modo ainda neste aparelho. Joga uma rodada!"}
         </p>
       ) : (
         <ol

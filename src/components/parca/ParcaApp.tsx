@@ -14,6 +14,7 @@ import {
   readModeBoard,
   submitModeScore,
 } from "@/lib/mode-ranking";
+import { ModeTheme } from "@/components/home/ModeTheme";
 import { ParcaPortrait } from "@/components/parca/ParcaPortrait";
 import {
   cluesFor,
@@ -148,13 +149,7 @@ export function ParcaApp({ onBack }: { onBack: () => void }) {
   const picked = options.find((o) => o.id === pickedId) ?? null;
 
   return (
-    <div className="relative min-h-full">
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute -left-20 top-10 h-64 w-64 rounded-full bg-[var(--brand)]/20 blur-3xl" />
-        <div className="absolute right-0 top-40 h-72 w-72 rounded-full bg-[var(--accent)]/20 blur-3xl" />
-        <div className="map-grid absolute inset-0 opacity-[0.06]" />
-      </div>
-
+    <ModeTheme mode="parca">
       <header className="relative z-10 mx-auto flex w-full max-w-5xl items-center justify-between gap-3 px-4 py-4 sm:px-6">
         <div className="min-w-0">
           <button
@@ -447,7 +442,7 @@ export function ParcaApp({ onBack }: { onBack: () => void }) {
         shareText={shareText}
       />
       <LegalNotice onSupport={() => setShowPix(true)} />
-    </div>
+    </ModeTheme>
   );
 }
 

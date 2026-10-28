@@ -9,6 +9,14 @@ export type GameModeMeta = {
   badge: string;
   art: string;
   artAlt: string;
+  /** Label do botão na home */
+  cta: string;
+  /** Cor principal do modo (borda/botão/ênfase) */
+  accent: string;
+  /** Fundo suave do card / páginas */
+  soft: string;
+  /** Segundo tom pra blobs / detalhes */
+  glow: string;
 };
 
 export const GAME_MODES: GameModeMeta[] = [
@@ -22,6 +30,10 @@ export const GAME_MODES: GameModeMeta[] = [
     badge: "Modo 1",
     art: "/modes/mestre.jpg",
     artAlt: "Flavinho perdido numa multidão de disfarces",
+    cta: "Caçar na multidão",
+    accent: "#1f8a5b",
+    soft: "#e8f6ef",
+    glow: "#6bc49a",
   },
   {
     id: "rua",
@@ -33,6 +45,10 @@ export const GAME_MODES: GameModeMeta[] = [
     badge: "Modo 2",
     art: "/modes/rua.jpg",
     artAlt: "Flavinho sozinho numa rua vazia ao entardecer",
+    cta: "Abrir a rua",
+    accent: "#b8860b",
+    soft: "#fff4d6",
+    glow: "#e4c04a",
   },
   {
     id: "parca",
@@ -44,6 +60,10 @@ export const GAME_MODES: GameModeMeta[] = [
     badge: "Modo 3",
     art: "/modes/parca.jpg",
     artAlt: "Flavinho fugindo de carro com um passageiro misterioso",
+    cta: "Descobrir o parça",
+    accent: "#c2410c",
+    soft: "#fde8e4",
+    glow: "#e07a55",
   },
 ];
 

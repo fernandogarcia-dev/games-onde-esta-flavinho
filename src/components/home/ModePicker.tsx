@@ -1,10 +1,12 @@
 "use client";
 
 import Image from "next/image";
+import { useState } from "react";
 import { GAME_MODES, type GameModeId } from "@/lib/modes";
 import { LegalNotice } from "@/components/game/LegalNotice";
 import { PixModal } from "@/components/game/PixModal";
-import { useState } from "react";
+import { HomeRankingsModal } from "@/components/home/HomeRankingsModal";
+import { Button } from "@/components/ui/Button";
 
 type Props = {
   onPick: (mode: GameModeId) => void;
@@ -12,6 +14,7 @@ type Props = {
 
 export function ModePicker({ onPick }: Props) {
   const [showPix, setShowPix] = useState(false);
+  const [showRanks, setShowRanks] = useState(false);
 
   return (
     <div className="relative min-h-full">
@@ -51,6 +54,15 @@ export function ModePicker({ onPick }: Props) {
                   Ache o Flavinho na multidão, no Street View ou descubra quem
                   ele levou na fuga. Sem cadastro — escolhe o modo e joga.
                 </p>
+                <div className="mt-5">
+                  <Button
+                    variant="secondary"
+                    size="md"
+                    onClick={() => setShowRanks(true)}
+                  >
+                    Ver rankings
+                  </Button>
+                </div>
               </div>
               <div className="animate-float relative w-28 shrink-0 sm:w-36">
                 <Image
@@ -85,7 +97,10 @@ export function ModePicker({ onPick }: Props) {
                     />
                   </div>
                   <div className="flex flex-1 flex-col p-5">
-                    <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[var(--ink)]/70">
+                    <p
+                      className="text-[11px] font-bold uppercase tracking-[0.18em]"
+                      style={{ color: mode.accent }}
+                    >
                       {mode.badge}
                     </p>
                     <h2 className="mt-2 font-[family-name:var(--font-display)] text-xl leading-tight text-[var(--ink)] sm:text-2xl">
@@ -97,8 +112,11 @@ export function ModePicker({ onPick }: Props) {
                     <p className="mt-2 text-sm leading-snug text-[var(--ink)]/75">
                       {mode.blurb}
                     </p>
-                    <span className="mt-auto inline-flex w-fit items-center gap-2 rounded-xl border-2 border-[var(--ink)] bg-white px-3 py-2 text-sm font-[family-name:var(--font-display)] text-[var(--ink)] shadow-[3px_3px_0_var(--ink)] transition group-hover:translate-x-[1px] group-hover:translate-y-[1px] group-hover:shadow-[2px_2px_0_var(--ink)] pt-5">
-                      Entrar
+                    <span
+                      className="mt-auto inline-flex w-full items-center justify-center gap-2 rounded-xl border-[3px] border-[var(--ink)] px-3 py-3 text-sm font-[family-name:var(--font-display)] text-white shadow-[4px_4px_0_var(--ink)] transition group-hover:translate-x-[1px] group-hover:translate-y-[1px] group-hover:shadow-[2px_2px_0_var(--ink)]"
+                      style={{ background: mode.accent, marginTop: "1.25rem" }}
+                    >
+                      {mode.cta}
                       <span aria-hidden>→</span>
                     </span>
                   </div>
@@ -110,6 +128,7 @@ export function ModePicker({ onPick }: Props) {
       </main>
 
       <PixModal open={showPix} onClose={() => setShowPix(false)} />
+      <HomeRankingsModal open={showRanks} onClose={() => setShowRanks(false)} />
       <LegalNotice onSupport={() => setShowPix(true)} />
     </div>
   );
