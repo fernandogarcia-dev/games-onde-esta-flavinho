@@ -1,3 +1,7 @@
+"use client";
+
+import { Button } from "@/components/ui/Button";
+
 const PRESS_LINKS = [
   {
     label: "Agência Brasil",
@@ -9,11 +13,26 @@ const PRESS_LINKS = [
   },
 ] as const;
 
+type Props = {
+  onSupport?: () => void;
+};
+
 /** Rodapé jurídico: sátira / animus jocandi + fontes de amplo conhecimento público. */
-export function LegalNotice() {
+export function LegalNotice({ onSupport }: Props) {
   return (
     <footer className="relative z-10 mt-6 border-t border-[var(--ink)]/10 bg-[var(--paper)] pb-[max(1.5rem,env(safe-area-inset-bottom))]">
       <div className="mx-auto max-w-3xl px-4 py-6 text-left text-xs leading-relaxed text-[var(--muted)] sm:px-6 sm:text-center">
+        {onSupport ? (
+          <div className="mb-5 flex flex-col items-stretch gap-2 sm:items-center">
+            <Button variant="money" size="sm" onClick={onSupport}>
+              Apoio voluntário via PIX
+            </Button>
+            <p className="text-[11px] text-[var(--muted)]">
+              Só se quiser — valor livre, pra servidor e custos do desenvolvedor.
+            </p>
+          </div>
+        ) : null}
+
         <p className="font-bold uppercase tracking-[0.14em] text-[var(--ink)]/70">
           Aviso de natureza artística e sátira humorística
         </p>

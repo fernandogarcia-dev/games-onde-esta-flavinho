@@ -429,9 +429,6 @@ export function GameApp() {
           >
             Ranking
           </Button>
-          <Button variant="money" size="sm" onClick={() => setShowPix((v) => !v)}>
-            Apoio voluntário
-          </Button>
         </div>
       </header>
 
@@ -912,7 +909,7 @@ export function GameApp() {
         shareText={rankShareText}
       />
 
-      <LegalNotice />
+      <LegalNotice onSupport={() => setShowPix(true)} />
     </div>
   );
 }
