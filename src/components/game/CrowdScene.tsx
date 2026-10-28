@@ -11,7 +11,6 @@ import {
   BOARD_GROUND,
   buildCrowd,
   crowdParamsFor,
-  lookTip,
   spriteBox,
   type LookTier,
 } from "@/lib/crowd";
@@ -212,10 +211,6 @@ export function CrowdScene({
           ✕
         </div>
       )}
-
-      <div className="pointer-events-none absolute left-2 top-2 z-[5001] max-w-[85%] rounded-lg bg-[var(--ink)]/80 px-2 py-1 text-[11px] font-semibold text-white backdrop-blur-sm sm:left-3 sm:top-3 sm:text-xs">
-        {lookTip(lookTier)}
-      </div>
     </div>
   );
 }

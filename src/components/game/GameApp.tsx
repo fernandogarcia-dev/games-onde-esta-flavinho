@@ -47,7 +47,7 @@ import {
   saveBestScore,
 } from "@/lib/monetization";
 import { resolveClueTier } from "@/lib/city-clues";
-import { crowdParamsFor } from "@/lib/crowd";
+import { crowdParamsFor, lookTip } from "@/lib/crowd";
 import {
   buildInviteText,
   buildRankText,
@@ -718,6 +718,10 @@ export function GameApp() {
                 </Button>
               </div>
             </div>
+
+            <p className="rounded-xl border border-[var(--ink)]/15 bg-[var(--ink)]/90 px-3 py-1.5 text-center text-[11px] font-semibold text-white sm:text-xs">
+              {lookTip(lookTier)}
+            </p>
 
             <CrowdScene
               seed={`${level.id}-${levelIndex}-${difficulty}`}
