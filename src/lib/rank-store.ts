@@ -15,9 +15,7 @@ export class RankNameTakenError extends Error {
   readonly ownerScore: number;
 
   constructor(ownerScore: number) {
-    super(
-      "Esse apelido já está no placar de outro aparelho. Escolhe outro nome.",
-    );
+    super("Esse apelido já foi escolhido. Escolhe outro nome.");
     this.name = "RankNameTakenError";
     this.ownerScore = ownerScore;
   }
@@ -138,10 +136,21 @@ async function readExisting(
   return { row: (data as Row | null) ?? null, withDevice: false };
 }
 
+export async function isNameTaken(
+  name: string,
+): Promise<{ taken: boolean; score: number; name?: string }> {
+  const clean = name.trim().slice(0, 16);
+  if (!clean) return { taken: false, score: 0 };
+  const { entry } = await lookupPlayer(clean);
+  if (!entry) return { taken: false, score: 0 };
+  return { taken: true, score: entry.score, name: entry.name };
+}
+
 export async function upsertRank(
   name: string,
   score: number,
   deviceKeyRaw?: string,
+  opts?: { isNewName?: boolean },
 ): Promise<{ entries: RankEntry[]; rank: number; bestScore: number }> {
   const sb = getSupabaseAdmin();
   if (!sb) {
@@ -151,6 +160,7 @@ export async function upsertRank(
   const clean = name.trim().slice(0, 16);
   const nameKey = clean.toLowerCase();
   const deviceKey = normalizeDeviceKey(deviceKeyRaw);
+  const isNewName = Boolean(opts?.isNewName);
   if (deviceKey.length < 8) {
     throw new Error(
       "Aparelho sem identificação — atualiza a página e tenta de novo.",
@@ -161,12 +171,15 @@ export async function upsertRank(
   const prevScore = row?.score ?? 0;
   const ownerDevice = (row?.device_key || "").trim();
 
-  if (row && withDevice) {
-    // Apelido já vinculado a outro aparelho.
-    if (ownerDevice && ownerDevice !== deviceKey) {
+  if (row) {
+    // Escolher apelido que já existe no placar: bloqueado.
+    if (isNewName) {
       throw new RankNameTakenError(prevScore);
     }
-    // Legado (device_key null): primeiro aparelho que gravar reivindica o apelido.
+    // Mesmo apelido de sempre, mas outro aparelho.
+    if (withDevice && ownerDevice && ownerDevice !== deviceKey) {
+      throw new RankNameTakenError(prevScore);
+    }
   }
 
   const best = Math.max(score, prevScore);

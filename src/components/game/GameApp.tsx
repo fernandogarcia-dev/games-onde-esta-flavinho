@@ -23,6 +23,7 @@ import {
 } from "@/lib/levels";
 import type { Difficulty } from "@/lib/types";
 import {
+  checkNameAvailable,
   clearPlayerName,
   fetchLeaderboard,
   getPlayerName,
@@ -283,8 +284,12 @@ export function GameApp({
     }
   }
 
-  async function publishScore(total: number, name: string) {
-    const result = await submitScore(name, total);
+  async function publishScore(
+    total: number,
+    name: string,
+    opts?: { isNewName?: boolean },
+  ) {
+    const result = await submitScore(name, total, opts);
     if (result.entries.length > 0) {
       setBoard(result.entries);
       setBoardGlobal(result.global);
@@ -301,7 +306,7 @@ export function GameApp({
       setBest((b) => Math.max(b, result.bestScore!));
     }
 
-    // Apelido já é de outro aparelho — pede outro nome.
+    // Apelido já escolhido — pede outro nome.
     if (result.code === "name_taken") {
       clearPlayerName();
       setPlayerNameState("");
@@ -310,8 +315,8 @@ export function GameApp({
       setMyRank(null);
       setFeedback(
         result.ownerScore
-          ? `Apelido em uso (recorde ${result.ownerScore.toLocaleString("pt-BR")} pts). Escolhe outro.`
-          : "Apelido em uso noutro aparelho. Escolhe outro.",
+          ? `Apelido já escolhido (recorde ${result.ownerScore.toLocaleString("pt-BR")} pts). Escolhe outro.`
+          : "Esse apelido já foi escolhido. Escolhe outro.",
       );
       return false;
     }
@@ -363,29 +368,36 @@ export function GameApp({
     const clean = sanitizeName(nameDraft);
     if (!clean || clean.length < 2) return;
 
-    const taken = board.find(
-      (e) => e.name.toLowerCase() === clean.toLowerCase(),
-    );
     const alreadyMine =
       getPlayerName().toLowerCase() === clean.toLowerCase();
+    const isNewName = !alreadyMine;
 
-    // Impede se passar pelo dono do apelido só digitando o nome dele.
-    if (taken && !alreadyMine && score < taken.score) {
-      setFeedback(
-        `"${taken.name}" já tem ${taken.score.toLocaleString("pt-BR")} pts. Escolhe outro apelido (ou bate esse recorde).`,
-      );
-      return;
-    }
-    if (taken && !alreadyMine) {
-      const ok = window.confirm(
-        `Já existe "${taken.name}" com ${taken.score.toLocaleString("pt-BR")} pts.\n\nSó confirma se for VOCÊ batendo o próprio recorde. Senão cancela e escolhe outro nome.`,
-      );
-      if (!ok) return;
+    if (isNewName) {
+      const check = await checkNameAvailable(clean);
+      if (check.error && check.taken === false && check.available === false) {
+        // Rede falhou: ainda bloqueia se estiver no top carregado.
+        const localHit = board.find(
+          (e) => e.name.toLowerCase() === clean.toLowerCase(),
+        );
+        if (localHit) {
+          setFeedback(
+            `"${localHit.name}" já foi escolhido. Escolhe outro apelido.`,
+          );
+          return;
+        }
+      } else if (check.taken || !check.available) {
+        setFeedback(
+          check.ownerScore
+            ? `"${check.name || clean}" já foi escolhido (${check.ownerScore.toLocaleString("pt-BR")} pts). Escolhe outro.`
+            : `"${clean}" já foi escolhido. Escolhe outro apelido.`,
+        );
+        return;
+      }
     }
 
     setPlayerName(clean);
     setPlayerNameState(clean);
-    const ok = await publishScore(score, clean);
+    const ok = await publishScore(score, clean, { isNewName });
     if (ok) {
       setNeedsName(false);
       setFeedback("");
@@ -866,8 +878,7 @@ export function GameApp({
                     Entra no placar pra desafiar a galera
                   </p>
                   <p className="text-xs text-[var(--muted)]">
-                    Apelido único neste aparelho. Não use o nome de outra
-                    pessoa do ranking.
+                    Apelido único: se alguém já usou, não dá pra repetir.
                   </p>
                   <div className="mt-3 flex gap-2">
                     <input

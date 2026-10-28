@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { sanitizeName } from "@/lib/ranking";
 import {
   isGlobalRankEnabled,
+  isNameTaken,
   listRanks,
   lookupPlayer,
   RankNameTakenError,
@@ -23,6 +24,18 @@ export async function GET(req: Request) {
 
   try {
     const url = new URL(req.url);
+    const check = sanitizeName(url.searchParams.get("check") || "");
+    if (check) {
+      const hit = await isNameTaken(check);
+      return NextResponse.json({
+        global: true,
+        available: !hit.taken,
+        taken: hit.taken,
+        name: hit.name,
+        ownerScore: hit.taken ? hit.score : undefined,
+      });
+    }
+
     const who = sanitizeName(url.searchParams.get("name") || "");
     const entries = await listRanks();
     let myRank = 0;
@@ -65,12 +78,18 @@ export async function POST(req: Request) {
     );
   }
 
-  let body: { name?: string; score?: number; deviceKey?: string };
+  let body: {
+    name?: string;
+    score?: number;
+    deviceKey?: string;
+    isNewName?: boolean;
+  };
   try {
     body = (await req.json()) as {
       name?: string;
       score?: number;
       deviceKey?: string;
+      isNewName?: boolean;
     };
   } catch {
     return NextResponse.json({ error: "JSON inválido" }, { status: 400 });
@@ -79,6 +98,7 @@ export async function POST(req: Request) {
   const name = sanitizeName(String(body.name || ""));
   const score = Math.floor(Number(body.score));
   const deviceKey = String(body.deviceKey || "").trim();
+  const isNewName = Boolean(body.isNewName);
 
   if (!name || name.length < 2) {
     return NextResponse.json({ error: "Nome curto demais" }, { status: 400 });
@@ -98,6 +118,7 @@ export async function POST(req: Request) {
       name,
       score,
       deviceKey,
+      { isNewName },
     );
     return NextResponse.json({
       entries,
