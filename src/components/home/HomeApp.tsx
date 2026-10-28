@@ -5,6 +5,7 @@ import { GameApp } from "@/components/game/GameApp";
 import { ModePicker } from "@/components/home/ModePicker";
 import { ParcaApp } from "@/components/parca/ParcaApp";
 import { RuaApp } from "@/components/rua/RuaApp";
+import { SeoContent } from "@/components/seo/SeoContent";
 import type { GameModeId } from "@/lib/modes";
 
 export function HomeApp() {
@@ -20,5 +21,10 @@ export function HomeApp() {
     return <ParcaApp onBack={() => setMode(null)} />;
   }
 
-  return <ModePicker onPick={setMode} />;
+  return (
+    <>
+      <ModePicker onPick={setMode} />
+      <SeoContent />
+    </>
+  );
 }

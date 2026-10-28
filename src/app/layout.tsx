@@ -1,6 +1,15 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Archivo_Black, Manrope } from "next/font/google";
 import { GoogleAnalytics } from "@/components/analytics/GoogleAnalytics";
+import { JsonLd } from "@/components/seo/JsonLd";
+import {
+  OG_IMAGE,
+  SITE_DESCRIPTION,
+  SITE_KEYWORDS,
+  SITE_NAME,
+  SITE_TITLE,
+  SITE_URL,
+} from "@/lib/site";
 import "./globals.css";
 
 const display = Archivo_Black({
@@ -14,22 +23,46 @@ const body = Manrope({
   subsets: ["latin"],
 });
 
-const SITE_URL = "https://cadeflavinho.com.br";
-const OG_IMAGE = {
-  url: "/og-share.jpg?v=3",
-  width: 1200,
-  height: 1200,
-  alt: "Cadê Flavinho? — ilustração satírica / caricatura ficcional",
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#1d6fd8" },
+    { media: "(prefers-color-scheme: dark)", color: "#0b1320" },
+  ],
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
 };
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: "Cadê Flavinho?",
-  description:
-    "Jogo satírico de humor: ache o Flavinho na multidão antes do tempo zerar. Grátis — cadeflavinho.com.br",
-  applicationName: "Cadê Flavinho",
+  title: {
+    default: SITE_TITLE,
+    template: `%s · ${SITE_NAME}`,
+  },
+  description: SITE_DESCRIPTION,
+  applicationName: SITE_NAME,
+  authors: [{ name: SITE_NAME, url: SITE_URL }],
+  creator: SITE_NAME,
+  publisher: SITE_NAME,
+  category: "games",
+  keywords: [...SITE_KEYWORDS],
+  referrer: "origin-when-cross-origin",
   alternates: {
     canonical: SITE_URL,
+    languages: {
+      "pt-BR": SITE_URL,
+    },
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
   },
   icons: {
     icon: [
@@ -39,23 +72,30 @@ export const metadata: Metadata = {
     ],
     apple: [{ url: "/apple-icon.png", sizes: "180x180", type: "image/png" }],
   },
+  manifest: "/manifest.webmanifest",
   openGraph: {
     type: "website",
     locale: "pt_BR",
-    title: "Cadê Flavinho?",
-    description:
-      "Jogo satírico: ache o Flavinho na multidão. Grátis — cadeflavinho.com.br",
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
     url: SITE_URL,
-    siteName: "Cadê Flavinho",
+    siteName: SITE_NAME,
     images: [OG_IMAGE],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Cadê Flavinho?",
+    title: SITE_TITLE,
     description:
-      "Jogo satírico e grátis. Você consegue achar ele? cadeflavinho.com.br",
+      "Jogo satírico grátis: ache o Flavinho na multidão. Ranking mundial — cadeflavinho.com.br",
     images: [OG_IMAGE.url],
   },
+  ...(process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION?.trim()
+    ? {
+        verification: {
+          google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION.trim(),
+        },
+      }
+    : {}),
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -64,7 +104,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="pt-BR"
       className={`${display.variable} ${body.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">
+      <body className="flex min-h-full flex-col">
+        <JsonLd />
         <GoogleAnalytics />
         {children}
       </body>

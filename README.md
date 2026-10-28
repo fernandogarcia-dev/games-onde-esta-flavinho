@@ -43,6 +43,15 @@ NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=sua_chave_aqui
 
 5. Reiniciar o `npm run dev` (ou redeploy).
 
+## SEO
+
+- `sitemap.xml` e `robots.txt` gerados pelo Next (`src/app/sitemap.ts`, `robots.ts`)
+- JSON-LD (WebApplication + FAQ) em todas as páginas
+- Páginas de conteúdo: `/como-jogar`, `/sobre`
+- No [Google Search Console](https://search.google.com/search-console): adicione `cadeflavinho.com.br`, verifique (use `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION` se precisar) e envie o sitemap `https://cadeflavinho.com.br/sitemap.xml`
+
+Ninguém controla o 1º lugar do Google só com código: backlinks, buscas reais e tempo também pesam. O técnico está pronto pra competir.
+
 ## Deploy na Vercel
 
 1. Repo: `fernandogarcia-dev/games-onde-esta-flavinho`

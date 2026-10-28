@@ -26,7 +26,7 @@ export function ModePicker({ onPick }: Props) {
           <div className="pointer-events-none absolute inset-0">
             <Image
               src="/game/scene-rio-flat.jpg"
-              alt=""
+              alt="Cena do jogo Cadê Flavinho com multidão e cenário urbano"
               fill
               priority
               className="object-cover opacity-25"
@@ -39,16 +39,17 @@ export function ModePicker({ onPick }: Props) {
             <div className="animate-rise flex flex-col items-start gap-6 sm:flex-row sm:items-end sm:justify-between">
               <div className="max-w-xl">
                 <p className="text-sm font-bold uppercase tracking-[0.25em] text-[var(--brand)]">
-                  Cadê Flavinho?
+                  Jogo satírico grátis · ranking mundial
                 </p>
                 <h1 className="mt-3 font-[family-name:var(--font-display)] text-5xl leading-[0.95] text-[var(--ink)] sm:text-6xl">
-                  Três caçadas.
-                  <br />
-                  Um sumiço.
+                  Cadê Flavinho?
                 </h1>
+                <p className="mt-3 font-[family-name:var(--font-display)] text-2xl leading-tight text-[var(--ink)]/80 sm:text-3xl">
+                  Três caçadas. Um sumiço.
+                </p>
                 <p className="mt-4 max-w-md text-lg text-[var(--muted)]">
-                  Escolhe o modo e vai atrás. Multidão, mapa ou o parça da fuga —
-                  o ranking é separado por caçada.
+                  Ache o Flavinho na multidão, no Street View ou descubra o
+                  parça da fuga. Sem cadastro — escolhe o modo e joga.
                 </p>
               </div>
               <div className="animate-float relative w-28 shrink-0 sm:w-36">
