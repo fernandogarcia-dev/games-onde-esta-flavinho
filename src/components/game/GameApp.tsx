@@ -47,6 +47,7 @@ import {
   saveBestScore,
 } from "@/lib/monetization";
 import { resolveClueTier } from "@/lib/city-clues";
+import { crowdParamsFor } from "@/lib/crowd";
 import {
   buildInviteText,
   buildRankText,
@@ -124,14 +125,9 @@ export function GameApp() {
     [level, difficulty],
   );
 
-  const crowdCount = useMemo(() => {
-    if (!level) return 40;
-    const base = level.scene.crowdCount;
-    // Busy enough to hide, sparse enough to click — never a sticker pile.
-    if (lookTier === "easy") return Math.max(14, Math.floor(base * 0.32));
-    if (lookTier === "hard") return Math.floor(base * 1.15);
-    return Math.floor(base * 0.7);
-  }, [level, lookTier]);
+  const crowdTuning = useMemo(() => crowdParamsFor(lookTier), [lookTier]);
+  const crowdCount = crowdTuning.count;
+  const flavinhoScale = crowdTuning.scale;
 
   useEffect(() => {
     setBest(getBestScore());
@@ -678,7 +674,7 @@ export function GameApp() {
                   />
                 </div>
                 <p className="mt-0.5 truncate text-[10px] text-[var(--muted)] sm:text-xs">
-                  Multidão · {city.name} · errados {misses}
+                  Mar de Flavinhos · {city.name} · errados {misses}
                 </p>
               </div>
               <div className="text-right">
@@ -725,10 +721,8 @@ export function GameApp() {
 
             <CrowdScene
               seed={`${level.id}-${levelIndex}-${difficulty}`}
-              background={level.scene.background}
               crowdCount={crowdCount}
-              flavinhoScale={level.scene.flavinhoScale}
-              ground={level.scene.ground}
+              flavinhoScale={flavinhoScale}
               lookTier={lookTier}
               onFound={() => void onFound()}
               onMiss={onMiss}
@@ -981,19 +975,19 @@ function Landing({
     {
       id: "easy",
       label: "Fácil",
-      hint: "24 cidades · 5 vidas",
+      hint: "24 cidades · Flavinhos grandes",
       tone: "bg-[#e8f6ef] border-[#1f8a5b]",
     },
     {
       id: "medium",
       label: "Médio",
-      hint: "56 cidades · 3 vidas",
+      hint: "56 cidades · multidão média",
       tone: "bg-[#fff4d6] border-[#d4a017]",
     },
     {
       id: "hard",
       label: "Difícil",
-      hint: "124 cidades · 2 vidas",
+      hint: "124 cidades · mar pequenininho",
       tone: "bg-[#fde8e4] border-[#c2410c]",
     },
   ];

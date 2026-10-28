@@ -1,32 +1,34 @@
-import {
-  PERSPECTIVE,
-  PERSPECTIVE_GROUND,
-  depthRatio,
-  scaleAtDepth,
-  type PerspectiveGround,
-} from "@/lib/perspective";
+/**
+ * Sea-of-Flavinhos finder: no city plate, no props — only disguise sprites
+ * packed across the whole board. Difficulty = smaller + denser.
+ */
 
 export type CrowdItem = {
   id: string;
-  kind: "flavinho" | "decoy" | "prop";
+  kind: "flavinho" | "decoy";
   src: string;
   x: number;
   y: number;
   scale: number;
   facing: 1 | -1;
   z: number;
-  /** Optional CSS filter — used for near-clone decoys on harder looks. */
   filter?: string;
 };
 
-export type GroundBand = PerspectiveGround;
+export type GroundBand = {
+  yMin: number;
+  yMax: number;
+  xMin?: number;
+  xMax?: number;
+};
 
 export type LookTier = "easy" | "medium" | "hard";
 
-/** Undisguised Flavinho — the click target. */
+/** Undisguised Flavinho — the only click target. */
 export const FLAVINHO_SRC = "/game/disguises/real.png";
 
-export const DISGUISE_WILD = [
+/** Every disguise sprite we shipped — always in play, every difficulty. */
+export const ALL_DISGUISES = [
   "/game/disguises/hippie.png",
   "/game/disguises/sideburns.png",
   "/game/disguises/flute.png",
@@ -37,49 +39,74 @@ export const DISGUISE_WILD = [
   "/game/disguises/doctor.png",
   "/game/disguises/worker.png",
   "/game/disguises/bald.png",
-] as const;
-
-export const DISGUISE_MID = [
   "/game/disguises/hoodie.png",
   "/game/disguises/blonde.png",
   "/game/disguises/gag.png",
   "/game/disguises/scarf.png",
   "/game/disguises/beanie.png",
-] as const;
-
-export const DISGUISE_SUBTLE = [
-  "/game/disguises/glasses.png",
-  "/game/disguises/glasses.png",
-  "/game/disguises/trucker.png",
-  "/game/disguises/beanie.png",
-  "/game/disguises/scarf.png",
-  "/game/disguises/blonde.png",
-  "/game/disguises/gag.png",
-  "/game/disguises/hoodie.png",
-] as const;
-
-const NEAR_CLONE_FILTERS = [
-  "brightness(1.05) contrast(0.97)",
-  "brightness(0.95) saturate(1.06)",
-  "contrast(1.04) saturate(0.94)",
-  "hue-rotate(6deg) brightness(1.02)",
-  "hue-rotate(-8deg) saturate(1.04)",
-  "brightness(1.03) contrast(1.03) saturate(0.9)",
-] as const;
-
-export const DISGUISE_SRCS = [
-  ...DISGUISE_WILD,
-  ...DISGUISE_MID,
   "/game/disguises/glasses.png",
   "/game/disguises/trucker.png",
 ] as const;
 
-export const PROP_SRCS = [
-  "/game/props/prop-umbrella.png",
-  "/game/props/prop-cart.png",
-  "/game/props/suitcase.png",
-  "/game/props/sign.png",
-] as const;
+/** @deprecated alias — kept for any leftover imports */
+export const DISGUISE_SRCS = ALL_DISGUISES;
+export const DISGUISE_WILD = ALL_DISGUISES;
+export const DISGUISE_MID = ALL_DISGUISES;
+export const DISGUISE_SUBTLE = ALL_DISGUISES;
+export const PROP_SRCS = [] as const;
+
+/** Full-bleed board — sprites can sit anywhere. */
+export const BOARD_GROUND: GroundBand = {
+  yMin: 10,
+  yMax: 97,
+  xMin: 3,
+  xMax: 97,
+};
+
+export const PERSPECTIVE_GROUND = BOARD_GROUND;
+
+export type CrowdParams = {
+  count: number;
+  /** Base width as fraction of board (before mild jitter). */
+  scale: number;
+  maxWidthPct: number;
+  minWidthPct: number;
+  rows: number;
+  /** Feet clearance as fraction of sprite width (lower = denser). */
+  overlap: number;
+};
+
+/** Harder = smaller + more populous. */
+export function crowdParamsFor(tier: LookTier): CrowdParams {
+  if (tier === "hard") {
+    return {
+      count: 128,
+      scale: 0.048,
+      maxWidthPct: 5.4,
+      minWidthPct: 3.2,
+      rows: 10,
+      overlap: 0.52,
+    };
+  }
+  if (tier === "medium") {
+    return {
+      count: 64,
+      scale: 0.082,
+      maxWidthPct: 8.6,
+      minWidthPct: 5.2,
+      rows: 6,
+      overlap: 0.68,
+    };
+  }
+  return {
+    count: 28,
+    scale: 0.135,
+    maxWidthPct: 14,
+    minWidthPct: 9,
+    rows: 4,
+    overlap: 0.88,
+  };
+}
 
 function mulberry32(seed: number) {
   return function rand() {
@@ -103,107 +130,39 @@ function pickFrom<T>(pool: readonly T[], rand: () => number): T {
   return pool[Math.floor(rand() * pool.length)];
 }
 
-function disguisePoolFor(tier: LookTier): readonly string[] {
-  if (tier === "hard") {
-    return [
-      ...DISGUISE_SUBTLE,
-      ...DISGUISE_SUBTLE,
-      ...DISGUISE_MID.slice(0, 2),
-    ];
-  }
-  if (tier === "medium") {
-    return [
-      ...DISGUISE_SUBTLE,
-      ...DISGUISE_MID,
-      ...DISGUISE_MID,
-      ...DISGUISE_WILD.slice(0, 3),
-    ];
-  }
-  return [...DISGUISE_WILD, ...DISGUISE_WILD, ...DISGUISE_MID];
+export function densityFor(tier: LookTier): { overlap: number; rows: number } {
+  const p = crowdParamsFor(tier);
+  return { overlap: p.overlap, rows: p.rows };
 }
 
 /**
- * Decoys may reuse the same disguise — never the undisguised real.png.
- * Hard/medium can tint disguises so twins feel similar without cloning the target.
- */
-function decoyLook(
-  tier: LookTier,
-  rand: () => number,
-): { src: string; filter?: string } {
-  const src = pickFrom(disguisePoolFor(tier), rand);
-  if (src === FLAVINHO_SRC) {
-    // Belt-and-suspenders: disguise pools must never include the target art.
-    return { src: pickFrom(DISGUISE_WILD, rand) };
-  }
-  if (tier === "hard" && rand() < 0.4) {
-    return { src, filter: pickFrom(NEAR_CLONE_FILTERS, rand) };
-  }
-  if (tier === "medium" && rand() < 0.18) {
-    return { src, filter: pickFrom(NEAR_CLONE_FILTERS, rand) };
-  }
-  return { src };
-}
-
-/** Packing density only — size always comes from Y perspective.
- * Higher overlap = more horizontal clearance between feet.
- */
-export function densityFor(tier: LookTier): {
-  overlap: number;
-  rows: number;
-} {
-  if (tier === "hard") return { overlap: 0.72, rows: 7 };
-  if (tier === "medium") return { overlap: 0.78, rows: 5 };
-  return { overlap: 0.95, rows: 3 };
-}
-
-function twinJitter(tier: LookTier, isFlavinho: boolean, rand: () => number) {
-  // Keep microscopic — depth Y owns the size, jitter must not invent tiers.
-  if (tier === "hard") {
-    return isFlavinho ? 1 : 0.985 + rand() * 0.03;
-  }
-  if (tier === "medium") {
-    return isFlavinho ? 1.01 : 0.97 + rand() * 0.05;
-  }
-  return isFlavinho ? 1.02 : 0.94 + rand() * 0.1;
-}
-
-/**
- * Percent box from scale. NO large baseMin — that was flattening perspective.
- * Hard max width keeps twins playable even if scale drifts high.
- * Must stay in sync with CrowdScene.
+ * Percent box from scale. Ceiling/floor come from the active difficulty.
  */
 export function spriteBox(
   scale: number,
-  kind: CrowdItem["kind"],
+  _kind: CrowdItem["kind"] = "decoy",
   mobileBoost = 1,
+  maxWidthPct = 9.5,
+  minWidthPct = 0.95,
 ) {
-  const floor =
-    kind === "prop" ? PERSPECTIVE.propMinWidthPct : PERSPECTIVE.minWidthPct;
-  const ceiling =
-    kind === "prop" ? PERSPECTIVE.propMaxWidthPct : PERSPECTIVE.maxWidthPct;
-  const raw = Math.max(scale * 100 * mobileBoost, floor * mobileBoost);
-  const widthPct = Math.min(raw, ceiling);
-  const heightPct = widthPct * (kind === "prop" ? 1.05 : 1.55);
+  const raw = Math.max(scale * 100 * mobileBoost, minWidthPct * mobileBoost);
+  const widthPct = Math.min(raw, maxWidthPct);
+  const heightPct = widthPct * 1.55;
   return { widthPct, heightPct };
 }
 
-/**
- * Clamp with FEET as the anchor (y = ground contact).
- * Sprite extends upward by heightPct from the feet.
- */
 export function clampInside(
   x: number,
   y: number,
   widthPct: number,
   heightPct: number,
   ground?: GroundBand,
-  pad = 0.35,
+  pad = 0.25,
 ) {
   const halfW = widthPct / 2;
-  const yMin = ground?.yMin ?? PERSPECTIVE.yMin;
-  const yMax = ground?.yMax ?? PERSPECTIVE.yMax;
-  // Keep most of the body on-canvas; tiny head clip at the far back is OK.
-  const minFeet = Math.max(yMin, heightPct * 0.12 + pad);
+  const yMin = ground?.yMin ?? BOARD_GROUND.yMin;
+  const yMax = ground?.yMax ?? BOARD_GROUND.yMax;
+  const minFeet = Math.max(yMin, heightPct * 0.1 + pad);
   return {
     x: Math.min(100 - halfW - pad, Math.max(halfW + pad, x)),
     y: Math.min(yMax, Math.max(minFeet, y)),
@@ -213,95 +172,119 @@ export function clampInside(
 function tooClose(
   x: number,
   y: number,
-  placed: { x: number; y: number; r: number }[],
+  placed: { x: number; y: number }[],
   minDist: number,
 ) {
   for (const p of placed) {
     const dx = p.x - x;
-    // Keep depth separation honest — don't squash Y or twins stack into a blob.
-    const dy = (p.y - y) * 1.15;
+    const dy = (p.y - y) * 1.05;
     if (dx * dx + dy * dy < minDist * minDist) return true;
   }
   return false;
 }
 
 export function lookTip(tier: LookTier): string {
-  if (tier === "hard") return "Multidão lotada. Ache o SEM acessório.";
-  if (tier === "medium") return "Tá cheio. Olho no SEM disfarce.";
+  if (tier === "hard") {
+    return "Mar de Flavinhos. Ache o pequenininho SEM disfarce.";
+  }
+  if (tier === "medium") {
+    return "Tá lotado. Olho no SEM disfarce.";
+  }
   return "Ache o SEM disfarce. O resto é camuflagem.";
 }
 
 /**
- * Place sprites on perspective rows. Y = feet on the ground plane.
- * Final scale is locked from that feet Y (vanish-point curve).
+ * Pack Flavinhos across the whole board. One real.png target; every other
+ * sprite is a disguise from ALL_DISGUISES (always the full wardrobe).
  */
 export function buildCrowd(
   seed: string,
   crowdCount: number,
   flavinhoScale: number,
-  ground: GroundBand = PERSPECTIVE_GROUND,
-  opts?: { mobileBoost?: number; lookTier?: LookTier },
+  ground: GroundBand = BOARD_GROUND,
+  opts?: {
+    mobileBoost?: number;
+    lookTier?: LookTier;
+    maxWidthPct?: number;
+    minWidthPct?: number;
+  },
 ): CrowdItem[] {
   const mobileBoost = opts?.mobileBoost ?? 1;
   const lookTier = opts?.lookTier ?? "medium";
-  const dens = densityFor(lookTier);
-  const rand = mulberry32(hashSeed(`${seed}:crowd-v10-space:${lookTier}`));
+  const params = crowdParamsFor(lookTier);
+  const maxWidthPct = opts?.maxWidthPct ?? params.maxWidthPct;
+  const minWidthPct = opts?.minWidthPct ?? params.minWidthPct;
+  const dens = { overlap: params.overlap, rows: params.rows };
+  const rand = mulberry32(hashSeed(`${seed}:sea-v1:${lookTier}`));
   const items: CrowdItem[] = [];
-  const xMin = ground.xMin ?? PERSPECTIVE.xMin;
-  const xMax = ground.xMax ?? PERSPECTIVE.xMax;
-  const yMin = ground.yMin ?? PERSPECTIVE.yMin;
-  const yMax = ground.yMax ?? PERSPECTIVE.yMax;
-  // Exactly one clickable target — never clone real.png on decoys.
-  const flavinhoIndex = Math.floor(rand() * Math.max(1, crowdCount));
-  const placed: { x: number; y: number; r: number }[] = [];
+  const xMin = ground.xMin ?? BOARD_GROUND.xMin!;
+  const xMax = ground.xMax ?? BOARD_GROUND.xMax!;
+  const yMin = ground.yMin ?? BOARD_GROUND.yMin;
+  const yMax = ground.yMax ?? BOARD_GROUND.yMax;
+
+  const count = Math.max(1, crowdCount);
+  const flavinhoIndex = Math.floor(rand() * count);
+  const placed: { x: number; y: number }[] = [];
   const rows = dens.rows;
 
-  for (let i = 0; i < crowdCount; i++) {
+  // Shuffle a cycling wardrobe so every disguise shows up evenly.
+  const wardrobe = [...ALL_DISGUISES];
+  for (let i = wardrobe.length - 1; i > 0; i--) {
+    const j = Math.floor(rand() * (i + 1));
+    [wardrobe[i], wardrobe[j]] = [wardrobe[j], wardrobe[i]];
+  }
+  let wardrobeCursor = 0;
+
+  for (let i = 0; i < count; i++) {
     const isFlavinho = i === flavinhoIndex;
-    // Spread across depth more evenly (avoid carpet only at the front).
     const row = isFlavinho
-      ? Math.min(rows - 1, Math.floor(rows * (0.3 + rand() * 0.55)))
+      ? Math.min(rows - 1, Math.floor(rows * (0.25 + rand() * 0.55)))
       : i % rows;
-    const jitterOnce = twinJitter(lookTier, isFlavinho, rand);
+
+    // Mild depth cue + tiny jitter — size mostly comes from difficulty scale.
+    const depthCue = 0.88 + (row / Math.max(1, rows - 1)) * 0.14;
+    const jitter = isFlavinho ? 1 : 0.94 + rand() * 0.1;
     const kind: CrowdItem["kind"] = isFlavinho ? "flavinho" : "decoy";
 
-    const rowY =
-      yMin + ((row + 0.4 + rand() * 0.2) / rows) * (yMax - yMin);
+    const rowY = yMin + ((row + 0.35 + rand() * 0.3) / rows) * (yMax - yMin);
 
     let x = 50;
     let y = rowY;
-    let scale = scaleAtDepth(rowY, flavinhoScale, ground) * jitterOnce;
-    let box = spriteBox(scale, kind, mobileBoost);
+    let scale = flavinhoScale * depthCue * jitter;
+    let box = spriteBox(scale, kind, mobileBoost, maxWidthPct, minWidthPct);
     let ok = false;
 
-    for (let attempt = 0; attempt < 70; attempt++) {
-      const slots = Math.max(8, Math.ceil(crowdCount / rows));
+    for (let attempt = 0; attempt < 80; attempt++) {
+      const slots = Math.max(6, Math.ceil(count / rows));
       const slot = (i + attempt * 3) % slots;
       const rawX =
         xMin +
-        ((slot + 0.15 + rand() * 0.7) / slots) * (xMax - xMin) +
-        (rand() - 0.5) * (lookTier === "hard" ? 7 : 4);
-      const rawY = rowY + (rand() - 0.5) * (lookTier === "hard" ? 4.5 : 3);
-      scale = scaleAtDepth(rawY, flavinhoScale, ground) * jitterOnce;
-      box = spriteBox(scale, kind, mobileBoost);
+        ((slot + 0.1 + rand() * 0.8) / slots) * (xMax - xMin) +
+        (rand() - 0.5) * (lookTier === "hard" ? 6 : 3.5);
+      const rawY = rowY + (rand() - 0.5) * (lookTier === "hard" ? 5 : 3.5);
+      const localDepth =
+        0.88 +
+        Math.max(0, Math.min(1, (rawY - yMin) / Math.max(1, yMax - yMin))) *
+          0.14;
+      scale = flavinhoScale * localDepth * jitter;
+      box = spriteBox(scale, kind, mobileBoost, maxWidthPct, minWidthPct);
       const c = clampInside(rawX, rawY, box.widthPct, box.heightPct, ground);
       x = c.x;
       y = c.y;
-      // Collision uses feet distance; scale with local width.
-      const minDist = Math.max(box.widthPct * dens.overlap, 2.2);
-      const relax = attempt > 50 ? 0.85 : 1;
+      const minDist = Math.max(box.widthPct * dens.overlap, 1.6);
+      const relax = attempt > 55 ? 0.8 : 1;
       if (!tooClose(x, y, placed, minDist * relax)) {
         ok = true;
         break;
       }
     }
-    // Better to drop a decoy than force a pile on top of others.
+
     if (!ok && !isFlavinho) continue;
     if (!ok) {
-      scale = scaleAtDepth(rowY, flavinhoScale, ground) * jitterOnce;
-      box = spriteBox(scale, kind, mobileBoost);
+      scale = flavinhoScale * depthCue * jitter;
+      box = spriteBox(scale, kind, mobileBoost, maxWidthPct, minWidthPct);
       const c = clampInside(
-        xMin + 8 + rand() * (xMax - xMin - 16),
+        xMin + 6 + rand() * (xMax - xMin - 12),
         rowY,
         box.widthPct,
         box.heightPct,
@@ -311,38 +294,36 @@ export function buildCrowd(
       y = c.y;
     }
 
-    // Hard lock: size is ONLY f(feetY) × one jitter sampled above.
-    scale = scaleAtDepth(y, flavinhoScale, ground) * jitterOnce;
-    box = spriteBox(scale, kind, mobileBoost);
-    placed.push({ x, y, r: Math.max(box.widthPct, box.heightPct) * 0.35 });
+    const localDepth =
+      0.88 +
+      Math.max(0, Math.min(1, (y - yMin) / Math.max(1, yMax - yMin))) * 0.14;
+    scale = flavinhoScale * localDepth * jitter;
+    box = spriteBox(scale, kind, mobileBoost, maxWidthPct, minWidthPct);
+    placed.push({ x, y });
 
-    const look = isFlavinho
-      ? { src: FLAVINHO_SRC as string, filter: undefined as string | undefined }
-      : decoyLook(lookTier, rand);
+    let src: string;
+    if (isFlavinho) {
+      src = FLAVINHO_SRC;
+    } else {
+      src = wardrobe[wardrobeCursor % wardrobe.length];
+      wardrobeCursor += 1;
+    }
 
-    const facing: 1 | -1 =
-      lookTier === "hard"
-        ? rand() > 0.38
-          ? 1
-          : -1
-        : rand() > 0.5
-          ? 1
-          : -1;
+    const facing: 1 | -1 = rand() > 0.45 ? 1 : -1;
 
     items.push({
       id: `${seed}-p-${i}`,
       kind,
-      src: look.src,
+      src,
       x,
       y,
       scale,
       facing,
       z: y + rand() * 0.02,
-      filter: look.filter,
     });
   }
 
-  // Invariant: one unique undisguised Flavinho — rewrite any leaked clones.
+  // Invariant: exactly one undisguised target; never leak real.png onto decoys.
   let sawTarget = false;
   for (const item of items) {
     if (item.kind === "flavinho") {
@@ -352,58 +333,35 @@ export function buildCrowd(
       continue;
     }
     if (item.src === FLAVINHO_SRC) {
-      item.src = pickFrom(DISGUISE_WILD, rand);
+      item.src = pickFrom(ALL_DISGUISES, rand);
       item.filter = undefined;
     }
   }
   if (!sawTarget && items.length > 0) {
-    const rescue = items.find((it) => it.kind !== "prop") ?? items[0];
+    const rescue = items[Math.floor(items.length / 2)];
     rescue.kind = "flavinho";
     rescue.src = FLAVINHO_SRC;
     rescue.filter = undefined;
   }
 
-  const propFactor = lookTier === "hard" ? 10 : lookTier === "medium" ? 12 : 14;
-  const propCount = Math.max(3, Math.floor(crowdCount / propFactor));
-  for (let i = 0; i < propCount; i++) {
-    const row = Math.floor(rand() * rows);
-    const rowY =
-      yMin + ((row + 0.5 + (rand() - 0.5) * 0.2) / rows) * (yMax - yMin);
-    const propJitter = 0.4 + rand() * 0.28;
-    let scale = scaleAtDepth(rowY, flavinhoScale, ground) * propJitter;
-    let box = spriteBox(scale, "prop", mobileBoost);
-    const c = clampInside(
-      xMin + rand() * (xMax - xMin),
-      rowY,
-      box.widthPct,
-      box.heightPct,
-      ground,
-    );
-    scale = scaleAtDepth(c.y, flavinhoScale, ground) * propJitter;
-    items.push({
-      id: `${seed}-prop-${i}`,
-      kind: "prop",
-      src: PROP_SRCS[Math.floor(rand() * PROP_SRCS.length)],
-      x: c.x,
-      y: c.y,
-      scale,
-      facing: 1,
-      z: c.y * 0.45,
-    });
-  }
-
   return items.sort((a, b) => a.z - b.z);
 }
 
-/** Debug helper: expected width% at a depth. */
 export function expectedWidthPct(
-  y: number,
+  _y: number,
   flavinhoScale: number,
   mobileBoost = 1,
-  ground?: PerspectiveGround,
+  maxWidthPct = 9.5,
+  minWidthPct = 0.95,
 ) {
-  return spriteBox(scaleAtDepth(y, flavinhoScale, ground), "decoy", mobileBoost)
+  return spriteBox(flavinhoScale, "decoy", mobileBoost, maxWidthPct, minWidthPct)
     .widthPct;
 }
 
-export { depthRatio, scaleAtDepth, PERSPECTIVE_GROUND };
+export function depthRatio() {
+  return 1;
+}
+
+export function scaleAtDepth(y: number, flavinhoScale: number) {
+  return flavinhoScale * (0.9 + Math.min(1, Math.max(0, y / 100)) * 0.1);
+}

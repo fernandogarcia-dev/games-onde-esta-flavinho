@@ -8,19 +8,21 @@ import {
   type MouseEvent as ReactMouseEvent,
 } from "react";
 import {
+  BOARD_GROUND,
   buildCrowd,
+  crowdParamsFor,
   lookTip,
   spriteBox,
   type LookTier,
 } from "@/lib/crowd";
-import { PERSPECTIVE_GROUND } from "@/lib/perspective";
 
 type Props = {
   seed: string;
-  background: string;
+  /** Ignored — find board is a flat sea of Flavinhos (kept for call-site compat). */
+  background?: string;
   crowdCount: number;
   flavinhoScale: number;
-  ground: {
+  ground?: {
     yMin: number;
     yMax: number;
     xMin?: number;
@@ -35,7 +37,6 @@ type Props = {
 
 export function CrowdScene({
   seed,
-  background,
   crowdCount,
   flavinhoScale,
   ground,
@@ -46,6 +47,7 @@ export function CrowdScene({
   disabled,
 }: Props) {
   const [portrait, setPortrait] = useState(false);
+  const params = crowdParamsFor(lookTier);
 
   useEffect(() => {
     const mq = window.matchMedia("(max-width: 640px)");
@@ -55,41 +57,34 @@ export function CrowdScene({
     return () => mq.removeEventListener("change", apply);
   }, []);
 
-  // Keep twins readable without burying the plate under a sticker pile.
-  const mobileBoost = portrait ? 0.9 : 1;
-  const scale =
-    flavinhoScale *
-    (lookTier === "easy"
-      ? portrait
-        ? 1.04
-        : 1.08
-      : lookTier === "hard"
-        ? portrait
-          ? 0.82
-          : 0.88
-        : portrait
-          ? 0.94
-          : 1);
+  // Mobile: slightly smaller so the board still fits; keep hard dense.
+  const mobileBoost = portrait ? 0.92 : 1;
+  const scale = flavinhoScale;
   const count = portrait
     ? Math.max(
-        lookTier === "easy" ? 12 : lookTier === "hard" ? 24 : 18,
+        lookTier === "easy" ? 18 : lookTier === "hard" ? 72 : 40,
         Math.floor(
           crowdCount *
-            (lookTier === "easy" ? 0.8 : lookTier === "hard" ? 0.7 : 0.78),
+            (lookTier === "easy" ? 0.85 : lookTier === "hard" ? 0.78 : 0.82),
         ),
       )
     : crowdCount;
 
   const items = useMemo(() => {
-    // Always honor the shared perspective band (plates are authored for it).
     const band = {
-      yMin: ground.yMin ?? PERSPECTIVE_GROUND.yMin,
-      yMax: ground.yMax ?? PERSPECTIVE_GROUND.yMax,
-      xMin: ground.xMin ?? PERSPECTIVE_GROUND.xMin,
-      xMax: ground.xMax ?? PERSPECTIVE_GROUND.xMax,
+      yMin: ground?.yMin ?? BOARD_GROUND.yMin,
+      yMax: ground?.yMax ?? BOARD_GROUND.yMax,
+      xMin: ground?.xMin ?? BOARD_GROUND.xMin,
+      xMax: ground?.xMax ?? BOARD_GROUND.xMax,
     };
-    return buildCrowd(seed, count, scale, band, { mobileBoost, lookTier });
-  }, [seed, count, scale, ground, mobileBoost, lookTier]);
+    return buildCrowd(seed, count, scale, band, {
+      mobileBoost,
+      lookTier,
+      maxWidthPct: params.maxWidthPct,
+      minWidthPct: params.minWidthPct,
+    });
+  }, [seed, count, scale, ground, mobileBoost, lookTier, params.maxWidthPct, params.minWidthPct]);
+
   const [missFlash, setMissFlash] = useState<{ x: number; y: number } | null>(
     null,
   );
@@ -114,32 +109,34 @@ export function CrowdScene({
     <div
       className="relative mx-auto w-full max-w-5xl overflow-hidden rounded-2xl border-[3px] border-[var(--ink)] shadow-[6px_6px_0_var(--ink)] select-none touch-manipulation"
       style={{
-        // Match authored perspective plates (16:10). Portrait crops the same art.
         aspectRatio: portrait ? "3 / 4" : "16 / 10",
-        backgroundColor: "#d7d2c8",
-        maxHeight: portrait ? "min(68dvh, 640px)" : undefined,
+        background:
+          "radial-gradient(ellipse at 50% 30%, #eef4fb 0%, #d7e3f2 55%, #c5d4e8 100%)",
+        maxHeight: portrait ? "min(72dvh, 680px)" : undefined,
       }}
       onClick={handleBoardClick}
       role="img"
-      aria-label="Cena lotada. Encontre o Flavinho."
+      aria-label="Mar de Flavinhos. Encontre o sem disfarce."
     >
-      <Image
-        src={background}
-        alt=""
-        fill
-        className="object-cover object-[center_42%]"
-        sizes="(max-width: 768px) 100vw, 960px"
-        priority
+      {/* Soft grid only — no city plate. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 opacity-[0.12]"
+        style={{
+          backgroundImage:
+            "linear-gradient(rgba(11,19,32,0.35) 1px, transparent 1px), linear-gradient(90deg, rgba(11,19,32,0.35) 1px, transparent 1px)",
+          backgroundSize: "28px 28px",
+        }}
       />
 
       {items.map((item) => {
-        // Size is already baked from Y in item.scale — do not re-floor by tier.
         const { widthPct, heightPct } = spriteBox(
           item.scale,
           item.kind,
           mobileBoost,
+          params.maxWidthPct,
+          params.minWidthPct,
         );
-        // Y is FEET on the ground plane — anchor bottom-center into perspective.
         const style = {
           left: `${item.x}%`,
           top: `${item.y}%`,
@@ -154,7 +151,7 @@ export function CrowdScene({
         const shadow = (
           <span
             aria-hidden
-            className="pointer-events-none absolute bottom-[-2%] left-1/2 h-[8%] w-[55%] -translate-x-1/2 rounded-[50%] bg-black/25 blur-[1.5px]"
+            className="pointer-events-none absolute bottom-[-2%] left-1/2 h-[8%] w-[55%] -translate-x-1/2 rounded-[50%] bg-black/20 blur-[1.5px]"
           />
         );
 
