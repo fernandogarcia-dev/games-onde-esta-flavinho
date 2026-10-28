@@ -31,7 +31,7 @@ export function PixPanel({ compact = false }: Props) {
             Apoio voluntário
           </p>
           <p className="mt-1 text-sm text-[var(--muted)]">
-            Só se quiser. Valor livre. Sem obrigação e sem recompensa prometida.
+            Gostou do projeto? O jogo é e sempre será 100% gratuito.
           </p>
         </div>
         <span className="rounded-full bg-[var(--pix)] px-2.5 py-1 text-xs font-bold uppercase tracking-wide text-white">
@@ -39,9 +39,17 @@ export function PixPanel({ compact = false }: Props) {
         </span>
       </div>
 
+      <p className="mt-3 text-sm leading-relaxed text-[var(--ink)]">
+        Se você quiser apoiar a manutenção do servidor e incentivar o trabalho
+        de desenvolvimento de jogos independentes e arte digital no Brasil,
+        aceitamos contribuições voluntárias de qualquer valor via PIX.
+      </p>
+
       <p className="mt-3 rounded-xl border border-[var(--ink)]/10 bg-[var(--sand)] px-3 py-2 text-sm leading-relaxed text-[var(--ink)]">
-        Qualquer valor vai <strong>apenas para o desenvolvedor do jogo</strong>.
-        Não vai para político, partido, candidato nem campanha de ninguém.
+        <strong>Nota importante:</strong> o apoio financeiro destina-se
+        exclusivamente à infraestrutura técnica do site e aos custos
+        operacionais do desenvolvedor. Não possui qualquer vínculo com a imagem
+        de terceiros, partidos, candidatos ou campanhas.
       </p>
 
       <div className="mt-3 rounded-xl bg-[var(--sand)] px-3 py-2">
@@ -66,9 +74,10 @@ export function PixPanel({ compact = false }: Props) {
       </div>
 
       <p className="mt-3 text-[11px] leading-relaxed text-[var(--muted)]">
-        Apoio 100% voluntário entre adultos. Não é doação a instituição, rifa,
-        aposta, vaquinha eleitoral nem financiamento de campanha. O jogo
-        continua inteiro de graça — jogar não exige pagar nada.
+        Contribuição 100% voluntária, valor livre, sem obrigação e sem
+        recompensa prometida. Não é doação a instituição, rifa, aposta,
+        vaquinha eleitoral nem financiamento de campanha. Jogar não exige pagar
+        nada.
       </p>
     </div>
   );

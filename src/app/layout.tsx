@@ -16,10 +16,10 @@ const body = Manrope({
 
 const SITE_URL = "https://cadeflavinho.com.br";
 const OG_IMAGE = {
-  url: "/og-share.jpg?v=2",
+  url: "/og-share.jpg?v=3",
   width: 1200,
   height: 1200,
-  alt: "Cadê Flavinho? — você consegue achar ele? Joga em cadeflavinho.com.br",
+  alt: "Cadê Flavinho? — ilustração satírica / caricatura ficcional",
 };
 
 export const metadata: Metadata = {

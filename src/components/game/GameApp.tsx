@@ -5,6 +5,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { CrowdScene } from "@/components/game/CrowdScene";
 import { Leaderboard } from "@/components/game/Leaderboard";
+import { LegalNotice } from "@/components/game/LegalNotice";
 import { PixModal } from "@/components/game/PixModal";
 import { RankModal } from "@/components/game/RankModal";
 import { ShareBar } from "@/components/game/ShareBar";
@@ -911,12 +912,7 @@ export function GameApp() {
         shareText={rankShareText}
       />
 
-      <footer className="relative z-10 mx-auto max-w-3xl border-t border-[var(--ink)]/10 px-4 py-6 text-center text-xs leading-relaxed text-[var(--muted)]">
-        Sátira / humor. Não é notícia, denúncia, biografia, campanha eleitoral
-        nem afiliação partidária. Qualquer PIX é apoio 100% voluntário e vai
-        apenas ao desenvolvedor do jogo — não vai para político, partido,
-        candidato nem campanha de ninguém. Jogar é grátis.
-      </footer>
+      <LegalNotice />
     </div>
   );
 }
@@ -998,8 +994,9 @@ function Landing({
               : "Seja o primeiro no placar."}
           </p>
           <p className="mt-3 max-w-md text-sm text-[var(--muted)]">
-            Jogo satírico de humor — grátis. Qualquer apoio via PIX é voluntário
-            e vai só ao desenvolvedor, não a político nem campanha.
+            Obra ficcional de sátira humorística — grátis. Qualquer PIX é
+            voluntário e cobre só servidor/custos do desenvolvedor, sem vínculo
+            com imagem de terceiros, partidos ou campanhas.
           </p>
 
           <div className="mt-6">

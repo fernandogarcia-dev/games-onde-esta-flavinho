@@ -8,14 +8,15 @@ Site: [cadeflavinho.com.br](https://cadeflavinho.com.br)
 2. Se o mapa fechar, ele ainda está escondido na multidão — com timer e pontos derretendo.
 3. Apoio voluntário via PIX (botão **Apoio voluntário**), valor livre, sem obrigação.
 
-> Humor/sátira. Não é notícia, denúncia, campanha eleitoral nem afiliação política.
-> Qualquer PIX vai apenas ao desenvolvedor do jogo — não a político, partido nem campanha.
+> Obra ficcional de sátira humorística. Não é notícia, denúncia, biografia, campanha eleitoral nem afiliação partidária.
+> Qualquer PIX cobre só infraestrutura/custos do desenvolvedor — sem vínculo com imagem de terceiros, partidos ou campanhas.
+> Ilustração satírica / caricatura ficcional.
 
 ## PIX
 
 Chave: `cadeflavinho@gmail.com`  
-Apoio 100% voluntário ao desenvolvedor. Sem valores predefinidos, sem cobrança por dica.
-O jogo continua inteiro de graça.
+Contribuição voluntária (valor livre) para manutenção do servidor e custos operacionais do desenvolvedor.
+Sem valores predefinidos, sem cobrança por dica. O jogo continua 100% gratuito.
 
 ## Rodar local
 
