@@ -741,57 +741,75 @@ export function GameApp() {
         {phase === "win" && city && (
           <section className="animate-rise mx-auto grid max-w-4xl gap-6 lg:grid-cols-[1.1fr_0.9fr]">
             <div className="rounded-3xl border-[3px] border-[var(--ink)] bg-[var(--paper)] p-6 text-center shadow-[8px_8px_0_var(--ink)] sm:p-8">
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-[var(--brand)]">
+                Caçada {levelIndex + 1}/{run.length} · modo{" "}
+                {labelMode(difficulty)}
+              </p>
               <Image
                 src="/game/disguises/real.png"
                 alt="Flavinho encontrado"
                 width={120}
                 height={170}
-                className="mx-auto object-contain"
+                className="mx-auto mt-2 object-contain"
                 unoptimized
               />
-              <h2 className="mt-3 font-[family-name:var(--font-display)] text-4xl text-[var(--ink)]">
-                Pegou o rastro
+              <h2 className="mt-3 font-[family-name:var(--font-display)] text-4xl text-[var(--ink)] sm:text-5xl">
+                {levelIndex >= run.length - 1
+                  ? "Missão fechada!"
+                  : "Achei ele!"}
               </h2>
+              <p className="mt-2 text-base text-[var(--muted)]">
+                {levelIndex >= run.length - 1
+                  ? `Sexteto completo em ${city.name}. Manda ver no placar ou abre outra rodada.`
+                  : `Tava em ${city.name}. Mais ${run.length - levelIndex - 1} sumiço${run.length - levelIndex - 1 === 1 ? "" : "s"} pra fechar a caçada.`}
+              </p>
               {newRecord && (
-                <p className="mt-2 inline-block rounded-full bg-[var(--brand)] px-3 py-1 text-sm font-black text-white">
-                  Novo recorde!
+                <p className="mt-3 inline-block rounded-full border-2 border-[var(--ink)] bg-[#fff4d6] px-3 py-1 text-sm font-black text-[var(--ink)] shadow-[2px_2px_0_var(--ink)]">
+                  Novo recorde pessoal!
                 </p>
               )}
-              <p className="mt-2 text-[var(--muted)]">
-                {city.name} · caçada{" "}
-                <strong className="text-[var(--brand)]">
-                  +{lastFindBonus.toLocaleString("pt-BR")}
-                </strong>
-                {lastPerfect ? " (achado limpo incluso)" : ""}
-                {streak > 1 ? ` · sequência x${streak}` : ""}
+
+              <div className="mx-auto mt-4 grid max-w-sm grid-cols-3 gap-2 rounded-2xl border-2 border-dashed border-[var(--ink)]/30 bg-white/70 p-2">
+                <div className="rounded-xl border-2 border-[var(--ink)] bg-[#e8f6ef] px-2 py-2 shadow-[2px_2px_0_var(--ink)]">
+                  <p className="text-[10px] font-bold uppercase text-[var(--muted)]">
+                    Ganho
+                  </p>
+                  <p className="font-[family-name:var(--font-display)] text-lg text-[var(--ink)]">
+                    +{lastFindBonus.toLocaleString("pt-BR")}
+                  </p>
+                </div>
+                <div className="rounded-xl border-2 border-[var(--ink)] bg-[#fff4d6] px-2 py-2 shadow-[2px_2px_0_var(--ink)]">
+                  <p className="text-[10px] font-bold uppercase text-[var(--muted)]">
+                    Total
+                  </p>
+                  <p className="font-[family-name:var(--font-display)] text-lg text-[var(--ink)]">
+                    {score.toLocaleString("pt-BR")}
+                  </p>
+                </div>
+                <div className="rounded-xl border-2 border-[var(--ink)] bg-[#e6f7f5] px-2 py-2 shadow-[2px_2px_0_var(--ink)]">
+                  <p className="text-[10px] font-bold uppercase text-[var(--muted)]">
+                    Tempo
+                  </p>
+                  <p className="font-[family-name:var(--font-display)] text-lg text-[var(--ink)]">
+                    {formatClock(lastFindSec)}
+                  </p>
+                </div>
+              </div>
+
+              <p className="mt-3 text-sm text-[var(--muted)]">
+                {lastPerfect ? "Achado limpo · " : ""}
+                {streak > 1 ? `sequência x${streak} · ` : ""}
+                corrida {formatClock(elapsed)}
+                {myRank != null ? ` · você #${myRank}` : ""}
               </p>
-              <p className="mt-1 font-[family-name:var(--font-display)] text-3xl text-[var(--ink)]">
-                Total {score.toLocaleString("pt-BR")} pts
-              </p>
-              <p className="mt-1 text-sm text-[var(--muted)]">
-                Achado em{" "}
-                <strong className="text-[var(--ink)]">
-                  {formatClock(lastFindSec)}
-                </strong>
-                {" · "}
-                corrida{" "}
-                <strong className="text-[var(--ink)]">
-                  {formatClock(elapsed)}
-                </strong>
-              </p>
-              {myRank != null && (
-                <p className="mt-1 text-sm font-semibold text-[var(--accent)]">
-                  Você está em #{myRank} no ranking
-                </p>
-              )}
 
               {needsName ? (
                 <div className="mx-auto mt-5 max-w-sm text-left">
                   <p className="text-sm font-bold text-[var(--ink)]">
-                    Como te chamamos no placar?
+                    Entra no placar pra desafiar a galera
                   </p>
                   <p className="text-xs text-[var(--muted)]">
-                    Só nome e pontuação. Primeira vez que você fecha um rastro.
+                    Só um apelido. Sem login, sem frescura.
                   </p>
                   <div className="mt-3 flex gap-2">
                     <input
@@ -816,22 +834,40 @@ export function GameApp() {
                   </div>
                 </div>
               ) : (
-                <div className="mt-6 flex flex-wrap justify-center gap-3">
-                  <Button size="lg" onClick={nextLevel}>
+                <div className="mt-6 space-y-3">
+                  <Button size="lg" className="w-full sm:w-auto" onClick={nextLevel}>
                     {levelIndex >= run.length - 1
-                      ? "Ver ranking / nova rodada"
-                      : "Continuar a caçada"}
+                      ? "Abrir nova caçada"
+                      : `Próximo sumiço (${levelIndex + 2}/${run.length})`}
                   </Button>
-                  <Button variant="secondary" onClick={restartToMenu}>
-                    Recomeçar
-                  </Button>
+                  <p className="text-xs font-semibold text-[var(--muted)]">
+                    {levelIndex >= run.length - 1
+                      ? myRank != null && myRank > 1
+                        ? `Falta pouco pra subir do #${myRank}. Uma rodada a mais?`
+                        : "Placar tá quente. Roda de novo e sobe."
+                      : streak > 1
+                        ? `Sequência x${streak} no ar — não para agora.`
+                        : "Ele já deve estar trocando de cidade. Vai atrás."}
+                  </p>
+                  <div className="flex flex-wrap justify-center gap-2">
+                    <Button variant="secondary" size="sm" onClick={restartToMenu}>
+                      Menu
+                    </Button>
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      onClick={() => setShowRank(true)}
+                    >
+                      Ver ranking
+                    </Button>
+                  </div>
                 </div>
               )}
 
               <div className="mt-5 border-t border-[var(--ink)]/10 pt-4">
                 <ShareBar
                   text={resultShareText}
-                  label="Estourar o tempo nas redes"
+                  label="Provoca a galera"
                   align="center"
                   compact
                 />
@@ -854,21 +890,23 @@ export function GameApp() {
         {(phase === "fail-city" || phase === "fail-time") && (
           <section className="animate-rise mx-auto max-w-xl rounded-3xl border-[3px] border-[var(--ink)] bg-[var(--paper)] p-6 text-center shadow-[8px_8px_0_var(--ink)]">
             <h2 className="font-[family-name:var(--font-display)] text-3xl text-[var(--ink)]">
-              {phase === "fail-time" ? "Tempo esgotado" : "Rastro apagado"}
+              {phase === "fail-time" ? "Escapou no tempo" : "Errou a cidade"}
             </h2>
             <p className="mt-2 text-[var(--muted)]">
               {phase === "fail-time"
-                ? "O relógio zerou e os pontos da mesa evaporaram. Ele trocou de disfarce."
-                : "Acabaram as tentativas no mapa. Ele trocou de cidade enquanto você hesitava."}
+                ? "O relógio zerou. Ele já trocou de disfarce — mas a próxima caçada tá pronta."
+                : "As tentativas acabaram. Abre outra rodada e pega ele dessa vez."}
             </p>
             <p className="mt-3 font-semibold text-[var(--ink)]">
               Pontuação da corrida: {score.toLocaleString("pt-BR")} ·{" "}
               {formatClock(elapsed)}
             </p>
             <div className="mt-6 flex flex-wrap justify-center gap-3">
-              <Button onClick={() => startGame(difficulty)}>Tentar de novo</Button>
+              <Button size="lg" onClick={() => startGame(difficulty)}>
+                Jogar de novo
+              </Button>
               <Button variant="secondary" onClick={restartToMenu}>
-                Recomeçar
+                Menu
               </Button>
             </div>
             <div className="mt-5 border-t border-[var(--ink)]/10 pt-4">
