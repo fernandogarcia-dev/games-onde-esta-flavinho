@@ -36,6 +36,7 @@ type Props = {
 
 export function CrowdScene({
   seed,
+  crowdCount,
   flavinhoScale,
   ground,
   lookTier = "medium",
@@ -55,13 +56,17 @@ export function CrowdScene({
     return () => mq.removeEventListener("change", apply);
   }, []);
 
-  // Portrait boards are taller — add a column of cells instead of dropping people.
-  const cols = portrait ? Math.max(4, params.cols - 1) : params.cols;
-  const rows = portrait ? params.rows + 2 : params.rows;
-  const count = cols * rows;
-  // Slightly smaller on phone so the denser portrait grid still fits.
-  const mobileBoost = portrait ? 0.88 : 1;
-  const scale = flavinhoScale * (portrait ? 0.92 : 1);
+  // Portrait is taller — keep (or bump) headcount so the board stays full.
+  const count = portrait
+    ? Math.max(
+        crowdCount,
+        lookTier === "easy" ? 40 : lookTier === "hard" ? 160 : 84,
+      )
+    : crowdCount;
+  const mobileBoost = portrait ? 0.9 : 1;
+  const scale = flavinhoScale * (portrait ? 0.94 : 1);
+  const maxW = params.maxWidthPct * (portrait ? 0.94 : 1);
+  const minW = params.minWidthPct * (portrait ? 0.92 : 1);
 
   const items = useMemo(() => {
     const band = {
@@ -73,24 +78,10 @@ export function CrowdScene({
     return buildCrowd(seed, count, scale, band, {
       mobileBoost,
       lookTier,
-      maxWidthPct: params.maxWidthPct * (portrait ? 0.92 : 1),
-      minWidthPct: params.minWidthPct * (portrait ? 0.9 : 1),
-      cols,
-      rows,
+      maxWidthPct: maxW,
+      minWidthPct: minW,
     });
-  }, [
-    seed,
-    count,
-    scale,
-    ground,
-    mobileBoost,
-    lookTier,
-    params.maxWidthPct,
-    params.minWidthPct,
-    cols,
-    rows,
-    portrait,
-  ]);
+  }, [seed, count, scale, ground, mobileBoost, lookTier, maxW, minW]);
 
   const [missFlash, setMissFlash] = useState<{ x: number; y: number } | null>(
     null,
@@ -111,9 +102,6 @@ export function CrowdScene({
     if (disabled) return;
     onFound();
   }
-
-  const maxW = params.maxWidthPct * (portrait ? 0.92 : 1);
-  const minW = params.minWidthPct * (portrait ? 0.9 : 1);
 
   return (
     <div
@@ -146,7 +134,6 @@ export function CrowdScene({
           maxW,
           minW,
         );
-        // Center-anchored so the lattice fills the board evenly.
         const style = {
           left: `${item.x}%`,
           top: `${item.y}%`,

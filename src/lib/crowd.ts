@@ -1,6 +1,7 @@
 /**
  * Sea-of-Flavinhos finder: flat board, every disguise in play.
- * Difficulty = smaller sprites + denser grid that fills the whole area.
+ * Difficulty = smaller + more sprites. Placement is scattered (not a grid),
+ * but blue-noise style so big empty pockets don't appear.
  */
 
 export type CrowdItem = {
@@ -55,66 +56,62 @@ export const DISGUISE_MID = ALL_DISGUISES;
 export const DISGUISE_SUBTLE = ALL_DISGUISES;
 export const PROP_SRCS = [] as const;
 
-/** Full-bleed board — center-anchored sprites fill edge to edge. */
+/** Full-bleed board — center-anchored sprites. */
 export const BOARD_GROUND: GroundBand = {
-  yMin: 4,
-  yMax: 96,
-  xMin: 4,
-  xMax: 96,
+  yMin: 5,
+  yMax: 95,
+  xMin: 5,
+  xMax: 95,
 };
 
 export const PERSPECTIVE_GROUND = BOARD_GROUND;
 
 export type CrowdParams = {
-  /** Exact grid — count = cols * rows so the board stays full. */
-  cols: number;
-  rows: number;
   count: number;
   /** Base width as fraction of board. */
   scale: number;
   maxWidthPct: number;
   minWidthPct: number;
-  /** Legacy fields kept for callers. */
+  /**
+   * Target clearance between centers, as a fraction of sprite width.
+   * Lower = denser / less white space.
+   */
+  spacing: number;
+  rows: number;
   overlap: number;
 };
 
-/** Harder = smaller + more cells. Grid always fills the board. */
+/** Harder = smaller + more. Spacing keeps the board full without a grid look. */
 export function crowdParamsFor(tier: LookTier): CrowdParams {
   if (tier === "hard") {
-    const cols = 10;
-    const rows = 13;
     return {
-      cols,
-      rows,
-      count: cols * rows,
-      scale: 0.052,
-      maxWidthPct: 7.2,
-      minWidthPct: 4.4,
+      count: 140,
+      scale: 0.05,
+      maxWidthPct: 6.8,
+      minWidthPct: 4.2,
+      spacing: 0.78,
+      rows: 12,
       overlap: 0.5,
     };
   }
   if (tier === "medium") {
-    const cols = 7;
-    const rows = 9;
     return {
-      cols,
-      rows,
-      count: cols * rows,
-      scale: 0.088,
-      maxWidthPct: 11.5,
-      minWidthPct: 7,
+      count: 72,
+      scale: 0.084,
+      maxWidthPct: 10.5,
+      minWidthPct: 6.5,
+      spacing: 0.85,
+      rows: 8,
       overlap: 0.6,
     };
   }
-  const cols = 5;
-  const rows = 6;
   return {
-    cols,
-    rows,
-    count: cols * rows,
-    scale: 0.14,
-    maxWidthPct: 17,
-    minWidthPct: 11,
+    count: 36,
+    scale: 0.125,
+    maxWidthPct: 15.5,
+    minWidthPct: 10,
+    spacing: 0.92,
+    rows: 5,
     overlap: 0.7,
   };
 }
@@ -165,7 +162,7 @@ export function clampInside(
   widthPct: number,
   heightPct: number,
   ground?: GroundBand,
-  pad = 0.2,
+  pad = 0.15,
 ) {
   const halfW = widthPct / 2;
   const halfH = heightPct / 2;
@@ -189,9 +186,27 @@ export function lookTip(tier: LookTier): string {
   return "Ache o SEM disfarce. O resto é camuflagem.";
 }
 
+function minDistTo(
+  x: number,
+  y: number,
+  placed: { x: number; y: number }[],
+) {
+  let best = Infinity;
+  for (const p of placed) {
+    const dx = p.x - x;
+    // Slight Y stretch so vertical gaps feel as closed as horizontal ones
+    // (sprites are taller than wide).
+    const dy = (p.y - y) * 0.85;
+    const d = dx * dx + dy * dy;
+    if (d < best) best = d;
+  }
+  return Math.sqrt(best);
+}
+
 /**
- * Jittered lattice that covers the whole board — no dropped cells, no big holes.
- * (x, y) are the visual CENTER of each sprite (CrowdScene uses translate -50%/-50%).
+ * Scattered pack that still fills the board: Mitchell's best-candidate
+ * (blue noise). Looks organic — not a grid — but keeps hunting the
+ * emptiest pocket so white voids don't survive.
  */
 export function buildCrowd(
   seed: string,
@@ -203,8 +218,6 @@ export function buildCrowd(
     lookTier?: LookTier;
     maxWidthPct?: number;
     minWidthPct?: number;
-    cols?: number;
-    rows?: number;
   },
 ): CrowdItem[] {
   const mobileBoost = opts?.mobileBoost ?? 1;
@@ -212,19 +225,12 @@ export function buildCrowd(
   const params = crowdParamsFor(lookTier);
   const maxWidthPct = opts?.maxWidthPct ?? params.maxWidthPct;
   const minWidthPct = opts?.minWidthPct ?? params.minWidthPct;
+  const count = Math.max(1, crowdCount || params.count);
 
-  // Prefer an exact grid that fills the board; fall back to sqrt layout.
-  let cols = opts?.cols ?? params.cols;
-  let rows = opts?.rows ?? params.rows;
-  const want = Math.max(1, crowdCount);
-  if (want !== cols * rows) {
-    cols = Math.max(3, Math.round(Math.sqrt(want * 0.85)));
-    rows = Math.max(3, Math.ceil(want / cols));
-  }
-  const count = cols * rows;
-
-  const rand = mulberry32(hashSeed(`${seed}:sea-grid-v2:${lookTier}:${cols}x${rows}`));
+  const rand = mulberry32(hashSeed(`${seed}:sea-scatter-v3:${lookTier}`));
   const items: CrowdItem[] = [];
+  const placed: { x: number; y: number }[] = [];
+
   const xMin = ground.xMin ?? BOARD_GROUND.xMin!;
   const xMax = ground.xMax ?? BOARD_GROUND.xMax!;
   const yMin = ground.yMin ?? BOARD_GROUND.yMin;
@@ -232,59 +238,118 @@ export function buildCrowd(
   const spanX = xMax - xMin;
   const spanY = yMax - yMin;
 
-  const flavinhoIndex = Math.floor(rand() * count);
-
   const wardrobe = [...ALL_DISGUISES];
   for (let i = wardrobe.length - 1; i > 0; i--) {
     const j = Math.floor(rand() * (i + 1));
     [wardrobe[i], wardrobe[j]] = [wardrobe[j], wardrobe[i]];
   }
 
-  // Shuffle cell visit order so the target isn't always mid-grid.
-  const order = Array.from({ length: count }, (_, i) => i);
-  for (let i = order.length - 1; i > 0; i--) {
-    const j = Math.floor(rand() * (i + 1));
-    [order[i], order[j]] = [order[j], order[i]];
-  }
-  // Keep flavinhoIndex as the kind flag by remapping after shuffle:
-  // place kinds by original index; positions by shuffled lattice cell.
-  const cellOf = order; // cellOf[i] = lattice index for item i
+  const flavinhoIndex = Math.floor(rand() * count);
+
+  // Typical sprite width drives minimum center spacing.
+  const probeScale = flavinhoScale;
+  const probe = spriteBox(
+    probeScale,
+    "decoy",
+    mobileBoost,
+    maxWidthPct,
+    minWidthPct,
+  );
+  let minSep = Math.max(probe.widthPct * params.spacing, 2.2);
+
+  // More candidates per point → better void-filling, still organic.
+  const candidatesPerPoint =
+    lookTier === "hard" ? 28 : lookTier === "medium" ? 34 : 40;
 
   for (let i = 0; i < count; i++) {
     const isFlavinho = i === flavinhoIndex;
-    const cell = cellOf[i];
-    const col = cell % cols;
-    const row = Math.floor(cell / cols);
-
-    // Cell center + light jitter (stay inside the cell so gaps stay closed).
-    const jitterAmp = lookTier === "hard" ? 0.28 : lookTier === "medium" ? 0.22 : 0.18;
-    const jx = (rand() - 0.5) * jitterAmp;
-    const jy = (rand() - 0.5) * jitterAmp;
-    const rawX = xMin + ((col + 0.5 + jx) / cols) * spanX;
-    const rawY = yMin + ((row + 0.5 + jy) / rows) * spanY;
-
-    const jitter = isFlavinho ? 1 : 0.93 + rand() * 0.12;
-    // Mild size variation by row so it doesn't look stamped.
-    const rowCue = 0.94 + (row / Math.max(1, rows - 1)) * 0.1;
-    const scale = flavinhoScale * rowCue * jitter;
+    const jitter = isFlavinho ? 1 : 0.92 + rand() * 0.14;
+    const scale = flavinhoScale * jitter;
     const kind: CrowdItem["kind"] = isFlavinho ? "flavinho" : "decoy";
     const box = spriteBox(scale, kind, mobileBoost, maxWidthPct, minWidthPct);
-    const c = clampInside(rawX, rawY, box.widthPct, box.heightPct, ground);
 
-    const src = isFlavinho
-      ? FLAVINHO_SRC
-      : wardrobe[i % wardrobe.length];
+    let bestX = 50;
+    let bestY = 50;
+    let bestScore = -1;
 
+    // Soften spacing if the board is getting full so we never leave holes
+    // just because the hard min-distance can't fit another body.
+    const progress = i / count;
+    const sep =
+      minSep * (progress > 0.7 ? 0.82 : progress > 0.45 ? 0.92 : 1);
+
+    const tries = placed.length === 0 ? 1 : candidatesPerPoint;
+    for (let t = 0; t < tries; t++) {
+      let rawX: number;
+      let rawY: number;
+      if (placed.length === 0) {
+        // Start near center-ish so the fill spreads outward.
+        rawX = xMin + spanX * (0.35 + rand() * 0.3);
+        rawY = yMin + spanY * (0.35 + rand() * 0.3);
+      } else {
+        rawX = xMin + rand() * spanX;
+        rawY = yMin + rand() * spanY;
+      }
+      const c = clampInside(rawX, rawY, box.widthPct, box.heightPct, ground);
+      const d =
+        placed.length === 0 ? 999 : minDistTo(c.x, c.y, placed);
+      // Prefer farthest from neighbors (fills voids). Soft reject if too close.
+      const score = d < sep * 0.55 ? d * 0.15 : d;
+      if (score > bestScore) {
+        bestScore = score;
+        bestX = c.x;
+        bestY = c.y;
+      }
+    }
+
+    placed.push({ x: bestX, y: bestY });
     items.push({
       id: `${seed}-p-${i}`,
       kind,
-      src,
-      x: c.x,
-      y: c.y,
+      src: isFlavinho ? FLAVINHO_SRC : wardrobe[i % wardrobe.length],
+      x: bestX,
+      y: bestY,
       scale,
       facing: rand() > 0.45 ? 1 : -1,
-      z: c.y + rand() * 0.02,
+      z: bestY + rand() * 0.02,
     });
+  }
+
+  // Pass 2: if any region is still sparse, nudge the last third of decoys
+  // toward the emptiest pockets (keeps scatter, kills leftover voids).
+  const refineFrom = Math.floor(count * 0.55);
+  for (let i = refineFrom; i < items.length; i++) {
+    if (items[i].kind === "flavinho") continue;
+    const box = spriteBox(
+      items[i].scale,
+      items[i].kind,
+      mobileBoost,
+      maxWidthPct,
+      minWidthPct,
+    );
+    const others = placed.filter((_, idx) => idx !== i);
+    let bestX = items[i].x;
+    let bestY = items[i].y;
+    let bestD = minDistTo(bestX, bestY, others);
+    for (let t = 0; t < 18; t++) {
+      const c = clampInside(
+        xMin + rand() * spanX,
+        yMin + rand() * spanY,
+        box.widthPct,
+        box.heightPct,
+        ground,
+      );
+      const d = minDistTo(c.x, c.y, others);
+      if (d > bestD) {
+        bestD = d;
+        bestX = c.x;
+        bestY = c.y;
+      }
+    }
+    items[i].x = bestX;
+    items[i].y = bestY;
+    items[i].z = bestY + rand() * 0.02;
+    placed[i] = { x: bestX, y: bestY };
   }
 
   // Invariant: exactly one undisguised target.
@@ -302,7 +367,7 @@ export function buildCrowd(
     }
   }
   if (!sawTarget && items.length > 0) {
-    const rescue = items[Math.floor(items.length / 2)];
+    const rescue = items[Math.floor(rand() * items.length)];
     rescue.kind = "flavinho";
     rescue.src = FLAVINHO_SRC;
     rescue.filter = undefined;
