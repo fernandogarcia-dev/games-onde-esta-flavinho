@@ -15,7 +15,7 @@ export function gameShareUrl() {
 }
 
 export function buildInviteText() {
-  return `Cadê Flavinho?\nAche o cara na multidão antes do relógio zerar.\nJoga aqui: ${gameShareUrl()}`;
+  return `Cadê Flavinho?\nVocê consegue achar ele na multidão antes do tempo zerar?\nEntra e joga agora: ${gameShareUrl()}`;
 }
 
 export function buildResultText(opts: {
