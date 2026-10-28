@@ -1,6 +1,6 @@
 /**
- * Sea-of-Flavinhos finder: no city plate, no props — only disguise sprites
- * packed across the whole board. Difficulty = smaller + denser.
+ * Sea-of-Flavinhos finder: flat board, every disguise in play.
+ * Difficulty = smaller sprites + denser grid that fills the whole area.
  */
 
 export type CrowdItem = {
@@ -55,56 +55,67 @@ export const DISGUISE_MID = ALL_DISGUISES;
 export const DISGUISE_SUBTLE = ALL_DISGUISES;
 export const PROP_SRCS = [] as const;
 
-/** Full-bleed board — sprites can sit anywhere. */
+/** Full-bleed board — center-anchored sprites fill edge to edge. */
 export const BOARD_GROUND: GroundBand = {
-  yMin: 10,
-  yMax: 97,
-  xMin: 3,
-  xMax: 97,
+  yMin: 4,
+  yMax: 96,
+  xMin: 4,
+  xMax: 96,
 };
 
 export const PERSPECTIVE_GROUND = BOARD_GROUND;
 
 export type CrowdParams = {
+  /** Exact grid — count = cols * rows so the board stays full. */
+  cols: number;
+  rows: number;
   count: number;
-  /** Base width as fraction of board (before mild jitter). */
+  /** Base width as fraction of board. */
   scale: number;
   maxWidthPct: number;
   minWidthPct: number;
-  rows: number;
-  /** Feet clearance as fraction of sprite width (lower = denser). */
+  /** Legacy fields kept for callers. */
   overlap: number;
 };
 
-/** Harder = smaller + more populous. */
+/** Harder = smaller + more cells. Grid always fills the board. */
 export function crowdParamsFor(tier: LookTier): CrowdParams {
   if (tier === "hard") {
+    const cols = 10;
+    const rows = 13;
     return {
-      count: 128,
-      scale: 0.048,
-      maxWidthPct: 5.4,
-      minWidthPct: 3.2,
-      rows: 10,
-      overlap: 0.52,
+      cols,
+      rows,
+      count: cols * rows,
+      scale: 0.052,
+      maxWidthPct: 7.2,
+      minWidthPct: 4.4,
+      overlap: 0.5,
     };
   }
   if (tier === "medium") {
+    const cols = 7;
+    const rows = 9;
     return {
-      count: 64,
-      scale: 0.082,
-      maxWidthPct: 8.6,
-      minWidthPct: 5.2,
-      rows: 6,
-      overlap: 0.68,
+      cols,
+      rows,
+      count: cols * rows,
+      scale: 0.088,
+      maxWidthPct: 11.5,
+      minWidthPct: 7,
+      overlap: 0.6,
     };
   }
+  const cols = 5;
+  const rows = 6;
   return {
-    count: 28,
-    scale: 0.135,
-    maxWidthPct: 14,
-    minWidthPct: 9,
-    rows: 4,
-    overlap: 0.88,
+    cols,
+    rows,
+    count: cols * rows,
+    scale: 0.14,
+    maxWidthPct: 17,
+    minWidthPct: 11,
+    overlap: 0.7,
   };
 }
 
@@ -135,9 +146,6 @@ export function densityFor(tier: LookTier): { overlap: number; rows: number } {
   return { overlap: p.overlap, rows: p.rows };
 }
 
-/**
- * Percent box from scale. Ceiling/floor come from the active difficulty.
- */
 export function spriteBox(
   scale: number,
   _kind: CrowdItem["kind"] = "decoy",
@@ -157,30 +165,18 @@ export function clampInside(
   widthPct: number,
   heightPct: number,
   ground?: GroundBand,
-  pad = 0.25,
+  pad = 0.2,
 ) {
   const halfW = widthPct / 2;
+  const halfH = heightPct / 2;
+  const xMin = ground?.xMin ?? BOARD_GROUND.xMin!;
+  const xMax = ground?.xMax ?? BOARD_GROUND.xMax!;
   const yMin = ground?.yMin ?? BOARD_GROUND.yMin;
   const yMax = ground?.yMax ?? BOARD_GROUND.yMax;
-  const minFeet = Math.max(yMin, heightPct * 0.1 + pad);
   return {
-    x: Math.min(100 - halfW - pad, Math.max(halfW + pad, x)),
-    y: Math.min(yMax, Math.max(minFeet, y)),
+    x: Math.min(xMax - halfW - pad, Math.max(xMin + halfW + pad, x)),
+    y: Math.min(yMax - halfH - pad, Math.max(yMin + halfH + pad, y)),
   };
-}
-
-function tooClose(
-  x: number,
-  y: number,
-  placed: { x: number; y: number }[],
-  minDist: number,
-) {
-  for (const p of placed) {
-    const dx = p.x - x;
-    const dy = (p.y - y) * 1.05;
-    if (dx * dx + dy * dy < minDist * minDist) return true;
-  }
-  return false;
 }
 
 export function lookTip(tier: LookTier): string {
@@ -194,8 +190,8 @@ export function lookTip(tier: LookTier): string {
 }
 
 /**
- * Pack Flavinhos across the whole board. One real.png target; every other
- * sprite is a disguise from ALL_DISGUISES (always the full wardrobe).
+ * Jittered lattice that covers the whole board — no dropped cells, no big holes.
+ * (x, y) are the visual CENTER of each sprite (CrowdScene uses translate -50%/-50%).
  */
 export function buildCrowd(
   seed: string,
@@ -207,6 +203,8 @@ export function buildCrowd(
     lookTier?: LookTier;
     maxWidthPct?: number;
     minWidthPct?: number;
+    cols?: number;
+    rows?: number;
   },
 ): CrowdItem[] {
   const mobileBoost = opts?.mobileBoost ?? 1;
@@ -214,116 +212,82 @@ export function buildCrowd(
   const params = crowdParamsFor(lookTier);
   const maxWidthPct = opts?.maxWidthPct ?? params.maxWidthPct;
   const minWidthPct = opts?.minWidthPct ?? params.minWidthPct;
-  const dens = { overlap: params.overlap, rows: params.rows };
-  const rand = mulberry32(hashSeed(`${seed}:sea-v1:${lookTier}`));
+
+  // Prefer an exact grid that fills the board; fall back to sqrt layout.
+  let cols = opts?.cols ?? params.cols;
+  let rows = opts?.rows ?? params.rows;
+  const want = Math.max(1, crowdCount);
+  if (want !== cols * rows) {
+    cols = Math.max(3, Math.round(Math.sqrt(want * 0.85)));
+    rows = Math.max(3, Math.ceil(want / cols));
+  }
+  const count = cols * rows;
+
+  const rand = mulberry32(hashSeed(`${seed}:sea-grid-v2:${lookTier}:${cols}x${rows}`));
   const items: CrowdItem[] = [];
   const xMin = ground.xMin ?? BOARD_GROUND.xMin!;
   const xMax = ground.xMax ?? BOARD_GROUND.xMax!;
   const yMin = ground.yMin ?? BOARD_GROUND.yMin;
   const yMax = ground.yMax ?? BOARD_GROUND.yMax;
+  const spanX = xMax - xMin;
+  const spanY = yMax - yMin;
 
-  const count = Math.max(1, crowdCount);
   const flavinhoIndex = Math.floor(rand() * count);
-  const placed: { x: number; y: number }[] = [];
-  const rows = dens.rows;
 
-  // Shuffle a cycling wardrobe so every disguise shows up evenly.
   const wardrobe = [...ALL_DISGUISES];
   for (let i = wardrobe.length - 1; i > 0; i--) {
     const j = Math.floor(rand() * (i + 1));
     [wardrobe[i], wardrobe[j]] = [wardrobe[j], wardrobe[i]];
   }
-  let wardrobeCursor = 0;
+
+  // Shuffle cell visit order so the target isn't always mid-grid.
+  const order = Array.from({ length: count }, (_, i) => i);
+  for (let i = order.length - 1; i > 0; i--) {
+    const j = Math.floor(rand() * (i + 1));
+    [order[i], order[j]] = [order[j], order[i]];
+  }
+  // Keep flavinhoIndex as the kind flag by remapping after shuffle:
+  // place kinds by original index; positions by shuffled lattice cell.
+  const cellOf = order; // cellOf[i] = lattice index for item i
 
   for (let i = 0; i < count; i++) {
     const isFlavinho = i === flavinhoIndex;
-    const row = isFlavinho
-      ? Math.min(rows - 1, Math.floor(rows * (0.25 + rand() * 0.55)))
-      : i % rows;
+    const cell = cellOf[i];
+    const col = cell % cols;
+    const row = Math.floor(cell / cols);
 
-    // Mild depth cue + tiny jitter — size mostly comes from difficulty scale.
-    const depthCue = 0.88 + (row / Math.max(1, rows - 1)) * 0.14;
-    const jitter = isFlavinho ? 1 : 0.94 + rand() * 0.1;
+    // Cell center + light jitter (stay inside the cell so gaps stay closed).
+    const jitterAmp = lookTier === "hard" ? 0.28 : lookTier === "medium" ? 0.22 : 0.18;
+    const jx = (rand() - 0.5) * jitterAmp;
+    const jy = (rand() - 0.5) * jitterAmp;
+    const rawX = xMin + ((col + 0.5 + jx) / cols) * spanX;
+    const rawY = yMin + ((row + 0.5 + jy) / rows) * spanY;
+
+    const jitter = isFlavinho ? 1 : 0.93 + rand() * 0.12;
+    // Mild size variation by row so it doesn't look stamped.
+    const rowCue = 0.94 + (row / Math.max(1, rows - 1)) * 0.1;
+    const scale = flavinhoScale * rowCue * jitter;
     const kind: CrowdItem["kind"] = isFlavinho ? "flavinho" : "decoy";
+    const box = spriteBox(scale, kind, mobileBoost, maxWidthPct, minWidthPct);
+    const c = clampInside(rawX, rawY, box.widthPct, box.heightPct, ground);
 
-    const rowY = yMin + ((row + 0.35 + rand() * 0.3) / rows) * (yMax - yMin);
-
-    let x = 50;
-    let y = rowY;
-    let scale = flavinhoScale * depthCue * jitter;
-    let box = spriteBox(scale, kind, mobileBoost, maxWidthPct, minWidthPct);
-    let ok = false;
-
-    for (let attempt = 0; attempt < 80; attempt++) {
-      const slots = Math.max(6, Math.ceil(count / rows));
-      const slot = (i + attempt * 3) % slots;
-      const rawX =
-        xMin +
-        ((slot + 0.1 + rand() * 0.8) / slots) * (xMax - xMin) +
-        (rand() - 0.5) * (lookTier === "hard" ? 6 : 3.5);
-      const rawY = rowY + (rand() - 0.5) * (lookTier === "hard" ? 5 : 3.5);
-      const localDepth =
-        0.88 +
-        Math.max(0, Math.min(1, (rawY - yMin) / Math.max(1, yMax - yMin))) *
-          0.14;
-      scale = flavinhoScale * localDepth * jitter;
-      box = spriteBox(scale, kind, mobileBoost, maxWidthPct, minWidthPct);
-      const c = clampInside(rawX, rawY, box.widthPct, box.heightPct, ground);
-      x = c.x;
-      y = c.y;
-      const minDist = Math.max(box.widthPct * dens.overlap, 1.6);
-      const relax = attempt > 55 ? 0.8 : 1;
-      if (!tooClose(x, y, placed, minDist * relax)) {
-        ok = true;
-        break;
-      }
-    }
-
-    if (!ok && !isFlavinho) continue;
-    if (!ok) {
-      scale = flavinhoScale * depthCue * jitter;
-      box = spriteBox(scale, kind, mobileBoost, maxWidthPct, minWidthPct);
-      const c = clampInside(
-        xMin + 6 + rand() * (xMax - xMin - 12),
-        rowY,
-        box.widthPct,
-        box.heightPct,
-        ground,
-      );
-      x = c.x;
-      y = c.y;
-    }
-
-    const localDepth =
-      0.88 +
-      Math.max(0, Math.min(1, (y - yMin) / Math.max(1, yMax - yMin))) * 0.14;
-    scale = flavinhoScale * localDepth * jitter;
-    box = spriteBox(scale, kind, mobileBoost, maxWidthPct, minWidthPct);
-    placed.push({ x, y });
-
-    let src: string;
-    if (isFlavinho) {
-      src = FLAVINHO_SRC;
-    } else {
-      src = wardrobe[wardrobeCursor % wardrobe.length];
-      wardrobeCursor += 1;
-    }
-
-    const facing: 1 | -1 = rand() > 0.45 ? 1 : -1;
+    const src = isFlavinho
+      ? FLAVINHO_SRC
+      : wardrobe[i % wardrobe.length];
 
     items.push({
       id: `${seed}-p-${i}`,
       kind,
       src,
-      x,
-      y,
+      x: c.x,
+      y: c.y,
       scale,
-      facing,
-      z: y + rand() * 0.02,
+      facing: rand() > 0.45 ? 1 : -1,
+      z: c.y + rand() * 0.02,
     });
   }
 
-  // Invariant: exactly one undisguised target; never leak real.png onto decoys.
+  // Invariant: exactly one undisguised target.
   let sawTarget = false;
   for (const item of items) {
     if (item.kind === "flavinho") {

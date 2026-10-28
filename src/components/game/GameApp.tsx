@@ -719,7 +719,7 @@ export function GameApp() {
               </div>
             </div>
 
-            <p className="rounded-xl border border-[var(--ink)]/15 bg-[var(--ink)]/90 px-3 py-1.5 text-center text-[11px] font-semibold text-white sm:text-xs">
+            <p className="text-center text-[11px] font-semibold text-[var(--muted)] sm:text-xs">
               {lookTip(lookTier)}
             </p>
 

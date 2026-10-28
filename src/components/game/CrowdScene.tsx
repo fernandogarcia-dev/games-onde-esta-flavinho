@@ -36,7 +36,6 @@ type Props = {
 
 export function CrowdScene({
   seed,
-  crowdCount,
   flavinhoScale,
   ground,
   lookTier = "medium",
@@ -56,18 +55,13 @@ export function CrowdScene({
     return () => mq.removeEventListener("change", apply);
   }, []);
 
-  // Mobile: slightly smaller so the board still fits; keep hard dense.
-  const mobileBoost = portrait ? 0.92 : 1;
-  const scale = flavinhoScale;
-  const count = portrait
-    ? Math.max(
-        lookTier === "easy" ? 18 : lookTier === "hard" ? 72 : 40,
-        Math.floor(
-          crowdCount *
-            (lookTier === "easy" ? 0.85 : lookTier === "hard" ? 0.78 : 0.82),
-        ),
-      )
-    : crowdCount;
+  // Portrait boards are taller — add a column of cells instead of dropping people.
+  const cols = portrait ? Math.max(4, params.cols - 1) : params.cols;
+  const rows = portrait ? params.rows + 2 : params.rows;
+  const count = cols * rows;
+  // Slightly smaller on phone so the denser portrait grid still fits.
+  const mobileBoost = portrait ? 0.88 : 1;
+  const scale = flavinhoScale * (portrait ? 0.92 : 1);
 
   const items = useMemo(() => {
     const band = {
@@ -79,10 +73,24 @@ export function CrowdScene({
     return buildCrowd(seed, count, scale, band, {
       mobileBoost,
       lookTier,
-      maxWidthPct: params.maxWidthPct,
-      minWidthPct: params.minWidthPct,
+      maxWidthPct: params.maxWidthPct * (portrait ? 0.92 : 1),
+      minWidthPct: params.minWidthPct * (portrait ? 0.9 : 1),
+      cols,
+      rows,
     });
-  }, [seed, count, scale, ground, mobileBoost, lookTier, params.maxWidthPct, params.minWidthPct]);
+  }, [
+    seed,
+    count,
+    scale,
+    ground,
+    mobileBoost,
+    lookTier,
+    params.maxWidthPct,
+    params.minWidthPct,
+    cols,
+    rows,
+    portrait,
+  ]);
 
   const [missFlash, setMissFlash] = useState<{ x: number; y: number } | null>(
     null,
@@ -104,6 +112,9 @@ export function CrowdScene({
     onFound();
   }
 
+  const maxW = params.maxWidthPct * (portrait ? 0.92 : 1);
+  const minW = params.minWidthPct * (portrait ? 0.9 : 1);
+
   return (
     <div
       className="relative mx-auto w-full max-w-5xl overflow-hidden rounded-2xl border-[3px] border-[var(--ink)] shadow-[6px_6px_0_var(--ink)] select-none touch-manipulation"
@@ -117,7 +128,6 @@ export function CrowdScene({
       role="img"
       aria-label="Mar de Flavinhos. Encontre o sem disfarce."
     >
-      {/* Soft grid only — no city plate. */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 opacity-[0.12]"
@@ -133,24 +143,25 @@ export function CrowdScene({
           item.scale,
           item.kind,
           mobileBoost,
-          params.maxWidthPct,
-          params.minWidthPct,
+          maxW,
+          minW,
         );
+        // Center-anchored so the lattice fills the board evenly.
         const style = {
           left: `${item.x}%`,
           top: `${item.y}%`,
           width: `${widthPct}%`,
           height: `${heightPct}%`,
           zIndex: Math.round(item.z * 10),
-          transform: `translate(-50%, -100%) scaleX(${item.facing})`,
+          transform: `translate(-50%, -50%) scaleX(${item.facing})`,
           filter: item.filter,
-          transformOrigin: "50% 100%",
+          transformOrigin: "50% 50%",
         } as const;
 
         const shadow = (
           <span
             aria-hidden
-            className="pointer-events-none absolute bottom-[-2%] left-1/2 h-[8%] w-[55%] -translate-x-1/2 rounded-[50%] bg-black/20 blur-[1.5px]"
+            className="pointer-events-none absolute bottom-[2%] left-1/2 h-[7%] w-[55%] -translate-x-1/2 rounded-[50%] bg-black/20 blur-[1.5px]"
           />
         );
 
