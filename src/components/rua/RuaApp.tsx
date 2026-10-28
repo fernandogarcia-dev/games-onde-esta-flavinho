@@ -123,15 +123,6 @@ export function RuaApp({ onBack }: { onBack: () => void }) {
     setPhase("guess");
   }
 
-  function restartToMenu() {
-    setRunning(false);
-    setPhase("landing");
-    setGuess(null);
-    setCity(null);
-    setBoard(readModeBoard("rua"));
-    setBest(getModeBest("rua"));
-  }
-
   function finish(finalScore: number, hit: boolean) {
     setRunning(false);
     setWon(hit);
@@ -351,10 +342,7 @@ export function RuaApp({ onBack }: { onBack: () => void }) {
                 <Button size="lg" onClick={() => startGame(difficulty)}>
                   Tentar de novo
                 </Button>
-                <Button variant="secondary" onClick={restartToMenu}>
-                  Menu do modo
-                </Button>
-                <Button variant="ghost" onClick={onBack}>
+                <Button variant="secondary" onClick={onBack}>
                   Trocar modo
                 </Button>
               </div>
