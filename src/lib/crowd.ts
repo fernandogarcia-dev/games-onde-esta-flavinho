@@ -26,27 +26,27 @@ export type GroundBand = {
 export type LookTier = "easy" | "medium" | "hard";
 
 /** Undisguised Flavinho — the only click target (match the model drawing). */
-export const FLAVINHO_SRC = "/game/disguises/real.png";
+export const FLAVINHO_SRC = "/game/disguises/real.webp";
 
 /** Flavinho face + costume/mask disguises (keep these — player loves them). */
 export const FLAVINHO_DISGUISES = [
-  "/game/disguises/hippie.png",
-  "/game/disguises/sideburns.png",
-  "/game/disguises/flute.png",
-  "/game/disguises/biker.png",
-  "/game/disguises/rasta.png",
-  "/game/disguises/chef.png",
-  "/game/disguises/fan.png",
-  "/game/disguises/doctor.png",
-  "/game/disguises/worker.png",
-  "/game/disguises/bald.png",
-  "/game/disguises/hoodie.png",
-  "/game/disguises/blonde.png",
-  "/game/disguises/gag.png",
-  "/game/disguises/scarf.png",
-  "/game/disguises/beanie.png",
-  "/game/disguises/glasses.png",
-  "/game/disguises/trucker.png",
+  "/game/disguises/hippie.webp",
+  "/game/disguises/sideburns.webp",
+  "/game/disguises/flute.webp",
+  "/game/disguises/biker.webp",
+  "/game/disguises/rasta.webp",
+  "/game/disguises/chef.webp",
+  "/game/disguises/fan.webp",
+  "/game/disguises/doctor.webp",
+  "/game/disguises/worker.webp",
+  "/game/disguises/bald.webp",
+  "/game/disguises/hoodie.webp",
+  "/game/disguises/blonde.webp",
+  "/game/disguises/gag.webp",
+  "/game/disguises/scarf.webp",
+  "/game/disguises/beanie.webp",
+  "/game/disguises/glasses.webp",
+  "/game/disguises/trucker.webp",
 ] as const;
 
 /**
@@ -54,23 +54,23 @@ export const FLAVINHO_DISGUISES = [
  * profession, culture, queer presentation, etc.
  */
 export const CROWD_DECOYS = [
-  "/game/crowd/grandma.png",
-  "/game/crowd/grandpa.png",
-  "/game/crowd/afro-woman.png",
-  "/game/crowd/nurse.png",
-  "/game/crowd/scientist.png",
-  "/game/crowd/skater.png",
-  "/game/crowd/wheelchair.png",
-  "/game/crowd/blind.png",
-  "/game/crowd/nonbinary.png",
-  "/game/crowd/hijab.png",
-  "/game/crowd/schoolgirl.png",
-  "/game/crowd/builder-woman.png",
-  "/game/crowd/drag.png",
-  "/game/crowd/little-person.png",
-  "/game/crowd/rainbow-guy.png",
-  "/game/crowd/pregnant.png",
-  "/game/crowd/indigenous.png",
+  "/game/crowd/grandma.webp",
+  "/game/crowd/grandpa.webp",
+  "/game/crowd/afro-woman.webp",
+  "/game/crowd/nurse.webp",
+  "/game/crowd/scientist.webp",
+  "/game/crowd/skater.webp",
+  "/game/crowd/wheelchair.webp",
+  "/game/crowd/blind.webp",
+  "/game/crowd/nonbinary.webp",
+  "/game/crowd/hijab.webp",
+  "/game/crowd/schoolgirl.webp",
+  "/game/crowd/builder-woman.webp",
+  "/game/crowd/drag.webp",
+  "/game/crowd/little-person.webp",
+  "/game/crowd/rainbow-guy.webp",
+  "/game/crowd/pregnant.webp",
+  "/game/crowd/indigenous.webp",
 ] as const;
 
 /** Full decoy wardrobe: diverse crowd + Flavinho-in-costume twins. */

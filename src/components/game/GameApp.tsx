@@ -690,7 +690,7 @@ export function GameApp() {
             <div className="flex items-center justify-between gap-2">
               <div className="flex min-w-0 items-center gap-2 rounded-2xl border-2 border-[var(--ink)] bg-[var(--paper)] px-2 py-1 shadow-[3px_3px_0_var(--ink)]">
                 <Image
-                  src="/game/disguises/real.png"
+                  src="/game/disguises/real.webp"
                   alt="Referência do Flavinho sem disfarce"
                   width={40}
                   height={60}
@@ -744,7 +744,7 @@ export function GameApp() {
                 {labelMode(difficulty)}
               </p>
               <Image
-                src="/game/disguises/real.png"
+                src="/game/disguises/real.webp"
                 alt="Flavinho encontrado"
                 width={120}
                 height={170}
@@ -1109,7 +1109,7 @@ function Landing({
         <div className="animate-float relative mx-auto w-full max-w-xs">
           <div className="absolute -inset-3 rounded-[2rem] bg-[var(--brand)]/35 blur-xl" />
           <Image
-            src="/game/disguises/real.png"
+            src="/game/disguises/real.webp"
             alt="Retrato do Flavinho"
             width={420}
             height={520}
