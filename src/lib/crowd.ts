@@ -25,11 +25,11 @@ export type GroundBand = {
 
 export type LookTier = "easy" | "medium" | "hard";
 
-/** Undisguised Flavinho — the only click target. */
+/** Undisguised Flavinho — the only click target (match the model drawing). */
 export const FLAVINHO_SRC = "/game/disguises/real.png";
 
-/** Every disguise sprite we shipped — always in play, every difficulty. */
-export const ALL_DISGUISES = [
+/** Flavinho face + costume/mask disguises (keep these — player loves them). */
+export const FLAVINHO_DISGUISES = [
   "/game/disguises/hippie.png",
   "/game/disguises/sideburns.png",
   "/game/disguises/flute.png",
@@ -47,6 +47,37 @@ export const ALL_DISGUISES = [
   "/game/disguises/beanie.png",
   "/game/disguises/glasses.png",
   "/game/disguises/trucker.png",
+] as const;
+
+/**
+ * Crowd fillers that look NOTHING like Flavinho — age, gender, PCD,
+ * profession, culture, queer presentation, etc.
+ */
+export const CROWD_DECOYS = [
+  "/game/crowd/grandma.png",
+  "/game/crowd/grandpa.png",
+  "/game/crowd/afro-woman.png",
+  "/game/crowd/nurse.png",
+  "/game/crowd/scientist.png",
+  "/game/crowd/skater.png",
+  "/game/crowd/wheelchair.png",
+  "/game/crowd/blind.png",
+  "/game/crowd/nonbinary.png",
+  "/game/crowd/hijab.png",
+  "/game/crowd/schoolgirl.png",
+  "/game/crowd/builder-woman.png",
+  "/game/crowd/drag.png",
+  "/game/crowd/little-person.png",
+  "/game/crowd/rainbow-guy.png",
+  "/game/crowd/pregnant.png",
+  "/game/crowd/indigenous.png",
+] as const;
+
+/** Full decoy wardrobe: diverse crowd + Flavinho-in-costume twins. */
+export const ALL_DISGUISES = [
+  ...CROWD_DECOYS,
+  ...CROWD_DECOYS,
+  ...FLAVINHO_DISGUISES,
 ] as const;
 
 /** @deprecated alias — kept for any leftover imports */

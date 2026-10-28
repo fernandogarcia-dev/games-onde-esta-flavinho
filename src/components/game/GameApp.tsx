@@ -705,7 +705,7 @@ export function GameApp() {
                     Flavinho
                   </p>
                   <p className="hidden text-[11px] text-[var(--muted)] sm:block">
-                    blazer azul, sem chapéu
+                    cara limpa, blazer azul
                   </p>
                 </div>
               </div>
