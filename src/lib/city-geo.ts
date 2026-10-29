@@ -71,41 +71,90 @@ export const RUA_SCORE_MAX: Record<Difficulty, number> = {
   hard: 3000,
 };
 
-/**
- * Distância máxima pra contar como "acertou a rua".
- * Antes o fácil zerava só em 6000 km — 5400 km ainda dava pontos e virava "acerto".
- */
-export const RUA_HIT_KM: Record<Difficulty, number> = {
-  easy: 75,
-  medium: 40,
-  hard: 20,
-};
-
 /** Dentro disso = pontuação cheia. */
 export const RUA_PERFECT_KM = 5;
 
-/** Distância onde a pontuação zera (ainda dá feedback visual no mapa). */
-export const RUA_ZERO_KM: Record<Difficulty, number> = {
-  easy: 2000,
-  medium: 1200,
-  hard: 700,
+/**
+ * Quão perto chegou — só faz sentido com o país certo.
+ * País errado = erro sempre (mesmo colado na fronteira).
+ */
+export type RuaProximity = "street" | "city" | "region" | "country";
+
+export const RUA_PROXIMITY_KM: Record<RuaProximity, number> = {
+  street: 25,
+  city: 120,
+  region: 500,
+  country: Infinity,
 };
 
-export function ruaIsHit(km: number, difficulty: Difficulty): boolean {
-  return Number.isFinite(km) && km <= RUA_HIT_KM[difficulty];
+export function ruaProximity(km: number): RuaProximity {
+  if (!Number.isFinite(km) || km < 0) return "country";
+  if (km <= RUA_PROXIMITY_KM.street) return "street";
+  if (km <= RUA_PROXIMITY_KM.city) return "city";
+  if (km <= RUA_PROXIMITY_KM.region) return "region";
+  return "country";
 }
 
+export function ruaProximityCopy(proximity: RuaProximity): {
+  eyebrow: string;
+  title: string;
+  subtitle: string;
+} {
+  switch (proximity) {
+    case "street":
+      return {
+        eyebrow: "Resultado · rua",
+        title: "Acertou!",
+        subtitle: "Quase na porta — cravou a rua.",
+      };
+    case "city":
+      return {
+        eyebrow: "Resultado · cidade",
+        title: "Acertou!",
+        subtitle: "País e cidade na mão — ainda longe da porta.",
+      };
+    case "region":
+      return {
+        eyebrow: "Resultado · região",
+        title: "Acertou!",
+        subtitle: "País certo e na região — mas não na rua.",
+      };
+    default:
+      return {
+        eyebrow: "Resultado · país",
+        title: "Acertou!",
+        subtitle: "Só o país — bem longe da rua.",
+      };
+  }
+}
+
+/**
+ * Pontuação só com país certo. País errado = 0.
+ * Distância define o quão perto (países grandes/pequenos).
+ */
+export function ruaScoreForGuess(
+  km: number,
+  difficulty: Difficulty,
+  sameCountry: boolean,
+): number {
+  if (!sameCountry) return 0;
+  const max = RUA_SCORE_MAX[difficulty];
+  const floor = Math.round(max * 0.12);
+  if (!Number.isFinite(km) || km < 0) return floor;
+  if (km <= RUA_PERFECT_KM) return max;
+  // Depois de ~2.500 km no mesmo país, fica no piso (ainda conta acerto de país).
+  const far = 2500;
+  if (km >= far) return floor;
+  const ratio = 1 - (km - RUA_PERFECT_KM) / (far - RUA_PERFECT_KM);
+  return Math.round(floor + (max - floor) * Math.max(0, ratio));
+}
+
+/** @deprecated use ruaScoreForGuess */
 export function ruaScoreForDistance(
   km: number,
   difficulty: Difficulty,
 ): number {
-  const max = RUA_SCORE_MAX[difficulty];
-  const zero = RUA_ZERO_KM[difficulty];
-  if (!Number.isFinite(km) || km < 0) return 0;
-  if (km <= RUA_PERFECT_KM) return max;
-  if (km >= zero) return 0;
-  const ratio = 1 - (km - RUA_PERFECT_KM) / (zero - RUA_PERFECT_KM);
-  return Math.round(max * Math.max(0, ratio));
+  return ruaScoreForGuess(km, difficulty, true);
 }
 
 export function formatDistance(km: number): string {

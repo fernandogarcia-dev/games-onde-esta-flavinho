@@ -12,15 +12,21 @@ import {
   dealRuaRun,
   distanceKm,
   formatDistance,
-  RUA_HIT_KM,
-  ruaIsHit,
-  ruaScoreForDistance,
+  ruaProximity,
+  ruaProximityCopy,
+  ruaScoreForGuess,
   type CityGeo,
+  type RuaProximity,
 } from "@/lib/city-geo";
 import {
   ResultMark,
   ResultShell,
 } from "@/components/game/ResultShell";
+import {
+  countryAt,
+  ensureCountryIndex,
+  sameCountry,
+} from "@/lib/country-lookup";
 import { getMode } from "@/lib/modes";
 import {
   trackGameFinish,
@@ -93,6 +99,9 @@ export function RuaApp({ onBack }: { onBack: () => void }) {
   const [score, setScore] = useState(0);
   const [guess, setGuess] = useState<Pin | null>(null);
   const [lastKm, setLastKm] = useState(0);
+  const [proximity, setProximity] = useState<RuaProximity>("country");
+  const [guessCountryName, setGuessCountryName] = useState<string | null>(null);
+  const [confirming, setConfirming] = useState(false);
   const [elapsed, setElapsed] = useState(0);
   const [running, setRunning] = useState(false);
   const [best, setBest] = useState(0);
@@ -126,6 +135,7 @@ export function RuaApp({ onBack }: { onBack: () => void }) {
     setBest(getModeBest("rua"));
     setPlayerNameState(getPlayerName());
     void refreshBoard();
+    void ensureCountryIndex().catch(() => {});
   }, []);
 
   useEffect(() => {
@@ -146,6 +156,8 @@ export function RuaApp({ onBack }: { onBack: () => void }) {
     setScore(0);
     setGuess(null);
     setLastKm(0);
+    setProximity("country");
+    setGuessCountryName(null);
     setElapsed(0);
     setRunning(true);
     setNeedsName(false);
@@ -217,15 +229,22 @@ export function RuaApp({ onBack }: { onBack: () => void }) {
     await publishScore(finalScore, name);
   }
 
-  function confirmGuess() {
-    if (!city || !guess) return;
-    const km = distanceKm(guess, { lat: city.lat, lng: city.lng });
-    const hit = ruaIsHit(km, difficulty);
-    // Pontos de ranking só contam no acerto de rua; no erro mostra 0.
-    const pts = hit ? ruaScoreForDistance(km, difficulty) : 0;
-    setLastKm(km);
-    setScore(pts);
-    void finish(pts, hit);
+  async function confirmGuess() {
+    if (!city || !guess || confirming) return;
+    setConfirming(true);
+    try {
+      const km = distanceKm(guess, { lat: city.lat, lng: city.lng });
+      const guessed = await countryAt(guess.lat, guess.lng);
+      const hit = sameCountry(city.country, guessed?.iso);
+      const pts = ruaScoreForGuess(km, difficulty, hit);
+      setLastKm(km);
+      setProximity(hit ? ruaProximity(km) : "country");
+      setGuessCountryName(guessed?.name || null);
+      setScore(pts);
+      await finish(pts, hit);
+    } finally {
+      setConfirming(false);
+    }
   }
 
   async function saveNameAndRank() {
@@ -268,12 +287,34 @@ export function RuaApp({ onBack }: { onBack: () => void }) {
     }
   }
 
+  const resultCopy = useMemo(() => {
+    if (!won) {
+      return {
+        eyebrow: "Resultado · erro",
+        title: "Errou!",
+        subtitle: guessCountryName
+          ? `País errado (${guessCountryName}). Mesmo perto da fronteira, não conta.`
+          : "País errado — precisa cravar o país certo.",
+      };
+    }
+    return ruaProximityCopy(proximity);
+  }, [won, proximity, guessCountryName]);
+
   const shareText = useMemo(() => {
     if (phase === "result" && city) {
-      return `Rua da Amargura · ${won ? "achei" : "errei"} · ${formatDistance(lastKm)} · ${score.toLocaleString("pt-BR")} pts\n${buildInviteText().split("\n").pop()}`;
+      const tag = won
+        ? proximity === "street"
+          ? "cravei a rua"
+          : proximity === "city"
+            ? "acertei a cidade"
+            : proximity === "region"
+              ? "acertei a região"
+              : "acertei o país"
+        : "errei o país";
+      return `Rua da Amargura · ${tag} · ${formatDistance(lastKm)} · ${score.toLocaleString("pt-BR")} pts\n${buildInviteText().split("\n").pop()}`;
     }
     return `Rua da Amargura no Cadê Flavinho — uma rua, um chute.\n${buildInviteText().split("\n").pop()}`;
-  }, [phase, score, lastKm, won, city]);
+  }, [phase, score, lastKm, won, city, proximity]);
 
   return (
     <ModeTheme mode="rua">
@@ -399,11 +440,17 @@ export function RuaApp({ onBack }: { onBack: () => void }) {
             <div className="space-y-3">
               <GuessMap guess={guess} locked={false} onGuess={setGuess} />
               <div className="flex flex-wrap items-center gap-2">
-                <Button size="lg" disabled={!guess} onClick={confirmGuess}>
-                  Confirmar chute
+                <Button
+                  size="lg"
+                  disabled={!guess || confirming}
+                  onClick={() => void confirmGuess()}
+                >
+                  {confirming ? "Conferindo…" : "Confirmar chute"}
                 </Button>
                 <p className="text-sm text-[var(--muted)]">
-                  {guess ? "Pin plantado. Confirma?" : "Toque no mapa pra chutar."}
+                  {guess
+                    ? "Pin plantado. País errado = erro; certo = vale a distância."
+                    : "Toque no mapa pra chutar."}
                 </p>
               </div>
               <p className="text-[11px] text-[var(--muted)]">
@@ -425,13 +472,9 @@ export function RuaApp({ onBack }: { onBack: () => void }) {
             </div>
             <ResultShell
               won={won}
-              eyebrow={won ? "Resultado · acerto" : "Resultado · erro"}
-              title={won ? "Acertou!" : "Errou!"}
-              subtitle={
-                won
-                  ? "Você cravou perto o bastante da rua."
-                  : `Precisa ficar a até ${RUA_HIT_KM[difficulty]} km pra contar como acerto.`
-              }
+              eyebrow={resultCopy.eyebrow}
+              title={resultCopy.title}
+              subtitle={resultCopy.subtitle}
             >
               <div className="flex flex-col items-center gap-3">
                 <ResultMark won={won} />
@@ -448,13 +491,28 @@ export function RuaApp({ onBack }: { onBack: () => void }) {
                 >
                   {city.country} · você ficou a {formatDistance(lastKm)}
                 </p>
-                {!won && guess ? (
+                {!won ? (
                   <div className="mt-1 w-full rounded-2xl border-[3px] border-dashed border-[#c2410c]/60 bg-white/80 px-4 py-3">
                     <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#c2410c]">
                       Seu chute
                     </p>
                     <p className="mt-1 font-[family-name:var(--font-display)] text-xl text-[var(--ink)]">
-                      Longe demais da porta
+                      {guessCountryName
+                        ? `Caiu em ${guessCountryName}`
+                        : "Fora do país certo"}
+                    </p>
+                  </div>
+                ) : proximity !== "street" ? (
+                  <div className="mt-1 w-full rounded-2xl border-[3px] border-dashed border-[#1f8a5b]/50 bg-white/80 px-4 py-3">
+                    <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#1f8a5b]">
+                      Quão perto
+                    </p>
+                    <p className="mt-1 font-[family-name:var(--font-display)] text-xl text-[var(--ink)]">
+                      {proximity === "city"
+                        ? "Cidade / área metropolitana"
+                        : proximity === "region"
+                          ? "Região do país"
+                          : "Só o país (bem longe)"}
                     </p>
                   </div>
                 ) : null}
@@ -553,19 +611,19 @@ function DifficultyPicker({
     {
       id: "easy",
       label: "Fácil",
-      hint: `24 cidades · acerto ≤ ${RUA_HIT_KM.easy} km`,
+      hint: "24 cidades · país certo já conta",
       tone: "bg-[#e8f6ef] border-[#1f8a5b]",
     },
     {
       id: "medium",
       label: "Médio",
-      hint: `56 cidades · acerto ≤ ${RUA_HIT_KM.medium} km`,
+      hint: "56 cidades · precisão na distância",
       tone: "bg-[#fff4d6] border-[#d4a017]",
     },
     {
       id: "hard",
       label: "Difícil",
-      hint: `124 cidades · acerto ≤ ${RUA_HIT_KM.hard} km`,
+      hint: "124 cidades · tem que cravar perto",
       tone: "bg-[#fde8e4] border-[#c2410c]",
     },
   ];

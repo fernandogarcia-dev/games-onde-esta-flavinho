@@ -47,8 +47,9 @@ export default function ComoJogarPage() {
         </h2>
         <p className="mt-3 text-[var(--muted)]">
           Uma rua no Street View. Gira, anda um pouco e marca{" "}
-          <strong>um único chute</strong> no mapa-múndi. Acertou ou errou —
-          acabou a rodada. Quanto mais perto, mais pontos.
+          <strong>um único chute</strong> no mapa-múndi. País errado = erro
+          (mesmo perto da fronteira). País certo = acerto, e a distância diz se
+          você cravou a rua, a cidade, a região ou só o país.
         </p>
       </section>
 

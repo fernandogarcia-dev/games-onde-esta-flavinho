@@ -40,7 +40,7 @@ export const GAME_MODES: GameModeMeta[] = [
     name: "Rua da Amargura",
     tagline: "Uma rua. Um chute. Acertou?",
     blurb:
-      "Uma pista da cidade (Street View quando dá). Marca no mapa onde o Flavinho sumiu. Uma tentativa só.",
+      "Street View + um pin no mapa. País errado é erro; país certo conta — e a distância diz o quão perto você chegou.",
     tone: "bg-[#fff4d6] border-[#d4a017]",
     badge: "Modo 2",
     art: "/modes/rua.jpg",
