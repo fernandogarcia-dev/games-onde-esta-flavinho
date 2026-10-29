@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { Button } from "@/components/ui/Button";
-import { ModalClose } from "@/components/ui/ModalClose";
+import { ModalFrame } from "@/components/ui/ModalFrame";
 import { sanitizeName } from "@/lib/ranking";
 
 type Props = {
@@ -97,16 +97,16 @@ export function AccountModal({ open, onClose, preferredNick = "" }: Props) {
       aria-label="Conta"
       onClick={onClose}
     >
-      <div
-        className="relative w-full max-w-md rounded-[1.5rem] border-[3px] border-[var(--ink)] bg-[var(--paper)] p-4 shadow-[10px_10px_0_var(--ink)] sm:p-5"
-        onClick={(e) => e.stopPropagation()}
+      <ModalFrame
+        onClose={onClose}
+        className="max-w-md"
+        panelClassName="rounded-[1.5rem] border-[3px] border-[var(--ink)] bg-[var(--paper)] p-4 shadow-[10px_10px_0_var(--ink)] sm:p-5"
       >
-        <ModalClose onClose={onClose} />
         <div>
           <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--brand)]">
             Conta
           </p>
-          <h2 className="mt-1 pr-8 font-[family-name:var(--font-display)] text-2xl text-[var(--ink)]">
+          <h2 className="mt-1 pr-6 font-[family-name:var(--font-display)] text-2xl text-[var(--ink)]">
             {user ? "Seu login" : "Entrar"}
           </h2>
         </div>
@@ -188,7 +188,7 @@ export function AccountModal({ open, onClose, preferredNick = "" }: Props) {
             </Button>
           </div>
         )}
-      </div>
+      </ModalFrame>
     </div>
   );
 }

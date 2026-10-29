@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useAuthOptional } from "@/components/auth/AuthProvider";
 import { Leaderboard } from "@/components/game/Leaderboard";
-import { ModalClose } from "@/components/ui/ModalClose";
+import { ModalFrame } from "@/components/ui/ModalFrame";
 import { fetchModeLeaderboard } from "@/lib/mode-ranking";
 import type { GameModeId } from "@/lib/modes";
 import { getPlayerName, type RankEntry, type RankTrack } from "@/lib/ranking";
@@ -131,11 +131,11 @@ export function RankModal({
       aria-label="Ranking completo"
       onClick={onClose}
     >
-      <div
-        className="relative max-h-[90vh] w-full max-w-lg overflow-y-auto"
-        onClick={(e) => e.stopPropagation()}
+      <ModalFrame
+        onClose={onClose}
+        className="max-w-lg"
+        panelClassName="max-h-[min(90vh,40rem)] overflow-y-auto"
       >
-        <ModalClose onClose={onClose} />
         <Leaderboard
           entries={board.entries}
           global={board.global}
@@ -149,7 +149,7 @@ export function RankModal({
           onTrackChange={setTrack}
           full
         />
-      </div>
+      </ModalFrame>
     </div>
   );
 }

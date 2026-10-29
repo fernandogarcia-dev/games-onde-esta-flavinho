@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useAuthOptional } from "@/components/auth/AuthProvider";
 import { Leaderboard } from "@/components/game/Leaderboard";
-import { ModalClose } from "@/components/ui/ModalClose";
+import { ModalFrame } from "@/components/ui/ModalFrame";
 import { GAME_MODES, type GameModeId } from "@/lib/modes";
 import { trackRankingView } from "@/lib/analytics";
 import { fetchModeLeaderboard } from "@/lib/mode-ranking";
@@ -111,16 +111,16 @@ export function HomeRankingsModal({ open, onClose }: Props) {
       aria-label="Rankings dos modos"
       onClick={onClose}
     >
-      <div
-        className="relative max-h-[92vh] w-full max-w-xl overflow-y-auto rounded-[1.5rem] border-[3px] border-[var(--ink)] bg-[var(--paper)] p-4 shadow-[10px_10px_0_var(--ink)] sm:p-6"
-        onClick={(e) => e.stopPropagation()}
+      <ModalFrame
+        onClose={onClose}
+        className="max-w-xl"
+        panelClassName="max-h-[min(92vh,40rem)] overflow-y-auto rounded-[1.5rem] border-[3px] border-[var(--ink)] bg-[var(--paper)] p-4 shadow-[10px_10px_0_var(--ink)] sm:p-6"
       >
-        <ModalClose onClose={onClose} />
         <div>
           <p className="text-xs font-bold uppercase tracking-[0.2em] text-[var(--brand)]">
             Placar
           </p>
-          <h2 className="mt-1 pr-8 font-[family-name:var(--font-display)] text-2xl text-[var(--ink)] sm:text-3xl">
+          <h2 className="mt-1 pr-6 font-[family-name:var(--font-display)] text-2xl text-[var(--ink)] sm:text-3xl">
             Rankings
           </h2>
         </div>
@@ -236,7 +236,7 @@ export function HomeRankingsModal({ open, onClose }: Props) {
             </div>
           )}
         </div>
-      </div>
+      </ModalFrame>
     </div>
   );
 }
