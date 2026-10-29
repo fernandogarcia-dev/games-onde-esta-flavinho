@@ -12,11 +12,12 @@ import {
 } from "@/lib/ranking";
 
 /**
- * Barra compacta: nick anônimo + atalho Conta (modal).
- * Evita poluir o hero — edição pesada fica no modal.
+ * Barra compacta.
+ * - Sem login: nick anônimo + Entrar
+ * - Logado: só Conta (trocar nick / sair) — sem nick anônimo
  */
 export function HomePlayerBar() {
-  const { user, regNick, ready } = useAuth();
+  const { user, regNick, ready, signOut } = useAuth();
   const [anonName, setAnonName] = useState("");
   const [draft, setDraft] = useState("");
   const [editing, setEditing] = useState(false);
@@ -40,6 +41,11 @@ export function HomePlayerBar() {
     }
   }, []);
 
+  // Logado: cancela edição anônima se estiver aberta
+  useEffect(() => {
+    if (user) setEditing(false);
+  }, [user]);
+
   async function saveAnon() {
     setBusy(true);
     setError(null);
@@ -60,15 +66,20 @@ export function HomePlayerBar() {
     }
   }
 
-  const display = user && regNick ? regNick : anonName;
-  const badge = user ? (regNick ? "Conta" : "Conta · sem nick") : "Anônimo";
+  const loggedIn = Boolean(user);
+  const display = loggedIn ? regNick || "Sem apelido" : anonName;
+  const badge = loggedIn
+    ? regNick
+      ? "Conta"
+      : "Conta · escolhe um nick"
+    : "Anônimo";
 
   return (
     <>
       <div className="relative z-10 mx-auto w-full max-w-5xl px-4 pt-3 sm:px-6 sm:pt-4">
         <div className="flex items-center gap-2 rounded-2xl border-[3px] border-[var(--ink)] bg-[var(--paper)] px-3 py-2 shadow-[4px_4px_0_var(--ink)] sm:px-4">
           <div className="min-w-0 flex-1">
-            {!editing ? (
+            {!editing || loggedIn ? (
               <>
                 <p className="truncate font-[family-name:var(--font-display)] text-lg leading-tight text-[var(--ink)] sm:text-xl">
                   {display || (ready ? "Sem apelido" : "…")}
@@ -115,7 +126,7 @@ export function HomePlayerBar() {
                 </div>
               </div>
             )}
-            {error ? (
+            {error && !loggedIn ? (
               <p className="mt-1 text-xs font-semibold text-[var(--alert)]">
                 {error}{" "}
                 <button
@@ -132,26 +143,43 @@ export function HomePlayerBar() {
             ) : null}
           </div>
 
-          {!editing ? (
+          {!editing || loggedIn ? (
             <div className="flex shrink-0 gap-1.5">
+              {!loggedIn ? (
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={() => {
+                    setDraft(anonName);
+                    setEditing(true);
+                    setError(null);
+                  }}
+                >
+                  Nick
+                </Button>
+              ) : null}
               <Button
-                variant="secondary"
                 size="sm"
                 onClick={() => {
-                  setDraft(anonName);
-                  setEditing(true);
-                  setError(null);
+                  setPreferredNick(regNick || anonName);
+                  setAccountOpen(true);
                 }}
               >
-                Nick
+                {loggedIn ? "Conta" : "Entrar"}
               </Button>
-              <Button size="sm" onClick={() => setAccountOpen(true)}>
-                {user ? "Conta" : "Entrar"}
-              </Button>
+              {loggedIn ? (
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={() => void signOut()}
+                >
+                  Sair
+                </Button>
+              ) : null}
             </div>
           ) : null}
         </div>
-        {anonName && !user ? (
+        {!loggedIn && anonName ? (
           <p className="mt-1.5 px-1 text-[11px] text-[var(--muted)]">
             Quer o mesmo nick em outro celular?{" "}
             <button
@@ -164,7 +192,7 @@ export function HomePlayerBar() {
             .
           </p>
         ) : null}
-        {anonName && editing ? (
+        {!loggedIn && anonName && editing ? (
           <button
             type="button"
             className="mt-1 px-1 text-[11px] font-semibold text-[var(--muted)] underline"

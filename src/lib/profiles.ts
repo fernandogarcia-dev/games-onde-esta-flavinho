@@ -1,8 +1,11 @@
-import { getSupabaseAdmin } from "@/lib/supabase";
+import type { GameModeId } from "@/lib/modes";
+import { trackStorageKey } from "@/lib/rank-track";
 import { sanitizeName } from "@/lib/ranking";
+import { getSupabaseAdmin } from "@/lib/supabase";
 
 const PROFILE_PREFIX = "__profile::";
 const REGNICK_PREFIX = "__regnick::";
+const MODES: GameModeId[] = ["mestre", "rua", "parca"];
 
 export type UserProfile = {
   userId: string;
@@ -91,10 +94,54 @@ export async function getRegNickOwner(
   return { userId, email: String(raw?.email || "") };
 }
 
+/** Move pontos Conta do nick antigo → novo (display name + chave). */
+async function renameRegisteredScoreRows(
+  oldNick: string,
+  newNick: string,
+): Promise<void> {
+  const sb = getSupabaseAdmin();
+  if (!sb) return;
+  const oldBare = oldNick.trim().toLowerCase();
+  const newBare = newNick.trim().toLowerCase();
+  if (!oldBare || !newBare || oldBare === newBare) return;
+
+  for (const mode of MODES) {
+    const oldKey = trackStorageKey(mode, oldBare, "reg");
+    const newKey = trackStorageKey(mode, newBare, "reg");
+    const { data: oldRow, error } = await sb
+      .from("leaderboard")
+      .select("name, name_key, score, updated_at")
+      .eq("name_key", oldKey)
+      .maybeSingle();
+    if (error || !oldRow) continue;
+
+    const payload: Record<string, unknown> = {
+      name: newNick,
+      name_key: newKey,
+      score: oldRow.score,
+      updated_at: oldRow.updated_at || new Date().toISOString(),
+    };
+    let { error: upErr } = await sb.from("leaderboard").upsert(payload, {
+      onConflict: "name_key",
+    });
+    if (upErr && /mode/i.test(upErr.message)) {
+      payload.mode = mode;
+      ({ error: upErr } = await sb.from("leaderboard").upsert(payload, {
+        onConflict: "name_key,mode",
+      }));
+    }
+    if (upErr) {
+      console.error("[profiles] rename score", upErr.message);
+      continue;
+    }
+    await sb.from("leaderboard").delete().eq("name_key", oldKey);
+  }
+}
+
 /**
  * Define o nick registrado do usuário.
  * - Único no placar Conta (anônimo pode ter o mesmo texto).
- * - Trocar libera o nick antigo.
+ * - Trocar libera o nick antigo e renomeia linhas de ranking Conta.
  */
 export async function setRegisteredNick(
   userId: string,
@@ -124,12 +171,32 @@ export async function setRegisteredNick(
     };
   }
 
+  // Também bloqueia se já existe placar Conta com esse name_key (órfão).
+  const sb = getSupabaseAdmin();
+  if (sb) {
+    const keys = MODES.map((m) => trackStorageKey(m, bare, "reg"));
+    const { data: hits } = await sb
+      .from("leaderboard")
+      .select("name_key")
+      .in("name_key", keys)
+      .limit(1);
+    if (hits && hits.length > 0 && (!owner || owner.userId !== userId)) {
+      // Se não há owner meta mas há score, ainda assim bloqueia (nome em uso).
+      if (!owner) {
+        return {
+          ok: false,
+          error: `"${nick}" já está no placar Conta. Escolhe outro.`,
+        };
+      }
+    }
+  }
+
   if (prev?.nick) {
     const oldKey = regNickKey(prev.nick);
-    const sb = getSupabaseAdmin();
     if (sb) {
       await sb.from("leaderboard").delete().eq("name_key", oldKey);
     }
+    await renameRegisteredScoreRows(prev.nick, nick);
   }
 
   await upsertMeta(regNickKey(bare), {

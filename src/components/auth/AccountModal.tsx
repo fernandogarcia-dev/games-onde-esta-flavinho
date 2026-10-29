@@ -146,7 +146,7 @@ export function AccountModal({ open, onClose, preferredNick = "" }: Props) {
               {email}
             </p>
             <label className="block text-[11px] font-bold uppercase tracking-wide text-[var(--ink)]">
-              Apelido no placar Conta
+              {regNick ? "Trocar apelido da Conta" : "Apelido no placar Conta"}
             </label>
             <div className="flex flex-col gap-2 sm:flex-row">
               <input
@@ -159,14 +159,20 @@ export function AccountModal({ open, onClose, preferredNick = "" }: Props) {
               />
               <Button
                 onClick={() => void saveNick()}
-                disabled={busy || draft.trim().length < 2}
+                disabled={
+                  busy ||
+                  draft.trim().length < 2 ||
+                  draft.trim().toLowerCase() === regNick.toLowerCase()
+                }
               >
-                {busy ? "Salvando…" : "Salvar"}
+                {busy ? "Salvando…" : regNick ? "Trocar" : "Salvar"}
               </Button>
             </div>
             {regNick ? (
               <p className="text-xs text-[var(--muted)]">
                 Ativo: <strong className="text-[var(--ink)]">{regNick}</strong>
+                . Se trocar, o placar Conta atualiza pro novo nome — nick já
+                usado por outra conta não rola.
               </p>
             ) : (
               <p className="text-xs font-semibold text-[var(--alert)]">
@@ -177,7 +183,9 @@ export function AccountModal({ open, onClose, preferredNick = "" }: Props) {
               variant="ghost"
               size="sm"
               className="w-full"
-              onClick={() => void signOut()}
+              onClick={() => {
+                void signOut().then(() => onClose());
+              }}
             >
               Sair da conta
             </Button>
