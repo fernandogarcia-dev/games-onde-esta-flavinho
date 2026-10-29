@@ -468,7 +468,7 @@ export function GameApp({
     setRunning(true);
   }
 
-  const inviteShareText = buildInviteText();
+  const inviteShareText = buildInviteText("mestre");
   const resultShareText = buildResultText({
     shareLine: level?.shareLine,
     playerName: playerName || nameDraft,
@@ -479,12 +479,14 @@ export function GameApp({
     difficulty,
     rank: myRank,
     won: phase === "win",
+    mode: "mestre",
   });
   const rankShareText = buildRankText({
     playerName: playerName || nameDraft,
     score: Math.max(score, best),
     rank: myRank,
     best,
+    mode: "mestre",
   });
 
   const urgent = findActive && findRemaining <= Math.max(10, findLimit * 0.2);

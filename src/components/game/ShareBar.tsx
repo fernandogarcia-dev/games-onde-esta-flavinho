@@ -9,6 +9,7 @@ import type { GameModeId } from "@/lib/modes";
 import {
   copyShareText,
   facebookShareUrl,
+  gameShareUrl,
   nativeShare,
   openShareWindow,
   twitterShareUrl,
@@ -47,6 +48,8 @@ export function ShareBar({
         ? "items-end text-right"
         : "items-start text-left";
 
+  const pageUrl = gameShareUrl(mode);
+
   function noteShare(method: ShareMethod) {
     trackShare(method, { mode, source });
   }
@@ -60,7 +63,7 @@ export function ShareBar({
   }
 
   async function onNative() {
-    const shared = await nativeShare(text);
+    const shared = await nativeShare(text, "Cadê Flavinho?", pageUrl);
     if (shared) {
       noteShare("native");
       return;
@@ -111,7 +114,7 @@ export function ShareBar({
           className={`${btn} ${size}`}
           onClick={() => {
             noteShare("facebook");
-            openShareWindow(facebookShareUrl());
+            openShareWindow(facebookShareUrl(pageUrl));
           }}
           aria-label="Compartilhar no Facebook"
         >

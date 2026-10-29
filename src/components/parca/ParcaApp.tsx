@@ -239,9 +239,9 @@ export function ParcaApp({ onBack }: { onBack: () => void }) {
 
   const shareText = useMemo(() => {
     if (phase === "result") {
-      return `Diga-me com Quem Andas… · ${won ? "descobri quem ele levou" : "errei o parça"} · ${score.toLocaleString("pt-BR")} pts\n${buildInviteText().split("\n").pop()}`;
+      return `Diga-me com Quem Andas… · ${won ? "descobri quem ele levou" : "errei o parça"} · ${score.toLocaleString("pt-BR")} pts\n${buildInviteText("parca").split("\n").pop()}`;
     }
-    return `Diga-me com Quem Andas… — quem o Flavinho levou na fuga?\n${buildInviteText().split("\n").pop()}`;
+    return `Diga-me com Quem Andas… — quem o Flavinho levou na fuga?\n${buildInviteText("parca").split("\n").pop()}`;
   }, [phase, score, won]);
 
   const picked = options.find((o) => o.id === pickedId) ?? null;

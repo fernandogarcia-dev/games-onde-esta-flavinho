@@ -1,19 +1,16 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
-import { GAME_MODES, type GameModeId } from "@/lib/modes";
-import { trackRankingView, trackSupportOpen } from "@/lib/analytics";
+import { GAME_MODES } from "@/lib/modes";
+import { trackModeSelect, trackRankingView, trackSupportOpen } from "@/lib/analytics";
 import { LegalNotice } from "@/components/game/LegalNotice";
 import { PixModal } from "@/components/game/PixModal";
 import { HomeRankingsModal } from "@/components/home/HomeRankingsModal";
 import { Button } from "@/components/ui/Button";
 
-type Props = {
-  onPick: (mode: GameModeId) => void;
-};
-
-export function ModePicker({ onPick }: Props) {
+export function ModePicker() {
   const [showPix, setShowPix] = useState(false);
   const [showRanks, setShowRanks] = useState(false);
 
@@ -83,10 +80,10 @@ export function ModePicker({ onPick }: Props) {
 
             <div className="relative mt-10 grid items-stretch gap-4 sm:grid-cols-3">
               {GAME_MODES.map((mode, i) => (
-                <button
+                <Link
                   key={mode.id}
-                  type="button"
-                  onClick={() => onPick(mode.id)}
+                  href={mode.path}
+                  onClick={() => trackModeSelect(mode.id)}
                   className={`animate-rise group flex h-full flex-col overflow-hidden rounded-3xl border-[3px] text-left shadow-[6px_6px_0_var(--ink)] transition hover:-translate-y-1 hover:shadow-[8px_8px_0_var(--ink)] ${mode.tone}`}
                   style={{ animationDelay: `${i * 80}ms` }}
                 >
@@ -124,7 +121,7 @@ export function ModePicker({ onPick }: Props) {
                       <span aria-hidden>→</span>
                     </span>
                   </div>
-                </button>
+                </Link>
               ))}
             </div>
           </div>

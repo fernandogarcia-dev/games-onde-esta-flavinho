@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { getMode } from "@/lib/modes";
 import { SITE_NAME, SITE_URL } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -30,7 +31,10 @@ export default function ComoJogarPage() {
 
       <section className="mt-10">
         <h2 className="font-[family-name:var(--font-display)] text-2xl text-[var(--ink)]">
-          1. O Mestre dos Disfarces
+          1.{" "}
+          <Link href={getMode("mestre").path} className="underline decoration-2">
+            O Mestre dos Disfarces
+          </Link>
         </h2>
         <ol className="mt-3 list-decimal space-y-2 pl-5 text-[var(--muted)]">
           <li>Escolha Fácil, Médio ou Difícil.</li>
@@ -43,7 +47,10 @@ export default function ComoJogarPage() {
 
       <section className="mt-10">
         <h2 className="font-[family-name:var(--font-display)] text-2xl text-[var(--ink)]">
-          2. Rua da Amargura
+          2.{" "}
+          <Link href={getMode("rua").path} className="underline decoration-2">
+            Rua da Amargura
+          </Link>
         </h2>
         <p className="mt-3 text-[var(--muted)]">
           Uma rua no Street View. Gira, anda um pouco e marca{" "}
@@ -55,7 +62,10 @@ export default function ComoJogarPage() {
 
       <section className="mt-10">
         <h2 className="font-[family-name:var(--font-display)] text-2xl text-[var(--ink)]">
-          3. Diga-me com Quem Andas…
+          3.{" "}
+          <Link href={getMode("parca").path} className="underline decoration-2">
+            Diga-me com Quem Andas…
+          </Link>
         </h2>
         <p className="mt-3 text-[var(--muted)]">
           O Flavinho não sumiu sozinho: ele{" "}

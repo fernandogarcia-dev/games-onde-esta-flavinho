@@ -309,9 +309,9 @@ export function RuaApp({ onBack }: { onBack: () => void }) {
               ? "acertei a região"
               : "acertei o país"
         : "errei o país";
-      return `Rua da Amargura · ${tag} · ${formatDistance(lastKm)} · ${score.toLocaleString("pt-BR")} pts\n${buildInviteText().split("\n").pop()}`;
+      return `Rua da Amargura · ${tag} · ${formatDistance(lastKm)} · ${score.toLocaleString("pt-BR")} pts\n${buildInviteText("rua").split("\n").pop()}`;
     }
-    return `Rua da Amargura no Cadê Flavinho — uma rua, um chute.\n${buildInviteText().split("\n").pop()}`;
+    return `Rua da Amargura no Cadê Flavinho — uma rua, um chute.\n${buildInviteText("rua").split("\n").pop()}`;
   }, [phase, score, lastKm, won, city, proximity]);
 
   return (

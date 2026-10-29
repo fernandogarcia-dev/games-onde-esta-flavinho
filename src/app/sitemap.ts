@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { GAME_MODES } from "@/lib/modes";
 import { SITE_URL } from "@/lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -10,6 +11,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "daily",
       priority: 1,
     },
+    ...GAME_MODES.map((mode) => ({
+      url: `${SITE_URL}${mode.path}`,
+      lastModified: now,
+      changeFrequency: "daily" as const,
+      priority: 0.95,
+    })),
     {
       url: `${SITE_URL}/como-jogar`,
       lastModified: now,
