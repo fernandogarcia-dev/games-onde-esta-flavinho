@@ -21,10 +21,8 @@
 }
 
 body {
-  background:
-    radial-gradient(1200px 600px at 10% -10%, rgba(29, 111, 216, 0.18), transparent 55%),
-    radial-gradient(900px 500px at 100% 0%, rgba(14, 165, 183, 0.14), transparent 50%),
-    linear-gradient(180deg, #d8e5f5 0%, var(--background) 40%, #f0f5fb 100%);
+  /* Base neutra — modos/home pintam o viewport com o próprio fundo. */
+  background: #f0f5fb;
   color: var(--foreground);
   font-family: var(--font-body), ui-sans-serif, system-ui, sans-serif;
 }

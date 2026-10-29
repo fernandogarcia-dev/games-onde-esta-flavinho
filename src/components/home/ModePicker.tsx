@@ -16,7 +16,16 @@ export function ModePicker() {
 
   return (
     <div className="relative min-h-full">
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+      {/* Fundo full-viewport (mesma lógica do ModeTheme) pra barra não ficar em faixa azul. */}
+      <div
+        className="pointer-events-none fixed inset-0 -z-10"
+        style={{
+          background:
+            "radial-gradient(1200px 600px at 10% -10%, rgba(29, 111, 216, 0.16), transparent 55%), radial-gradient(900px 500px at 100% 0%, rgba(14, 165, 183, 0.12), transparent 50%), linear-gradient(180deg, #e6eef8 0%, #f0f5fb 42%, #f7fafc 100%)",
+        }}
+        aria-hidden
+      />
+      <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden" aria-hidden>
         <div className="absolute -left-20 top-10 h-64 w-64 rounded-full bg-[var(--brand)]/20 blur-3xl" />
         <div className="absolute right-0 top-40 h-72 w-72 rounded-full bg-[var(--accent)]/20 blur-3xl" />
         <div className="map-grid absolute inset-0 opacity-[0.06]" />

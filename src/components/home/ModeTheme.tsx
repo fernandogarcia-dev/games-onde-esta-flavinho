@@ -3,7 +3,11 @@
 import type { CSSProperties, ReactNode } from "react";
 import { getMode, type GameModeId } from "@/lib/modes";
 
-/** Aplica a identidade visual do modo (cores do card da home). */
+/**
+ * Identidade visual do modo.
+ * Fundo fixed no viewport inteiro — a barra superior herda a cor do modo
+ * (sem faixa azul do body vazando em cima).
+ */
 export function ModeTheme({
   mode,
   children,
@@ -14,20 +18,20 @@ export function ModeTheme({
   className?: string;
 }) {
   const meta = getMode(mode);
-  const style = {
-    "--brand": meta.accent,
-    "--accent": meta.glow,
-    "--sand": meta.soft,
-    "--mode-soft": meta.soft,
-    "--mode-glow": meta.glow,
+  const bgStyle = {
     background: `radial-gradient(1200px 600px at 10% -10%, ${meta.glow}33, transparent 55%),
       radial-gradient(900px 500px at 100% 0%, ${meta.accent}22, transparent 50%),
       linear-gradient(180deg, ${meta.soft} 0%, #f0f5fb 42%, #f7fafc 100%)`,
   } as CSSProperties;
 
   return (
-    <div className={`relative min-h-full ${className}`} style={style}>
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+    <div className={`relative min-h-full ${className}`}>
+      <div
+        className="pointer-events-none fixed inset-0 -z-10"
+        style={bgStyle}
+        aria-hidden
+      />
+      <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden" aria-hidden>
         <div
           className="absolute -left-20 top-10 h-64 w-64 rounded-full blur-3xl"
           style={{ background: `${meta.glow}55` }}

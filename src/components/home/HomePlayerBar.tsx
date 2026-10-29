@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { AccountModal } from "@/components/auth/AccountModal";
 import { useAuth } from "@/components/auth/AuthProvider";
+import { SiteLogo } from "@/components/home/SiteLogo";
 import { Button } from "@/components/ui/Button";
 import {
   claimNickname,
@@ -12,9 +13,8 @@ import {
 } from "@/lib/ranking";
 
 /**
- * Barra compacta.
- * - Sem login: nick anônimo + Entrar
- * - Logado: só Conta (trocar nick / sair) — sem nick anônimo
+ * Barra global (layout): logo + nick/conta.
+ * Fundo transparente — a cor da página fica por baixo (ModeTheme / home).
  */
 export function HomePlayerBar() {
   const { user, regNick, ready, signOut } = useAuth();
@@ -41,7 +41,6 @@ export function HomePlayerBar() {
     }
   }, []);
 
-  // Logado: cancela edição anônima se estiver aberta
   useEffect(() => {
     if (user) setEditing(false);
   }, [user]);
@@ -76,111 +75,118 @@ export function HomePlayerBar() {
 
   return (
     <>
-      <div className="relative z-10 mx-auto w-full max-w-5xl px-4 pt-3 sm:px-6 sm:pt-4">
-        <div className="flex items-center gap-2 rounded-2xl border-[3px] border-[var(--ink)] bg-[var(--paper)] px-3 py-2 shadow-[4px_4px_0_var(--ink)] sm:px-4">
-          <div className="min-w-0 flex-1">
-            {!editing || loggedIn ? (
-              <>
-                <p className="truncate font-[family-name:var(--font-display)] text-lg leading-tight text-[var(--ink)] sm:text-xl">
-                  {display || (ready ? "Sem apelido" : "…")}
-                </p>
-                <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[var(--muted)]">
-                  {badge}
-                </p>
-              </>
-            ) : (
-              <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-                <input
-                  value={draft}
-                  onChange={(e) => setDraft(sanitizeName(e.target.value))}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" && draft.trim().length >= 2 && !busy) {
-                      void saveAnon();
-                    }
-                  }}
-                  maxLength={16}
-                  placeholder="Apelido anônimo"
-                  autoFocus
-                  disabled={busy}
-                  className="min-w-0 flex-1 rounded-xl border-2 border-[var(--ink)] bg-white px-3 py-2 text-sm font-semibold text-[var(--ink)] outline-none focus:border-[var(--brand)]"
-                />
-                <div className="flex gap-2">
-                  <Button
-                    size="sm"
-                    onClick={() => void saveAnon()}
-                    disabled={busy || draft.trim().length < 2}
-                  >
-                    Ok
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="secondary"
+      <header className="relative z-20 w-full">
+        <div className="mx-auto flex w-full max-w-5xl items-center gap-2 px-4 pt-3 sm:gap-3 sm:px-6 sm:pt-4">
+          <SiteLogo />
+          <div className="flex min-w-0 flex-1 items-center gap-2 rounded-2xl border-[3px] border-[var(--ink)] bg-[var(--paper)] px-3 py-2 shadow-[4px_4px_0_var(--ink)] sm:px-4">
+            <div className="min-w-0 flex-1">
+              {!editing || loggedIn ? (
+                <>
+                  <p className="truncate font-[family-name:var(--font-display)] text-base leading-tight text-[var(--ink)] sm:text-lg">
+                    {display || (ready ? "Sem apelido" : "…")}
+                  </p>
+                  <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[var(--muted)]">
+                    {badge}
+                  </p>
+                </>
+              ) : (
+                <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+                  <input
+                    value={draft}
+                    onChange={(e) => setDraft(sanitizeName(e.target.value))}
+                    onKeyDown={(e) => {
+                      if (
+                        e.key === "Enter" &&
+                        draft.trim().length >= 2 &&
+                        !busy
+                      ) {
+                        void saveAnon();
+                      }
+                    }}
+                    maxLength={16}
+                    placeholder="Apelido anônimo"
+                    autoFocus
+                    disabled={busy}
+                    className="min-w-0 flex-1 rounded-xl border-2 border-[var(--ink)] bg-white px-3 py-2 text-sm font-semibold text-[var(--ink)] outline-none focus:border-[var(--brand)]"
+                  />
+                  <div className="flex gap-2">
+                    <Button
+                      size="sm"
+                      onClick={() => void saveAnon()}
+                      disabled={busy || draft.trim().length < 2}
+                    >
+                      Ok
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="secondary"
+                      onClick={() => {
+                        setEditing(false);
+                        setDraft(anonName);
+                        setError(null);
+                      }}
+                    >
+                      X
+                    </Button>
+                  </div>
+                </div>
+              )}
+              {error && !loggedIn ? (
+                <p className="mt-1 text-xs font-semibold text-[var(--alert)]">
+                  {error}{" "}
+                  <button
+                    type="button"
+                    className="underline"
                     onClick={() => {
-                      setEditing(false);
+                      setPreferredNick(draft);
+                      setAccountOpen(true);
+                    }}
+                  >
+                    Entrar com Google
+                  </button>
+                </p>
+              ) : null}
+            </div>
+
+            {!editing || loggedIn ? (
+              <div className="flex shrink-0 gap-1.5">
+                {!loggedIn ? (
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    onClick={() => {
                       setDraft(anonName);
+                      setEditing(true);
                       setError(null);
                     }}
                   >
-                    X
+                    Nick
                   </Button>
-                </div>
-              </div>
-            )}
-            {error && !loggedIn ? (
-              <p className="mt-1 text-xs font-semibold text-[var(--alert)]">
-                {error}{" "}
-                <button
-                  type="button"
-                  className="underline"
+                ) : null}
+                <Button
+                  size="sm"
                   onClick={() => {
-                    setPreferredNick(draft);
+                    setPreferredNick(regNick || anonName);
                     setAccountOpen(true);
                   }}
                 >
-                  Entrar com Google
-                </button>
-              </p>
+                  {loggedIn ? "Conta" : "Entrar"}
+                </Button>
+                {loggedIn ? (
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    onClick={() => void signOut()}
+                  >
+                    Sair
+                  </Button>
+                ) : null}
+              </div>
             ) : null}
           </div>
-
-          {!editing || loggedIn ? (
-            <div className="flex shrink-0 gap-1.5">
-              {!loggedIn ? (
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  onClick={() => {
-                    setDraft(anonName);
-                    setEditing(true);
-                    setError(null);
-                  }}
-                >
-                  Nick
-                </Button>
-              ) : null}
-              <Button
-                size="sm"
-                onClick={() => {
-                  setPreferredNick(regNick || anonName);
-                  setAccountOpen(true);
-                }}
-              >
-                {loggedIn ? "Conta" : "Entrar"}
-              </Button>
-              {loggedIn ? (
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  onClick={() => void signOut()}
-                >
-                  Sair
-                </Button>
-              ) : null}
-            </div>
-          ) : null}
         </div>
         {!loggedIn && anonName ? (
-          <p className="mt-1.5 px-1 text-[11px] text-[var(--muted)]">
+          <p className="mx-auto mt-1.5 max-w-5xl px-5 text-[11px] text-[var(--muted)] sm:px-7">
             Quer o mesmo nick em outro celular?{" "}
             <button
               type="button"
@@ -195,7 +201,7 @@ export function HomePlayerBar() {
         {!loggedIn && anonName && editing ? (
           <button
             type="button"
-            className="mt-1 px-1 text-[11px] font-semibold text-[var(--muted)] underline"
+            className="mx-auto mt-1 block max-w-5xl px-5 text-left text-[11px] font-semibold text-[var(--muted)] underline sm:px-7"
             onClick={() => {
               clearPlayerName();
               setAnonName("");
@@ -206,7 +212,7 @@ export function HomePlayerBar() {
             Remover nick anônimo deste aparelho
           </button>
         ) : null}
-      </div>
+      </header>
 
       <AccountModal
         open={accountOpen}
