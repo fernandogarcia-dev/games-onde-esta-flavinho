@@ -22,6 +22,10 @@ import {
   getModeBest,
   submitModeScore,
 } from "@/lib/mode-ranking";
+import {
+  PlayerNameForm,
+  PlayerNameLanding,
+} from "@/components/game/PlayerNameForm";
 import { ResultShell } from "@/components/game/ResultShell";
 import { ModeTheme } from "@/components/home/ModeTheme";
 import { ParcaPortrait } from "@/components/parca/ParcaPortrait";
@@ -34,11 +38,10 @@ import {
   type ParcaPerson,
 } from "@/lib/parcas";
 import {
-  checkNameAvailable,
+  claimNickname,
   clearPlayerName,
   getPlayerName,
   sanitizeName,
-  setPlayerName,
   type RankEntry,
 } from "@/lib/ranking";
 import { formatClock } from "@/lib/scoring";
@@ -199,39 +202,34 @@ export function ParcaApp({ onBack }: { onBack: () => void }) {
     void finish(0, false);
   }
 
-  async function saveNameAndRank() {
-    const clean = sanitizeName(nameDraft);
-    if (!clean || clean.length < 2) return;
-
-    const alreadyMine =
-      getPlayerName().toLowerCase() === clean.toLowerCase();
-    const isNewName = !alreadyMine;
-
-    if (isNewName) {
-      const check = await checkNameAvailable(clean);
-      if (check.error && check.taken === false && check.available === false) {
-        const localHit = board.find(
-          (e) => e.name.toLowerCase() === clean.toLowerCase(),
-        );
-        if (localHit) {
-          setNameFeedback(
-            `"${localHit.name}" já foi escolhido. Escolhe outro apelido.`,
-          );
-          return;
-        }
-      } else if (check.taken || !check.available) {
-        setNameFeedback(
-          check.ownerScore
-            ? `"${check.name || clean}" já foi escolhido (${check.ownerScore.toLocaleString("pt-BR")} pts). Escolhe outro.`
-            : `"${clean}" já foi escolhido. Escolhe outro apelido.`,
-        );
+  async function saveLandingName() {
+    setSavingRank(true);
+    try {
+      const claimed = await claimNickname(nameDraft, board);
+      if (!claimed.ok) {
+        setNameFeedback(claimed.error);
         return;
       }
+      setPlayerNameState(claimed.name);
+      setNameFeedback("");
+      trackNameSubmit("parca", { success: true });
+    } finally {
+      setSavingRank(false);
     }
+  }
 
-    setPlayerName(clean);
-    setPlayerNameState(clean);
-    const ok = await publishScore(score, clean, { isNewName });
+  async function saveNameAndRank() {
+    const alreadyMine =
+      getPlayerName().toLowerCase() === sanitizeName(nameDraft).toLowerCase();
+    const claimed = await claimNickname(nameDraft, board);
+    if (!claimed.ok) {
+      setNameFeedback(claimed.error);
+      return;
+    }
+    setPlayerNameState(claimed.name);
+    const ok = await publishScore(score, claimed.name, {
+      isNewName: !alreadyMine,
+    });
     trackNameSubmit("parca", { success: ok });
     if (ok) {
       setNeedsName(false);
@@ -320,6 +318,15 @@ export function ParcaApp({ onBack }: { onBack: () => void }) {
                   onChange={setDifficulty}
                 />
 
+                <PlayerNameLanding
+                  playerName={playerName}
+                  draft={nameDraft}
+                  onDraftChange={setNameDraft}
+                  onSave={() => void saveLandingName()}
+                  busy={savingRank}
+                  error={nameFeedback}
+                />
+
                 <div className="mt-7 flex flex-wrap gap-3">
                   <Button size="lg" onClick={() => startGame(difficulty)}>
                     Quem ele levou?
@@ -331,7 +338,9 @@ export function ParcaApp({ onBack }: { onBack: () => void }) {
                 <p className="mt-4 text-sm text-[var(--muted)]">
                   {best > 0
                     ? `Seu recorde neste modo: ${best.toLocaleString("pt-BR")} pts`
-                    : "Todas as dicas abertas. Um chute. Tela final."}
+                    : playerName
+                      ? "Todas as dicas abertas. Um chute. Tela final."
+                      : "Pode jogar sem apelido — mas pra subir no ranking, entra no placar acima."}
                 </p>
                 <div className="mt-5">
                   <ShareBar
@@ -525,50 +534,45 @@ export function ParcaApp({ onBack }: { onBack: () => void }) {
               {myRank ? ` · #${myRank} mundial` : ""}
             </p>
 
-            {needsName && won && (
-              <div className="mt-5 space-y-2">
-                {nameFeedback ? (
-                  <p className="text-sm font-semibold text-[var(--alert)]">
-                    {nameFeedback}
-                  </p>
-                ) : null}
-                <div className="flex flex-col items-stretch gap-2 sm:flex-row">
-                  <input
-                    value={nameDraft}
-                    onChange={(e) =>
-                      setNameDraft(sanitizeName(e.target.value))
-                    }
-                    placeholder="Seu apelido no ranking mundial"
-                    maxLength={16}
-                    className="min-w-0 flex-1 rounded-xl border-2 border-[var(--ink)] bg-white px-3 py-2.5 font-semibold text-[var(--ink)] outline-none focus:border-[var(--brand)]"
-                  />
-                  <Button
-                    onClick={() => void saveNameAndRank()}
-                    disabled={savingRank || nameDraft.trim().length < 2}
-                  >
-                    {savingRank ? "Salvando…" : "Salvar"}
+            {needsName && won ? (
+              <div className="mt-5 space-y-3">
+                <PlayerNameForm
+                  value={nameDraft}
+                  onChange={setNameDraft}
+                  onSubmit={() => void saveNameAndRank()}
+                  busy={savingRank}
+                  error={nameFeedback}
+                />
+                <p className="text-xs font-semibold text-[var(--muted)]">
+                  Entra no placar pra gravar os{" "}
+                  {score.toLocaleString("pt-BR")} pts — depois joga de novo.
+                </p>
+                <Button variant="secondary" onClick={onBack}>
+                  Trocar modo
+                </Button>
+              </div>
+            ) : (
+              <>
+                <div className="mt-6 flex flex-wrap justify-center gap-3">
+                  <Button size="lg" onClick={() => startGame(difficulty)}>
+                    Tentar de novo
+                  </Button>
+                  <Button variant="secondary" onClick={onBack}>
+                    Trocar modo
                   </Button>
                 </div>
-              </div>
+                <div className="mt-5 border-t border-[var(--ink)]/10 pt-4">
+                  <ShareBar
+                    text={shareText}
+                    label="Desafia alguém"
+                    align="center"
+                    compact
+                    mode="parca"
+                    source="result"
+                  />
+                </div>
+              </>
             )}
-            <div className="mt-6 flex flex-wrap justify-center gap-3">
-              <Button size="lg" onClick={() => startGame(difficulty)}>
-                Tentar de novo
-              </Button>
-              <Button variant="secondary" onClick={onBack}>
-                Trocar modo
-              </Button>
-            </div>
-            <div className="mt-5 border-t border-[var(--ink)]/10 pt-4">
-              <ShareBar
-                text={shareText}
-                label="Desafia alguém"
-                align="center"
-                compact
-                mode="parca"
-                source="result"
-              />
-            </div>
           </ResultShell>
         )}
       </main>

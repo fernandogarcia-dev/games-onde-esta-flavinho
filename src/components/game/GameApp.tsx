@@ -8,6 +8,7 @@ import { Leaderboard } from "@/components/game/Leaderboard";
 import { LegalNotice } from "@/components/game/LegalNotice";
 import { PixModal } from "@/components/game/PixModal";
 import { RankModal } from "@/components/game/RankModal";
+import { PlayerNameForm } from "@/components/game/PlayerNameForm";
 import {
   ResultMark,
   ResultShell,
@@ -897,41 +898,14 @@ export function GameApp({
                     : ""}
               </p>
 
-              {feedback && needsName && (
-                <p className="mt-2 text-sm font-semibold text-[var(--alert)]">
-                  {feedback}
-                </p>
-              )}
-
               {needsName ? (
-                <div className="mx-auto mt-5 max-w-sm text-left">
-                  <p className="text-sm font-bold text-[var(--ink)]">
-                    Entra no placar pra desafiar a galera
-                  </p>
-                  <p className="text-xs text-[var(--muted)]">
-                    Apelido único: se alguém já usou, não dá pra repetir.
-                  </p>
-                  <div className="mt-3 flex gap-2">
-                    <input
-                      value={nameDraft}
-                      onChange={(e) =>
-                        setNameDraft(sanitizeName(e.target.value))
-                      }
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") void confirmName();
-                      }}
-                      maxLength={16}
-                      placeholder="Seu apelido"
-                      className="min-w-0 flex-1 rounded-xl border-2 border-[var(--ink)] bg-white px-3 py-2.5 font-semibold text-[var(--ink)] outline-none focus:border-[var(--brand)]"
-                      autoFocus
-                    />
-                    <Button
-                      onClick={() => void confirmName()}
-                      disabled={nameDraft.trim().length < 2}
-                    >
-                      Entrar
-                    </Button>
-                  </div>
+                <div className="mx-auto mt-5 max-w-sm">
+                  <PlayerNameForm
+                    value={nameDraft}
+                    onChange={setNameDraft}
+                    onSubmit={() => void confirmName()}
+                    error={feedback || null}
+                  />
                 </div>
               ) : (
                 <div className="mt-6 space-y-3">

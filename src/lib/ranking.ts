@@ -116,6 +116,41 @@ export async function fetchLeaderboard(
   }
 }
 
+/** Reserva apelido localmente após checar disponibilidade no placar. */
+export async function claimNickname(
+  draft: string,
+  board: RankEntry[] = [],
+): Promise<{ ok: true; name: string } | { ok: false; error: string }> {
+  const clean = sanitizeName(draft);
+  if (!clean || clean.length < 2) {
+    return { ok: false, error: "Apelido curto demais." };
+  }
+  const alreadyMine = getPlayerName().toLowerCase() === clean.toLowerCase();
+  if (!alreadyMine) {
+    const check = await checkNameAvailable(clean);
+    if (check.error && check.taken === false && check.available === false) {
+      const localHit = board.find(
+        (e) => e.name.toLowerCase() === clean.toLowerCase(),
+      );
+      if (localHit) {
+        return {
+          ok: false,
+          error: `"${localHit.name}" já foi escolhido. Escolhe outro apelido.`,
+        };
+      }
+    } else if (check.taken || !check.available) {
+      return {
+        ok: false,
+        error: check.ownerScore
+          ? `"${check.name || clean}" já foi escolhido (${check.ownerScore.toLocaleString("pt-BR")} pts). Escolhe outro.`
+          : `"${clean}" já foi escolhido. Escolhe outro apelido.`,
+      };
+    }
+  }
+  setPlayerName(clean);
+  return { ok: true, name: clean };
+}
+
 export async function checkNameAvailable(name: string): Promise<{
   available: boolean;
   taken: boolean;
