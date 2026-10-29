@@ -207,7 +207,7 @@ export async function checkNameAvailable(name: string): Promise<{
 export async function submitScore(
   name: string,
   score: number,
-  opts?: { isNewName?: boolean; mode?: GameModeId },
+  opts?: { isNewName?: boolean; mode?: GameModeId; accumulate?: boolean },
 ): Promise<{
   entries: RankEntry[];
   rank: number;
@@ -220,15 +220,21 @@ export async function submitScore(
   const clean = sanitizeName(name);
   const deviceKey = getDeviceKey();
   const isNewName = Boolean(opts?.isNewName);
+  const accumulate = Boolean(opts?.accumulate);
   const mode = opts?.mode || "mestre";
-  // espelho local só como cache; a fonte da verdade é o Supabase
-  if (mode === "mestre") upsertLocalBoard(clean, score);
 
   try {
     const res = await fetch("/api/rank", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name: clean, score, deviceKey, isNewName, mode }),
+      body: JSON.stringify({
+        name: clean,
+        score,
+        deviceKey,
+        isNewName,
+        mode,
+        accumulate,
+      }),
     });
     const data = (await res.json()) as {
       entries?: RankEntry[];
@@ -258,12 +264,17 @@ export async function submitScore(
         : entries.findIndex(
             (e) => e.name.toLowerCase() === clean.toLowerCase(),
           ) + 1;
+    const bestScore =
+      typeof data.bestScore === "number" ? data.bestScore : undefined;
+    // espelho local com o total de carreira (não o delta)
+    if (mode === "mestre" && typeof bestScore === "number" && bestScore > 0) {
+      upsertLocalBoard(clean, bestScore);
+    }
     return {
       entries,
       rank: rank > 0 ? rank : 0,
       global: true,
-      bestScore:
-        typeof data.bestScore === "number" ? data.bestScore : undefined,
+      bestScore,
     };
   } catch {
     return {

@@ -93,6 +93,7 @@ export async function POST(req: Request) {
     deviceKey?: string;
     isNewName?: boolean;
     mode?: string;
+    accumulate?: boolean;
   };
   try {
     body = (await req.json()) as {
@@ -101,6 +102,7 @@ export async function POST(req: Request) {
       deviceKey?: string;
       isNewName?: boolean;
       mode?: string;
+      accumulate?: boolean;
     };
   } catch {
     return NextResponse.json({ error: "JSON inválido" }, { status: 400 });
@@ -110,6 +112,7 @@ export async function POST(req: Request) {
   const score = Math.floor(Number(body.score));
   const deviceKey = String(body.deviceKey || "").trim();
   const isNewName = Boolean(body.isNewName);
+  const accumulate = Boolean(body.accumulate);
   const mode = normalizeRankMode(body.mode);
   const clientIp = clientIpFromRequest(req);
 
@@ -131,7 +134,7 @@ export async function POST(req: Request) {
       name,
       score,
       deviceKey,
-      { isNewName, mode, clientIp },
+      { isNewName, mode, clientIp, accumulate },
     );
     return NextResponse.json({
       entries,

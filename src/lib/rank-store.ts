@@ -394,7 +394,13 @@ export async function upsertRank(
   name: string,
   score: number,
   deviceKeyRaw?: string,
-  opts?: { isNewName?: boolean; mode?: GameModeId; clientIp?: string },
+  opts?: {
+    isNewName?: boolean;
+    mode?: GameModeId;
+    clientIp?: string;
+    /** Soma ao placar (Mestre). Sem isso, guarda o melhor (Rua/Parça). */
+    accumulate?: boolean;
+  },
 ): Promise<{ entries: RankEntry[]; rank: number; bestScore: number }> {
   const sb = getSupabaseAdmin();
   if (!sb) {
@@ -407,6 +413,7 @@ export async function upsertRank(
   const deviceKey = normalizeDeviceKey(deviceKeyRaw);
   const clientIp = (opts?.clientIp || "").trim().slice(0, 64);
   const isNewName = Boolean(opts?.isNewName);
+  const accumulate = Boolean(opts?.accumulate);
   if (deviceKey.length < 8) {
     throw new Error(
       "Aparelho sem identificação — atualiza a página e tenta de novo.",
@@ -437,7 +444,10 @@ export async function upsertRank(
     // legado sem dono + score de quem já tinha o nick no aparelho → libera e grava dono
   }
 
-  const best = Math.max(score, prevScore);
+  const gained = Math.max(0, Math.floor(score));
+  const best = accumulate
+    ? Math.min(1_000_000, prevScore + gained)
+    : Math.max(gained, prevScore);
   const scoreImproved = best > prevScore;
 
   // Detect mode column if still unknown by probing once

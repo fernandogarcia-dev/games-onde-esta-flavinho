@@ -35,7 +35,6 @@ import type { Difficulty } from "@/lib/types";
 import {
   checkNameAvailable,
   claimNickname,
-  clearPlayerName,
   fetchLeaderboard,
   getPlayerName,
   sanitizeName,
@@ -347,11 +346,15 @@ export function GameApp({
   }
 
   async function publishScore(
-    total: number,
+    points: number,
     name: string,
-    opts?: { isNewName?: boolean },
+    opts?: { isNewName?: boolean; accumulate?: boolean },
   ) {
-    const result = await submitScore(name, total, opts);
+    const result = await submitScore(name, points, {
+      ...opts,
+      mode: "mestre",
+      accumulate: opts?.accumulate !== false,
+    });
     if (result.entries.length > 0) {
       setBoard(result.entries);
       setBoardGlobal(result.global);
@@ -368,17 +371,12 @@ export function GameApp({
       setBest((b) => Math.max(b, result.bestScore!));
     }
 
-    // Apelido já escolhido — pede outro nome.
+    // Nunca apaga o nick nem joga a pontuação em outro apelido.
     if (result.code === "name_taken") {
-      clearPlayerName();
-      setPlayerNameState("");
-      setNeedsName(true);
-      setNameDraft("");
-      setMyRank(null);
       setFeedback(
         result.ownerScore
-          ? `Apelido já escolhido (recorde ${result.ownerScore.toLocaleString("pt-BR")} pts). Escolhe outro.`
-          : "Esse apelido já foi escolhido. Escolhe outro.",
+          ? `Não deu pra gravar: esse apelido já é de outra pessoa (${result.ownerScore.toLocaleString("pt-BR")} pts). Troca o nick na home.`
+          : "Não deu pra gravar: esse apelido já é de outra pessoa. Troca o nick na home.",
       );
       return false;
     }
@@ -417,7 +415,8 @@ export function GameApp({
       trackNamePrompt("mestre");
     } else {
       setNeedsName(false);
-      await publishScore(nextScore, existing);
+      // Soma só o ganho desta caçada ao placar de carreira
+      await publishScore(gained, existing, { accumulate: true });
     }
     setPhase("win");
   }
@@ -460,7 +459,11 @@ export function GameApp({
 
     setPlayerName(clean);
     setPlayerNameState(clean);
-    const ok = await publishScore(score, clean, { isNewName });
+    // Primeira gravação com nick: soma o total da corrida atual à carreira
+    const ok = await publishScore(score, clean, {
+      isNewName,
+      accumulate: true,
+    });
     trackNameSubmit("mestre", { success: ok });
     if (ok) {
       setNeedsName(false);
