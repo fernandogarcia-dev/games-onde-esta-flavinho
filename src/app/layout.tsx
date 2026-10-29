@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Archivo_Black, Manrope } from "next/font/google";
 import { AuthProvider } from "@/components/auth/AuthProvider";
 import { GoogleAnalytics } from "@/components/analytics/GoogleAnalytics";
+import { HomePlayerBar } from "@/components/home/HomePlayerBar";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { ScrollToTop } from "@/components/ScrollToTop";
 import {

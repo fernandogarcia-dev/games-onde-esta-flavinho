@@ -7,7 +7,6 @@ import { GAME_MODES } from "@/lib/modes";
 import { trackModeSelect, trackRankingView, trackSupportOpen } from "@/lib/analytics";
 import { LegalNotice } from "@/components/game/LegalNotice";
 import { PixModal } from "@/components/game/PixModal";
-import { HomePlayerBar } from "@/components/home/HomePlayerBar";
 import { HomeRankingsModal } from "@/components/home/HomeRankingsModal";
 import { Button } from "@/components/ui/Button";
 
@@ -22,8 +21,6 @@ export function ModePicker() {
         <div className="absolute right-0 top-40 h-72 w-72 rounded-full bg-[var(--accent)]/20 blur-3xl" />
         <div className="map-grid absolute inset-0 opacity-[0.06]" />
       </div>
-
-      <HomePlayerBar />
 
       <main className="relative z-10 mx-auto w-full max-w-5xl px-4 pb-16 pt-4 sm:px-6 sm:pt-6">
         <section className="relative overflow-hidden rounded-[2rem] border-[3px] border-[var(--ink)] bg-[var(--paper)] shadow-[10px_10px_0_var(--ink)]">
