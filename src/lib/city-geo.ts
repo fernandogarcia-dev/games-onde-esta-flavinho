@@ -71,12 +71,29 @@ export const RUA_SCORE_MAX: Record<Difficulty, number> = {
   hard: 3000,
 };
 
-/** Distance (km) where score hits ~0. Closer = harder map. */
-export const RUA_ZERO_KM: Record<Difficulty, number> = {
-  easy: 6000,
-  medium: 4500,
-  hard: 3000,
+/**
+ * Distância máxima pra contar como "acertou a rua".
+ * Antes o fácil zerava só em 6000 km — 5400 km ainda dava pontos e virava "acerto".
+ */
+export const RUA_HIT_KM: Record<Difficulty, number> = {
+  easy: 75,
+  medium: 40,
+  hard: 20,
 };
+
+/** Dentro disso = pontuação cheia. */
+export const RUA_PERFECT_KM = 5;
+
+/** Distância onde a pontuação zera (ainda dá feedback visual no mapa). */
+export const RUA_ZERO_KM: Record<Difficulty, number> = {
+  easy: 2000,
+  medium: 1200,
+  hard: 700,
+};
+
+export function ruaIsHit(km: number, difficulty: Difficulty): boolean {
+  return Number.isFinite(km) && km <= RUA_HIT_KM[difficulty];
+}
 
 export function ruaScoreForDistance(
   km: number,
@@ -84,9 +101,10 @@ export function ruaScoreForDistance(
 ): number {
   const max = RUA_SCORE_MAX[difficulty];
   const zero = RUA_ZERO_KM[difficulty];
-  if (km <= 25) return max;
+  if (!Number.isFinite(km) || km < 0) return 0;
+  if (km <= RUA_PERFECT_KM) return max;
   if (km >= zero) return 0;
-  const ratio = 1 - (km - 25) / (zero - 25);
+  const ratio = 1 - (km - RUA_PERFECT_KM) / (zero - RUA_PERFECT_KM);
   return Math.round(max * Math.max(0, ratio));
 }
 

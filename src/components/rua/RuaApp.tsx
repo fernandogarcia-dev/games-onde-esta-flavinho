@@ -12,9 +12,15 @@ import {
   dealRuaRun,
   distanceKm,
   formatDistance,
+  RUA_HIT_KM,
+  ruaIsHit,
   ruaScoreForDistance,
   type CityGeo,
 } from "@/lib/city-geo";
+import {
+  ResultMark,
+  ResultShell,
+} from "@/components/game/ResultShell";
 import { getMode } from "@/lib/modes";
 import {
   trackGameFinish,
@@ -78,11 +84,6 @@ type Phase = "landing" | "guess" | "result";
 type Pin = { lat: number; lng: number };
 
 const modeMeta = getMode("rua");
-
-/** Acertou se ficou perto o bastante pra pontuar. */
-function isHit(pts: number) {
-  return pts > 0;
-}
 
 export function RuaApp({ onBack }: { onBack: () => void }) {
   const [phase, setPhase] = useState<Phase>("landing");
@@ -219,10 +220,12 @@ export function RuaApp({ onBack }: { onBack: () => void }) {
   function confirmGuess() {
     if (!city || !guess) return;
     const km = distanceKm(guess, { lat: city.lat, lng: city.lng });
-    const pts = ruaScoreForDistance(km, difficulty);
+    const hit = ruaIsHit(km, difficulty);
+    // Pontos de ranking só contam no acerto de rua; no erro mostra 0.
+    const pts = hit ? ruaScoreForDistance(km, difficulty) : 0;
     setLastKm(km);
     setScore(pts);
-    void finish(pts, isHit(pts));
+    void finish(pts, hit);
   }
 
   async function saveNameAndRank() {
@@ -411,7 +414,7 @@ export function RuaApp({ onBack }: { onBack: () => void }) {
         )}
 
         {phase === "result" && city && (
-          <section className="animate-rise mx-auto max-w-2xl space-y-5">
+          <div className="mx-auto max-w-2xl space-y-5">
             <div className="overflow-hidden rounded-3xl border-[3px] border-[var(--ink)] bg-[var(--paper)] shadow-[8px_8px_0_var(--ink)]">
               <GuessMap
                 guess={guess}
@@ -420,21 +423,47 @@ export function RuaApp({ onBack }: { onBack: () => void }) {
                 onGuess={() => {}}
               />
             </div>
-            <div className="rounded-3xl border-[3px] border-[var(--ink)] bg-[var(--paper)] p-6 text-center shadow-[8px_8px_0_var(--ink)]">
-              <p className="text-xs font-bold uppercase tracking-[0.2em] text-[var(--brand)]">
-                {won ? "Quase na porta" : "Se perdeu"}
-              </p>
-              <h2 className="mt-2 font-[family-name:var(--font-display)] text-3xl text-[var(--ink)]">
-                {won ? "Acertou a rua!" : "Errou o paradeiro"}
-              </h2>
-              <p className="mt-2 text-[var(--muted)]">
-                Era <strong className="text-[var(--ink)]">{city.name}</strong> ·{" "}
-                {city.country}. Você ficou a {formatDistance(lastKm)}.
-              </p>
-              <p className="mt-2 font-semibold text-[var(--ink)]">
-                {score.toLocaleString("pt-BR")} pts · {formatClock(elapsed)}
-                {myRank ? ` · #${myRank} mundial` : ""}
-              </p>
+            <ResultShell
+              won={won}
+              eyebrow={won ? "Resultado · acerto" : "Resultado · erro"}
+              title={won ? "Acertou!" : "Errou!"}
+              subtitle={
+                won
+                  ? "Você cravou perto o bastante da rua."
+                  : `Precisa ficar a até ${RUA_HIT_KM[difficulty]} km pra contar como acerto.`
+              }
+            >
+              <div className="flex flex-col items-center gap-3">
+                <ResultMark won={won} />
+                <p className="text-sm font-semibold uppercase tracking-[0.14em] text-[var(--muted)]">
+                  {won ? "A rua era" : "Na verdade era"}
+                </p>
+                <p className="font-[family-name:var(--font-display)] text-4xl leading-tight text-[var(--ink)] sm:text-5xl">
+                  {city.name}
+                </p>
+                <p
+                  className={`text-base font-bold ${
+                    won ? "text-[#1f8a5b]" : "text-[#c2410c]"
+                  }`}
+                >
+                  {city.country} · você ficou a {formatDistance(lastKm)}
+                </p>
+                {!won && guess ? (
+                  <div className="mt-1 w-full rounded-2xl border-[3px] border-dashed border-[#c2410c]/60 bg-white/80 px-4 py-3">
+                    <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#c2410c]">
+                      Seu chute
+                    </p>
+                    <p className="mt-1 font-[family-name:var(--font-display)] text-xl text-[var(--ink)]">
+                      Longe demais da porta
+                    </p>
+                  </div>
+                ) : null}
+                <p className="mt-2 inline-flex rounded-full border-2 border-[var(--ink)] bg-white px-4 py-1.5 text-sm font-bold text-[var(--ink)] shadow-[3px_3px_0_var(--ink)]">
+                  {score.toLocaleString("pt-BR")} pts · {formatClock(elapsed)}
+                  {myRank ? ` · #${myRank} mundial` : ""}
+                </p>
+              </div>
+
               {needsName && won && (
                 <div className="mt-5 space-y-2">
                   {nameFeedback ? (
@@ -479,8 +508,8 @@ export function RuaApp({ onBack }: { onBack: () => void }) {
                   source="result"
                 />
               </div>
-            </div>
-          </section>
+            </ResultShell>
+          </div>
         )}
       </main>
 
@@ -524,19 +553,19 @@ function DifficultyPicker({
     {
       id: "easy",
       label: "Fácil",
-      hint: "24 cidades · mira generosa",
+      hint: `24 cidades · acerto ≤ ${RUA_HIT_KM.easy} km`,
       tone: "bg-[#e8f6ef] border-[#1f8a5b]",
     },
     {
       id: "medium",
       label: "Médio",
-      hint: "56 cidades · precisão média",
+      hint: `56 cidades · acerto ≤ ${RUA_HIT_KM.medium} km`,
       tone: "bg-[#fff4d6] border-[#d4a017]",
     },
     {
       id: "hard",
       label: "Difícil",
-      hint: "124 cidades · tem que cravar",
+      hint: `124 cidades · acerto ≤ ${RUA_HIT_KM.hard} km`,
       tone: "bg-[#fde8e4] border-[#c2410c]",
     },
   ];

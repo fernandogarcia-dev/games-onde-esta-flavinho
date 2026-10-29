@@ -8,6 +8,10 @@ import { Leaderboard } from "@/components/game/Leaderboard";
 import { LegalNotice } from "@/components/game/LegalNotice";
 import { PixModal } from "@/components/game/PixModal";
 import { RankModal } from "@/components/game/RankModal";
+import {
+  ResultMark,
+  ResultShell,
+} from "@/components/game/ResultShell";
 import { ShareBar } from "@/components/game/ShareBar";
 import { ModeTheme } from "@/components/home/ModeTheme";
 import { useScrollTop } from "@/hooks/useScrollTop";
@@ -818,37 +822,41 @@ export function GameApp({
         )}
 
         {phase === "win" && city && (
-          <section className="animate-rise mx-auto grid max-w-4xl gap-6 lg:grid-cols-[1.1fr_0.9fr]">
-            <div className="rounded-3xl border-[3px] border-[var(--ink)] bg-[var(--paper)] p-6 text-center shadow-[8px_8px_0_var(--ink)] sm:p-8">
-              <p className="text-xs font-bold uppercase tracking-[0.2em] text-[var(--brand)]">
-                Caçada {levelIndex + 1}/{run.length} · modo{" "}
-                {labelMode(difficulty)}
-              </p>
-              <Image
-                src="/game/disguises/real.webp"
-                alt="Flavinho encontrado"
-                width={120}
-                height={170}
-                className="mx-auto mt-2 object-contain"
-                unoptimized
-              />
-              <h2 className="mt-3 font-[family-name:var(--font-display)] text-4xl text-[var(--ink)] sm:text-5xl">
-                {levelIndex >= run.length - 1
-                  ? "Missão fechada!"
-                  : "Achei ele!"}
-              </h2>
-              <p className="mt-2 text-base text-[var(--muted)]">
-                {levelIndex >= run.length - 1
-                  ? `Sexteto completo em ${city.name}. Manda ver no placar ou abre outra rodada.`
-                  : `Tava em ${city.name}. Mais ${run.length - levelIndex - 1} sumiço${run.length - levelIndex - 1 === 1 ? "" : "s"} pra fechar a caçada.`}
-              </p>
+          <div className="mx-auto grid max-w-4xl gap-6 lg:grid-cols-[1.1fr_0.9fr]">
+            <ResultShell
+              won
+              eyebrow={`Resultado · acerto · ${levelIndex + 1}/${run.length}`}
+              title={
+                levelIndex >= run.length - 1 ? "Missão fechada!" : "Acertou!"
+              }
+              subtitle={
+                levelIndex >= run.length - 1
+                  ? `Sexteto completo em ${city.name}.`
+                  : `Tava em ${city.name}. Mais ${run.length - levelIndex - 1} sumiço${run.length - levelIndex - 1 === 1 ? "" : "s"}.`
+              }
+            >
+              <div className="relative mx-auto flex w-fit items-end justify-center gap-3">
+                <div className="relative h-28 w-28 overflow-hidden rounded-2xl border-[3px] border-[var(--ink)] bg-white shadow-[4px_4px_0_var(--ink)] sm:h-32 sm:w-32">
+                  <Image
+                    src="/game/disguises/real.webp"
+                    alt="Flavinho encontrado"
+                    fill
+                    unoptimized
+                    className="object-contain object-bottom p-1"
+                  />
+                </div>
+                <span className="absolute -right-2 -top-2">
+                  <ResultMark won />
+                </span>
+              </div>
+
               {newRecord && (
-                <p className="mt-3 inline-block rounded-full border-2 border-[var(--ink)] bg-[#fff4d6] px-3 py-1 text-sm font-black text-[var(--ink)] shadow-[2px_2px_0_var(--ink)]">
+                <p className="mt-4 inline-block rounded-full border-2 border-[var(--ink)] bg-[#fff4d6] px-3 py-1 text-sm font-black text-[var(--ink)] shadow-[2px_2px_0_var(--ink)]">
                   Novo recorde pessoal!
                 </p>
               )}
 
-              <div className="mx-auto mt-4 grid max-w-sm grid-cols-3 gap-2 rounded-2xl border-2 border-dashed border-[var(--ink)]/30 bg-white/70 p-2">
+              <div className="mx-auto mt-4 grid max-w-sm grid-cols-3 gap-2 rounded-2xl border-2 border-dashed border-[var(--ink)]/30 bg-white/80 p-2">
                 <div className="rounded-xl border-2 border-[var(--ink)] bg-[#e8f6ef] px-2 py-2 shadow-[2px_2px_0_var(--ink)]">
                   <p className="text-[10px] font-bold uppercase text-[var(--muted)]">
                     Ganho
@@ -880,17 +888,15 @@ export function GameApp({
                 {streak > 1 ? `sequência x${streak} · ` : ""}
                 corrida {formatClock(elapsed)}
               </p>
-              <p className="mt-1 text-sm font-semibold text-[var(--ink)]">
-                Esta caçada: {score.toLocaleString("pt-BR")} pts
-                {best > score
-                  ? ` · seu recorde: ${best.toLocaleString("pt-BR")}`
-                  : ""}
+              <p className="mt-2 inline-flex rounded-full border-2 border-[var(--ink)] bg-white px-4 py-1.5 text-sm font-bold text-[var(--ink)] shadow-[3px_3px_0_var(--ink)]">
+                {score.toLocaleString("pt-BR")} pts
                 {playerName && myRank != null
                   ? ` · ${playerName} #${myRank}`
                   : myRank != null
-                    ? ` · #${myRank} no placar`
+                    ? ` · #${myRank}`
                     : ""}
               </p>
+
               {feedback && needsName && (
                 <p className="mt-2 text-sm font-semibold text-[var(--alert)]">
                   {feedback}
@@ -929,22 +935,21 @@ export function GameApp({
                 </div>
               ) : (
                 <div className="mt-6 space-y-3">
-                  <Button size="lg" className="w-full sm:w-auto" onClick={nextLevel}>
+                  <Button
+                    size="lg"
+                    className="w-full sm:w-auto"
+                    onClick={nextLevel}
+                  >
                     {levelIndex >= run.length - 1
                       ? "Abrir nova caçada"
                       : `Próximo sumiço (${levelIndex + 2}/${run.length})`}
                   </Button>
-                  <p className="text-xs font-semibold text-[var(--muted)]">
-                    {levelIndex >= run.length - 1
-                      ? myRank != null && myRank > 1
-                        ? `Falta pouco pra subir do #${myRank}. Uma rodada a mais?`
-                        : "Placar tá quente. Roda de novo e sobe."
-                      : streak > 1
-                        ? `Sequência x${streak} no ar — não para agora.`
-                        : "Ele já deve estar trocando de cidade. Vai atrás."}
-                  </p>
                   <div className="flex flex-wrap justify-center gap-2">
-                    <Button variant="secondary" size="sm" onClick={restartToMenu}>
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      onClick={restartToMenu}
+                    >
                       Menu
                     </Button>
                     <Button
@@ -968,7 +973,7 @@ export function GameApp({
                   source="result_win"
                 />
               </div>
-            </div>
+            </ResultShell>
             <Leaderboard
               entries={board}
               global={boardGlobal}
@@ -980,23 +985,34 @@ export function GameApp({
               shareText={rankShareText}
               onViewFull={() => openRank("result_board")}
             />
-          </section>
+          </div>
         )}
 
         {(phase === "fail-city" || phase === "fail-time") && (
-          <section className="animate-rise mx-auto max-w-xl rounded-3xl border-[3px] border-[var(--ink)] bg-[var(--paper)] p-6 text-center shadow-[8px_8px_0_var(--ink)]">
-            <h2 className="font-[family-name:var(--font-display)] text-3xl text-[var(--ink)]">
-              {phase === "fail-time" ? "Escapou no tempo" : "Errou a cidade"}
-            </h2>
-            <p className="mt-2 text-[var(--muted)]">
-              {phase === "fail-time"
-                ? "O relógio zerou. Ele já trocou de disfarce — mas a próxima caçada tá pronta."
-                : "As tentativas acabaram. Abre outra rodada e pega ele dessa vez."}
-            </p>
-            <p className="mt-3 font-semibold text-[var(--ink)]">
-              Pontuação da corrida: {score.toLocaleString("pt-BR")} ·{" "}
-              {formatClock(elapsed)}
-            </p>
+          <ResultShell
+            won={false}
+            eyebrow="Resultado · erro"
+            title={phase === "fail-time" ? "Errou!" : "Errou!"}
+            subtitle={
+              phase === "fail-time"
+                ? "O relógio zerou. Ele já trocou de disfarce."
+                : "As tentativas acabaram. Ele escapou dessa."
+            }
+          >
+            <div className="flex flex-col items-center gap-3">
+              <ResultMark won={false} />
+              <p className="text-sm font-semibold uppercase tracking-[0.14em] text-[var(--muted)]">
+                {phase === "fail-time" ? "Escapou no tempo" : "Errou a cidade"}
+              </p>
+              {city ? (
+                <p className="font-[family-name:var(--font-display)] text-3xl leading-tight text-[var(--ink)] sm:text-4xl">
+                  Era {city.name}
+                </p>
+              ) : null}
+              <p className="mt-2 inline-flex rounded-full border-2 border-[var(--ink)] bg-white px-4 py-1.5 text-sm font-bold text-[var(--ink)] shadow-[3px_3px_0_var(--ink)]">
+                {score.toLocaleString("pt-BR")} pts · {formatClock(elapsed)}
+              </p>
+            </div>
             <div className="mt-6 flex flex-wrap justify-center gap-3">
               <Button size="lg" onClick={() => startGame(difficulty)}>
                 Jogar de novo
@@ -1015,7 +1031,7 @@ export function GameApp({
                 source="result_fail"
               />
             </div>
-          </section>
+          </ResultShell>
         )}
       </main>
 
