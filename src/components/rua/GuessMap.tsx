@@ -210,7 +210,10 @@ export function GuessMap({
     <div
       className={`overflow-hidden rounded-2xl border-[3px] border-[var(--ink)] shadow-[5px_5px_0_var(--ink)] ${className}`}
     >
-      <div ref={containerRef} className="h-[300px] w-full sm:h-[420px]" />
+      <div
+        ref={containerRef}
+        className="h-[min(52svh,520px)] w-full sm:h-[420px] lg:h-[460px]"
+      />
     </div>
   );
 }

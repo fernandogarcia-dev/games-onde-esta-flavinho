@@ -65,7 +65,7 @@ const GuessMap = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="flex h-[300px] items-center justify-center rounded-2xl border-[3px] border-[var(--ink)] bg-white sm:h-[420px]">
+      <div className="flex h-[min(52svh,520px)] items-center justify-center rounded-2xl border-[3px] border-[var(--ink)] bg-white sm:h-[420px] lg:h-[460px]">
         <p className="text-sm font-semibold text-[var(--muted)]">
           Carregando mapa…
         </p>
@@ -79,7 +79,7 @@ const StreetView = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="flex aspect-[4/3] items-center justify-center bg-[var(--sand)]">
+      <div className="flex h-[min(48svh,440px)] items-center justify-center bg-[var(--sand)] sm:h-auto sm:aspect-[2/1]">
         <p className="text-sm font-semibold text-[var(--muted)]">
           Abrindo a rua…
         </p>
@@ -423,30 +423,33 @@ export function RuaApp({ onBack }: { onBack: () => void }) {
         )}
 
         {phase === "guess" && city && (
-          <section className="animate-rise mx-auto flex max-w-3xl flex-col gap-5">
+          <section className="animate-rise mx-auto flex max-w-3xl flex-col gap-3 sm:gap-5">
             <div className="overflow-hidden rounded-3xl border-[3px] border-[var(--ink)] bg-[var(--paper)] shadow-[6px_6px_0_var(--ink)]">
               <StreetView
                 lat={city.lat}
                 lng={city.lng}
                 seed={`${city.id}-${difficulty}`}
                 fallbackPhoto={city.photo}
-                className="!aspect-[16/10] sm:!aspect-[2/1]"
+                className="!aspect-auto h-[min(48svh,440px)] sm:h-auto sm:!aspect-[2/1]"
               />
-              <div className="border-t-2 border-[var(--ink)]/10 px-4 py-3">
-                <p className="text-xs font-bold uppercase tracking-[0.16em] text-[var(--brand)]">
+              <div className="border-t-2 border-[var(--ink)]/10 px-4 py-2.5 sm:py-3">
+                <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[var(--brand)] sm:text-xs">
                   Única tentativa
                 </p>
-                <h2 className="mt-1 font-[family-name:var(--font-display)] text-xl text-[var(--ink)]">
+                <h2 className="mt-0.5 font-[family-name:var(--font-display)] text-lg text-[var(--ink)] sm:mt-1 sm:text-xl">
                   Onde o Flavinho sumiu?
                 </h2>
-                <p className="mt-1 text-sm text-[var(--muted)]">
+                <p className="mt-0.5 hidden text-sm text-[var(--muted)] sm:mt-1 sm:block">
                   Anda na rua (setas ou clique no chão), olha em volta, marca no
                   mapa e confirma. Um chute só.
+                </p>
+                <p className="mt-0.5 text-xs text-[var(--muted)] sm:hidden">
+                  Anda, olha em volta, marca no mapa. Um chute só.
                 </p>
               </div>
             </div>
 
-            <div className="space-y-3">
+            <div className="space-y-2.5 sm:space-y-3">
               <GuessMap guess={guess} locked={false} onGuess={setGuess} />
               <div className="flex flex-wrap items-center gap-2">
                 <Button
