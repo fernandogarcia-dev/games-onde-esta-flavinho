@@ -556,17 +556,23 @@ export function RuaApp({ onBack }: { onBack: () => void }) {
                   />
                   <p className="text-xs font-semibold text-[var(--muted)]">
                     Entra no placar pra gravar os{" "}
-                    {score.toLocaleString("pt-BR")} pts — depois joga de novo.
+                    {score.toLocaleString("pt-BR")} pts — ou joga de novo sem
+                    salvar.
                   </p>
-                  <Button variant="secondary" onClick={onBack}>
-                    Trocar modo
-                  </Button>
+                  <div className="flex flex-wrap justify-center gap-3">
+                    <Button size="lg" onClick={() => startGame(difficulty)}>
+                      Jogar de novo
+                    </Button>
+                    <Button variant="secondary" onClick={onBack}>
+                      Trocar modo
+                    </Button>
+                  </div>
                 </div>
               ) : (
                 <>
                   <div className="mt-6 flex flex-wrap justify-center gap-3">
                     <Button size="lg" onClick={() => startGame(difficulty)}>
-                      Tentar de novo
+                      Jogar de novo
                     </Button>
                     <Button variant="secondary" onClick={onBack}>
                       Trocar modo

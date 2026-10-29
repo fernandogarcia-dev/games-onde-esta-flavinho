@@ -947,7 +947,7 @@ export function GameApp({
               </p>
 
               {needsName ? (
-                <div className="mx-auto mt-5 max-w-sm">
+                <div className="mx-auto mt-5 max-w-sm space-y-3">
                   <PlayerNameForm
                     value={nameDraft}
                     onChange={setNameDraft}
@@ -955,6 +955,28 @@ export function GameApp({
                     busy={savingRank}
                     error={feedback || null}
                   />
+                  <p className="text-xs font-semibold text-[var(--muted)]">
+                    Entra no placar pra gravar os pontos — ou continua sem
+                    salvar.
+                  </p>
+                  <Button
+                    size="lg"
+                    className="w-full sm:w-auto"
+                    onClick={nextLevel}
+                  >
+                    {levelIndex >= run.length - 1
+                      ? "Jogar de novo"
+                      : `Próximo sumiço (${levelIndex + 2}/${run.length})`}
+                  </Button>
+                  <div className="flex flex-wrap justify-center gap-2">
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      onClick={restartToMenu}
+                    >
+                      Menu
+                    </Button>
+                  </div>
                 </div>
               ) : (
                 <div className="mt-6 space-y-3">
@@ -964,7 +986,7 @@ export function GameApp({
                     onClick={nextLevel}
                   >
                     {levelIndex >= run.length - 1
-                      ? "Abrir nova caçada"
+                      ? "Jogar de novo"
                       : `Próximo sumiço (${levelIndex + 2}/${run.length})`}
                   </Button>
                   <div className="flex flex-wrap justify-center gap-2">
