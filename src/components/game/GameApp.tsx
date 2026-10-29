@@ -601,6 +601,7 @@ export function GameApp({
               onNameDraftChange={setNameDraft}
               onSaveName={() => void saveLandingName()}
               onStart={() => startGame(difficulty)}
+              onBack={onBackToModes}
             />
             <Leaderboard
               entries={board}
@@ -1098,6 +1099,7 @@ function Landing({
   onNameDraftChange,
   onSaveName,
   onStart,
+  onBack,
 }: {
   best: number;
   citiesTotal: number;
@@ -1113,6 +1115,7 @@ function Landing({
   onNameDraftChange: (value: string) => void;
   onSaveName: () => void;
   onStart: () => void;
+  onBack?: () => void;
 }) {
   const modes: {
     id: Difficulty;
@@ -1246,10 +1249,24 @@ function Landing({
             error={nameError}
           />
 
-          <div className="mt-7 flex flex-wrap gap-3">
-            <Button size="lg" onClick={onStart}>
+          <div className="mt-7 flex w-full flex-col gap-3 sm:flex-row sm:flex-wrap">
+            <Button
+              size="lg"
+              className="w-full sm:w-auto"
+              onClick={onStart}
+            >
               {getMode("mestre").playCta}
             </Button>
+            {onBack ? (
+              <Button
+                variant="secondary"
+                size="lg"
+                className="w-full sm:w-auto"
+                onClick={onBack}
+              >
+                Voltar aos modos
+              </Button>
+            ) : null}
           </div>
           <p className="mt-4 text-sm text-[var(--muted)]">
             {best > 0

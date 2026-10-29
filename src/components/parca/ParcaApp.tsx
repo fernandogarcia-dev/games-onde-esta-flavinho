@@ -326,11 +326,20 @@ export function ParcaApp({ onBack }: { onBack: () => void }) {
                   error={nameFeedback}
                 />
 
-                <div className="mt-7 flex flex-wrap gap-3">
-                  <Button size="lg" onClick={() => startGame(difficulty)}>
+                <div className="mt-7 flex w-full flex-col gap-3 sm:flex-row sm:flex-wrap">
+                  <Button
+                    size="lg"
+                    className="w-full sm:w-auto"
+                    onClick={() => startGame(difficulty)}
+                  >
                     {modeMeta.playCta}
                   </Button>
-                  <Button variant="secondary" onClick={onBack}>
+                  <Button
+                    variant="secondary"
+                    size="lg"
+                    className="w-full sm:w-auto"
+                    onClick={onBack}
+                  >
                     Voltar aos modos
                   </Button>
                 </div>
