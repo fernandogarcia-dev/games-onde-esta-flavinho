@@ -1,5 +1,11 @@
 import type { GameModeId } from "@/lib/modes";
 import type { RankEntry } from "@/lib/ranking";
+import {
+  ownerMatches,
+  readNickOwner,
+  writeNickOwner,
+  type NickOwner,
+} from "@/lib/nick-owners";
 import { getSupabaseAdmin, supabaseConfigured } from "@/lib/supabase";
 
 const MAX = 100;
@@ -11,6 +17,7 @@ type Row = {
   score: number;
   updated_at: string;
   device_key?: string | null;
+  client_ip?: string | null;
   mode?: string | null;
 };
 
@@ -28,6 +35,7 @@ export class RankNameTakenError extends Error {
 /** Prefer coluna `mode`; se o banco ainda não tiver, usa prefixo no name_key. */
 let modeColumnSupported: boolean | null = null;
 let deviceKeySupported: boolean | null = null;
+let clientIpSupported: boolean | null = null;
 
 function sortBoard(entries: RankEntry[]): RankEntry[] {
   return [...entries]
@@ -112,20 +120,55 @@ export async function listRanks(
   return rowsToEntries(filtered).slice(0, MAX);
 }
 
+const ROW_SELECT_FULL =
+  "name, score, updated_at, name_key, device_key, client_ip, mode";
+const ROW_SELECT_NO_IP =
+  "name, score, updated_at, name_key, device_key, mode";
+const ROW_SELECT_MIN = "name, score, updated_at, name_key, device_key";
+const ROW_SELECT_LEGACY = "name, score, updated_at, name_key";
+
 async function findRowsForBareName(nameKey: string): Promise<Row[]> {
   const sb = getSupabaseAdmin();
   if (!sb || !nameKey) return [];
 
+  const selectCols =
+    clientIpSupported === false
+      ? modeColumnSupported === false
+        ? deviceKeySupported === false
+          ? ROW_SELECT_LEGACY
+          : ROW_SELECT_MIN
+        : ROW_SELECT_NO_IP
+      : ROW_SELECT_FULL;
+
   if (modeColumnSupported !== false) {
     const { data, error } = await sb
       .from("leaderboard")
-      .select("name, score, updated_at, name_key, device_key, mode")
+      .select(selectCols)
       .eq("name_key", nameKey);
     if (!error) {
       modeColumnSupported = true;
-      return (data || []) as Row[];
+      if (clientIpSupported !== false && selectCols.includes("client_ip")) {
+        clientIpSupported = true;
+      }
+      return (data || []) as unknown as Row[];
     }
-    if (/column .*mode/i.test(error.message) || /mode/i.test(error.message)) {
+    if (/column .*client_ip/i.test(error.message) || /client_ip/i.test(error.message)) {
+      clientIpSupported = false;
+      const { data: d2, error: e2 } = await sb
+        .from("leaderboard")
+        .select(ROW_SELECT_NO_IP)
+        .eq("name_key", nameKey);
+      if (!e2) {
+        modeColumnSupported = true;
+        return (d2 || []) as unknown as Row[];
+      }
+      if (/column .*mode/i.test(e2.message) || /mode/i.test(e2.message)) {
+        modeColumnSupported = false;
+      } else {
+        console.error("[rank] findRows", e2.message);
+        throw new Error(e2.message);
+      }
+    } else if (/column .*mode/i.test(error.message) || /mode/i.test(error.message)) {
       modeColumnSupported = false;
     } else {
       console.error("[rank] findRows", error.message);
@@ -136,24 +179,98 @@ async function findRowsForBareName(nameKey: string): Promise<Row[]> {
   const keys = MODES.map((m) => prefixedKey(m, nameKey));
   const { data, error } = await sb
     .from("leaderboard")
-    .select("name, score, updated_at, name_key, device_key")
+    .select(
+      clientIpSupported === false
+        ? ROW_SELECT_MIN
+        : "name, score, updated_at, name_key, device_key, client_ip",
+    )
     .in("name_key", keys);
   if (error) {
-    // device_key may be missing on very old schemas
+    if (/client_ip/i.test(error.message)) {
+      clientIpSupported = false;
+      const { data: dIp, error: eIp } = await sb
+        .from("leaderboard")
+        .select(ROW_SELECT_MIN)
+        .in("name_key", keys);
+      if (!eIp) {
+        deviceKeySupported = true;
+        return (dIp || []) as unknown as Row[];
+      }
+      if (/device_key/i.test(eIp.message)) {
+        deviceKeySupported = false;
+        const { data: d2, error: e2 } = await sb
+          .from("leaderboard")
+          .select(ROW_SELECT_LEGACY)
+          .in("name_key", keys);
+        if (e2) throw new Error(e2.message);
+        return (d2 || []) as unknown as Row[];
+      }
+      throw new Error(eIp.message);
+    }
     if (/device_key/i.test(error.message)) {
       deviceKeySupported = false;
       const { data: d2, error: e2 } = await sb
         .from("leaderboard")
-        .select("name, score, updated_at, name_key")
+        .select(ROW_SELECT_LEGACY)
         .in("name_key", keys);
       if (e2) throw new Error(e2.message);
-      return (d2 || []) as Row[];
+      return (d2 || []) as unknown as Row[];
     }
     console.error("[rank] findRows", error.message);
     throw new Error(error.message);
   }
   deviceKeySupported = true;
-  return (data || []) as Row[];
+  if (clientIpSupported !== false) clientIpSupported = true;
+  return (data || []) as unknown as Row[];
+}
+
+/** Dono do apelido se bater device_key OU client_ip em qualquer linha do nick. */
+export function ownsNickname(
+  rows: Row[],
+  deviceKey: string,
+  clientIp: string,
+): boolean {
+  const key = (deviceKey || "").trim();
+  const ip = (clientIp || "").trim();
+  if (key) {
+    for (const r of rows) {
+      const owner = (r.device_key || "").trim();
+      if (owner && owner === key) return true;
+    }
+  }
+  if (ip) {
+    for (const r of rows) {
+      const ownerIp = (r.client_ip || "").trim();
+      if (ownerIp && ownerIp === ip) return true;
+    }
+  }
+  return false;
+}
+
+function rowsHaveOwnerSignal(rows: Row[]): boolean {
+  return rows.some(
+    (r) => Boolean((r.device_key || "").trim()) || Boolean((r.client_ip || "").trim()),
+  );
+}
+
+/** Junta colunas do Postgres + meta no Storage (fallback sem migration). */
+async function resolveOwner(
+  bare: string,
+  rows: Row[],
+): Promise<{ fromRows: boolean; stored: NickOwner | null }> {
+  const fromRows = rowsHaveOwnerSignal(rows);
+  const stored = await readNickOwner(bare);
+  return { fromRows, stored };
+}
+
+function isMine(
+  rows: Row[],
+  stored: NickOwner | null,
+  deviceKey: string,
+  clientIp: string,
+): boolean {
+  if (ownsNickname(rows, deviceKey, clientIp)) return true;
+  return ownerMatches(stored, deviceKey, clientIp);
 }
 
 /** Absolute 1-based rank + entry for a player name in a mode. */
@@ -236,21 +353,46 @@ function normalizeDeviceKey(raw: string | undefined): string {
 
 export async function isNameTaken(
   name: string,
-): Promise<{ taken: boolean; score: number; name?: string }> {
+  opts?: { deviceKey?: string; clientIp?: string },
+): Promise<{
+  taken: boolean;
+  available: boolean;
+  reclaimable: boolean;
+  score: number;
+  name?: string;
+}> {
   const clean = name.trim().slice(0, 16);
-  if (!clean) return { taken: false, score: 0 };
+  if (!clean) {
+    return { taken: false, available: true, reclaimable: false, score: 0 };
+  }
   const bare = clean.toLowerCase();
   const rows = await findRowsForBareName(bare);
-  if (!rows.length) return { taken: false, score: 0 };
+  if (!rows.length) {
+    return { taken: false, available: true, reclaimable: false, score: 0 };
+  }
   const best = rows.reduce((m, r) => Math.max(m, r.score), 0);
-  return { taken: true, score: best, name: rows[0]?.name || clean };
+  const deviceKey = normalizeDeviceKey(opts?.deviceKey);
+  const clientIp = (opts?.clientIp || "").trim();
+  const { stored } = await resolveOwner(bare, rows);
+  const mine = isMine(rows, stored, deviceKey, clientIp);
+  if (mine && (deviceKey || clientIp)) {
+    // Atualiza vínculo (ex.: mesmo IP, aparelho novo)
+    void writeNickOwner(bare, deviceKey, clientIp);
+  }
+  return {
+    taken: !mine,
+    available: mine,
+    reclaimable: mine,
+    score: best,
+    name: rows[0]?.name || clean,
+  };
 }
 
 export async function upsertRank(
   name: string,
   score: number,
   deviceKeyRaw?: string,
-  opts?: { isNewName?: boolean; mode?: GameModeId },
+  opts?: { isNewName?: boolean; mode?: GameModeId; clientIp?: string },
 ): Promise<{ entries: RankEntry[]; rank: number; bestScore: number }> {
   const sb = getSupabaseAdmin();
   if (!sb) {
@@ -261,6 +403,7 @@ export async function upsertRank(
   const clean = name.trim().slice(0, 16);
   const bare = clean.toLowerCase();
   const deviceKey = normalizeDeviceKey(deviceKeyRaw);
+  const clientIp = (opts?.clientIp || "").trim().slice(0, 64);
   const isNewName = Boolean(opts?.isNewName);
   if (deviceKey.length < 8) {
     throw new Error(
@@ -276,19 +419,20 @@ export async function upsertRank(
         : isPrefixedForMode(r.name_key, mode),
     ) || null;
   const prevScore = modeRow?.score ?? 0;
-  const ownerDevice = (
-    related.find((r) => (r.device_key || "").trim())?.device_key ||
-    modeRow?.device_key ||
-    ""
-  ).trim();
+  const { fromRows, stored } = await resolveOwner(bare, related);
+  const mine = isMine(related, stored, deviceKey, clientIp);
+  const hasOwner = fromRows || Boolean(stored);
 
   if (related.length > 0) {
-    if (isNewName) {
+    if (mine) {
+      // dono (mesmo aparelho ou mesmo IP) — ok
+    } else if (hasOwner) {
+      throw new RankNameTakenError(prevScore || related[0].score);
+    } else if (isNewName) {
+      // legado sem dono registrado: bloqueia roubo de nick no claim
       throw new RankNameTakenError(prevScore || related[0].score);
     }
-    if (ownerDevice && ownerDevice !== deviceKey) {
-      throw new RankNameTakenError(prevScore || related[0].score);
-    }
+    // legado sem dono + score de quem já tinha o nick no aparelho → libera e grava dono
   }
 
   const best = Math.max(score, prevScore);
@@ -316,6 +460,9 @@ export async function upsertRank(
   if (deviceKeySupported !== false) {
     payload.device_key = deviceKey;
   }
+  if (clientIpSupported !== false && clientIp) {
+    payload.client_ip = clientIp;
+  }
 
   const onConflict = useModeCol ? "name_key,mode" : "name_key";
   const { error: upsertErr } = await sb.from("leaderboard").upsert(payload, {
@@ -324,7 +471,25 @@ export async function upsertRank(
 
   if (upsertErr) {
     console.error("[rank] upsert", upsertErr.message);
-    if (/device_key/i.test(upsertErr.message)) {
+    if (/client_ip/i.test(upsertErr.message)) {
+      clientIpSupported = false;
+      delete payload.client_ip;
+      const { error: noIpErr } = await sb
+        .from("leaderboard")
+        .upsert(payload, { onConflict });
+      if (!noIpErr) {
+        // ok without ip column
+      } else if (/device_key/i.test(noIpErr.message)) {
+        deviceKeySupported = false;
+        delete payload.device_key;
+        const { error: fallbackErr } = await sb
+          .from("leaderboard")
+          .upsert(payload, { onConflict });
+        if (fallbackErr) throw new Error(fallbackErr.message);
+      } else {
+        throw new Error(noIpErr.message);
+      }
+    } else if (/device_key/i.test(upsertErr.message)) {
       deviceKeySupported = false;
       delete payload.device_key;
       const { error: fallbackErr } = await sb
@@ -341,12 +506,15 @@ export async function upsertRank(
     ) {
       // Conflict target may not exist yet — try name_key only with prefix
       modeColumnSupported = false;
-      const legacyPayload = {
+      const legacyPayload: Record<string, unknown> = {
         name: clean,
         name_key: prefixedKey(mode, bare),
         score: best,
         updated_at: new Date().toISOString(),
         ...(deviceKeySupported !== false ? { device_key: deviceKey } : {}),
+        ...(clientIpSupported !== false && clientIp
+          ? { client_ip: clientIp }
+          : {}),
       };
       const { error: legacyErr } = await sb
         .from("leaderboard")
@@ -359,6 +527,9 @@ export async function upsertRank(
       throw new Error(upsertErr.message);
     }
   }
+
+  // Sempre amarra aparelho + IP ao apelido (coluna no DB e/ou Storage).
+  await writeNickOwner(bare, deviceKey, clientIp);
 
   const entries = await listRanks(mode);
   const inList =

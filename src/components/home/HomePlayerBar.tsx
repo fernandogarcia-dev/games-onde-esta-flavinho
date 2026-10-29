@@ -153,8 +153,10 @@ export function HomePlayerBar() {
               </div>
             </div>
             <p className="text-[11px] text-[var(--muted)]">
-              Apelido único no site. Trocar não move pontos antigos — daqui pra
-              frente os acertos entram no nick novo, em cada ranking do modo.
+              Apelido único no site. Depois de pontuar uma vez, o nick fica
+              ligado ao seu aparelho e ao IP — aí você consegue reivindicar de
+              novo (mesmo IP ou mesmo aparelho). Trocar não move pontos antigos:
+              os próximos acertos entram no nick ativo, em cada placar do modo.
             </p>
           </div>
         ) : null}

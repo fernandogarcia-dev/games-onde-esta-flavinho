@@ -142,8 +142,8 @@ export async function claimNickname(
       return {
         ok: false,
         error: check.ownerScore
-          ? `"${check.name || clean}" já foi escolhido (${check.ownerScore.toLocaleString("pt-BR")} pts). Escolhe outro.`
-          : `"${clean}" já foi escolhido. Escolhe outro apelido.`,
+          ? `"${check.name || clean}" já foi escolhido (${check.ownerScore.toLocaleString("pt-BR")} pts). No mesmo aparelho ou IP dá pra reivindicar — senão escolhe outro.`
+          : `"${clean}" já foi escolhido. No mesmo aparelho ou IP dá pra reivindicar — senão escolhe outro.`,
       };
     }
   }
@@ -154,6 +154,7 @@ export async function claimNickname(
 export async function checkNameAvailable(name: string): Promise<{
   available: boolean;
   taken: boolean;
+  reclaimable?: boolean;
   ownerScore?: number;
   name?: string;
   error?: string;
@@ -163,12 +164,16 @@ export async function checkNameAvailable(name: string): Promise<{
     return { available: false, taken: false, error: "Nome curto demais" };
   }
   try {
-    const res = await fetch(`/api/rank?check=${encodeURIComponent(clean)}`, {
+    const deviceKey = getDeviceKey();
+    const params = new URLSearchParams({ check: clean });
+    if (deviceKey) params.set("deviceKey", deviceKey);
+    const res = await fetch(`/api/rank?${params}`, {
       cache: "no-store",
     });
     const data = (await res.json()) as {
       available?: boolean;
       taken?: boolean;
+      reclaimable?: boolean;
       ownerScore?: number;
       name?: string;
       error?: string;
@@ -180,10 +185,12 @@ export async function checkNameAvailable(name: string): Promise<{
         error: data.error || "Falha ao checar apelido",
       };
     }
-    const taken = Boolean(data.taken);
+    const available = data.available === true || data.reclaimable === true;
+    const taken = Boolean(data.taken) && !available;
     return {
-      available: data.available !== false && !taken,
+      available,
       taken,
+      reclaimable: Boolean(data.reclaimable),
       ownerScore:
         typeof data.ownerScore === "number" ? data.ownerScore : undefined,
       name: data.name,

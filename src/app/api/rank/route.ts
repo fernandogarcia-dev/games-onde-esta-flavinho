@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { clientIpFromRequest } from "@/lib/client-ip";
 import { sanitizeName } from "@/lib/ranking";
 import {
   isGlobalRankEnabled,
@@ -27,15 +28,19 @@ export async function GET(req: Request) {
     const url = new URL(req.url);
     const mode = normalizeRankMode(url.searchParams.get("mode"));
     const check = sanitizeName(url.searchParams.get("check") || "");
+    const deviceKey = String(url.searchParams.get("deviceKey") || "").trim();
+    const clientIp = clientIpFromRequest(req);
+
     if (check) {
-      const hit = await isNameTaken(check);
+      const hit = await isNameTaken(check, { deviceKey, clientIp });
       return NextResponse.json({
         global: true,
         mode,
-        available: !hit.taken,
+        available: hit.available,
         taken: hit.taken,
+        reclaimable: hit.reclaimable,
         name: hit.name,
-        ownerScore: hit.taken ? hit.score : undefined,
+        ownerScore: hit.taken || hit.reclaimable ? hit.score : undefined,
       });
     }
 
@@ -106,6 +111,7 @@ export async function POST(req: Request) {
   const deviceKey = String(body.deviceKey || "").trim();
   const isNewName = Boolean(body.isNewName);
   const mode = normalizeRankMode(body.mode);
+  const clientIp = clientIpFromRequest(req);
 
   if (!name || name.length < 2) {
     return NextResponse.json({ error: "Nome curto demais" }, { status: 400 });
@@ -125,7 +131,7 @@ export async function POST(req: Request) {
       name,
       score,
       deviceKey,
-      { isNewName, mode },
+      { isNewName, mode, clientIp },
     );
     return NextResponse.json({
       entries,
