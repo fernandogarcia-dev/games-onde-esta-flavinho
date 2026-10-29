@@ -64,7 +64,7 @@ const GuessMap = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="flex h-[min(52svh,520px)] items-center justify-center rounded-2xl border-[3px] border-[var(--ink)] bg-white sm:h-[420px] lg:h-[460px]">
+      <div className="flex h-[min(60svh,580px)] items-center justify-center rounded-2xl border-[3px] border-[var(--ink)] bg-white sm:h-[420px] lg:h-[460px]">
         <p className="text-sm font-semibold text-[var(--muted)]">
           Carregando mapa…
         </p>
