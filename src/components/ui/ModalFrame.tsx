@@ -2,8 +2,8 @@ import type { ReactNode } from "react";
 import { ModalClose } from "@/components/ui/ModalClose";
 
 /**
- * Envelope do modal: o X fica no shell (sem overflow),
- * o card interno pode rolar sem cortar o botão.
+ * Envelope do modal: shell relative + overflow visible
+ * pra o X (50/50 no canto) não ser cortado; o panel rola por dentro.
  */
 export function ModalFrame({
   onClose,
@@ -18,11 +18,11 @@ export function ModalFrame({
 }) {
   return (
     <div
-      className={`relative w-full ${className}`}
+      className={`relative w-full overflow-visible ${className}`}
       onClick={(e) => e.stopPropagation()}
     >
       <ModalClose onClose={onClose} />
-      <div className={panelClassName}>{children}</div>
+      <div className={`overflow-x-visible ${panelClassName}`}>{children}</div>
     </div>
   );
 }
