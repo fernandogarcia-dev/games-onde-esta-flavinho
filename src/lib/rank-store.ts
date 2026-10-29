@@ -1,6 +1,7 @@
 import type { GameModeId } from "@/lib/modes";
 import type { RankEntry } from "@/lib/ranking";
 import {
+  isOwnerMetaKey,
   ownerMatches,
   readNickOwner,
   writeNickOwner,
@@ -45,11 +46,13 @@ function sortBoard(entries: RankEntry[]): RankEntry[] {
 
 function rowsToEntries(rows: Row[]): RankEntry[] {
   return sortBoard(
-    rows.map((r) => ({
-      name: r.name,
-      score: r.score,
-      at: new Date(r.updated_at).getTime() || Date.now(),
-    })),
+    rows
+      .filter((r) => !isOwnerMetaKey(r.name_key))
+      .map((r) => ({
+        name: r.name,
+        score: r.score,
+        at: new Date(r.updated_at).getTime() || Date.now(),
+      })),
   );
 }
 

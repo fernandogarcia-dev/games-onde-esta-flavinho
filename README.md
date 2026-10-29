@@ -73,7 +73,7 @@ Projeto: **CadeFlavinho** → `https://elpxkbcnaexbkyynclaf.supabase.co`
 1. No Supabase → **SQL Editor** → rode `supabase/migrations/001_leaderboard.sql`
 2. Depois `supabase/migrations/002_leaderboard_device.sql` (trava apelido por aparelho — evita print falso de 1º lugar)
 3. Depois `supabase/migrations/003_leaderboard_modes.sql` (placar separado por modo: mestre / rua / parca). Sem essa migration o app ainda funciona com prefixo `rua::` / `parca::` no `name_key`.
-4. Depois `supabase/migrations/004_leaderboard_client_ip.sql` (coluna `client_ip` + garante `device_key`/`mode` se faltarem). Sem ela o app ainda registra dono do nick via Storage (`nick-owners`) e permite reivindicar no mesmo IP/aparelho.
+4. Depois `supabase/migrations/004_leaderboard_client_ip.sql` (coluna `client_ip` + garante `device_key`/`mode` se faltarem). Sem ela o app ainda registra dono do nick em linhas-meta `__owner::apelido` na própria `leaderboard` e permite reivindicar no mesmo IP/aparelho.
 5. **Project Settings → API** → copie:
    - `anon` `public` → `NEXT_PUBLIC_SUPABASE_ANON_KEY`
    - `service_role` → `SUPABASE_SERVICE_ROLE_KEY` (só server / Vercel env — nunca no browser)
