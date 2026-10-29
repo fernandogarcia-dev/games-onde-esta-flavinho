@@ -89,7 +89,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           "Login indisponível agora. Confere as chaves do Supabase no ambiente.",
       };
     }
-    const origin = window.location.origin;
+    // Mesma origem do clique (evita www vs apex matar o cookie PKCE).
+    const origin = window.location.origin.replace(/\/$/, "");
     const { error } = await sb.auth.signInWithOAuth({
       provider: "google",
       options: {

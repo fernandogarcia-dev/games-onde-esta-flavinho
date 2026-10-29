@@ -114,6 +114,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <JsonLd />
           <GoogleAnalytics />
           <ScrollToTop />
+          <HomePlayerBar />
           {children}
         </AuthProvider>
       </body>
