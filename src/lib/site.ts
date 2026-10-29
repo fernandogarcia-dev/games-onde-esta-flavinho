@@ -3,9 +3,9 @@ import { getMode, type GameModeId } from "@/lib/modes";
 
 export const SITE_URL = "https://cadeflavinho.com.br";
 export const SITE_NAME = "Cadê Flavinho";
-export const SITE_TITLE = "Cadê Flavinho? Jogo grátis de achar na multidão";
+export const SITE_TITLE = "Cadê Flavinho? — Jogue grátis e ache ele agora";
 export const SITE_DESCRIPTION =
-  "Cadê Flavinho? Jogo satírico grátis: ache o Flavinho na multidão, no Street View ou descubra o parça da fuga. Três modos, ranking mundial e zero cadastro.";
+  "Sumiu de novo. Ache o Flavinho na multidão, no Street View ou descubra o parça da fuga. 3 modos, ranking mundial, sem cadastro — clica e joga agora.";
 
 export const SITE_KEYWORDS = [
   "Cadê Flavinho",
@@ -23,7 +23,7 @@ export const SITE_KEYWORDS = [
 
 /** OG geral da home — compartilhar `/` manda esta arte. */
 export const OG_IMAGE = {
-  url: "/og-share.jpg?v=4",
+  url: "/og-share.jpg?v=5",
   width: 1200,
   height: 1200,
   alt: "Cadê Flavinho? — jogo satírico: ache ele na multidão",

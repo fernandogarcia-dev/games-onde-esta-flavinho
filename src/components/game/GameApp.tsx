@@ -1167,11 +1167,11 @@ function Landing({
           </h1>
           <p className="mt-4 max-w-md text-lg text-[var(--muted)]">
             {playerName ? `E aí, ${playerName}. ` : ""}
-            Ache ele na multidão. Relógio ligado, pontos derretendo, ranking
-            esperando.{" "}
+            Jogue grátis: pistas, mapa e multidão. Relógio ligado — ache ele
+            antes de zerar.{" "}
             {topName
-              ? `Bata ${topName} (${topScore.toLocaleString("pt-BR")} pts).`
-              : "Seja o primeiro no placar."}
+              ? `Desafia ${topName} (${topScore.toLocaleString("pt-BR")} pts).`
+              : "Entra no ranking mundial agora."}
           </p>
           <p className="mt-3 max-w-md text-sm text-[var(--muted)]">
             Obra ficcional de sátira humorística — grátis. Qualquer PIX é
