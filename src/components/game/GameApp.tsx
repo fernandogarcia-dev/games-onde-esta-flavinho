@@ -8,7 +8,10 @@ import { Leaderboard } from "@/components/game/Leaderboard";
 import { LegalNotice } from "@/components/game/LegalNotice";
 import { PixModal } from "@/components/game/PixModal";
 import { RankModal } from "@/components/game/RankModal";
-import { PlayerNameForm } from "@/components/game/PlayerNameForm";
+import {
+  PlayerNameForm,
+  PlayerNameLanding,
+} from "@/components/game/PlayerNameForm";
 import {
   ResultMark,
   ResultShell,
@@ -31,6 +34,7 @@ import {
 import type { Difficulty } from "@/lib/types";
 import {
   checkNameAvailable,
+  claimNickname,
   clearPlayerName,
   fetchLeaderboard,
   getPlayerName,
@@ -106,6 +110,8 @@ export function GameApp({
   const [playerName, setPlayerNameState] = useState("");
   const [nameDraft, setNameDraft] = useState("");
   const [needsName, setNeedsName] = useState(false);
+  const [nameFeedback, setNameFeedback] = useState("");
+  const [savingRank, setSavingRank] = useState(false);
   const [board, setBoard] = useState<RankEntry[]>([]);
   const [boardGlobal, setBoardGlobal] = useState(false);
   const [boardError, setBoardError] = useState<string | null>(null);
@@ -206,6 +212,25 @@ export function GameApp({
     if (remoteRank && remoteRank > 0) setMyRank(remoteRank);
     if (typeof myScore === "number" && myScore > 0) {
       setBest((b) => Math.max(b, myScore));
+    }
+  }
+
+  async function saveLandingName() {
+    setSavingRank(true);
+    setNameFeedback("");
+    try {
+      const claimed = await claimNickname(nameDraft, board);
+      if (!claimed.ok) {
+        setNameFeedback(claimed.error);
+        trackNameSubmit("mestre", { success: false });
+        return;
+      }
+      setPlayerNameState(claimed.name);
+      setNameDraft(claimed.name);
+      trackNameSubmit("mestre", { success: true });
+      await refreshBoard();
+    } finally {
+      setSavingRank(false);
     }
   }
 
@@ -552,10 +577,15 @@ export function GameApp({
               citiesTotal={citiesTotal}
               difficulty={difficulty}
               playerName={playerName}
+              nameDraft={nameDraft}
+              nameBusy={savingRank}
+              nameError={nameFeedback || null}
               topScore={board[0]?.score ?? 0}
               topName={board[0]?.name ?? ""}
               shareText={inviteShareText}
               onDifficultyChange={setDifficulty}
+              onNameDraftChange={setNameDraft}
+              onSaveName={() => void saveLandingName()}
               onStart={() => startGame(difficulty)}
             />
             <Leaderboard
@@ -1040,20 +1070,30 @@ function Landing({
   citiesTotal,
   difficulty,
   playerName,
+  nameDraft,
+  nameBusy,
+  nameError,
   topScore,
   topName,
   shareText,
   onDifficultyChange,
+  onNameDraftChange,
+  onSaveName,
   onStart,
 }: {
   best: number;
   citiesTotal: number;
   difficulty: Difficulty;
   playerName: string;
+  nameDraft: string;
+  nameBusy: boolean;
+  nameError: string | null;
   topScore: number;
   topName: string;
   shareText: string;
   onDifficultyChange: (d: Difficulty) => void;
+  onNameDraftChange: (value: string) => void;
+  onSaveName: () => void;
   onStart: () => void;
 }) {
   const modes: {
@@ -1179,6 +1219,15 @@ function Landing({
             </div>
           </div>
 
+          <PlayerNameLanding
+            playerName={playerName}
+            draft={nameDraft}
+            onDraftChange={onNameDraftChange}
+            onSave={onSaveName}
+            busy={nameBusy}
+            error={nameError}
+          />
+
           <div className="mt-7 flex flex-wrap gap-3">
             <Button size="lg" onClick={onStart}>
               Cadê ele? Vamos!
@@ -1187,7 +1236,9 @@ function Landing({
           <p className="mt-4 text-sm text-[var(--muted)]">
             {best > 0
               ? `Seu recorde: ${best.toLocaleString("pt-BR")} pts · modo ${labelMode(difficulty)}: ${citiesTotal} cidades`
-              : `Modo ${labelMode(difficulty)}: ${citiesTotal} cidades no mapa. Cada achado começa com ${findScoreMax(difficulty).toLocaleString("pt-BR")} pts no relógio.`}
+              : playerName
+                ? `Modo ${labelMode(difficulty)}: ${citiesTotal} cidades no mapa. Cada achado começa com ${findScoreMax(difficulty).toLocaleString("pt-BR")} pts no relógio.`
+                : "Pode jogar sem apelido — mas pra subir no ranking, entra no placar acima."}
           </p>
           <div className="mt-5">
             <ShareBar
