@@ -18,7 +18,7 @@ export function ModalFrame({
 }) {
   return (
     <div
-      className={`relative w-full pt-3 pr-3 ${className}`}
+      className={`relative w-full ${className}`}
       onClick={(e) => e.stopPropagation()}
     >
       <ModalClose onClose={onClose} />
