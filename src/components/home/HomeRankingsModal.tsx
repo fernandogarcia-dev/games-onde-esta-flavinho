@@ -214,7 +214,7 @@ export function HomeRankingsModal({ open, onClose }: Props) {
           style={{ borderColor: `${active.accent}55`, background: active.soft }}
         >
           <p
-            className="px-3 pt-2 text-xs font-bold uppercase tracking-[0.16em]"
+            className="px-3 pb-3 pt-3 text-xs font-bold uppercase tracking-[0.16em]"
             style={{ color: active.accent }}
           >
             {active.name} · {track === "reg" ? "Conta" : "Anônimos"}
@@ -224,18 +224,20 @@ export function HomeRankingsModal({ open, onClose }: Props) {
               Carregando…
             </p>
           ) : (
-            <Leaderboard
-              entries={board.entries}
-              global={board.global}
-              highlight={playerName}
-              myRank={board.myRank}
-              error={board.error}
-              shareMode={tab}
-              compact
-              full
-              hideChrome
-              track={track}
-            />
+            <div className="mt-1">
+              <Leaderboard
+                entries={board.entries}
+                global={board.global}
+                highlight={playerName}
+                myRank={board.myRank}
+                error={board.error}
+                shareMode={tab}
+                compact
+                full
+                hideChrome
+                track={track}
+              />
+            </div>
           )}
         </div>
       </div>
