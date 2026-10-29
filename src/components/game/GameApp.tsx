@@ -9,9 +9,11 @@ import { LegalNotice } from "@/components/game/LegalNotice";
 import { PixModal } from "@/components/game/PixModal";
 import { RankModal } from "@/components/game/RankModal";
 import {
+  ContaNickNeeded,
   PlayerNameForm,
   PlayerNameLanding,
 } from "@/components/game/PlayerNameForm";
+import { useAuthOptional } from "@/components/auth/AuthProvider";
 import {
   ResultMark,
   ResultShell,
@@ -86,6 +88,7 @@ export function GameApp({
   onBackToModes?: () => void;
 } = {}) {
   const rankSubmit = useRankSubmit();
+  const auth = useAuthOptional();
   const [phase, setPhase] = useState<Phase>("landing");
   useScrollTop([phase]);
   const [difficulty, setDifficulty] = useState<Difficulty>("medium");
@@ -121,6 +124,8 @@ export function GameApp({
   const [freshClue, setFreshClue] = useState<number | null>(null);
   const findDeadlineRef = useRef<number | null>(null);
   const foundLockRef = useRef(false);
+  const pendingPublishRef = useRef(false);
+  const pendingPointsRef = useRef(0);
   const cluesPanelRef = useRef<HTMLDivElement | null>(null);
   const freshClueRef = useRef<HTMLLIElement | null>(null);
   const freshClueTimerRef = useRef<number | null>(null);
@@ -155,9 +160,14 @@ export function GameApp({
 
   useEffect(() => {
     setBest(getBestScore());
-    setPlayerNameState(getPlayerName());
     void refreshBoard();
   }, []);
+
+  useEffect(() => {
+    const name = rankSubmit.playerName || getPlayerName();
+    setPlayerNameState(name);
+    if (name) setNameDraft(name);
+  }, [rankSubmit.playerName]);
 
   useEffect(() => {
     if (!running) return;
@@ -220,6 +230,11 @@ export function GameApp({
   }
 
   async function saveLandingName() {
+    if (auth?.user) {
+      if (rankSubmit.isRegistered) return;
+      auth.openAccount(nameDraft || getPlayerName());
+      return;
+    }
     setSavingRank(true);
     setNameFeedback("");
     try {
@@ -417,15 +432,23 @@ export function GameApp({
     setBest(Math.max(prevBest, nextScore));
     setNewRecord(isNew);
 
-    const existing = rankSubmit.playerName || getPlayerName();
-    if (!existing) {
+    if (rankSubmit.needsRegNick) {
       setNeedsName(true);
-      setNameDraft("");
+      pendingPublishRef.current = true;
+      pendingPointsRef.current = gained;
       trackNamePrompt("mestre");
+      auth?.openAccount(nameDraft || getPlayerName());
     } else {
-      setNeedsName(false);
-      // Soma só o ganho desta caçada ao placar de carreira
-      await publishScore(gained, existing, { accumulate: true });
+      const existing = rankSubmit.playerName || getPlayerName();
+      if (!existing) {
+        setNeedsName(true);
+        setNameDraft("");
+        trackNamePrompt("mestre");
+      } else {
+        setNeedsName(false);
+        // Soma só o ganho desta caçada ao placar de carreira
+        await publishScore(gained, existing, { accumulate: true });
+      }
     }
     setPhase("win");
   }
@@ -435,7 +458,53 @@ export function GameApp({
     setScore((s) => Math.max(0, s - CLICK_MISS_PENALTY));
   }
 
+  // Conta acabou de ganhar nick → grava pontos pendentes no placar Conta.
+  useEffect(() => {
+    if (!needsName || !rankSubmit.isRegistered || !pendingPublishRef.current) {
+      return;
+    }
+    const pts = pendingPointsRef.current || score;
+    if (pts <= 0) return;
+    pendingPublishRef.current = false;
+    void (async () => {
+      const ok = await publishScore(pts, rankSubmit.playerName, {
+        isNewName: true,
+        accumulate: true,
+      });
+      trackNameSubmit("mestre", { success: ok });
+      if (ok) {
+        setNeedsName(false);
+        setFeedback("");
+        setPlayerNameState(rankSubmit.playerName);
+      }
+    })();
+  }, [needsName, rankSubmit.isRegistered, rankSubmit.playerName, score]);
+
   async function confirmName() {
+    if (auth?.user) {
+      if (rankSubmit.isRegistered) {
+        setSavingRank(true);
+        try {
+          const pts = pendingPointsRef.current || score;
+          const ok = await publishScore(pts, rankSubmit.playerName, {
+            accumulate: true,
+          });
+          trackNameSubmit("mestre", { success: ok });
+          if (ok) {
+            setNeedsName(false);
+            setFeedback("");
+          }
+        } finally {
+          setSavingRank(false);
+        }
+        return;
+      }
+      pendingPublishRef.current = true;
+      pendingPointsRef.current = score;
+      auth.openAccount(nameDraft || getPlayerName());
+      return;
+    }
+
     const clean = sanitizeName(nameDraft);
     if (!clean || clean.length < 2 || savingRank) return;
 
@@ -486,7 +555,11 @@ export function GameApp({
   }
 
   function nextLevel() {
-    if (needsName) return;
+    // Permite seguir sem gravar placar (anônimo ou Conta sem nick).
+    if (needsName) {
+      setNeedsName(false);
+      pendingPublishRef.current = false;
+    }
     if (levelIndex >= run.length - 1) {
       setPhase("landing");
       setRunning(false);
@@ -951,16 +1024,30 @@ export function GameApp({
 
               {needsName ? (
                 <div className="mx-auto mt-5 max-w-sm space-y-3">
-                  <PlayerNameForm
-                    value={nameDraft}
-                    onChange={setNameDraft}
-                    onSubmit={() => void confirmName()}
-                    busy={savingRank}
-                    error={feedback || null}
-                  />
+                  {rankSubmit.needsRegNick ? (
+                    <ContaNickNeeded
+                      score={score}
+                      preferredNick={nameDraft || getPlayerName()}
+                    />
+                  ) : auth?.user ? (
+                    <p className="text-sm font-semibold text-[var(--ink)]">
+                      Gravando no placar Conta…
+                    </p>
+                  ) : (
+                    <PlayerNameForm
+                      value={nameDraft}
+                      onChange={setNameDraft}
+                      onSubmit={() => void confirmName()}
+                      busy={savingRank}
+                      error={feedback || null}
+                    />
+                  )}
                   <p className="text-xs font-semibold text-[var(--muted)]">
-                    Entra no placar pra gravar os pontos — ou continua sem
-                    salvar.
+                    {rankSubmit.needsRegNick
+                      ? "Depois do apelido da Conta, os pontos sobem sozinhos."
+                      : auth?.user
+                        ? ""
+                        : "Entra no placar pra gravar os pontos — ou continua sem salvar."}
                   </p>
                   <Button
                     size="lg"

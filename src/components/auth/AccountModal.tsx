@@ -112,8 +112,9 @@ export function AccountModal({ open, onClose, preferredNick = "" }: Props) {
         </div>
 
         <p className="mt-2 text-sm text-[var(--muted)]">
-          Anônimo e Conta são placares separados. Mesmo nome pode existir nos
-          dois — na Conta o nick fica no seu Google.
+          Anônimo e Conta são placares separados. O mesmo texto de nick pode
+          existir nos dois — na Conta ele fica ligado ao seu Google e não
+          compete com quem já usou o nome no placar anônimo.
         </p>
 
         {error ? (

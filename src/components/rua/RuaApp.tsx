@@ -23,9 +23,11 @@ import {
   ResultShell,
 } from "@/components/game/ResultShell";
 import {
+  ContaNickNeeded,
   PlayerNameForm,
   PlayerNameLanding,
 } from "@/components/game/PlayerNameForm";
+import { useAuthOptional } from "@/components/auth/AuthProvider";
 import {
   countryAt,
   ensureCountryIndex,
@@ -95,6 +97,7 @@ const modeMeta = getMode("rua");
 
 export function RuaApp({ onBack }: { onBack: () => void }) {
   const rankSubmit = useRankSubmit();
+  const auth = useAuthOptional();
   const [phase, setPhase] = useState<Phase>("landing");
   useScrollTop([phase]);
   const [difficulty, setDifficulty] = useState<Difficulty>("medium");
@@ -106,6 +109,7 @@ export function RuaApp({ onBack }: { onBack: () => void }) {
   const [guessCountryName, setGuessCountryName] = useState<string | null>(null);
   const [confirming, setConfirming] = useState(false);
   const confirmingLockRef = useRef(false);
+  const pendingPublishRef = useRef(false);
   const [elapsed, setElapsed] = useState(0);
   const [running, setRunning] = useState(false);
   const [best, setBest] = useState(0);
@@ -139,10 +143,15 @@ export function RuaApp({ onBack }: { onBack: () => void }) {
 
   useEffect(() => {
     setBest(getModeBest("rua"));
-    setPlayerNameState(getPlayerName());
     void refreshBoard();
     void ensureCountryIndex().catch(() => {});
   }, []);
+
+  useEffect(() => {
+    const name = rankSubmit.playerName || getPlayerName();
+    setPlayerNameState(name);
+    if (name) setNameDraft(name);
+  }, [rankSubmit.playerName]);
 
   useEffect(() => {
     if (!running) return;
@@ -228,6 +237,14 @@ export function RuaApp({ onBack }: { onBack: () => void }) {
       elapsedSec: elapsed,
     });
     if (!hit || finalScore <= 0) return;
+    // Conta logada sem nick → modal Conta, nunca form anônimo.
+    if (rankSubmit.needsRegNick) {
+      setNeedsName(true);
+      pendingPublishRef.current = true;
+      trackNamePrompt("rua");
+      auth?.openAccount(nameDraft || getPlayerName());
+      return;
+    }
     const name = rankSubmit.playerName || getPlayerName();
     if (!name) {
       setNeedsName(true);
@@ -236,6 +253,26 @@ export function RuaApp({ onBack }: { onBack: () => void }) {
     }
     await publishScore(finalScore, name);
   }
+
+  // Conta acabou de ganhar nick → grava pontos pendentes sem claim anônimo.
+  useEffect(() => {
+    if (!needsName || !rankSubmit.isRegistered || !pendingPublishRef.current) {
+      return;
+    }
+    if (!won || score <= 0) return;
+    pendingPublishRef.current = false;
+    void (async () => {
+      const ok = await publishScore(score, rankSubmit.playerName, {
+        isNewName: true,
+      });
+      trackNameSubmit("rua", { success: ok });
+      if (ok) {
+        setNeedsName(false);
+        setNameFeedback("");
+        setPlayerNameState(rankSubmit.playerName);
+      }
+    })();
+  }, [needsName, rankSubmit.isRegistered, rankSubmit.playerName, won, score]);
 
   async function confirmGuess() {
     if (!city || !guess || confirming || confirmingLockRef.current) return;
@@ -260,6 +297,12 @@ export function RuaApp({ onBack }: { onBack: () => void }) {
   }
 
   async function saveLandingName() {
+    // Logado nunca reserva nick anônimo — Conta é outro placar.
+    if (auth?.user) {
+      if (rankSubmit.isRegistered) return;
+      auth.openAccount(nameDraft || getPlayerName());
+      return;
+    }
     setSavingRank(true);
     try {
       const claimed = await claimNickname(nameDraft, board);
@@ -276,6 +319,20 @@ export function RuaApp({ onBack }: { onBack: () => void }) {
   }
 
   async function saveNameAndRank() {
+    if (auth?.user) {
+      if (rankSubmit.isRegistered) {
+        const ok = await publishScore(score, rankSubmit.playerName);
+        trackNameSubmit("rua", { success: ok });
+        if (ok) {
+          setNeedsName(false);
+          setNameFeedback("");
+        }
+        return;
+      }
+      pendingPublishRef.current = true;
+      auth.openAccount(nameDraft || getPlayerName());
+      return;
+    }
     const alreadyMine =
       getPlayerName().toLowerCase() === sanitizeName(nameDraft).toLowerCase();
     const claimed = await claimNickname(nameDraft, board);
@@ -555,17 +612,30 @@ export function RuaApp({ onBack }: { onBack: () => void }) {
 
               {needsName && won ? (
                 <div className="mt-5 space-y-3">
-                  <PlayerNameForm
-                    value={nameDraft}
-                    onChange={setNameDraft}
-                    onSubmit={() => void saveNameAndRank()}
-                    busy={savingRank}
-                    error={nameFeedback}
-                  />
+                  {rankSubmit.needsRegNick ? (
+                    <ContaNickNeeded
+                      score={score}
+                      preferredNick={nameDraft || getPlayerName()}
+                    />
+                  ) : auth?.user ? (
+                    <p className="text-sm font-semibold text-[var(--ink)]">
+                      Gravando no placar Conta…
+                    </p>
+                  ) : (
+                    <PlayerNameForm
+                      value={nameDraft}
+                      onChange={setNameDraft}
+                      onSubmit={() => void saveNameAndRank()}
+                      busy={savingRank}
+                      error={nameFeedback}
+                    />
+                  )}
                   <p className="text-xs font-semibold text-[var(--muted)]">
-                    Entra no placar pra gravar os{" "}
-                    {score.toLocaleString("pt-BR")} pts — ou joga de novo sem
-                    salvar.
+                    {rankSubmit.needsRegNick
+                      ? "Depois do apelido da Conta, os pontos sobem sozinhos."
+                      : auth?.user
+                        ? ""
+                        : `Entra no placar pra gravar os ${score.toLocaleString("pt-BR")} pts — ou joga de novo sem salvar.`}
                   </p>
                   <div className="flex flex-wrap justify-center gap-3">
                     <Button size="lg" onClick={() => startGame(difficulty)}>

@@ -27,6 +27,8 @@ Cada modo tem **dois placares** (abas no modal de ranking):
 
 O mesmo texto de nick pode existir nos dois placares. Pontos **não** migram entre eles.
 
+Com Conta logada, o jogo **não** pede nick anônimo de novo: o apelido da Conta vale nos três modos. Se o Google já entrou e ainda falta apelido, o modal Conta abre — sem misturar com “nome já existe” do placar anônimo.
+
 ### Ligar Google Auth (Supabase)
 
 1. [Google Cloud](https://console.cloud.google.com/) → OAuth Client (Web) com redirect  

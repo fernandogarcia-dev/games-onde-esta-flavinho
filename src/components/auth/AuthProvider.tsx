@@ -10,6 +10,7 @@ import {
   type ReactNode,
 } from "react";
 import type { Session, User } from "@supabase/supabase-js";
+import { AccountModal } from "@/components/auth/AccountModal";
 import { getSupabaseBrowser } from "@/lib/supabase-browser";
 
 type AuthCtx = {
@@ -23,6 +24,9 @@ type AuthCtx = {
   setRegNickLocal: (nick: string) => void;
   signInWithGoogle: () => Promise<{ error?: string }>;
   signOut: () => Promise<void>;
+  /** Abre modal Conta (login / trocar nick). */
+  openAccount: (preferredNick?: string) => void;
+  closeAccount: () => void;
 };
 
 const Ctx = createContext<AuthCtx | null>(null);
@@ -31,6 +35,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [ready, setReady] = useState(false);
   const [session, setSession] = useState<Session | null>(null);
   const [regNick, setRegNick] = useState("");
+  const [accountOpen, setAccountOpen] = useState(false);
+  const [preferredNick, setPreferredNick] = useState("");
 
   const refreshProfile = useCallback(async () => {
     const sb = getSupabaseBrowser();
@@ -81,6 +87,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     void refreshProfile();
   }, [session?.access_token, refreshProfile]);
 
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("conta") === "1") {
+      setAccountOpen(true);
+      window.history.replaceState({}, "", window.location.pathname);
+    }
+  }, []);
+
+  const openAccount = useCallback((nick?: string) => {
+    if (nick) setPreferredNick(nick);
+    setAccountOpen(true);
+  }, []);
+
+  const closeAccount = useCallback(() => setAccountOpen(false), []);
+
   const signInWithGoogle = useCallback(async () => {
     const sb = getSupabaseBrowser();
     if (!sb) {
@@ -89,7 +111,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           "Login indisponível agora. Confere as chaves do Supabase no ambiente.",
       };
     }
-    // Mesma origem do clique (evita www vs apex matar o cookie PKCE).
     const origin = window.location.origin.replace(/\/$/, "");
     const { error } = await sb.auth.signInWithOAuth({
       provider: "google",
@@ -100,10 +121,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
     if (error) {
       return {
-        error:
-          error.message.includes("provider")
-            ? "Google ainda não está ligado no Supabase Auth. Ativa o provider Google no painel."
-            : error.message,
+        error: error.message.includes("provider")
+          ? "Google ainda não está ligado no Supabase Auth. Ativa o provider Google no painel."
+          : error.message,
       };
     }
     return {};
@@ -127,11 +147,31 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setRegNickLocal: setRegNick,
       signInWithGoogle,
       signOut,
+      openAccount,
+      closeAccount,
     }),
-    [ready, session, regNick, refreshProfile, signInWithGoogle, signOut],
+    [
+      ready,
+      session,
+      regNick,
+      refreshProfile,
+      signInWithGoogle,
+      signOut,
+      openAccount,
+      closeAccount,
+    ],
   );
 
-  return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
+  return (
+    <Ctx.Provider value={value}>
+      {children}
+      <AccountModal
+        open={accountOpen}
+        onClose={closeAccount}
+        preferredNick={preferredNick || regNick}
+      />
+    </Ctx.Provider>
+  );
 }
 
 export function useAuth(): AuthCtx {
@@ -142,7 +182,6 @@ export function useAuth(): AuthCtx {
   return ctx;
 }
 
-/** Safe fora do provider (testes / SSR boundary). */
 export function useAuthOptional(): AuthCtx | null {
   return useContext(Ctx);
 }
