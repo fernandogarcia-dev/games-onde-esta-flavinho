@@ -18,6 +18,7 @@ import {
 } from "@/components/game/ResultShell";
 import { ShareBar } from "@/components/game/ShareBar";
 import { ModeTheme } from "@/components/home/ModeTheme";
+import { getMode } from "@/lib/modes";
 import { useScrollTop } from "@/hooks/useScrollTop";
 import {
   cityCatalogSize,
@@ -1247,7 +1248,7 @@ function Landing({
 
           <div className="mt-7 flex flex-wrap gap-3">
             <Button size="lg" onClick={onStart}>
-              Cadê ele? Vamos!
+              {getMode("mestre").playCta}
             </Button>
           </div>
           <p className="mt-4 text-sm text-[var(--muted)]">

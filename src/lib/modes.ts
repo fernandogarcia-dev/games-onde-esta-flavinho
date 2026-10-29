@@ -17,8 +17,10 @@ export type GameModeMeta = {
   ogImage: string;
   ogWidth: number;
   ogHeight: number;
-  /** Label do botão na home */
+  /** Label do botão na home (entrar no modo) */
   cta: string;
+  /** Label do botão na landing do modo (começar a partida) */
+  playCta: string;
   /** Cor principal do modo (borda/botão/ênfase) */
   accent: string;
   /** Fundo suave do card / páginas */
@@ -44,7 +46,8 @@ export const GAME_MODES: GameModeMeta[] = [
     ogImage: "/modes/mestre.jpg?v=1",
     ogWidth: 1200,
     ogHeight: 900,
-    cta: "Caçar na multidão",
+    cta: "Clique para entrar",
+    playCta: "Clique para começar",
     accent: "#1f8a5b",
     soft: "#e8f6ef",
     glow: "#6bc49a",
@@ -57,7 +60,7 @@ export const GAME_MODES: GameModeMeta[] = [
     blurb:
       "Street View + um pin no mapa. País errado é erro; país certo conta — e a distância diz o quão perto você chegou.",
     seoDescription:
-      "Modo Rua da Amargura: Street View, um chute no mapa e ranking mundial. País certo conta — grátis no navegador.",
+      "Modo Rua da Amargura: Street View, um pin no mapa e ranking mundial. País certo conta — grátis no navegador.",
     tone: "bg-[#fff4d6] border-[#d4a017]",
     badge: "Modo 2",
     art: "/modes/rua.jpg",
@@ -65,7 +68,8 @@ export const GAME_MODES: GameModeMeta[] = [
     ogImage: "/modes/rua.jpg?v=1",
     ogWidth: 1200,
     ogHeight: 900,
-    cta: "Abrir a rua",
+    cta: "Clique para entrar",
+    playCta: "Clique para começar",
     accent: "#b8860b",
     soft: "#fff4d6",
     glow: "#e4c04a",
@@ -86,7 +90,8 @@ export const GAME_MODES: GameModeMeta[] = [
     ogImage: "/modes/parca.jpg?v=1",
     ogWidth: 1200,
     ogHeight: 900,
-    cta: "Descobrir o parça",
+    cta: "Clique para entrar",
+    playCta: "Clique para começar",
     accent: "#c2410c",
     soft: "#fde8e4",
     glow: "#e07a55",

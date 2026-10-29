@@ -328,7 +328,7 @@ export function ParcaApp({ onBack }: { onBack: () => void }) {
 
                 <div className="mt-7 flex flex-wrap gap-3">
                   <Button size="lg" onClick={() => startGame(difficulty)}>
-                    Quem ele levou?
+                    {modeMeta.playCta}
                   </Button>
                   <Button variant="secondary" onClick={onBack}>
                     Voltar aos modos
