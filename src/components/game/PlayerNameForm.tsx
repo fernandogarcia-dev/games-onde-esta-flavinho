@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { sanitizeName } from "@/lib/ranking";
 
@@ -34,7 +35,8 @@ export function PlayerNameForm({
         Entra no placar pra desafiar a galera
       </p>
       <p className="mt-1 text-xs text-[var(--muted)]">
-        Sem apelido a pontuação não sobe no ranking mundial. Apelido único: se
+        Sem apelido a pontuação não sobe no ranking deste modo. O mesmo nick
+        vale nos três modos, mas cada placar acumula separado. Apelido único: se
         alguém já usou, não dá pra repetir.
       </p>
       {existingName ? (
@@ -93,11 +95,21 @@ export function PlayerNameLanding({
     return (
       <div className="mt-5 rounded-2xl border-2 border-dashed border-[var(--ink)]/30 bg-white/80 px-4 py-3">
         <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[var(--brand)]">
-          No placar
+          No placar deste modo
         </p>
         <p className="mt-1 text-sm font-semibold text-[var(--ink)]">
-          Jogando como <strong className="font-[family-name:var(--font-display)] text-lg">{playerName}</strong>
-          {" — "}acertos sobem no ranking mundial.
+          Jogando como{" "}
+          <strong className="font-[family-name:var(--font-display)] text-lg">
+            {playerName}
+          </strong>
+          {" — "}acertos sobem só no ranking deste modo.
+        </p>
+        <p className="mt-1 text-xs text-[var(--muted)]">
+          Quer trocar o nick?{" "}
+          <Link href="/" className="font-bold text-[var(--brand)] underline">
+            Volta pra home
+          </Link>
+          .
         </p>
       </div>
     );
