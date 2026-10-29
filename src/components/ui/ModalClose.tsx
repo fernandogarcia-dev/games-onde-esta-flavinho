@@ -1,4 +1,4 @@
-/** X no canto: 50% dentro / 50% fora (centro no fio da borda). */
+/** X no canto: ~2/3 dentro, ~1/3 fora. */
 export function ModalClose({ onClose }: { onClose: () => void }) {
   return (
     <button
