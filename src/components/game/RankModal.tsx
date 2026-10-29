@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useAuthOptional } from "@/components/auth/AuthProvider";
-import { Button } from "@/components/ui/Button";
 import { Leaderboard } from "@/components/game/Leaderboard";
+import { ModalClose } from "@/components/ui/ModalClose";
 import { fetchModeLeaderboard } from "@/lib/mode-ranking";
 import type { GameModeId } from "@/lib/modes";
 import { getPlayerName, type RankEntry, type RankTrack } from "@/lib/ranking";
@@ -132,9 +132,10 @@ export function RankModal({
       onClick={onClose}
     >
       <div
-        className="max-h-[90vh] w-full max-w-lg overflow-y-auto"
+        className="relative max-h-[90vh] w-full max-w-lg overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
+        <ModalClose onClose={onClose} />
         <Leaderboard
           entries={board.entries}
           global={board.global}
@@ -148,11 +149,6 @@ export function RankModal({
           onTrackChange={setTrack}
           full
         />
-        <div className="mt-3 flex justify-end">
-          <Button variant="secondary" onClick={onClose}>
-            Fechar
-          </Button>
-        </div>
       </div>
     </div>
   );

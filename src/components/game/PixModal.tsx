@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { PixPanel } from "@/components/game/PixPanel";
+import { ModalClose } from "@/components/ui/ModalClose";
 
 type Props = {
   open: boolean;
@@ -39,14 +40,7 @@ export function PixModal({ open, onClose }: Props) {
         aria-label="Apoio voluntário via PIX"
         className="animate-rise relative z-[81] w-full max-w-md"
       >
-        <button
-          type="button"
-          onClick={onClose}
-          className="absolute -right-1 -top-3 z-10 flex h-9 w-9 items-center justify-center rounded-full border-2 border-[var(--ink)] bg-white text-lg font-black text-[var(--ink)] shadow-[2px_2px_0_var(--ink)]"
-          aria-label="Fechar"
-        >
-          ×
-        </button>
+        <ModalClose onClose={onClose} />
         <PixPanel />
       </div>
     </div>

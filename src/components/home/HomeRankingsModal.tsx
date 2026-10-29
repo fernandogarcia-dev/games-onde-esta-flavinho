@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useAuthOptional } from "@/components/auth/AuthProvider";
-import { Button } from "@/components/ui/Button";
 import { Leaderboard } from "@/components/game/Leaderboard";
+import { ModalClose } from "@/components/ui/ModalClose";
 import { GAME_MODES, type GameModeId } from "@/lib/modes";
 import { trackRankingView } from "@/lib/analytics";
 import { fetchModeLeaderboard } from "@/lib/mode-ranking";
@@ -112,21 +112,17 @@ export function HomeRankingsModal({ open, onClose }: Props) {
       onClick={onClose}
     >
       <div
-        className="max-h-[92vh] w-full max-w-xl overflow-y-auto rounded-[1.5rem] border-[3px] border-[var(--ink)] bg-[var(--paper)] p-4 shadow-[10px_10px_0_var(--ink)] sm:p-6"
+        className="relative max-h-[92vh] w-full max-w-xl overflow-y-auto rounded-[1.5rem] border-[3px] border-[var(--ink)] bg-[var(--paper)] p-4 shadow-[10px_10px_0_var(--ink)] sm:p-6"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-start justify-between gap-3">
-          <div>
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-[var(--brand)]">
-              Placar
-            </p>
-            <h2 className="mt-1 font-[family-name:var(--font-display)] text-2xl text-[var(--ink)] sm:text-3xl">
-              Rankings
-            </h2>
-          </div>
-          <Button variant="secondary" size="sm" onClick={onClose}>
-            Fechar
-          </Button>
+        <ModalClose onClose={onClose} />
+        <div>
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-[var(--brand)]">
+            Placar
+          </p>
+          <h2 className="mt-1 pr-8 font-[family-name:var(--font-display)] text-2xl text-[var(--ink)] sm:text-3xl">
+            Rankings
+          </h2>
         </div>
 
         <div
