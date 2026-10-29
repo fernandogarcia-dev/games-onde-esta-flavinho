@@ -61,6 +61,7 @@ export function Leaderboard({
   full = false,
   error,
   shareText,
+  shareMode = "home",
   onViewFull,
 }: {
   entries: RankEntry[];
@@ -74,6 +75,7 @@ export function Leaderboard({
   full?: boolean;
   error?: string | null;
   shareText?: string;
+  shareMode?: "home" | "mestre" | "rua" | "parca";
   onViewFull?: () => void;
 }) {
   const rows = buildRows(entries, highlight, myRank, myScore, 10, full);
@@ -186,6 +188,8 @@ export function Leaderboard({
             text={shareText}
             label="Desafia no ranking"
             compact
+            mode={shareMode}
+            source="board"
           />
         </div>
       )}

@@ -46,10 +46,18 @@ export async function readNickOwner(nameKey: string): Promise<NickOwner | null> 
   }
 }
 
+/**
+ * Grava dono do apelido.
+ * - Mesmo device: atualiza IP.
+ * - Sem dono ainda: grava device + IP.
+ * - Reclaim por IP (forceDevice): aparelho novo no mesmo IP assume o nick.
+ * - Caso contrário: IP novo NÃO rouba o device_key.
+ */
 export async function writeNickOwner(
   nameKey: string,
   deviceKey: string,
   clientIp: string,
+  opts?: { forceDevice?: boolean },
 ): Promise<void> {
   const bare = nameKey.trim().toLowerCase();
   const device_key = (deviceKey || "").trim().slice(0, 64);
@@ -59,13 +67,25 @@ export async function writeNickOwner(
   if (!sb) return;
 
   const prev = await readNickOwner(bare);
+  const sameDevice =
+    Boolean(device_key) &&
+    Boolean(prev?.device_key) &&
+    prev!.device_key === device_key;
+  const noPriorDevice = !prev?.device_key;
+  const forceDevice = Boolean(opts?.forceDevice);
+
+  let nextDevice = prev?.device_key || "";
+  if (forceDevice && device_key) nextDevice = device_key;
+  else if (sameDevice || noPriorDevice) nextDevice = device_key || nextDevice;
+
   const payload: NickOwner = {
-    device_key: device_key || prev?.device_key || "",
+    device_key: nextDevice,
     client_ip: client_ip || prev?.client_ip || "",
     at: Date.now(),
   };
-  if (!client_ip && prev?.client_ip) payload.client_ip = prev.client_ip;
-  if (!device_key && prev?.device_key) payload.device_key = prev.device_key;
+  if (!payload.client_ip && prev?.client_ip) {
+    payload.client_ip = prev.client_ip;
+  }
 
   const row: Record<string, unknown> = {
     name: JSON.stringify(payload),

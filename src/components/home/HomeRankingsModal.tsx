@@ -193,6 +193,7 @@ export function HomeRankingsModal({ open, onClose }: Props) {
               highlight={playerName}
               myRank={board.myRank}
               error={board.error}
+              shareMode={tab}
               compact
               full
             />

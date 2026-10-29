@@ -62,14 +62,14 @@ type CountryPoly = {
 let index: CountryPoly[] | null = null;
 let loading: Promise<CountryPoly[]> | null = null;
 
-/** Singapura não vem no GeoJSON compacto — bbox aproximado. */
+/** Singapura não vem no GeoJSON compacto — bbox apertado (evita Johor/MY). */
 const SINGAPORE_BBOX = {
   iso: "SG",
   name: "Singapura",
-  minLat: 1.15,
-  maxLat: 1.48,
-  minLng: 103.6,
-  maxLng: 104.1,
+  minLat: 1.2,
+  maxLat: 1.45,
+  minLng: 103.62,
+  maxLng: 104.05,
 };
 
 function pointInRing(lng: number, lat: number, ring: Ring): boolean {

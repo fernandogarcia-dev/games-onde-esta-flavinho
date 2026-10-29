@@ -97,7 +97,7 @@ export async function listRanks(
       modeColumnSupported = true;
       return rowsToEntries((data || []) as Row[]);
     }
-    if (/column .*mode/i.test(error.message) || /mode/i.test(error.message)) {
+    if (/column .*mode/i.test(error.message)) {
       modeColumnSupported = false;
     } else {
       console.error("[rank] list", error.message);
@@ -133,7 +133,8 @@ const ROW_SELECT_LEGACY = "name, score, updated_at, name_key";
 function markMissingColumn(message: string) {
   if (/client_ip/i.test(message)) clientIpSupported = false;
   if (/device_key/i.test(message)) deviceKeySupported = false;
-  if (/column .*mode/i.test(message) || /[' ]mode[' ]/i.test(message)) {
+  // Só marca mode ausente com erro explícito de coluna (evita falso positivo).
+  if (/column .*mode/i.test(message)) {
     modeColumnSupported = false;
   }
 }
@@ -297,10 +298,7 @@ export async function lookupPlayer(
     if (!error) {
       modeColumnSupported = true;
       row = (data as Row | null) ?? null;
-    } else if (
-      /column .*mode/i.test(error.message) ||
-      /mode/i.test(error.message)
-    ) {
+    } else if (/column .*mode/i.test(error.message)) {
       modeColumnSupported = false;
     } else {
       console.error("[rank] lookup", error.message);
@@ -377,10 +375,7 @@ export async function isNameTaken(
   const clientIp = (opts?.clientIp || "").trim();
   const { stored } = await resolveOwner(bare, rows);
   const mine = isMine(rows, stored, deviceKey, clientIp);
-  if (mine && (deviceKey || clientIp)) {
-    // Atualiza vínculo (ex.: mesmo IP, aparelho novo)
-    void writeNickOwner(bare, deviceKey, clientIp);
-  }
+  // NÃO grava dono no check — só na pontuação. Evita roubo de device_key via IP.
   return {
     taken: !mine,
     available: mine,
@@ -513,10 +508,9 @@ export async function upsertRank(
       }
     } else if (
       useModeCol &&
-      (/onConflict|mode|unique/i.test(upsertErr.message) ||
-        upsertErr.message.includes("name_key"))
+      /column .*mode|on conflict|conflict target/i.test(upsertErr.message)
     ) {
-      // Conflict target may not exist yet — try name_key only with prefix
+      // Conflict target / coluna mode ausente — prefixo no name_key
       modeColumnSupported = false;
       const legacyPayload: Record<string, unknown> = {
         name: clean,
@@ -540,8 +534,20 @@ export async function upsertRank(
     }
   }
 
-  // Sempre amarra aparelho + IP ao apelido (coluna no DB e/ou Storage).
-  await writeNickOwner(bare, deviceKey, clientIp);
+  // Amarra aparelho + IP. forceDevice só no reclaim explícito (mesmo IP, aparelho novo).
+  const deviceOwned = ownsNickname(
+    related.map((r) => ({ ...r, client_ip: null })),
+    deviceKey,
+    "",
+  );
+  const ipReclaim =
+    !deviceOwned &&
+    Boolean(clientIp) &&
+    (ownsNickname(related, "", clientIp) ||
+      ownerMatches(stored, "", clientIp));
+  await writeNickOwner(bare, deviceKey, clientIp, {
+    forceDevice: ipReclaim || !hasOwner,
+  });
 
   const entries = await listRanks(mode);
   const inList =

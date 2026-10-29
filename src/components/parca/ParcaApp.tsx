@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { LegalNotice } from "@/components/game/LegalNotice";
 import { PixModal } from "@/components/game/PixModal";
@@ -39,7 +39,6 @@ import {
 } from "@/lib/parcas";
 import {
   claimNickname,
-  clearPlayerName,
   getPlayerName,
   sanitizeName,
   type RankEntry,
@@ -58,6 +57,7 @@ export function ParcaApp({ onBack }: { onBack: () => void }) {
   const [difficulty, setDifficulty] = useState<Difficulty>("medium");
   const [person, setPerson] = useState<ParcaPerson | null>(null);
   const [pickedId, setPickedId] = useState<string | null>(null);
+  const pickedLockRef = useRef(false);
   const [score, setScore] = useState(0);
   const [elapsed, setElapsed] = useState(0);
   const [running, setRunning] = useState(false);
@@ -115,6 +115,7 @@ export function ParcaApp({ onBack }: { onBack: () => void }) {
     setDifficulty(d);
     setPerson(dealt[0] ?? null);
     setPickedId(null);
+    pickedLockRef.current = false;
     setScore(0);
     setElapsed(0);
     setRunning(true);
@@ -149,15 +150,10 @@ export function ParcaApp({ onBack }: { onBack: () => void }) {
         setBest((b) => Math.max(b, result.bestScore!));
       }
       if (result.code === "name_taken") {
-        clearPlayerName();
-        setPlayerNameState("");
-        setNeedsName(true);
-        setNameDraft("");
-        setMyRank(null);
         setNameFeedback(
           result.ownerScore
-            ? `Apelido já escolhido (recorde ${result.ownerScore.toLocaleString("pt-BR")} pts). Escolhe outro.`
-            : "Esse apelido já foi escolhido. Escolhe outro.",
+            ? `Não deu pra gravar: esse apelido já é de outra pessoa (${result.ownerScore.toLocaleString("pt-BR")} pts). Troca o nick na home.`
+            : "Não deu pra gravar: esse apelido já é de outra pessoa. Troca o nick na home.",
         );
         return false;
       }
@@ -188,7 +184,10 @@ export function ParcaApp({ onBack }: { onBack: () => void }) {
   }
 
   function pickPerson(id: string) {
-    if (!person || phase !== "clues" || pickedId) return;
+    if (!person || phase !== "clues" || pickedId || pickedLockRef.current) {
+      return;
+    }
+    pickedLockRef.current = true;
     setPickedId(id);
 
     if (id === person.id) {
@@ -361,6 +360,7 @@ export function ParcaApp({ onBack }: { onBack: () => void }) {
               myScore={best > 0 ? best : null}
               error={boardError}
               shareText={shareText}
+              shareMode="parca"
               onViewFull={() => openRank("landing_board")}
             />
           </div>
@@ -588,6 +588,7 @@ export function ParcaApp({ onBack }: { onBack: () => void }) {
         myScore={Math.max(score, best) > 0 ? Math.max(score, best) : null}
         error={boardError}
         shareText={shareText}
+        shareMode="parca"
       />
       <LegalNotice
         onSupport={() => {

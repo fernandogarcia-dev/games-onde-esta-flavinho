@@ -128,7 +128,8 @@ export async function claimNickname(
   const alreadyMine = getPlayerName().toLowerCase() === clean.toLowerCase();
   if (!alreadyMine) {
     const check = await checkNameAvailable(clean);
-    if (check.error && check.taken === false && check.available === false) {
+    if (check.error) {
+      // Sem fail-open: rede/API fora não libera nick alheio.
       const localHit = board.find(
         (e) => e.name.toLowerCase() === clean.toLowerCase(),
       );
@@ -138,7 +139,12 @@ export async function claimNickname(
           error: `"${localHit.name}" já foi escolhido. Escolhe outro apelido.`,
         };
       }
-    } else if (check.taken || !check.available) {
+      return {
+        ok: false,
+        error: "Não deu pra checar o apelido agora. Tenta de novo.",
+      };
+    }
+    if (check.taken || !check.available) {
       return {
         ok: false,
         error: check.ownerScore

@@ -15,6 +15,7 @@ export function RankModal({
   myScore,
   error,
   shareText,
+  shareMode = "home",
 }: {
   open: boolean;
   onClose: () => void;
@@ -25,6 +26,7 @@ export function RankModal({
   myScore?: number | null;
   error?: string | null;
   shareText?: string;
+  shareMode?: "home" | "mestre" | "rua" | "parca";
 }) {
   useEffect(() => {
     if (!open) return;
@@ -62,6 +64,7 @@ export function RankModal({
           myScore={myScore}
           error={error}
           shareText={shareText}
+          shareMode={shareMode}
           full
         />
         <div className="mt-3 flex justify-end">

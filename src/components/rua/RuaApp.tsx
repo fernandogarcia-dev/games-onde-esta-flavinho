@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { LegalNotice } from "@/components/game/LegalNotice";
 import { PixModal } from "@/components/game/PixModal";
@@ -47,7 +47,6 @@ import {
 } from "@/lib/mode-ranking";
 import {
   claimNickname,
-  clearPlayerName,
   getPlayerName,
   sanitizeName,
   type RankEntry,
@@ -105,6 +104,7 @@ export function RuaApp({ onBack }: { onBack: () => void }) {
   const [proximity, setProximity] = useState<RuaProximity>("country");
   const [guessCountryName, setGuessCountryName] = useState<string | null>(null);
   const [confirming, setConfirming] = useState(false);
+  const confirmingLockRef = useRef(false);
   const [elapsed, setElapsed] = useState(0);
   const [running, setRunning] = useState(false);
   const [best, setBest] = useState(0);
@@ -161,6 +161,8 @@ export function RuaApp({ onBack }: { onBack: () => void }) {
     setLastKm(0);
     setProximity("country");
     setGuessCountryName(null);
+    setConfirming(false);
+    confirmingLockRef.current = false;
     setElapsed(0);
     setRunning(true);
     setNeedsName(false);
@@ -194,15 +196,10 @@ export function RuaApp({ onBack }: { onBack: () => void }) {
         setBest((b) => Math.max(b, result.bestScore!));
       }
       if (result.code === "name_taken") {
-        clearPlayerName();
-        setPlayerNameState("");
-        setNeedsName(true);
-        setNameDraft("");
-        setMyRank(null);
         setNameFeedback(
           result.ownerScore
-            ? `Apelido já escolhido (recorde ${result.ownerScore.toLocaleString("pt-BR")} pts). Escolhe outro.`
-            : "Esse apelido já foi escolhido. Escolhe outro.",
+            ? `Não deu pra gravar: esse apelido já é de outra pessoa (${result.ownerScore.toLocaleString("pt-BR")} pts). Troca o nick na home.`
+            : "Não deu pra gravar: esse apelido já é de outra pessoa. Troca o nick na home.",
         );
         return false;
       }
@@ -233,20 +230,24 @@ export function RuaApp({ onBack }: { onBack: () => void }) {
   }
 
   async function confirmGuess() {
-    if (!city || !guess || confirming) return;
+    if (!city || !guess || confirming || confirmingLockRef.current) return;
+    confirmingLockRef.current = true;
     setConfirming(true);
     try {
       const km = distanceKm(guess, { lat: city.lat, lng: city.lng });
       const guessed = await countryAt(guess.lat, guess.lng);
-      const hit = sameCountry(city.country, guessed?.iso);
-      const pts = ruaScoreForGuess(km, difficulty, hit);
+      // GeoJSON compacto erra fronteiras (ex.: Genebra=FR). Perto da cidade = país ok.
+      const countryOk =
+        sameCountry(city.country, guessed?.iso) || km <= 20;
+      const pts = ruaScoreForGuess(km, difficulty, countryOk);
       setLastKm(km);
-      setProximity(hit ? ruaProximity(km) : "country");
+      setProximity(countryOk ? ruaProximity(km) : "country");
       setGuessCountryName(guessed?.name || null);
       setScore(pts);
-      await finish(pts, hit);
+      await finish(pts, countryOk);
     } finally {
       setConfirming(false);
+      confirmingLockRef.current = false;
     }
   }
 
@@ -417,6 +418,7 @@ export function RuaApp({ onBack }: { onBack: () => void }) {
               myScore={best > 0 ? best : null}
               error={boardError}
               shareText={shareText}
+              shareMode="rua"
               onViewFull={() => openRank("landing_board")}
             />
           </div>
@@ -589,6 +591,7 @@ export function RuaApp({ onBack }: { onBack: () => void }) {
         myScore={Math.max(score, best) > 0 ? Math.max(score, best) : null}
         error={boardError}
         shareText={shareText}
+        shareMode="rua"
       />
       <LegalNotice
         onSupport={() => {

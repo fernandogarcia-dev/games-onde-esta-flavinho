@@ -185,6 +185,8 @@ export function GameApp({
       const left = Math.max(0, Math.ceil((deadline - Date.now()) / 1000));
       setFindRemaining(left);
       if (left <= 0) {
+        // Trava antes do re-render pra não aceitar clique no limiar do zero.
+        foundLockRef.current = true;
         setFindActive(false);
         findDeadlineRef.current = null;
         setStreak(0);
@@ -384,7 +386,10 @@ export function GameApp({
   }
 
   async function onFound() {
-    if (foundLockRef.current || phase !== "find" || !findActive) return;
+    // Usa deadline/ref — estado React pode estar stale no clique do limiar.
+    if (foundLockRef.current) return;
+    if (findDeadlineRef.current == null) return;
+    if (Date.now() > findDeadlineRef.current) return;
     foundLockRef.current = true;
     const remaining = findRemaining;
     const base = findScoreAt(remaining, findLimit, findScoreMax(difficulty));
@@ -428,46 +433,51 @@ export function GameApp({
 
   async function confirmName() {
     const clean = sanitizeName(nameDraft);
-    if (!clean || clean.length < 2) return;
+    if (!clean || clean.length < 2 || savingRank) return;
 
     const alreadyMine =
       getPlayerName().toLowerCase() === clean.toLowerCase();
     const isNewName = !alreadyMine;
 
-    if (isNewName) {
-      const check = await checkNameAvailable(clean);
-      if (check.error && check.taken === false && check.available === false) {
-        // Rede falhou: ainda bloqueia se estiver no top carregado.
-        const localHit = board.find(
-          (e) => e.name.toLowerCase() === clean.toLowerCase(),
-        );
-        if (localHit) {
+    setSavingRank(true);
+    try {
+      if (isNewName) {
+        const check = await checkNameAvailable(clean);
+        if (check.error) {
+          const localHit = board.find(
+            (e) => e.name.toLowerCase() === clean.toLowerCase(),
+          );
           setFeedback(
-            `"${localHit.name}" já foi escolhido. Escolhe outro apelido.`,
+            localHit
+              ? `"${localHit.name}" já foi escolhido. Escolhe outro apelido.`
+              : "Não deu pra checar o apelido agora. Tenta de novo.",
           );
           return;
         }
-      } else if (check.taken || !check.available) {
-        setFeedback(
-          check.ownerScore
-            ? `"${check.name || clean}" já foi escolhido (${check.ownerScore.toLocaleString("pt-BR")} pts). Escolhe outro.`
-            : `"${clean}" já foi escolhido. Escolhe outro apelido.`,
-        );
-        return;
+        if (check.taken || !check.available) {
+          setFeedback(
+            check.ownerScore
+              ? `"${check.name || clean}" já foi escolhido (${check.ownerScore.toLocaleString("pt-BR")} pts). Escolhe outro.`
+              : `"${clean}" já foi escolhido. Escolhe outro apelido.`,
+          );
+          return;
+        }
       }
-    }
 
-    setPlayerName(clean);
-    setPlayerNameState(clean);
-    // Primeira gravação com nick: soma o total da corrida atual à carreira
-    const ok = await publishScore(score, clean, {
-      isNewName,
-      accumulate: true,
-    });
-    trackNameSubmit("mestre", { success: ok });
-    if (ok) {
-      setNeedsName(false);
-      setFeedback("");
+      setPlayerName(clean);
+      setPlayerNameState(clean);
+      // Primeira gravação com nick: soma o total da corrida atual à carreira
+      const ok = await publishScore(score, clean, {
+        isNewName,
+        accumulate: true,
+      });
+      trackNameSubmit("mestre", { success: ok });
+      if (ok) {
+        setNeedsName(false);
+        setFeedback("");
+      }
+    } finally {
+      setSavingRank(false);
     }
   }
 
@@ -599,6 +609,7 @@ export function GameApp({
               myScore={best > 0 ? best : null}
               error={boardError}
               shareText={rankShareText}
+              shareMode="mestre"
               onViewFull={() => openRank("landing_board")}
             />
           </div>
@@ -939,6 +950,7 @@ export function GameApp({
                     value={nameDraft}
                     onChange={setNameDraft}
                     onSubmit={() => void confirmName()}
+                    busy={savingRank}
                     error={feedback || null}
                   />
                 </div>
@@ -992,6 +1004,7 @@ export function GameApp({
               compact
               error={boardError}
               shareText={rankShareText}
+              shareMode="mestre"
               onViewFull={() => openRank("result_board")}
             />
           </div>
@@ -1056,6 +1069,7 @@ export function GameApp({
         myScore={Math.max(score, best) > 0 ? Math.max(score, best) : null}
         error={boardError}
         shareText={rankShareText}
+        shareMode="mestre"
       />
 
       <LegalNotice
