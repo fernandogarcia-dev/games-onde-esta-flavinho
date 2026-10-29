@@ -4,6 +4,9 @@ export const SUPABASE_URL =
   process.env.NEXT_PUBLIC_SUPABASE_URL?.trim() ||
   "https://elpxkbcnaexbkyynclaf.supabase.co";
 
+/** Fallback público do site (auth callback). */
+export const SITE_URL_FALLBACK = "https://cadeflavinho.com.br";
+
 export function supabaseConfigured() {
   return Boolean(
     SUPABASE_URL &&

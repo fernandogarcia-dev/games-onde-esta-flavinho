@@ -43,7 +43,6 @@ import {
 import {
   fetchModeLeaderboard,
   getModeBest,
-  submitModeScore,
 } from "@/lib/mode-ranking";
 import {
   claimNickname,
@@ -51,6 +50,7 @@ import {
   sanitizeName,
   type RankEntry,
 } from "@/lib/ranking";
+import { useRankSubmit } from "@/lib/use-rank-submit";
 import { formatClock } from "@/lib/scoring";
 import type { Difficulty } from "@/lib/types";
 import { cityCatalogSize } from "@/lib/deck";
@@ -94,6 +94,7 @@ type Pin = { lat: number; lng: number };
 const modeMeta = getMode("rua");
 
 export function RuaApp({ onBack }: { onBack: () => void }) {
+  const rankSubmit = useRankSubmit();
   const [phase, setPhase] = useState<Phase>("landing");
   useScrollTop([phase]);
   const [difficulty, setDifficulty] = useState<Difficulty>("medium");
@@ -124,7 +125,13 @@ export function RuaApp({ onBack }: { onBack: () => void }) {
   const citiesTotal = cityCatalogSize(difficulty);
 
   async function refreshBoard() {
-    const res = await fetchModeLeaderboard("rua", getPlayerName());
+    const who = rankSubmit.playerName || getPlayerName();
+    const res = await fetchModeLeaderboard(
+      "rua",
+      who,
+      rankSubmit.track,
+      rankSubmit.accessToken,
+    );
     setBoard(res.entries);
     setBoardGlobal(res.global);
     setBoardError(res.error || null);
@@ -180,7 +187,10 @@ export function RuaApp({ onBack }: { onBack: () => void }) {
   ) {
     setSavingRank(true);
     try {
-      const result = await submitModeScore("rua", name, total, opts);
+      const result = await rankSubmit.submit("rua", total, {
+        isNewName: opts?.isNewName,
+        name,
+      });
       if (result.entries.length > 0) {
         setBoard(result.entries);
         setBoardGlobal(result.global);
@@ -197,9 +207,11 @@ export function RuaApp({ onBack }: { onBack: () => void }) {
       }
       if (result.code === "name_taken") {
         setNameFeedback(
-          result.ownerScore
-            ? `Não deu pra gravar: esse apelido já é de outra pessoa (${result.ownerScore.toLocaleString("pt-BR")} pts). Troca o nick na home.`
-            : "Não deu pra gravar: esse apelido já é de outra pessoa. Troca o nick na home.",
+          result.suggestLogin
+            ? "Esse apelido anônimo já existe. Escolhe outro ou entra com Google (placar Conta)."
+            : result.ownerScore
+              ? `Não deu pra gravar: esse apelido já é de outra pessoa (${result.ownerScore.toLocaleString("pt-BR")} pts). Troca o nick na home.`
+              : "Não deu pra gravar: esse apelido já é de outra pessoa. Troca o nick na home.",
         );
         return false;
       }
@@ -220,7 +232,7 @@ export function RuaApp({ onBack }: { onBack: () => void }) {
       elapsedSec: elapsed,
     });
     if (!hit || finalScore <= 0) return;
-    const name = getPlayerName();
+    const name = rankSubmit.playerName || getPlayerName();
     if (!name) {
       setNeedsName(true);
       trackNamePrompt("rua");
@@ -601,12 +613,13 @@ export function RuaApp({ onBack }: { onBack: () => void }) {
         onClose={() => setShowRank(false)}
         entries={board}
         global={boardGlobal}
-        highlight={playerName || nameDraft}
+        highlight={rankSubmit.playerName || playerName || nameDraft}
         myRank={myRank}
         myScore={Math.max(score, best) > 0 ? Math.max(score, best) : null}
         error={boardError}
         shareText={shareText}
         shareMode="rua"
+        mode="rua"
       />
       <LegalNotice
         onSupport={() => {

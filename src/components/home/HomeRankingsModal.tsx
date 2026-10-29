@@ -1,12 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useAuthOptional } from "@/components/auth/AuthProvider";
 import { Button } from "@/components/ui/Button";
 import { Leaderboard } from "@/components/game/Leaderboard";
 import { GAME_MODES, type GameModeId } from "@/lib/modes";
 import { trackRankingView } from "@/lib/analytics";
 import { fetchModeLeaderboard } from "@/lib/mode-ranking";
-import { getPlayerName, type RankEntry } from "@/lib/ranking";
+import { getPlayerName, type RankEntry, type RankTrack } from "@/lib/ranking";
 
 type Props = {
   open: boolean;
@@ -28,7 +29,9 @@ const emptyBoard = (): BoardState => ({
 });
 
 export function HomeRankingsModal({ open, onClose }: Props) {
+  const auth = useAuthOptional();
   const [tab, setTab] = useState<GameModeId>("mestre");
+  const [track, setTrack] = useState<RankTrack>("anon");
   const [playerName, setPlayerName] = useState("");
   const [boards, setBoards] = useState<Record<GameModeId, BoardState>>({
     mestre: emptyBoard(),
@@ -53,14 +56,20 @@ export function HomeRankingsModal({ open, onClose }: Props) {
 
   useEffect(() => {
     if (!open) return;
-    const name = getPlayerName();
-    setPlayerName(name);
+    const anon = getPlayerName();
+    const who = track === "reg" ? auth?.regNick || "" : anon;
+    setPlayerName(who);
     setLoading(true);
     let cancelled = false;
 
     void Promise.all(
       (["mestre", "rua", "parca"] as GameModeId[]).map(async (mode) => {
-        const res = await fetchModeLeaderboard(mode, name);
+        const res = await fetchModeLeaderboard(
+          mode,
+          who,
+          track,
+          auth?.accessToken,
+        );
         return [
           mode,
           {
@@ -87,7 +96,7 @@ export function HomeRankingsModal({ open, onClose }: Props) {
     return () => {
       cancelled = true;
     };
-  }, [open]);
+  }, [open, track, auth?.regNick, auth?.accessToken]);
 
   if (!open) return null;
 
@@ -112,11 +121,8 @@ export function HomeRankingsModal({ open, onClose }: Props) {
               Placar
             </p>
             <h2 className="mt-1 font-[family-name:var(--font-display)] text-2xl text-[var(--ink)] sm:text-3xl">
-              Rankings dos modos
+              Rankings
             </h2>
-            <p className="mt-1 text-sm text-[var(--muted)]">
-              Três placares mundiais — troca a aba e compara.
-            </p>
           </div>
           <Button variant="secondary" size="sm" onClick={onClose}>
             Fechar
@@ -125,8 +131,39 @@ export function HomeRankingsModal({ open, onClose }: Props) {
 
         <div
           role="tablist"
+          aria-label="Tipo de placar"
+          className="mt-4 grid grid-cols-2 gap-1 rounded-xl border-2 border-[var(--ink)]/15 bg-[var(--sand)]/80 p-1"
+        >
+          {(
+            [
+              ["anon", "Anônimos"],
+              ["reg", "Conta"],
+            ] as const
+          ).map(([id, label]) => {
+            const on = track === id;
+            return (
+              <button
+                key={id}
+                type="button"
+                role="tab"
+                aria-selected={on}
+                onClick={() => setTrack(id)}
+                className={`rounded-lg px-2 py-2 text-center text-xs font-black uppercase tracking-wide transition sm:text-sm ${
+                  on
+                    ? "bg-white text-[var(--ink)] shadow-[2px_2px_0_var(--ink)]"
+                    : "text-[var(--muted)]"
+                }`}
+              >
+                {label}
+              </button>
+            );
+          })}
+        </div>
+
+        <div
+          role="tablist"
           aria-label="Modos"
-          className="mt-5 grid grid-cols-3 gap-2"
+          className="mt-3 grid grid-cols-3 gap-2"
         >
           {GAME_MODES.map((mode) => {
             const on = tab === mode.id;
@@ -180,11 +217,11 @@ export function HomeRankingsModal({ open, onClose }: Props) {
             className="px-3 pt-2 text-xs font-bold uppercase tracking-[0.16em]"
             style={{ color: active.accent }}
           >
-            {active.name} · mundial
+            {active.name} · {track === "reg" ? "Conta" : "Anônimos"}
           </p>
           {loading ? (
             <p className="px-3 py-8 text-center text-sm text-[var(--muted)]">
-              Carregando ranking mundial…
+              Carregando…
             </p>
           ) : (
             <Leaderboard
@@ -196,6 +233,8 @@ export function HomeRankingsModal({ open, onClose }: Props) {
               shareMode={tab}
               compact
               full
+              hideChrome
+              track={track}
             />
           )}
         </div>

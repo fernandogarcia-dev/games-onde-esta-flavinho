@@ -63,6 +63,9 @@ export function Leaderboard({
   shareText,
   shareMode = "home",
   onViewFull,
+  track = "anon",
+  onTrackChange,
+  hideChrome = false,
 }: {
   entries: RankEntry[];
   global: boolean;
@@ -77,6 +80,10 @@ export function Leaderboard({
   shareText?: string;
   shareMode?: "home" | "mestre" | "rua" | "parca";
   onViewFull?: () => void;
+  track?: "anon" | "reg";
+  onTrackChange?: (track: "anon" | "reg") => void;
+  /** Esconde título grande quando o modal pai já tem chrome. */
+  hideChrome?: boolean;
 }) {
   const rows = buildRows(entries, highlight, myRank, myScore, 10, full);
   const canExpand = Boolean(onViewFull) && !full && entries.length > 0;
@@ -87,19 +94,54 @@ export function Leaderboard({
         compact ? "p-4" : "p-5 sm:p-6"
       }`}
     >
-      <div className="flex items-end justify-between gap-2">
-        <div>
-          <p className="text-xs font-bold uppercase tracking-[0.18em] text-[var(--brand)]">
-            {global ? "Ranking mundial" : "Ranking do modo"}
-          </p>
-          <h3 className="font-[family-name:var(--font-display)] text-2xl text-[var(--ink)]">
-            Caçadores de Flavinho
-          </h3>
+      {!hideChrome ? (
+        <div className="flex items-end justify-between gap-2">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-[var(--brand)]">
+              {global ? "Ranking mundial" : "Ranking do modo"}
+            </p>
+            <h3 className="font-[family-name:var(--font-display)] text-2xl text-[var(--ink)]">
+              Caçadores de Flavinho
+            </h3>
+          </div>
+          <span className="rounded-lg bg-[var(--sand)] px-2 py-1 text-[10px] font-bold uppercase tracking-wide text-[var(--muted)]">
+            {full ? `lista · ${entries.length}` : "top 10 · você"}
+          </span>
         </div>
-        <span className="rounded-lg bg-[var(--sand)] px-2 py-1 text-[10px] font-bold uppercase tracking-wide text-[var(--muted)]">
-          {full ? `lista · ${entries.length}` : "top 10 · você"}
-        </span>
-      </div>
+      ) : null}
+
+      {onTrackChange ? (
+        <div
+          role="tablist"
+          aria-label="Tipo de placar"
+          className={`grid grid-cols-2 gap-1 rounded-xl border-2 border-[var(--ink)]/15 bg-[var(--sand)]/80 p-1 ${hideChrome ? "" : "mt-3"}`}
+        >
+          {(
+            [
+              ["anon", "Anônimos"],
+              ["reg", "Conta"],
+            ] as const
+          ).map(([id, label]) => {
+            const on = track === id;
+            return (
+              <button
+                key={id}
+                type="button"
+                role="tab"
+                aria-selected={on}
+                onClick={() => onTrackChange(id)}
+                className={`rounded-lg px-2 py-2 text-center text-xs font-black uppercase tracking-wide transition sm:text-sm ${
+                  on
+                    ? "bg-white text-[var(--ink)] shadow-[2px_2px_0_var(--ink)]"
+                    : "text-[var(--muted)] hover:text-[var(--ink)]"
+                }`}
+              >
+                {label}
+              </button>
+            );
+          })}
+        </div>
+      ) : null}
 
       {error ? (
         <p className="mt-4 text-sm text-[var(--alert)]">{error}</p>

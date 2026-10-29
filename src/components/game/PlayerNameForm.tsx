@@ -35,9 +35,8 @@ export function PlayerNameForm({
         Entra no placar pra desafiar a galera
       </p>
       <p className="mt-1 text-xs text-[var(--muted)]">
-        Sem apelido a pontuação não sobe no ranking deste modo. O mesmo nick
-        vale nos três modos, mas cada placar acumula separado. Apelido único: se
-        alguém já usou, não dá pra repetir.
+        Sem apelido a pontuação não sobe. Apelido anônimo é único — se já usaram,
+        escolhe outro ou entra com Google no placar Conta.
       </p>
       {existingName ? (
         <p className="mt-2 text-xs font-semibold text-[var(--ink)]">

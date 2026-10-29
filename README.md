@@ -18,6 +18,24 @@ Chave: `cadeflavinho@gmail.com`
 Contribuição voluntária (valor livre) para manutenção do servidor e custos operacionais do desenvolvedor.
 Sem valores predefinidos, sem cobrança por dica. O jogo continua 100% gratuito.
 
+## Placar Anônimos × Conta
+
+Cada modo tem **dois placares** (abas no modal de ranking):
+
+- **Anônimos** — nick no aparelho; se o nome já existe, escolhe outro (sem reclaim).
+- **Conta** — login Google; o nick fica no e-mail e volta em qualquer celular.
+
+O mesmo texto de nick pode existir nos dois placares. Pontos **não** migram entre eles.
+
+### Ligar Google Auth (Supabase)
+
+1. [Google Cloud](https://console.cloud.google.com/) → OAuth Client (Web) com redirect  
+   `https://<project>.supabase.co/auth/v1/callback`
+2. Supabase → Authentication → Providers → **Google** (Client ID/Secret)
+3. Supabase → URL Configuration → Redirect URLs:  
+   `https://cadeflavinho.com.br/auth/callback` e `http://localhost:43127/auth/callback`
+4. `.env.local`: `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `NEXT_PUBLIC_SITE_URL`
+
 ## Rodar local
 
 ```bash

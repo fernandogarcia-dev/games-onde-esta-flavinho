@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { AccountModal } from "@/components/auth/AccountModal";
+import { useAuth } from "@/components/auth/AuthProvider";
 import { Button } from "@/components/ui/Button";
 import {
   claimNickname,
@@ -10,161 +12,179 @@ import {
 } from "@/lib/ranking";
 
 /**
- * Troca o apelido usado em todos os modos.
- * Pontos continuam separados: cada modo tem o próprio ranking mundial.
+ * Barra compacta: nick anônimo + atalho Conta (modal).
+ * Evita poluir o hero — edição pesada fica no modal.
  */
 export function HomePlayerBar() {
-  const [playerName, setPlayerName] = useState("");
-  const [editing, setEditing] = useState(false);
+  const { user, regNick, ready } = useAuth();
+  const [anonName, setAnonName] = useState("");
   const [draft, setDraft] = useState("");
+  const [editing, setEditing] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [okMsg, setOkMsg] = useState<string | null>(null);
+  const [accountOpen, setAccountOpen] = useState(false);
+  const [preferredNick, setPreferredNick] = useState("");
 
   useEffect(() => {
     const name = getPlayerName();
-    setPlayerName(name);
+    setAnonName(name);
     setDraft(name);
-    if (!name) setEditing(true);
   }, []);
 
-  async function save() {
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("conta") === "1") {
+      setAccountOpen(true);
+      window.history.replaceState({}, "", window.location.pathname);
+    }
+  }, []);
+
+  async function saveAnon() {
     setBusy(true);
     setError(null);
-    setOkMsg(null);
     try {
       const claimed = await claimNickname(draft);
       if (!claimed.ok) {
         setError(claimed.error);
+        if (claimed.suggestLogin) {
+          setPreferredNick(claimed.takenName || draft);
+        }
         return;
       }
-      setPlayerName(claimed.name);
+      setAnonName(claimed.name);
       setDraft(claimed.name);
       setEditing(false);
-      setOkMsg("Apelido atualizado pra todos os modos.");
-      window.setTimeout(() => setOkMsg(null), 2800);
     } finally {
       setBusy(false);
     }
   }
 
-  function startEdit() {
-    setDraft(playerName);
-    setError(null);
-    setOkMsg(null);
-    setEditing(true);
-  }
-
-  function cancelEdit() {
-    setDraft(playerName);
-    setError(null);
-    if (playerName) setEditing(false);
-  }
-
-  function clearName() {
-    clearPlayerName();
-    setPlayerName("");
-    setDraft("");
-    setEditing(true);
-    setError(null);
-    setOkMsg("Apelido removido neste aparelho.");
-    window.setTimeout(() => setOkMsg(null), 2800);
-  }
+  const display = user && regNick ? regNick : anonName;
+  const badge = user ? (regNick ? "Conta" : "Conta · sem nick") : "Anônimo";
 
   return (
-    <div className="relative z-10 mx-auto w-full max-w-5xl px-4 pt-4 sm:px-6 sm:pt-6">
-      <div className="rounded-2xl border-[3px] border-[var(--ink)] bg-[var(--paper)] p-3 shadow-[5px_5px_0_var(--ink)] sm:p-4">
-        <div className="flex flex-wrap items-start justify-between gap-3">
+    <>
+      <div className="relative z-10 mx-auto w-full max-w-5xl px-4 pt-3 sm:px-6 sm:pt-4">
+        <div className="flex items-center gap-2 rounded-2xl border-[3px] border-[var(--ink)] bg-[var(--paper)] px-3 py-2 shadow-[4px_4px_0_var(--ink)] sm:px-4">
           <div className="min-w-0 flex-1">
-            <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--brand)] sm:text-[11px]">
-              Seu apelido · todos os modos
-            </p>
             {!editing ? (
-              <p className="mt-1 font-[family-name:var(--font-display)] text-xl text-[var(--ink)] sm:text-2xl">
-                {playerName}
-              </p>
+              <>
+                <p className="truncate font-[family-name:var(--font-display)] text-lg leading-tight text-[var(--ink)] sm:text-xl">
+                  {display || (ready ? "Sem apelido" : "…")}
+                </p>
+                <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[var(--muted)]">
+                  {badge}
+                </p>
+              </>
             ) : (
-              <p className="mt-1 text-sm font-semibold text-[var(--ink)]">
-                {playerName
-                  ? "Trocar apelido neste aparelho"
-                  : "Escolhe um apelido pra pontuar"}
-              </p>
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+                <input
+                  value={draft}
+                  onChange={(e) => setDraft(sanitizeName(e.target.value))}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && draft.trim().length >= 2 && !busy) {
+                      void saveAnon();
+                    }
+                  }}
+                  maxLength={16}
+                  placeholder="Apelido anônimo"
+                  autoFocus
+                  disabled={busy}
+                  className="min-w-0 flex-1 rounded-xl border-2 border-[var(--ink)] bg-white px-3 py-2 text-sm font-semibold text-[var(--ink)] outline-none focus:border-[var(--brand)]"
+                />
+                <div className="flex gap-2">
+                  <Button
+                    size="sm"
+                    onClick={() => void saveAnon()}
+                    disabled={busy || draft.trim().length < 2}
+                  >
+                    Ok
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    onClick={() => {
+                      setEditing(false);
+                      setDraft(anonName);
+                      setError(null);
+                    }}
+                  >
+                    X
+                  </Button>
+                </div>
+              </div>
             )}
-            <p className="mt-1 text-xs leading-snug text-[var(--muted)] sm:text-sm">
-              Um nick nos três modos. Cada placar (Disfarces, Rua, Parça) acumula
-              pontos{" "}
-              <strong className="text-[var(--ink)]">só daquele modo</strong>.
-            </p>
+            {error ? (
+              <p className="mt-1 text-xs font-semibold text-[var(--alert)]">
+                {error}{" "}
+                <button
+                  type="button"
+                  className="underline"
+                  onClick={() => {
+                    setPreferredNick(draft);
+                    setAccountOpen(true);
+                  }}
+                >
+                  Entrar com Google
+                </button>
+              </p>
+            ) : null}
           </div>
+
           {!editing ? (
-            <div className="flex flex-wrap gap-2">
-              <Button variant="secondary" size="sm" onClick={startEdit}>
-                Trocar apelido
+            <div className="flex shrink-0 gap-1.5">
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => {
+                  setDraft(anonName);
+                  setEditing(true);
+                  setError(null);
+                }}
+              >
+                Nick
+              </Button>
+              <Button size="sm" onClick={() => setAccountOpen(true)}>
+                {user ? "Conta" : "Entrar"}
               </Button>
             </div>
           ) : null}
         </div>
-
-        {editing ? (
-          <div className="mt-3 space-y-2">
-            {error ? (
-              <p className="text-sm font-semibold text-[var(--alert)]">{error}</p>
-            ) : null}
-            <div className="flex flex-col gap-2 sm:flex-row">
-              <input
-                value={draft}
-                onChange={(e) => setDraft(sanitizeName(e.target.value))}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" && draft.trim().length >= 2 && !busy) {
-                    void save();
-                  }
-                }}
-                maxLength={16}
-                placeholder="Seu apelido"
-                autoFocus
-                disabled={busy}
-                className="min-w-0 flex-1 rounded-xl border-2 border-[var(--ink)] bg-white px-3 py-2.5 font-semibold text-[var(--ink)] outline-none focus:border-[var(--brand)] disabled:opacity-60"
-              />
-              <div className="flex flex-wrap gap-2">
-                <Button
-                  onClick={() => void save()}
-                  disabled={busy || draft.trim().length < 2}
-                >
-                  {busy ? "Salvando…" : "Salvar"}
-                </Button>
-                {playerName ? (
-                  <Button
-                    variant="secondary"
-                    onClick={cancelEdit}
-                    disabled={busy}
-                  >
-                    Cancelar
-                  </Button>
-                ) : null}
-                {playerName ? (
-                  <Button
-                    variant="ghost"
-                    onClick={clearName}
-                    disabled={busy}
-                  >
-                    Remover
-                  </Button>
-                ) : null}
-              </div>
-            </div>
-            <p className="text-[11px] text-[var(--muted)]">
-              Apelido único no site. Depois de pontuar uma vez, o nick fica
-              ligado ao seu aparelho e ao IP — aí você consegue reivindicar de
-              novo (mesmo IP ou mesmo aparelho). Trocar não move pontos antigos:
-              os próximos acertos entram no nick ativo, em cada placar do modo.
-            </p>
-          </div>
+        {anonName && !user ? (
+          <p className="mt-1.5 px-1 text-[11px] text-[var(--muted)]">
+            Quer o mesmo nick em outro celular?{" "}
+            <button
+              type="button"
+              className="font-bold text-[var(--brand)] underline"
+              onClick={() => setAccountOpen(true)}
+            >
+              Entra com Google
+            </button>
+            .
+          </p>
         ) : null}
-
-        {okMsg ? (
-          <p className="mt-2 text-sm font-semibold text-[#1f8a5b]">{okMsg}</p>
+        {anonName && editing ? (
+          <button
+            type="button"
+            className="mt-1 px-1 text-[11px] font-semibold text-[var(--muted)] underline"
+            onClick={() => {
+              clearPlayerName();
+              setAnonName("");
+              setDraft("");
+              setError(null);
+            }}
+          >
+            Remover nick anônimo deste aparelho
+          </button>
         ) : null}
       </div>
-    </div>
+
+      <AccountModal
+        open={accountOpen}
+        onClose={() => setAccountOpen(false)}
+        preferredNick={preferredNick || regNick || anonName}
+      />
+    </>
   );
 }

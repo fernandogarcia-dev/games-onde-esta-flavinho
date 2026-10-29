@@ -5,6 +5,7 @@ import {
   sanitizeName,
   submitScore,
   type RankEntry,
+  type RankTrack,
 } from "@/lib/ranking";
 
 const bestKey = (mode: GameModeId) => `flavinho_best_${mode}`;
@@ -38,21 +39,33 @@ export function saveModeBest(mode: GameModeId, score: number): number {
 export async function fetchModeLeaderboard(
   mode: GameModeId,
   playerName?: string,
+  track: RankTrack = "anon",
+  accessToken?: string | null,
 ): Promise<{
   entries: RankEntry[];
   global: boolean;
   myRank?: number;
   myScore?: number;
   error?: string;
+  track: RankTrack;
 }> {
-  return fetchLeaderboard(playerName || getPlayerName(), mode);
+  return fetchLeaderboard(
+    playerName || getPlayerName(),
+    mode,
+    track,
+    accessToken,
+  );
 }
 
 export async function submitModeScore(
   mode: GameModeId,
   name: string,
   score: number,
-  opts?: { isNewName?: boolean },
+  opts?: {
+    isNewName?: boolean;
+    track?: RankTrack;
+    accessToken?: string | null;
+  },
 ): Promise<{
   entries: RankEntry[];
   rank: number;
@@ -61,11 +74,16 @@ export async function submitModeScore(
   error?: string;
   code?: string;
   ownerScore?: number;
+  suggestLogin?: boolean;
+  track?: RankTrack;
 }> {
+  const track = opts?.track || "anon";
   const clean = sanitizeName(name) || getPlayerName();
   const result = await submitScore(clean, score, {
     isNewName: opts?.isNewName,
     mode,
+    track,
+    accessToken: opts?.accessToken,
   });
   if (result.bestScore) saveModeBest(mode, result.bestScore);
   else if (score > 0) saveModeBest(mode, score);

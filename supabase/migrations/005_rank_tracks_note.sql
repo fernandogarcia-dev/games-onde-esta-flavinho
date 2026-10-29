@@ -1,0 +1,11 @@
+-- Nota (não obrigatória): placares Anônimos vs Conta usam prefixo no name_key
+-- sem precisar de coluna nova:
+--   anônimo mestre: babalu
+--   anônimo rua/parca: rua::babalu / parca::babalu
+--   conta mestre: reg::babalu
+--   conta rua/parca: reg::rua::babalu / reg::parca::babalu
+-- Perfis: __profile::<user_uuid> e __regnick::<nick>
+--
+-- Se no futuro quiser colunas explícitas:
+--   alter table public.leaderboard add column if not exists track text not null default 'anon';
+--   alter table public.leaderboard add column if not exists auth_user_id uuid;

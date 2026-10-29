@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Archivo_Black, Manrope } from "next/font/google";
+import { AuthProvider } from "@/components/auth/AuthProvider";
 import { GoogleAnalytics } from "@/components/analytics/GoogleAnalytics";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { ScrollToTop } from "@/components/ScrollToTop";
@@ -108,10 +109,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${display.variable} ${body.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col">
-        <JsonLd />
-        <GoogleAnalytics />
-        <ScrollToTop />
-        {children}
+        <AuthProvider>
+          <JsonLd />
+          <GoogleAnalytics />
+          <ScrollToTop />
+          {children}
+        </AuthProvider>
       </body>
     </html>
   );

@@ -2,11 +2,16 @@ import type { GameModeId } from "@/lib/modes";
 import type { RankEntry } from "@/lib/ranking";
 import {
   isOwnerMetaKey,
-  ownerMatches,
   readNickOwner,
   writeNickOwner,
-  type NickOwner,
 } from "@/lib/nick-owners";
+import { isProfileMetaKey, getRegNickOwner } from "@/lib/profiles";
+import {
+  isTrackModeKey,
+  normalizeRankTrack,
+  trackStorageKey,
+  type RankTrack,
+} from "@/lib/rank-track";
 import { getSupabaseAdmin, supabaseConfigured } from "@/lib/supabase";
 
 const MAX = 100;
@@ -27,7 +32,9 @@ export class RankNameTakenError extends Error {
   readonly ownerScore: number;
 
   constructor(ownerScore: number) {
-    super("Esse apelido já foi escolhido. Escolhe outro nome.");
+    super(
+      "Esse apelido já foi escolhido no placar anônimo. Escolhe outro ou entra com Google pro placar Conta.",
+    );
     this.name = "RankNameTakenError";
     this.ownerScore = ownerScore;
   }
@@ -47,7 +54,12 @@ function sortBoard(entries: RankEntry[]): RankEntry[] {
 function rowsToEntries(rows: Row[]): RankEntry[] {
   return sortBoard(
     rows
-      .filter((r) => !isOwnerMetaKey(r.name_key))
+      .filter(
+        (r) =>
+          !isOwnerMetaKey(r.name_key) &&
+          !isProfileMetaKey(r.name_key) &&
+          !String(r.name || "").startsWith("{"),
+      )
       .map((r) => ({
         name: r.name,
         score: r.score,
@@ -66,69 +78,8 @@ export function normalizeRankMode(raw: unknown): GameModeId {
   return "mestre";
 }
 
-/** Chave legada quando não há coluna mode: rua::apelido / parca::apelido */
-function prefixedKey(mode: GameModeId, nameKey: string): string {
-  return mode === "mestre" ? nameKey : `${mode}::${nameKey}`;
-}
-
-function isPrefixedForMode(nameKey: string, mode: GameModeId): boolean {
-  if (mode === "mestre") {
-    return !nameKey.includes("::");
-  }
-  return nameKey.startsWith(`${mode}::`);
-}
-
-export async function listRanks(
-  mode: GameModeId = "mestre",
-): Promise<RankEntry[]> {
-  const sb = getSupabaseAdmin();
-  if (!sb) return [];
-
-  if (modeColumnSupported !== false) {
-    const { data, error } = await sb
-      .from("leaderboard")
-      .select("name, score, updated_at, name_key, mode")
-      .eq("mode", mode)
-      .order("score", { ascending: false })
-      .order("updated_at", { ascending: true })
-      .limit(MAX);
-
-    if (!error) {
-      modeColumnSupported = true;
-      return rowsToEntries((data || []) as Row[]);
-    }
-    if (isModeSchemaError(error.message)) {
-      modeColumnSupported = false;
-    } else {
-      console.error("[rank] list", error.message);
-      throw new Error(error.message);
-    }
-  }
-
-  const { data, error } = await sb
-    .from("leaderboard")
-    .select("name, score, updated_at, name_key")
-    .order("score", { ascending: false })
-    .order("updated_at", { ascending: true })
-    .limit(400);
-
-  if (error) {
-    console.error("[rank] list", error.message);
-    throw new Error(error.message);
-  }
-
-  const filtered = ((data || []) as Row[]).filter((r) =>
-    isPrefixedForMode(r.name_key, mode),
-  );
-  return rowsToEntries(filtered).slice(0, MAX);
-}
-
-const ROW_SELECT_FULL =
-  "name, score, updated_at, name_key, device_key, client_ip, mode";
-const ROW_SELECT_NO_IP =
-  "name, score, updated_at, name_key, device_key, mode";
-const ROW_SELECT_MIN = "name, score, updated_at, name_key, device_key";
-const ROW_SELECT_LEGACY = "name, score, updated_at, name_key";
+export { normalizeRankTrack };
+export type { RankTrack };
 
 /**
  * Sem coluna `mode`, o Postgres trata `mode` como agregação ordered-set
@@ -145,192 +96,135 @@ function isModeSchemaError(message: string): boolean {
 function markMissingColumn(message: string) {
   if (/client_ip/i.test(message)) clientIpSupported = false;
   if (/device_key/i.test(message)) deviceKeySupported = false;
-  if (isModeSchemaError(message)) {
-    modeColumnSupported = false;
-  }
+  if (isModeSchemaError(message)) modeColumnSupported = false;
 }
 
-function pickSelectCols(): string {
-  if (
-    clientIpSupported !== false &&
-    deviceKeySupported !== false &&
-    modeColumnSupported !== false
-  ) {
-    return ROW_SELECT_FULL;
-  }
-  if (deviceKeySupported !== false && modeColumnSupported !== false) {
-    return ROW_SELECT_NO_IP;
-  }
-  if (deviceKeySupported !== false) return ROW_SELECT_MIN;
-  return ROW_SELECT_LEGACY;
-}
-
-async function findRowsForBareName(nameKey: string): Promise<Row[]> {
+export async function listRanks(
+  mode: GameModeId = "mestre",
+  track: RankTrack = "anon",
+): Promise<RankEntry[]> {
   const sb = getSupabaseAdmin();
-  if (!sb || !nameKey) return [];
+  if (!sb) return [];
 
-  // Tenta schema completo e degrada se faltar coluna (device_key / mode / client_ip).
-  for (let attempt = 0; attempt < 4; attempt++) {
-    const selectCols = pickSelectCols();
-    const useMode = modeColumnSupported !== false && selectCols.includes("mode");
-
-    if (useMode) {
-      const { data, error } = await sb
-        .from("leaderboard")
-        .select(selectCols)
-        .eq("name_key", nameKey);
-      if (!error) {
-        modeColumnSupported = true;
-        if (selectCols.includes("client_ip")) clientIpSupported = true;
-        if (selectCols.includes("device_key")) deviceKeySupported = true;
-        return (data || []) as unknown as Row[];
-      }
-      markMissingColumn(error.message);
-      if (
-        !/client_ip|device_key|mode/i.test(error.message) &&
-        !/column/i.test(error.message)
-      ) {
-        console.error("[rank] findRows", error.message);
-        throw new Error(error.message);
-      }
-      continue;
-    }
-
-    const keys = MODES.map((m) => prefixedKey(m, nameKey));
-    const legacySelect =
-      deviceKeySupported === false
-        ? ROW_SELECT_LEGACY
-        : clientIpSupported === false
-          ? ROW_SELECT_MIN
-          : "name, score, updated_at, name_key, device_key, client_ip";
+  // Sempre busca um pool e filtra por track (prefixo reg::). Coluna mode
+  // sozinha misturaria anônimo + conta.
+  if (modeColumnSupported !== false) {
     const { data, error } = await sb
       .from("leaderboard")
-      .select(legacySelect)
-      .in("name_key", keys);
+      .select("name, score, updated_at, name_key, mode")
+      .eq("mode", mode)
+      .order("score", { ascending: false })
+      .order("updated_at", { ascending: true })
+      .limit(400);
+
     if (!error) {
-      if (legacySelect.includes("device_key")) deviceKeySupported = true;
-      if (legacySelect.includes("client_ip")) clientIpSupported = true;
+      modeColumnSupported = true;
+      const filtered = ((data || []) as Row[]).filter((r) =>
+        isTrackModeKey(r.name_key, mode, track),
+      );
+      return rowsToEntries(filtered).slice(0, MAX);
+    }
+    if (isModeSchemaError(error.message)) {
+      modeColumnSupported = false;
+    } else {
+      console.error("[rank] list", error.message);
+      throw new Error(error.message);
+    }
+  }
+
+  const { data, error } = await sb
+    .from("leaderboard")
+    .select("name, score, updated_at, name_key")
+    .order("score", { ascending: false })
+    .order("updated_at", { ascending: true })
+    .limit(500);
+
+  if (error) {
+    console.error("[rank] list", error.message);
+    throw new Error(error.message);
+  }
+
+  const filtered = ((data || []) as Row[]).filter((r) =>
+    isTrackModeKey(r.name_key, mode, track),
+  );
+  return rowsToEntries(filtered).slice(0, MAX);
+}
+
+async function selectByKeys(keys: string[]): Promise<Row[]> {
+  const sb = getSupabaseAdmin();
+  if (!sb || !keys.length) return [];
+
+  const attempts = [
+    "name, score, updated_at, name_key, device_key, client_ip, mode",
+    "name, score, updated_at, name_key, device_key, mode",
+    "name, score, updated_at, name_key, device_key",
+    "name, score, updated_at, name_key",
+  ];
+
+  for (const cols of attempts) {
+    if (deviceKeySupported === false && cols.includes("device_key")) continue;
+    if (clientIpSupported === false && cols.includes("client_ip")) continue;
+    if (modeColumnSupported === false && cols.includes("mode")) continue;
+
+    const { data, error } = await sb
+      .from("leaderboard")
+      .select(cols)
+      .in("name_key", keys);
+
+    if (!error) {
+      if (cols.includes("device_key")) deviceKeySupported = true;
+      if (cols.includes("client_ip")) clientIpSupported = true;
+      if (cols.includes("mode")) modeColumnSupported = true;
       return (data || []) as unknown as Row[];
     }
     markMissingColumn(error.message);
     if (
       !/client_ip|device_key|mode/i.test(error.message) &&
-      !/column/i.test(error.message)
+      !/column/i.test(error.message) &&
+      !isModeSchemaError(error.message)
     ) {
-      console.error("[rank] findRows", error.message);
+      console.error("[rank] selectByKeys", error.message);
       throw new Error(error.message);
     }
   }
-
-  // Último recurso: só colunas da migration 001
-  const keys = MODES.map((m) => prefixedKey(m, nameKey));
-  const { data, error } = await sb
-    .from("leaderboard")
-    .select(ROW_SELECT_LEGACY)
-    .in("name_key", keys);
-  if (error) {
-    console.error("[rank] findRows", error.message);
-    throw new Error(error.message);
-  }
-  deviceKeySupported = false;
-  clientIpSupported = false;
-  modeColumnSupported = false;
-  return (data || []) as unknown as Row[];
+  return [];
 }
 
-/** Dono do apelido se bater device_key OU client_ip em qualquer linha do nick. */
-export function ownsNickname(
+/** Linhas de score do nick neste placar (anon ou reg). */
+async function findRowsForTrackName(
+  bare: string,
+  track: RankTrack,
+): Promise<Row[]> {
+  const keys = MODES.map((m) => trackStorageKey(m, bare, track));
+  return selectByKeys(keys);
+}
+
+function deviceOwns(
   rows: Row[],
+  storedDevice: string | undefined,
   deviceKey: string,
-  clientIp: string,
 ): boolean {
   const key = (deviceKey || "").trim();
-  const ip = (clientIp || "").trim();
-  if (key) {
-    for (const r of rows) {
-      const owner = (r.device_key || "").trim();
-      if (owner && owner === key) return true;
-    }
-  }
-  if (ip) {
-    for (const r of rows) {
-      const ownerIp = (r.client_ip || "").trim();
-      if (ownerIp && ownerIp === ip) return true;
-    }
+  if (!key || key.length < 8) return false;
+  if (storedDevice && storedDevice === key) return true;
+  for (const r of rows) {
+    const owner = (r.device_key || "").trim();
+    if (owner && owner === key) return true;
   }
   return false;
 }
 
-function rowsHaveOwnerSignal(rows: Row[]): boolean {
-  return rows.some(
-    (r) => Boolean((r.device_key || "").trim()) || Boolean((r.client_ip || "").trim()),
-  );
-}
-
-/** Junta colunas do Postgres + meta no Storage (fallback sem migration). */
-async function resolveOwner(
-  bare: string,
-  rows: Row[],
-): Promise<{ fromRows: boolean; stored: NickOwner | null }> {
-  const fromRows = rowsHaveOwnerSignal(rows);
-  const stored = await readNickOwner(bare);
-  return { fromRows, stored };
-}
-
-function isMine(
-  rows: Row[],
-  stored: NickOwner | null,
-  deviceKey: string,
-  clientIp: string,
-): boolean {
-  if (ownsNickname(rows, deviceKey, clientIp)) return true;
-  return ownerMatches(stored, deviceKey, clientIp);
-}
-
-/** Absolute 1-based rank + entry for a player name in a mode. */
 export async function lookupPlayer(
   name: string,
   mode: GameModeId = "mestre",
+  track: RankTrack = "anon",
 ): Promise<{ entry: RankEntry | null; rank: number }> {
-  const sb = getSupabaseAdmin();
-  if (!sb) return { entry: null, rank: 0 };
   const bare = name.trim().toLowerCase();
   if (!bare) return { entry: null, rank: 0 };
 
-  let row: Row | null = null;
-
-  if (modeColumnSupported !== false) {
-    const { data, error } = await sb
-      .from("leaderboard")
-      .select("name, score, updated_at, name_key, mode")
-      .eq("name_key", bare)
-      .eq("mode", mode)
-      .maybeSingle();
-    if (!error) {
-      modeColumnSupported = true;
-      row = (data as Row | null) ?? null;
-    } else if (isModeSchemaError(error.message)) {
-      modeColumnSupported = false;
-    } else {
-      console.error("[rank] lookup", error.message);
-      throw new Error(error.message);
-    }
-  }
-
-  if (modeColumnSupported === false) {
-    const key = prefixedKey(mode, bare);
-    const { data, error } = await sb
-      .from("leaderboard")
-      .select("name, score, updated_at, name_key")
-      .eq("name_key", key)
-      .maybeSingle();
-    if (error) {
-      console.error("[rank] lookup", error.message);
-      throw new Error(error.message);
-    }
-    row = (data as Row | null) ?? null;
-  }
-
+  const key = trackStorageKey(mode, bare, track);
+  const rows = await selectByKeys([key]);
+  const row = rows[0];
   if (!row) return { entry: null, rank: 0 };
 
   const entry: RankEntry = {
@@ -339,22 +233,9 @@ export async function lookupPlayer(
     at: new Date(row.updated_at).getTime() || Date.now(),
   };
 
-  const entries = await listRanks(mode);
-  const inList =
-    entries.findIndex((e) => e.name.toLowerCase() === bare) + 1;
+  const entries = await listRanks(mode, track);
+  const inList = entries.findIndex((e) => e.name.toLowerCase() === bare) + 1;
   if (inList > 0) return { entry, rank: inList };
-
-  // Fallback count for players outside top MAX
-  if (modeColumnSupported) {
-    const { count, error: countErr } = await sb
-      .from("leaderboard")
-      .select("name_key", { count: "exact", head: true })
-      .eq("mode", mode)
-      .gt("score", entry.score);
-    if (countErr) console.error("[rank] lookup count", countErr.message);
-    return { entry, rank: (count ?? 0) + 1 };
-  }
-
   return { entry, rank: entries.length + 1 };
 }
 
@@ -364,36 +245,97 @@ function normalizeDeviceKey(raw: string | undefined): string {
 
 export async function isNameTaken(
   name: string,
-  opts?: { deviceKey?: string; clientIp?: string },
+  opts?: {
+    deviceKey?: string;
+    track?: RankTrack;
+    userId?: string;
+  },
 ): Promise<{
   taken: boolean;
   available: boolean;
-  reclaimable: boolean;
   score: number;
   name?: string;
+  suggestLogin?: boolean;
 }> {
   const clean = name.trim().slice(0, 16);
+  const track = normalizeRankTrack(opts?.track);
   if (!clean) {
-    return { taken: false, available: true, reclaimable: false, score: 0 };
+    return { taken: false, available: true, score: 0 };
   }
   const bare = clean.toLowerCase();
-  const rows = await findRowsForBareName(bare);
+
+  if (track === "reg") {
+    const owner = await getRegNickOwner(bare);
+    if (!owner) {
+      return { taken: false, available: true, score: 0 };
+    }
+    const mine = Boolean(opts?.userId) && owner.userId === opts?.userId;
+    const rows = await findRowsForTrackName(bare, "reg");
+    const best = rows.reduce((m, r) => Math.max(m, r.score), 0);
+    return {
+      taken: !mine,
+      available: mine,
+      score: best,
+      name: clean,
+    };
+  }
+
+  // Anônimo: se o nick já pontuou, está tomado — sem reclaim.
+  // Continuação no mesmo aparelho usa localStorage (alreadyMine no client).
+  const rows = await findRowsForTrackName(bare, "anon");
   if (!rows.length) {
-    return { taken: false, available: true, reclaimable: false, score: 0 };
+    return { taken: false, available: true, score: 0 };
   }
   const best = rows.reduce((m, r) => Math.max(m, r.score), 0);
-  const deviceKey = normalizeDeviceKey(opts?.deviceKey);
-  const clientIp = (opts?.clientIp || "").trim();
-  const { stored } = await resolveOwner(bare, rows);
-  const mine = isMine(rows, stored, deviceKey, clientIp);
-  // NÃO grava dono no check — só na pontuação. Evita roubo de device_key via IP.
   return {
-    taken: !mine,
-    available: mine,
-    reclaimable: mine,
+    taken: true,
+    available: false,
     score: best,
     name: rows[0]?.name || clean,
+    suggestLogin: true,
   };
+}
+
+async function writeRow(payload: Record<string, unknown>): Promise<void> {
+  const sb = getSupabaseAdmin();
+  if (!sb) throw new Error("Supabase não configurado");
+
+  // Sempre chave prefixada — funciona com ou sem coluna mode.
+  const useModeCol = modeColumnSupported === true;
+  if (useModeCol && payload.mode) {
+    // ok
+  } else {
+    delete payload.mode;
+  }
+
+  const onConflict = useModeCol ? "name_key,mode" : "name_key";
+  const { error } = await sb.from("leaderboard").upsert(payload, {
+    onConflict,
+  });
+
+  if (!error) return;
+
+  console.error("[rank] upsert", error.message);
+  if (/client_ip/i.test(error.message)) {
+    clientIpSupported = false;
+    delete payload.client_ip;
+    return writeRow(payload);
+  }
+  if (/device_key/i.test(error.message)) {
+    deviceKeySupported = false;
+    delete payload.device_key;
+    return writeRow(payload);
+  }
+  if (isModeSchemaError(error.message) || /on conflict|conflict target/i.test(error.message)) {
+    modeColumnSupported = false;
+    delete payload.mode;
+    const { error: legacyErr } = await sb
+      .from("leaderboard")
+      .upsert(payload, { onConflict: "name_key" });
+    if (legacyErr) throw new Error(legacyErr.message);
+    return;
+  }
+  throw new Error(error.message);
 }
 
 export async function upsertRank(
@@ -404,50 +346,60 @@ export async function upsertRank(
     isNewName?: boolean;
     mode?: GameModeId;
     clientIp?: string;
-    /** Soma ao placar (Mestre). Sem isso, guarda o melhor (Rua/Parça). */
     accumulate?: boolean;
+    track?: RankTrack;
+    userId?: string;
   },
 ): Promise<{ entries: RankEntry[]; rank: number; bestScore: number }> {
   const sb = getSupabaseAdmin();
-  if (!sb) {
-    throw new Error("Supabase não configurado");
-  }
+  if (!sb) throw new Error("Supabase não configurado");
 
   const mode = normalizeRankMode(opts?.mode);
+  const track = normalizeRankTrack(opts?.track);
   const clean = name.trim().slice(0, 16);
   const bare = clean.toLowerCase();
   const deviceKey = normalizeDeviceKey(deviceKeyRaw);
   const clientIp = (opts?.clientIp || "").trim().slice(0, 64);
   const isNewName = Boolean(opts?.isNewName);
   const accumulate = Boolean(opts?.accumulate);
-  if (deviceKey.length < 8) {
+  const userId = (opts?.userId || "").trim();
+
+  if (track === "reg") {
+    if (!userId) {
+      throw new Error("Faça login pra pontuar no placar Conta.");
+    }
+    const owner = await getRegNickOwner(bare);
+    if (!owner || owner.userId !== userId) {
+      throw new RankNameTakenError(0);
+    }
+  } else if (deviceKey.length < 8) {
     throw new Error(
       "Aparelho sem identificação — atualiza a página e tenta de novo.",
     );
   }
 
-  const related = await findRowsForBareName(bare);
+  const related = await findRowsForTrackName(bare, track);
+  const storageKey = trackStorageKey(mode, bare, track);
   const modeRow =
-    related.find((r) =>
-      modeColumnSupported
-        ? (r.mode || "mestre") === mode
-        : isPrefixedForMode(r.name_key, mode),
-    ) || null;
+    related.find((r) => r.name_key === storageKey) ||
+    related.find((r) => isTrackModeKey(r.name_key, mode, track)) ||
+    null;
   const prevScore = modeRow?.score ?? 0;
-  const { fromRows, stored } = await resolveOwner(bare, related);
-  const mine = isMine(related, stored, deviceKey, clientIp);
-  const hasOwner = fromRows || Boolean(stored);
 
-  if (related.length > 0) {
-    if (mine) {
-      // dono (mesmo aparelho ou mesmo IP) — ok
-    } else if (hasOwner) {
-      throw new RankNameTakenError(prevScore || related[0].score);
-    } else if (isNewName) {
-      // legado sem dono registrado: bloqueia roubo de nick no claim
+  if (track === "anon" && related.length > 0) {
+    const stored = await readNickOwner(bare);
+    const mine = deviceOwns(related, stored?.device_key, deviceKey);
+    if (!mine) {
       throw new RankNameTakenError(prevScore || related[0].score);
     }
-    // legado sem dono + score de quem já tinha o nick no aparelho → libera e grava dono
+  }
+
+  // isNewName em anon com nome já existente e mesmo device: ok (continuar)
+  if (track === "anon" && isNewName && related.length > 0) {
+    const stored = await readNickOwner(bare);
+    if (!deviceOwns(related, stored?.device_key, deviceKey)) {
+      throw new RankNameTakenError(prevScore || related[0].score);
+    }
   }
 
   const gained = Math.max(0, Math.floor(score));
@@ -456,115 +408,41 @@ export async function upsertRank(
     : Math.max(gained, prevScore);
   const scoreImproved = best > prevScore;
 
-  // Detect mode column if still unknown by probing once
   if (modeColumnSupported === null) {
-    await listRanks("mestre");
+    await listRanks("mestre", "anon");
   }
-
-  const useModeCol = modeColumnSupported === true;
-  const storageKey = useModeCol ? bare : prefixedKey(mode, bare);
 
   const payload: Record<string, unknown> = {
     name: clean,
     name_key: storageKey,
     score: best,
   };
-  if (useModeCol) {
+  if (modeColumnSupported === true) {
     payload.mode = mode;
   }
   if (!modeRow || scoreImproved) {
     payload.updated_at = new Date().toISOString();
   }
-  if (deviceKeySupported !== false) {
+  if (track === "anon" && deviceKeySupported !== false) {
     payload.device_key = deviceKey;
   }
-  if (clientIpSupported !== false && clientIp) {
+  if (track === "anon" && clientIpSupported !== false && clientIp) {
     payload.client_ip = clientIp;
   }
 
-  const onConflict = useModeCol ? "name_key,mode" : "name_key";
-  const { error: upsertErr } = await sb.from("leaderboard").upsert(payload, {
-    onConflict,
-  });
+  await writeRow(payload);
 
-  if (upsertErr) {
-    console.error("[rank] upsert", upsertErr.message);
-    if (/client_ip/i.test(upsertErr.message)) {
-      clientIpSupported = false;
-      delete payload.client_ip;
-      const { error: noIpErr } = await sb
-        .from("leaderboard")
-        .upsert(payload, { onConflict });
-      if (!noIpErr) {
-        // ok without ip column
-      } else if (/device_key/i.test(noIpErr.message)) {
-        deviceKeySupported = false;
-        delete payload.device_key;
-        const { error: fallbackErr } = await sb
-          .from("leaderboard")
-          .upsert(payload, { onConflict });
-        if (fallbackErr) throw new Error(fallbackErr.message);
-      } else {
-        throw new Error(noIpErr.message);
-      }
-    } else if (/device_key/i.test(upsertErr.message)) {
-      deviceKeySupported = false;
-      delete payload.device_key;
-      const { error: fallbackErr } = await sb
-        .from("leaderboard")
-        .upsert(payload, { onConflict });
-      if (fallbackErr) {
-        console.error("[rank] upsert fallback", fallbackErr.message);
-        throw new Error(fallbackErr.message);
-      }
-    } else if (
-      useModeCol &&
-      isModeSchemaError(upsertErr.message) ||
-      /on conflict|conflict target/i.test(upsertErr.message)
-    ) {
-      // Conflict target / coluna mode ausente — prefixo no name_key
-      modeColumnSupported = false;
-      const legacyPayload: Record<string, unknown> = {
-        name: clean,
-        name_key: prefixedKey(mode, bare),
-        score: best,
-        updated_at: new Date().toISOString(),
-        ...(deviceKeySupported !== false ? { device_key: deviceKey } : {}),
-        ...(clientIpSupported !== false && clientIp
-          ? { client_ip: clientIp }
-          : {}),
-      };
-      const { error: legacyErr } = await sb
-        .from("leaderboard")
-        .upsert(legacyPayload, { onConflict: "name_key" });
-      if (legacyErr) {
-        console.error("[rank] upsert legacy", legacyErr.message);
-        throw new Error(legacyErr.message);
-      }
-    } else {
-      throw new Error(upsertErr.message);
+  if (track === "anon") {
+    // Só device — sem reclaim por IP.
+    await writeNickOwner(bare, deviceKey, clientIp, { forceDevice: false });
+    const stored = await readNickOwner(bare);
+    if (!stored?.device_key) {
+      await writeNickOwner(bare, deviceKey, clientIp, { forceDevice: true });
     }
   }
 
-  // Amarra aparelho + IP. forceDevice só no reclaim explícito (mesmo IP, aparelho novo).
-  const deviceOwned = ownsNickname(
-    related.map((r) => ({ ...r, client_ip: null })),
-    deviceKey,
-    "",
-  );
-  const ipReclaim =
-    !deviceOwned &&
-    Boolean(clientIp) &&
-    (ownsNickname(related, "", clientIp) ||
-      ownerMatches(stored, "", clientIp));
-  await writeNickOwner(bare, deviceKey, clientIp, {
-    forceDevice: ipReclaim || !hasOwner,
-  });
-
-  const entries = await listRanks(mode);
-  const inList =
-    entries.findIndex((e) => e.name.toLowerCase() === bare) + 1;
+  const entries = await listRanks(mode, track);
+  const inList = entries.findIndex((e) => e.name.toLowerCase() === bare) + 1;
   if (inList > 0) return { entries, rank: inList, bestScore: best };
-
   return { entries, rank: entries.length + 1, bestScore: best };
 }

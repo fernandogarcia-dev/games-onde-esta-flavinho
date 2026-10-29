@@ -40,9 +40,9 @@ import {
   getPlayerName,
   sanitizeName,
   setPlayerName,
-  submitScore,
   type RankEntry,
 } from "@/lib/ranking";
+import { useRankSubmit } from "@/lib/use-rank-submit";
 import {
   applyStreak,
   CITY_HIT_BONUS,
@@ -85,6 +85,7 @@ export function GameApp({
 }: {
   onBackToModes?: () => void;
 } = {}) {
+  const rankSubmit = useRankSubmit();
   const [phase, setPhase] = useState<Phase>("landing");
   useScrollTop([phase]);
   const [difficulty, setDifficulty] = useState<Difficulty>("medium");
@@ -206,8 +207,14 @@ export function GameApp({
   );
 
   async function refreshBoard() {
+    const who = rankSubmit.playerName || getPlayerName();
     const { entries, global, error, myRank: remoteRank, myScore } =
-      await fetchLeaderboard(getPlayerName());
+      await fetchLeaderboard(
+        who,
+        "mestre",
+        rankSubmit.track,
+        rankSubmit.accessToken,
+      );
     setBoard(entries);
     setBoardGlobal(global);
     setBoardError(error || null);
@@ -353,10 +360,9 @@ export function GameApp({
     name: string,
     opts?: { isNewName?: boolean; accumulate?: boolean },
   ) {
-    const result = await submitScore(name, points, {
-      ...opts,
-      mode: "mestre",
-      accumulate: opts?.accumulate !== false,
+    const result = await rankSubmit.submit("mestre", points, {
+      isNewName: opts?.isNewName,
+      name,
     });
     if (result.entries.length > 0) {
       setBoard(result.entries);
@@ -377,9 +383,11 @@ export function GameApp({
     // Nunca apaga o nick nem joga a pontuação em outro apelido.
     if (result.code === "name_taken") {
       setFeedback(
-        result.ownerScore
-          ? `Não deu pra gravar: esse apelido já é de outra pessoa (${result.ownerScore.toLocaleString("pt-BR")} pts). Troca o nick na home.`
-          : "Não deu pra gravar: esse apelido já é de outra pessoa. Troca o nick na home.",
+        result.suggestLogin
+          ? "Esse apelido anônimo já existe. Escolhe outro ou entra com Google (placar Conta)."
+          : result.ownerScore
+            ? `Não deu pra gravar: esse apelido já é de outra pessoa (${result.ownerScore.toLocaleString("pt-BR")} pts). Troca o nick na home.`
+            : "Não deu pra gravar: esse apelido já é de outra pessoa. Troca o nick na home.",
       );
       return false;
     }
@@ -414,7 +422,7 @@ export function GameApp({
     setBest(Math.max(prevBest, nextScore));
     setNewRecord(isNew);
 
-    const existing = getPlayerName();
+    const existing = rankSubmit.playerName || getPlayerName();
     if (!existing) {
       setNeedsName(true);
       setNameDraft("");
@@ -1088,12 +1096,13 @@ export function GameApp({
         onClose={() => setShowRank(false)}
         entries={board}
         global={boardGlobal}
-        highlight={playerName || nameDraft}
+        highlight={rankSubmit.playerName || playerName || nameDraft}
         myRank={myRank}
         myScore={Math.max(score, best) > 0 ? Math.max(score, best) : null}
         error={boardError}
         shareText={rankShareText}
         shareMode="mestre"
+        mode="mestre"
       />
 
       <LegalNotice
