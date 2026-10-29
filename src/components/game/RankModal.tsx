@@ -6,25 +6,42 @@ import { Button } from "@/components/ui/Button";
 import { Leaderboard } from "@/components/game/Leaderboard";
 import { fetchModeLeaderboard } from "@/lib/mode-ranking";
 import type { GameModeId } from "@/lib/modes";
-import type { RankEntry, RankTrack } from "@/lib/ranking";
+import { getPlayerName, type RankEntry, type RankTrack } from "@/lib/ranking";
 
+type BoardState = {
+  entries: RankEntry[];
+  global: boolean;
+  myRank: number | null;
+  myScore: number | null;
+  error: string | null;
+};
+
+const emptyBoard = (): BoardState => ({
+  entries: [],
+  global: false,
+  myRank: null,
+  myScore: null,
+  error: null,
+});
+
+/**
+ * Modal de ranking por modo.
+ * Sempre busca Anônimos e Conta na API — não reaproveita o board
+ * do jogo (que pode estar no track Conta quando o user está logado).
+ */
 export function RankModal({
   open,
   onClose,
-  entries,
-  global,
   highlight,
-  myRank,
-  myScore,
-  error,
   shareText,
   shareMode = "home",
   mode = "mestre",
 }: {
   open: boolean;
   onClose: () => void;
-  entries: RankEntry[];
-  global: boolean;
+  /** @deprecated — modal busca sozinho; mantido pra não quebrar callers */
+  entries?: RankEntry[];
+  global?: boolean;
   highlight?: string;
   myRank?: number | null;
   myScore?: number | null;
@@ -34,33 +51,14 @@ export function RankModal({
   mode?: GameModeId;
 }) {
   const auth = useAuthOptional();
-  const [track, setTrack] = useState<RankTrack>("anon");
-  const [anonBoard, setAnonBoard] = useState({
-    entries,
-    global,
-    myRank: myRank ?? null,
-    myScore: myScore ?? null,
-    error: error ?? null,
+  const [track, setTrack] = useState<RankTrack>(
+    auth?.user && auth.regNick ? "reg" : "anon",
+  );
+  const [boards, setBoards] = useState<Record<RankTrack, BoardState>>({
+    anon: emptyBoard(),
+    reg: emptyBoard(),
   });
-  const [regBoard, setRegBoard] = useState({
-    entries: [] as RankEntry[],
-    global: false,
-    myRank: null as number | null,
-    myScore: null as number | null,
-    error: null as string | null,
-  });
-  const [loadingReg, setLoadingReg] = useState(false);
-
-  useEffect(() => {
-    if (!open) return;
-    setAnonBoard({
-      entries,
-      global,
-      myRank: myRank ?? null,
-      myScore: myScore ?? null,
-      error: error ?? null,
-    });
-  }, [open, entries, global, myRank, myScore, error]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (!open) return;
@@ -77,34 +75,53 @@ export function RankModal({
   }, [open, onClose]);
 
   useEffect(() => {
-    if (!open || track !== "reg") return;
+    if (!open) return;
+    // Prefer Conta se logado com nick; senão Anônimos
+    setTrack(auth?.user && auth.regNick ? "reg" : "anon");
+  }, [open, auth?.user, auth?.regNick]);
+
+  useEffect(() => {
+    if (!open) return;
     let cancelled = false;
-    setLoadingReg(true);
-    const who = auth?.regNick || highlight || "";
-    void fetchModeLeaderboard(
-      mode,
-      who,
-      "reg",
-      auth?.accessToken,
-    ).then((res) => {
+    setLoading(true);
+
+    const anonWho = getPlayerName() || highlight || "";
+    const regWho = auth?.regNick || "";
+
+    void Promise.all([
+      fetchModeLeaderboard(mode, anonWho, "anon"),
+      fetchModeLeaderboard(mode, regWho, "reg", auth?.accessToken),
+    ]).then(([anon, reg]) => {
       if (cancelled) return;
-      setRegBoard({
-        entries: res.entries,
-        global: res.global,
-        myRank: res.myRank && res.myRank > 0 ? res.myRank : null,
-        myScore: res.myScore ?? null,
-        error: res.error ?? null,
+      setBoards({
+        anon: {
+          entries: anon.entries,
+          global: anon.global,
+          myRank: anon.myRank && anon.myRank > 0 ? anon.myRank : null,
+          myScore: anon.myScore ?? null,
+          error: anon.error ?? null,
+        },
+        reg: {
+          entries: reg.entries,
+          global: reg.global,
+          myRank: reg.myRank && reg.myRank > 0 ? reg.myRank : null,
+          myScore: reg.myScore ?? null,
+          error: reg.error ?? null,
+        },
       });
-      setLoadingReg(false);
+      setLoading(false);
     });
+
     return () => {
       cancelled = true;
     };
-  }, [open, track, mode, auth?.regNick, auth?.accessToken, highlight]);
+  }, [open, mode, auth?.regNick, auth?.accessToken, highlight]);
 
   if (!open) return null;
 
-  const board = track === "reg" ? regBoard : anonBoard;
+  const board = boards[track];
+  const highlightName =
+    track === "reg" ? auth?.regNick || "" : getPlayerName() || highlight || "";
 
   return (
     <div
@@ -121,16 +138,10 @@ export function RankModal({
         <Leaderboard
           entries={board.entries}
           global={board.global}
-          highlight={
-            track === "reg" ? auth?.regNick || highlight : highlight
-          }
+          highlight={highlightName}
           myRank={board.myRank}
           myScore={board.myScore}
-          error={
-            loadingReg && track === "reg"
-              ? "Carregando placar Conta…"
-              : board.error
-          }
+          error={loading ? "Carregando ranking…" : board.error}
           shareText={shareText}
           shareMode={shareMode}
           track={track}

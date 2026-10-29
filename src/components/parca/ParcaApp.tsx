@@ -84,13 +84,9 @@ export function ParcaApp({ onBack }: { onBack: () => void }) {
   }, [person, difficulty]);
 
   async function refreshBoard() {
-    const who = rankSubmit.playerName || getPlayerName();
-    const res = await fetchModeLeaderboard(
-      "parca",
-      who,
-      rankSubmit.track,
-      rankSubmit.accessToken,
-    );
+    // Preview na página: sempre Anônimos. Conta fica no modal de ranking.
+    const who = getPlayerName();
+    const res = await fetchModeLeaderboard("parca", who, "anon");
     setBoard(res.entries);
     setBoardGlobal(res.global);
     setBoardError(res.error || null);
@@ -114,7 +110,7 @@ export function ParcaApp({ onBack }: { onBack: () => void }) {
 
   function openRank(source: string) {
     trackRankingView("parca", source);
-    void refreshBoard().then(() => setShowRank(true));
+    setShowRank(true);
   }
 
   function startGame(d: Difficulty) {

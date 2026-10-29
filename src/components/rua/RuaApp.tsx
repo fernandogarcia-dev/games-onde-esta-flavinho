@@ -125,13 +125,9 @@ export function RuaApp({ onBack }: { onBack: () => void }) {
   const citiesTotal = cityCatalogSize(difficulty);
 
   async function refreshBoard() {
-    const who = rankSubmit.playerName || getPlayerName();
-    const res = await fetchModeLeaderboard(
-      "rua",
-      who,
-      rankSubmit.track,
-      rankSubmit.accessToken,
-    );
+    // Preview na página: sempre Anônimos (o placar cheio). Conta fica no modal.
+    const who = getPlayerName();
+    const res = await fetchModeLeaderboard("rua", who, "anon");
     setBoard(res.entries);
     setBoardGlobal(res.global);
     setBoardError(res.error || null);
@@ -156,7 +152,7 @@ export function RuaApp({ onBack }: { onBack: () => void }) {
 
   function openRank(source: string) {
     trackRankingView("rua", source);
-    void refreshBoard().then(() => setShowRank(true));
+    setShowRank(true);
   }
 
   function startGame(d: Difficulty) {

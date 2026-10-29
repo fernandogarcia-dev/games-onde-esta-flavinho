@@ -207,14 +207,9 @@ export function GameApp({
   );
 
   async function refreshBoard() {
-    const who = rankSubmit.playerName || getPlayerName();
+    // Preview na página: sempre Anônimos. Conta fica no modal de ranking.
     const { entries, global, error, myRank: remoteRank, myScore } =
-      await fetchLeaderboard(
-        who,
-        "mestre",
-        rankSubmit.track,
-        rankSubmit.accessToken,
-      );
+      await fetchLeaderboard(getPlayerName(), "mestre", "anon");
     setBoard(entries);
     setBoardGlobal(global);
     setBoardError(error || null);
