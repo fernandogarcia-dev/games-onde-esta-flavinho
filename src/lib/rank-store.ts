@@ -127,100 +127,99 @@ const ROW_SELECT_NO_IP =
 const ROW_SELECT_MIN = "name, score, updated_at, name_key, device_key";
 const ROW_SELECT_LEGACY = "name, score, updated_at, name_key";
 
+function markMissingColumn(message: string) {
+  if (/client_ip/i.test(message)) clientIpSupported = false;
+  if (/device_key/i.test(message)) deviceKeySupported = false;
+  if (/column .*mode/i.test(message) || /[' ]mode[' ]/i.test(message)) {
+    modeColumnSupported = false;
+  }
+}
+
+function pickSelectCols(): string {
+  if (
+    clientIpSupported !== false &&
+    deviceKeySupported !== false &&
+    modeColumnSupported !== false
+  ) {
+    return ROW_SELECT_FULL;
+  }
+  if (deviceKeySupported !== false && modeColumnSupported !== false) {
+    return ROW_SELECT_NO_IP;
+  }
+  if (deviceKeySupported !== false) return ROW_SELECT_MIN;
+  return ROW_SELECT_LEGACY;
+}
+
 async function findRowsForBareName(nameKey: string): Promise<Row[]> {
   const sb = getSupabaseAdmin();
   if (!sb || !nameKey) return [];
 
-  const selectCols =
-    clientIpSupported === false
-      ? modeColumnSupported === false
-        ? deviceKeySupported === false
-          ? ROW_SELECT_LEGACY
-          : ROW_SELECT_MIN
-        : ROW_SELECT_NO_IP
-      : ROW_SELECT_FULL;
+  // Tenta schema completo e degrada se faltar coluna (device_key / mode / client_ip).
+  for (let attempt = 0; attempt < 4; attempt++) {
+    const selectCols = pickSelectCols();
+    const useMode = modeColumnSupported !== false && selectCols.includes("mode");
 
-  if (modeColumnSupported !== false) {
+    if (useMode) {
+      const { data, error } = await sb
+        .from("leaderboard")
+        .select(selectCols)
+        .eq("name_key", nameKey);
+      if (!error) {
+        modeColumnSupported = true;
+        if (selectCols.includes("client_ip")) clientIpSupported = true;
+        if (selectCols.includes("device_key")) deviceKeySupported = true;
+        return (data || []) as unknown as Row[];
+      }
+      markMissingColumn(error.message);
+      if (
+        !/client_ip|device_key|mode/i.test(error.message) &&
+        !/column/i.test(error.message)
+      ) {
+        console.error("[rank] findRows", error.message);
+        throw new Error(error.message);
+      }
+      continue;
+    }
+
+    const keys = MODES.map((m) => prefixedKey(m, nameKey));
+    const legacySelect =
+      deviceKeySupported === false
+        ? ROW_SELECT_LEGACY
+        : clientIpSupported === false
+          ? ROW_SELECT_MIN
+          : "name, score, updated_at, name_key, device_key, client_ip";
     const { data, error } = await sb
       .from("leaderboard")
-      .select(selectCols)
-      .eq("name_key", nameKey);
+      .select(legacySelect)
+      .in("name_key", keys);
     if (!error) {
-      modeColumnSupported = true;
-      if (clientIpSupported !== false && selectCols.includes("client_ip")) {
-        clientIpSupported = true;
-      }
+      if (legacySelect.includes("device_key")) deviceKeySupported = true;
+      if (legacySelect.includes("client_ip")) clientIpSupported = true;
       return (data || []) as unknown as Row[];
     }
-    if (/column .*client_ip/i.test(error.message) || /client_ip/i.test(error.message)) {
-      clientIpSupported = false;
-      const { data: d2, error: e2 } = await sb
-        .from("leaderboard")
-        .select(ROW_SELECT_NO_IP)
-        .eq("name_key", nameKey);
-      if (!e2) {
-        modeColumnSupported = true;
-        return (d2 || []) as unknown as Row[];
-      }
-      if (/column .*mode/i.test(e2.message) || /mode/i.test(e2.message)) {
-        modeColumnSupported = false;
-      } else {
-        console.error("[rank] findRows", e2.message);
-        throw new Error(e2.message);
-      }
-    } else if (/column .*mode/i.test(error.message) || /mode/i.test(error.message)) {
-      modeColumnSupported = false;
-    } else {
+    markMissingColumn(error.message);
+    if (
+      !/client_ip|device_key|mode/i.test(error.message) &&
+      !/column/i.test(error.message)
+    ) {
       console.error("[rank] findRows", error.message);
       throw new Error(error.message);
     }
   }
 
+  // Último recurso: só colunas da migration 001
   const keys = MODES.map((m) => prefixedKey(m, nameKey));
   const { data, error } = await sb
     .from("leaderboard")
-    .select(
-      clientIpSupported === false
-        ? ROW_SELECT_MIN
-        : "name, score, updated_at, name_key, device_key, client_ip",
-    )
+    .select(ROW_SELECT_LEGACY)
     .in("name_key", keys);
   if (error) {
-    if (/client_ip/i.test(error.message)) {
-      clientIpSupported = false;
-      const { data: dIp, error: eIp } = await sb
-        .from("leaderboard")
-        .select(ROW_SELECT_MIN)
-        .in("name_key", keys);
-      if (!eIp) {
-        deviceKeySupported = true;
-        return (dIp || []) as unknown as Row[];
-      }
-      if (/device_key/i.test(eIp.message)) {
-        deviceKeySupported = false;
-        const { data: d2, error: e2 } = await sb
-          .from("leaderboard")
-          .select(ROW_SELECT_LEGACY)
-          .in("name_key", keys);
-        if (e2) throw new Error(e2.message);
-        return (d2 || []) as unknown as Row[];
-      }
-      throw new Error(eIp.message);
-    }
-    if (/device_key/i.test(error.message)) {
-      deviceKeySupported = false;
-      const { data: d2, error: e2 } = await sb
-        .from("leaderboard")
-        .select(ROW_SELECT_LEGACY)
-        .in("name_key", keys);
-      if (e2) throw new Error(e2.message);
-      return (d2 || []) as unknown as Row[];
-    }
     console.error("[rank] findRows", error.message);
     throw new Error(error.message);
   }
-  deviceKeySupported = true;
-  if (clientIpSupported !== false) clientIpSupported = true;
+  deviceKeySupported = false;
+  clientIpSupported = false;
+  modeColumnSupported = false;
   return (data || []) as unknown as Row[];
 }
 
