@@ -82,6 +82,7 @@ export function AccountModal({ open, onClose, preferredNick = "" }: Props) {
       setDraft(nick);
       setOk("Apelido da Conta salvo. Pontos vão pro placar Conta.");
       await refreshProfile();
+      window.setTimeout(() => onClose(), 450);
     } finally {
       setBusy(false);
     }
