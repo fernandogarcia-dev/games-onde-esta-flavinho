@@ -212,7 +212,7 @@ export function GuessMap({
     >
       <div
         ref={containerRef}
-        className="h-[min(52svh,520px)] w-full sm:h-[420px] lg:h-[460px]"
+        className="h-[min(60svh,580px)] w-full sm:h-[420px] lg:h-[460px]"
       />
     </div>
   );

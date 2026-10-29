@@ -78,7 +78,7 @@ const StreetView = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="flex h-[min(48svh,440px)] items-center justify-center bg-[var(--sand)] sm:h-auto sm:aspect-[2/1]">
+      <div className="flex h-[min(56svh,520px)] items-center justify-center bg-[var(--sand)] sm:h-auto sm:aspect-[2/1]">
         <p className="text-sm font-semibold text-[var(--muted)]">
           Abrindo a rua…
         </p>
@@ -441,7 +441,7 @@ export function RuaApp({ onBack }: { onBack: () => void }) {
                 lng={city.lng}
                 seed={`${city.id}-${difficulty}`}
                 fallbackPhoto={city.photo}
-                className="!aspect-auto h-[min(48svh,440px)] sm:h-auto sm:!aspect-[2/1]"
+                className="!aspect-auto h-[min(56svh,520px)] sm:h-auto sm:!aspect-[2/1]"
               />
               <div className="border-t-2 border-[var(--ink)]/10 px-4 py-2.5 sm:py-3">
                 <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[var(--brand)] sm:text-xs">
