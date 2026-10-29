@@ -7,6 +7,7 @@ import { ParcaApp } from "@/components/parca/ParcaApp";
 import { RuaApp } from "@/components/rua/RuaApp";
 import { SeoContent } from "@/components/seo/SeoContent";
 import { useScrollTop } from "@/hooks/useScrollTop";
+import { trackModeSelect } from "@/lib/analytics";
 import type { GameModeId } from "@/lib/modes";
 import { scrollToTop } from "@/lib/scroll";
 
@@ -20,6 +21,7 @@ export function HomeApp() {
   }
 
   function pickMode(next: GameModeId) {
+    trackModeSelect(next);
     scrollToTop();
     setMode(next);
   }

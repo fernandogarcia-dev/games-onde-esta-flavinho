@@ -46,6 +46,14 @@ import {
   labelFindTime,
   PERFECT_FIND_BONUS,
 } from "@/lib/scoring";
+import {
+  trackGameFinish,
+  trackGameStart,
+  trackNamePrompt,
+  trackNameSubmit,
+  trackRankingView,
+  trackSupportOpen,
+} from "@/lib/analytics";
 import { getBestScore, saveBestScore } from "@/lib/monetization";
 import { resolveClueTier } from "@/lib/city-clues";
 import { crowdParamsFor, lookTip } from "@/lib/crowd";
@@ -146,6 +154,20 @@ export function GameApp({
   }, [running]);
 
   useEffect(() => {
+    if (phase !== "win" && phase !== "fail-city" && phase !== "fail-time") {
+      return;
+    }
+    trackGameFinish("mestre", {
+      difficulty,
+      won: phase === "win",
+      score,
+      elapsedSec: elapsed,
+    });
+    // só no momento em que a fase de fim muda
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [phase]);
+
+  useEffect(() => {
     if (!findActive || findDeadlineRef.current == null) return;
     const tick = () => {
       const deadline = findDeadlineRef.current;
@@ -195,6 +217,12 @@ export function GameApp({
     findDeadlineRef.current = null;
   }
 
+  function openRank(source: string) {
+    trackRankingView("mestre", source);
+    void refreshBoard();
+    setShowRank(true);
+  }
+
   function startGame(diff: Difficulty = difficulty) {
     const dealt = dealNewRun(6, diff);
     setDifficulty(diff);
@@ -220,6 +248,7 @@ export function GameApp({
     setMyRank(null);
     setNewRecord(false);
     stopFindTimer();
+    trackGameStart("mestre", diff);
   }
 
   function restartToMenu() {
@@ -355,6 +384,7 @@ export function GameApp({
     if (!existing) {
       setNeedsName(true);
       setNameDraft("");
+      trackNamePrompt("mestre");
     } else {
       setNeedsName(false);
       await publishScore(nextScore, existing);
@@ -401,6 +431,7 @@ export function GameApp({
     setPlayerName(clean);
     setPlayerNameState(clean);
     const ok = await publishScore(score, clean, { isNewName });
+    trackNameSubmit("mestre", { success: ok });
     if (ok) {
       setNeedsName(false);
       setFeedback("");
@@ -499,10 +530,7 @@ export function GameApp({
           <Button
             variant="secondary"
             size="sm"
-            onClick={() => {
-              void refreshBoard();
-              setShowRank(true);
-            }}
+            onClick={() => openRank("header")}
           >
             Ranking
           </Button>
@@ -531,7 +559,7 @@ export function GameApp({
               myScore={best > 0 ? best : null}
               error={boardError}
               shareText={rankShareText}
-              onViewFull={() => setShowRank(true)}
+              onViewFull={() => openRank("landing_board")}
             />
           </div>
         )}
@@ -922,7 +950,7 @@ export function GameApp({
                     <Button
                       variant="secondary"
                       size="sm"
-                      onClick={() => setShowRank(true)}
+                      onClick={() => openRank("result")}
                     >
                       Ver ranking
                     </Button>
@@ -936,6 +964,8 @@ export function GameApp({
                   label="Provoca a galera"
                   align="center"
                   compact
+                  mode="mestre"
+                  source="result_win"
                 />
               </div>
             </div>
@@ -948,7 +978,7 @@ export function GameApp({
               compact
               error={boardError}
               shareText={rankShareText}
-              onViewFull={() => setShowRank(true)}
+              onViewFull={() => openRank("result_board")}
             />
           </section>
         )}
@@ -981,6 +1011,8 @@ export function GameApp({
                 label="Desafia alguém nas redes"
                 align="center"
                 compact
+                mode="mestre"
+                source="result_fail"
               />
             </div>
           </section>
@@ -1001,7 +1033,12 @@ export function GameApp({
         shareText={rankShareText}
       />
 
-      <LegalNotice onSupport={() => setShowPix(true)} />
+      <LegalNotice
+        onSupport={() => {
+          trackSupportOpen("mestre");
+          setShowPix(true);
+        }}
+      />
     </ModeTheme>
   );
 }
@@ -1165,6 +1202,8 @@ function Landing({
               text={shareText}
               label="Chama a galera"
               compact
+              mode="mestre"
+              source="landing"
             />
           </div>
         </div>

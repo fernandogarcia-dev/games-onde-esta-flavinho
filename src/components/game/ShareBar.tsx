@@ -2,6 +2,11 @@
 
 import { useEffect, useState } from "react";
 import {
+  trackShare,
+  type ShareMethod,
+} from "@/lib/analytics";
+import type { GameModeId } from "@/lib/modes";
+import {
   copyShareText,
   facebookShareUrl,
   nativeShare,
@@ -15,6 +20,9 @@ type Props = {
   label?: string;
   align?: "left" | "center" | "right";
   compact?: boolean;
+  /** Modo atual — vai no evento share do Analytics */
+  mode?: GameModeId | "home";
+  source?: string;
 };
 
 export function ShareBar({
@@ -22,6 +30,8 @@ export function ShareBar({
   label = "Compartilhar",
   align = "left",
   compact = false,
+  mode = "home",
+  source = "share_bar",
 }: Props) {
   const [copied, setCopied] = useState(false);
   const [canNative, setCanNative] = useState(false);
@@ -37,16 +47,25 @@ export function ShareBar({
         ? "items-end text-right"
         : "items-start text-left";
 
+  function noteShare(method: ShareMethod) {
+    trackShare(method, { mode, source });
+  }
+
   async function onCopy() {
     const ok = await copyShareText(text);
     if (!ok) return;
+    noteShare("copy");
     setCopied(true);
     window.setTimeout(() => setCopied(false), 1800);
   }
 
   async function onNative() {
     const shared = await nativeShare(text);
-    if (!shared) await onCopy();
+    if (shared) {
+      noteShare("native");
+      return;
+    }
+    await onCopy();
   }
 
   const btn =
@@ -66,7 +85,10 @@ export function ShareBar({
         <button
           type="button"
           className={`${btn} ${size}`}
-          onClick={() => openShareWindow(whatsappShareUrl(text))}
+          onClick={() => {
+            noteShare("whatsapp");
+            openShareWindow(whatsappShareUrl(text));
+          }}
           aria-label="Compartilhar no WhatsApp"
         >
           <WhatsAppIcon />
@@ -75,7 +97,10 @@ export function ShareBar({
         <button
           type="button"
           className={`${btn} ${size}`}
-          onClick={() => openShareWindow(twitterShareUrl(text))}
+          onClick={() => {
+            noteShare("x");
+            openShareWindow(twitterShareUrl(text));
+          }}
           aria-label="Compartilhar no X"
         >
           <XIcon />
@@ -84,7 +109,10 @@ export function ShareBar({
         <button
           type="button"
           className={`${btn} ${size}`}
-          onClick={() => openShareWindow(facebookShareUrl())}
+          onClick={() => {
+            noteShare("facebook");
+            openShareWindow(facebookShareUrl());
+          }}
           aria-label="Compartilhar no Facebook"
         >
           <FacebookIcon />

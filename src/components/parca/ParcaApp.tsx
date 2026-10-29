@@ -10,6 +10,14 @@ import { RankModal } from "@/components/game/RankModal";
 import { ShareBar } from "@/components/game/ShareBar";
 import { getMode } from "@/lib/modes";
 import {
+  trackGameFinish,
+  trackGameStart,
+  trackNamePrompt,
+  trackNameSubmit,
+  trackRankingView,
+  trackSupportOpen,
+} from "@/lib/analytics";
+import {
   fetchModeLeaderboard,
   getModeBest,
   submitModeScore,
@@ -93,6 +101,11 @@ export function ParcaApp({ onBack }: { onBack: () => void }) {
     return () => window.clearInterval(id);
   }, [running]);
 
+  function openRank(source: string) {
+    trackRankingView("parca", source);
+    void refreshBoard().then(() => setShowRank(true));
+  }
+
   function startGame(d: Difficulty) {
     const dealt = dealParcaRun(1);
     setDifficulty(d);
@@ -106,6 +119,7 @@ export function ParcaApp({ onBack }: { onBack: () => void }) {
     setMyRank(null);
     setWon(false);
     setPhase("clues");
+    trackGameStart("parca", d);
   }
 
   async function publishScore(
@@ -153,10 +167,17 @@ export function ParcaApp({ onBack }: { onBack: () => void }) {
     setRunning(false);
     setWon(hit);
     setPhase("result");
+    trackGameFinish("parca", {
+      difficulty,
+      won: hit,
+      score: finalScore,
+      elapsedSec: elapsed,
+    });
     if (!hit || finalScore <= 0) return;
     const name = getPlayerName();
     if (!name) {
       setNeedsName(true);
+      trackNamePrompt("parca");
       return;
     }
     await publishScore(finalScore, name);
@@ -210,6 +231,7 @@ export function ParcaApp({ onBack }: { onBack: () => void }) {
     setPlayerName(clean);
     setPlayerNameState(clean);
     const ok = await publishScore(score, clean, { isNewName });
+    trackNameSubmit("parca", { success: ok });
     if (ok) {
       setNeedsName(false);
       setNameFeedback("");
@@ -254,13 +276,10 @@ export function ParcaApp({ onBack }: { onBack: () => void }) {
           <Button
             variant="secondary"
             size="sm"
-            onClick={() => {
-              void refreshBoard().then(() => setShowRank(true));
-            }}
+            onClick={() => openRank("header")}
           >
             Ranking
-          </Button>
-        </div>
+          </Button>        </div>
       </header>
 
       <main className="relative z-10 mx-auto w-full max-w-5xl px-4 pb-16 sm:px-6">
@@ -314,7 +333,13 @@ export function ParcaApp({ onBack }: { onBack: () => void }) {
                     : "Todas as dicas abertas. Um chute. Tela final."}
                 </p>
                 <div className="mt-5">
-                  <ShareBar text={shareText} label="Chama a galera" compact />
+                  <ShareBar
+                    text={shareText}
+                    label="Chama a galera"
+                    compact
+                    mode="parca"
+                    source="landing"
+                  />
                 </div>
               </div>
             </section>
@@ -326,7 +351,7 @@ export function ParcaApp({ onBack }: { onBack: () => void }) {
               myScore={best > 0 ? best : null}
               error={boardError}
               shareText={shareText}
-              onViewFull={() => setShowRank(true)}
+              onViewFull={() => openRank("landing_board")}
             />
           </div>
         )}
@@ -553,6 +578,8 @@ export function ParcaApp({ onBack }: { onBack: () => void }) {
                   label="Desafia alguém"
                   align="center"
                   compact
+                  mode="parca"
+                  source="result"
                 />
               </div>
             </div>
@@ -572,7 +599,12 @@ export function ParcaApp({ onBack }: { onBack: () => void }) {
         error={boardError}
         shareText={shareText}
       />
-      <LegalNotice onSupport={() => setShowPix(true)} />
+      <LegalNotice
+        onSupport={() => {
+          trackSupportOpen("parca");
+          setShowPix(true);
+        }}
+      />
     </ModeTheme>
   );
 }

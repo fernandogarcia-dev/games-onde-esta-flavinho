@@ -84,6 +84,23 @@ Projeto: **CadeFlavinho** → `https://elpxkbcnaexbkyynclaf.supabase.co`
 
 A API `/api/rank?mode=` grava/lê a tabela `leaderboard` (nome + pontuação + `device_key` + modo). Os **três modos** usam ranking **mundial**, com apelido amarrado ao aparelho.
 
+### Analytics (GA4)
+
+Já usa o Measurement ID `NEXT_PUBLIC_GA_ID` (`G-5C6WTLVDH2`) — **não precisa de API key extra**. Eventos custom no `gtag`:
+
+| Evento | Quando | Params úteis |
+|---|---|---|
+| `mode_select` | escolhe modo na home | `mode` |
+| `game_start` | começa partida | `mode`, `difficulty` |
+| `game_finish` | termina rodada | `mode`, `difficulty`, `won`, `score`, `elapsed_sec` |
+| `name_prompt` | pede apelido | `mode` |
+| `name_submit` | salva apelido | `mode`, `success` |
+| `ranking_view` | abre placar | `mode`, `source` |
+| `share` | compartilha | `mode`, `method`, `source` |
+| `support_open` | abre PIX | `source` |
+
+No GA4 → **Relatórios → Engajamento → Eventos** (ou Explorar). Pra filtrar por modo/método com cara de dimensão, registre `mode`, `difficulty`, `method`, `source`, `won` como **dimensões personalizadas** (escopo evento) em Admin → Definições personalizadas.
+
 ## DNS no Registro.br (`cadeflavinho.com.br`)
 
 Depois de adicionar o domínio no projeto Vercel, use **um** destes caminhos:

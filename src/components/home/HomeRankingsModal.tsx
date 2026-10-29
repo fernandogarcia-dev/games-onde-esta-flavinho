@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Leaderboard } from "@/components/game/Leaderboard";
 import { GAME_MODES, type GameModeId } from "@/lib/modes";
+import { trackRankingView } from "@/lib/analytics";
 import { fetchModeLeaderboard } from "@/lib/mode-ranking";
 import { getPlayerName, type RankEntry } from "@/lib/ranking";
 
@@ -135,7 +136,10 @@ export function HomeRankingsModal({ open, onClose }: Props) {
                 type="button"
                 role="tab"
                 aria-selected={on}
-                onClick={() => setTab(mode.id)}
+                onClick={() => {
+                  setTab(mode.id);
+                  trackRankingView(mode.id, "home_tab");
+                }}
                 className={`rounded-xl border-2 px-2 py-2.5 text-left transition ${
                   on
                     ? "shadow-[3px_3px_0_var(--ink)] ring-2 ring-[var(--ink)]"

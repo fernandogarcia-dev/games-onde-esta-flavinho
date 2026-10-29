@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useState } from "react";
 import { GAME_MODES, type GameModeId } from "@/lib/modes";
+import { trackRankingView, trackSupportOpen } from "@/lib/analytics";
 import { LegalNotice } from "@/components/game/LegalNotice";
 import { PixModal } from "@/components/game/PixModal";
 import { HomeRankingsModal } from "@/components/home/HomeRankingsModal";
@@ -70,7 +71,10 @@ export function ModePicker({ onPick }: Props) {
                 <Button
                   variant="secondary"
                   size="md"
-                  onClick={() => setShowRanks(true)}
+                  onClick={() => {
+                    trackRankingView("all", "home");
+                    setShowRanks(true);
+                  }}
                 >
                   Ver rankings
                 </Button>
@@ -129,7 +133,12 @@ export function ModePicker({ onPick }: Props) {
 
       <PixModal open={showPix} onClose={() => setShowPix(false)} />
       <HomeRankingsModal open={showRanks} onClose={() => setShowRanks(false)} />
-      <LegalNotice onSupport={() => setShowPix(true)} />
+      <LegalNotice
+        onSupport={() => {
+          trackSupportOpen("home");
+          setShowPix(true);
+        }}
+      />
     </div>
   );
 }
