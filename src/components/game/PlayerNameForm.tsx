@@ -153,12 +153,13 @@ export function PlayerNameLanding({
   const loggedIn = Boolean(auth?.user);
   const regNick = auth?.regNick || "";
 
-  // Evita flash do form anônimo enquanto a sessão Google carrega.
+  // Evita flash do form anônimo enquanto a sessão (Google) carrega.
   if (auth && !auth.ready) {
     return (
-      <div className="mt-5 rounded-2xl border-2 border-dashed border-[var(--ink)]/20 bg-white/60 px-4 py-3 text-sm text-[var(--muted)]">
-        Carregando conta…
-      </div>
+      <div
+        className="mt-5 h-[4.5rem] rounded-2xl border-2 border-dashed border-[var(--ink)]/15 bg-white/50"
+        aria-hidden
+      />
     );
   }
 
