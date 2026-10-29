@@ -97,7 +97,7 @@ export async function listRanks(
       modeColumnSupported = true;
       return rowsToEntries((data || []) as Row[]);
     }
-    if (/column .*mode/i.test(error.message)) {
+    if (isModeSchemaError(error.message)) {
       modeColumnSupported = false;
     } else {
       console.error("[rank] list", error.message);
@@ -130,11 +130,22 @@ const ROW_SELECT_NO_IP =
 const ROW_SELECT_MIN = "name, score, updated_at, name_key, device_key";
 const ROW_SELECT_LEGACY = "name, score, updated_at, name_key";
 
+/**
+ * Sem coluna `mode`, o Postgres trata `mode` como agregação ordered-set
+ * ("WITHIN GROUP is required…") em vez de "column does not exist".
+ */
+function isModeSchemaError(message: string): boolean {
+  return (
+    /column .*mode/i.test(message) ||
+    /within group.*mode/i.test(message) ||
+    /ordered-set aggregate mode/i.test(message)
+  );
+}
+
 function markMissingColumn(message: string) {
   if (/client_ip/i.test(message)) clientIpSupported = false;
   if (/device_key/i.test(message)) deviceKeySupported = false;
-  // Só marca mode ausente com erro explícito de coluna (evita falso positivo).
-  if (/column .*mode/i.test(message)) {
+  if (isModeSchemaError(message)) {
     modeColumnSupported = false;
   }
 }
@@ -298,7 +309,7 @@ export async function lookupPlayer(
     if (!error) {
       modeColumnSupported = true;
       row = (data as Row | null) ?? null;
-    } else if (/column .*mode/i.test(error.message)) {
+    } else if (isModeSchemaError(error.message)) {
       modeColumnSupported = false;
     } else {
       console.error("[rank] lookup", error.message);
@@ -508,7 +519,8 @@ export async function upsertRank(
       }
     } else if (
       useModeCol &&
-      /column .*mode|on conflict|conflict target/i.test(upsertErr.message)
+      isModeSchemaError(upsertErr.message) ||
+      /on conflict|conflict target/i.test(upsertErr.message)
     ) {
       // Conflict target / coluna mode ausente — prefixo no name_key
       modeColumnSupported = false;
