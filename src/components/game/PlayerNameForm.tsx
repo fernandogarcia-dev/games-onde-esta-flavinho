@@ -10,6 +10,8 @@ type Props = {
   value: string;
   onChange: (value: string) => void;
   onSubmit: () => void;
+  /** Começa a partida sem Conta (e sem nick, se o campo estiver vazio). */
+  onPlayAnonymous?: () => void;
   busy?: boolean;
   error?: string | null;
   /** Já tem apelido salvo — só confirma no placar */
@@ -59,6 +61,7 @@ export function PlayerNameForm({
   value,
   onChange,
   onSubmit,
+  onPlayAnonymous,
   busy = false,
   error = null,
   existingName,
@@ -120,7 +123,7 @@ export function PlayerNameForm({
           Entrar com Google (placar Conta)
         </Button>
       ) : null}
-      <div className="mt-3 flex flex-col gap-2 sm:flex-row">
+      <div className="mt-3 flex flex-col gap-2">
         <input
           value={value}
           onChange={(e) => onChange(sanitizeName(e.target.value))}
@@ -133,11 +136,42 @@ export function PlayerNameForm({
           placeholder="Seu apelido"
           autoFocus={autoFocus}
           disabled={busy}
-          className="min-w-0 flex-1 rounded-xl border-2 border-[var(--ink)] bg-[var(--paper)] px-3 py-2.5 font-semibold text-[var(--ink)] outline-none focus:border-[var(--brand)] disabled:opacity-60"
+          className="w-full rounded-xl border-2 border-[var(--ink)] bg-[var(--paper)] px-3 py-2.5 font-semibold text-[var(--ink)] outline-none focus:border-[var(--brand)] disabled:opacity-60"
         />
-        <Button onClick={onSubmit} disabled={busy || value.trim().length < 2}>
+        <Button
+          className="w-full"
+          onClick={onSubmit}
+          disabled={busy || value.trim().length < 2}
+        >
           {busy ? "Entrando…" : "Entrar"}
         </Button>
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+          <Button
+            variant="secondary"
+            className="w-full"
+            disabled={busy}
+            onClick={() => {
+              if (value.trim().length >= 2) {
+                onSubmit();
+                return;
+              }
+              onPlayAnonymous?.();
+            }}
+          >
+            Jogar anônimo
+          </Button>
+          <Button
+            variant="secondary"
+            className="w-full"
+            disabled={busy}
+            onClick={() => auth?.openAccount(value)}
+          >
+            Entrar na conta
+          </Button>
+        </div>
+        <p className="text-[11px] text-[var(--muted)]">
+          Sem Conta: usa apelido anônimo ou joga sem nick (pontos não sobem).
+        </p>
       </div>
     </div>
   );
@@ -149,6 +183,8 @@ type LandingProps = {
   draft: string;
   onDraftChange: (value: string) => void;
   onSave: () => void;
+  /** Começa a partida sem Conta / sem nick. */
+  onPlayAnonymous?: () => void;
   busy?: boolean;
   error?: string | null;
 };
@@ -200,6 +236,7 @@ export function PlayerNameLanding({
   draft,
   onDraftChange,
   onSave,
+  onPlayAnonymous,
   busy,
   error,
 }: LandingProps) {
@@ -284,6 +321,7 @@ export function PlayerNameLanding({
         value={draft}
         onChange={onDraftChange}
         onSubmit={onSave}
+        onPlayAnonymous={onPlayAnonymous}
         busy={busy}
         error={error}
         autoFocus={false}

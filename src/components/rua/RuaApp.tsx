@@ -453,6 +453,7 @@ export function RuaApp({ onBack }: { onBack: () => void }) {
                 draft={nameDraft}
                 onDraftChange={setNameDraft}
                 onSave={() => void saveLandingName()}
+                onPlayAnonymous={() => startGame(difficulty)}
                 busy={savingRank}
                 error={nameFeedback}
               />

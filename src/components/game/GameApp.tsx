@@ -682,6 +682,7 @@ export function GameApp({
               onDifficultyChange={setDifficulty}
               onNameDraftChange={setNameDraft}
               onSaveName={() => void saveLandingName()}
+              onPlayAnonymous={() => startGame(difficulty)}
               onStart={() => startGame(difficulty)}
               onBack={onBackToModes}
             />
@@ -1217,6 +1218,7 @@ function Landing({
   onDifficultyChange,
   onNameDraftChange,
   onSaveName,
+  onPlayAnonymous,
   onStart,
   onBack,
 }: {
@@ -1233,6 +1235,7 @@ function Landing({
   onDifficultyChange: (d: Difficulty) => void;
   onNameDraftChange: (value: string) => void;
   onSaveName: () => void;
+  onPlayAnonymous?: () => void;
   onStart: () => void;
   onBack?: () => void;
 }) {
@@ -1364,6 +1367,7 @@ function Landing({
             draft={nameDraft}
             onDraftChange={onNameDraftChange}
             onSave={onSaveName}
+            onPlayAnonymous={onPlayAnonymous}
             busy={nameBusy}
             error={nameError}
           />
