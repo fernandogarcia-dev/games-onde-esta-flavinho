@@ -44,7 +44,10 @@ export function useRankSubmit() {
     playerName: activeName(),
     accessToken: auth?.accessToken ?? null,
     isRegistered: Boolean(auth?.user && auth.regNick),
-    needsRegNick: Boolean(auth?.user && !auth.regNick),
+    needsRegNick: Boolean(
+      auth?.user && auth.profileReady && !auth.regNick,
+    ),
+    authReady: Boolean(auth?.ready && auth.profileReady),
     submit,
   };
 }

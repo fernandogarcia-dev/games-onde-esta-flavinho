@@ -17,7 +17,8 @@ import {
  * Modal Conta vive no AuthProvider (openAccount).
  */
 export function HomePlayerBar() {
-  const { user, regNick, ready, signOut, openAccount } = useAuth();
+  const { user, regNick, ready, profileReady, signOut, openAccount } =
+    useAuth();
   const [anonName, setAnonName] = useState("");
   const [draft, setDraft] = useState("");
   const [editing, setEditing] = useState(false);
@@ -61,11 +62,15 @@ export function HomePlayerBar() {
   }
 
   const loggedIn = Boolean(user);
-  const display = loggedIn ? regNick || "Sem apelido" : anonName;
+  const display = loggedIn
+    ? regNick || (profileReady ? "Sem apelido" : "…")
+    : anonName;
   const badge = loggedIn
-    ? regNick
-      ? "Conta"
-      : "Conta · escolhe um nick"
+    ? !profileReady
+      ? "Conta…"
+      : regNick
+        ? "Conta"
+        : "Conta · escolhe um nick"
     : "Anônimo";
 
   return (
@@ -77,7 +82,7 @@ export function HomePlayerBar() {
             {!editing || loggedIn ? (
               <>
                 <p className="truncate font-[family-name:var(--font-display)] text-base leading-tight text-[var(--ink)] sm:text-lg">
-                  {display || (ready ? "Sem apelido" : "…")}
+                  {display || (ready && profileReady ? "Sem apelido" : "…")}
                 </p>
                 <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[var(--muted)]">
                   {badge}

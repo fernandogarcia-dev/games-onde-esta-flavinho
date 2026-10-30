@@ -191,6 +191,10 @@ export function ParcaApp({ onBack }: { onBack: () => void }) {
       elapsedSec: elapsed,
     });
     if (!hit || finalScore <= 0) return;
+    if (rankSubmit.isRegistered) {
+      await publishScore(finalScore, rankSubmit.playerName);
+      return;
+    }
     if (rankSubmit.needsRegNick) {
       setNeedsName(true);
       pendingPublishRef.current = true;
@@ -198,7 +202,7 @@ export function ParcaApp({ onBack }: { onBack: () => void }) {
       auth?.openAccount(nameDraft || getPlayerName());
       return;
     }
-    const name = rankSubmit.playerName || getPlayerName();
+    const name = getPlayerName();
     if (!name) {
       setNeedsName(true);
       trackNamePrompt("parca");

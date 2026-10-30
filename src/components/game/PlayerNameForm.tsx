@@ -30,6 +30,30 @@ export function PlayerNameForm({
 }: Props) {
   const auth = useAuthOptional();
 
+  // Conta logada nunca deve ver este form — pai deveria ter escondido.
+  if (auth?.user) {
+    if (auth.regNick) {
+      return (
+        <div
+          className={`rounded-2xl border-2 border-dashed border-[var(--ink)]/30 bg-white/80 px-4 py-3 text-left ${className}`}
+        >
+          <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[var(--brand)]">
+            Placar Conta
+          </p>
+          <p className="mt-1 text-sm font-semibold text-[var(--ink)]">
+            Jogando como{" "}
+            <strong className="font-[family-name:var(--font-display)] text-lg">
+              {auth.regNick}
+            </strong>
+          </p>
+        </div>
+      );
+    }
+    return (
+      <ContaNickNeeded preferredNick={value} className={className} />
+    );
+  }
+
   return (
     <div
       className={`rounded-2xl border-[3px] border-[var(--ink)] bg-white p-4 text-left shadow-[4px_4px_0_var(--ink)] ${className}`}
@@ -104,28 +128,26 @@ type LandingProps = {
   error?: string | null;
 };
 
-/**
- * Bloco na landing do modo.
- * Logado + nick Conta → pronto pra jogar.
- * Logado sem nick → pede Conta (não anônimo).
- * Deslogado → form anônimo.
- */
 /** Depois de pontuar: logado sem nick Conta — não mostra form anônimo. */
 export function ContaNickNeeded({
   score,
   preferredNick = "",
+  className = "",
 }: {
   score?: number;
   preferredNick?: string;
+  className?: string;
 }) {
   const auth = useAuthOptional();
   return (
-    <div className="rounded-2xl border-[3px] border-[var(--ink)] bg-white p-4 text-left shadow-[4px_4px_0_var(--ink)]">
+    <div
+      className={`rounded-2xl border-[3px] border-[var(--ink)] bg-white p-4 text-left shadow-[4px_4px_0_var(--ink)] ${className}`}
+    >
       <p className="text-sm font-bold text-[var(--ink)]">
-        Salva teus pontos na Conta
+        Escolhe teu apelido da Conta
       </p>
       <p className="mt-1 text-xs text-[var(--muted)]">
-        Você já entrou com Google. Falta só um apelido no placar Conta
+        Você já está logado com Google. Falta só um nick no placar Conta
         {typeof score === "number" && score > 0
           ? ` pra gravar ${score.toLocaleString("pt-BR")} pts`
           : ""}
@@ -141,6 +163,12 @@ export function ContaNickNeeded({
   );
 }
 
+/**
+ * Bloco na landing do modo.
+ * Logado + nick Conta → pronto pra jogar (sem digitar nada).
+ * Logado sem nick → modal Conta (nunca form anônimo).
+ * Deslogado → form anônimo.
+ */
 export function PlayerNameLanding({
   playerName,
   draft,
@@ -151,13 +179,14 @@ export function PlayerNameLanding({
 }: LandingProps) {
   const auth = useAuthOptional();
   const loggedIn = Boolean(auth?.user);
-  const regNick = auth?.regNick || "";
+  const regNick = (auth?.regNick || "").trim();
+  const authPending = Boolean(auth && (!auth.ready || (loggedIn && !auth.profileReady)));
 
-  // Evita flash do form anônimo enquanto a sessão (Google) carrega.
-  if (auth && !auth.ready) {
+  // Evita flash do form anônimo enquanto sessão/perfil Conta carregam.
+  if (authPending) {
     return (
       <div
-        className="mt-5 h-[4.5rem] rounded-2xl border-2 border-dashed border-[var(--ink)]/15 bg-white/50"
+        className="mt-5 h-[4.5rem] animate-pulse rounded-2xl border-2 border-dashed border-[var(--ink)]/15 bg-white/50"
         aria-hidden
       />
     );
@@ -174,7 +203,7 @@ export function PlayerNameLanding({
           <strong className="font-[family-name:var(--font-display)] text-lg">
             {regNick}
           </strong>
-          {" — "}pontos sobem no ranking Conta deste modo.
+          {" — "}pontos sobem no ranking Conta deste modo. Sem digitar de novo.
         </p>
         <p className="mt-1 text-xs text-[var(--muted)]">
           Quer trocar?{" "}

@@ -432,14 +432,17 @@ export function GameApp({
     setBest(Math.max(prevBest, nextScore));
     setNewRecord(isNew);
 
-    if (rankSubmit.needsRegNick) {
+    if (rankSubmit.isRegistered) {
+      setNeedsName(false);
+      await publishScore(gained, rankSubmit.playerName, { accumulate: true });
+    } else if (rankSubmit.needsRegNick) {
       setNeedsName(true);
       pendingPublishRef.current = true;
       pendingPointsRef.current = gained;
       trackNamePrompt("mestre");
       auth?.openAccount(nameDraft || getPlayerName());
     } else {
-      const existing = rankSubmit.playerName || getPlayerName();
+      const existing = getPlayerName();
       if (!existing) {
         setNeedsName(true);
         setNameDraft("");

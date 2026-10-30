@@ -11,10 +11,17 @@ import {
 } from "react";
 import type { Session, User } from "@supabase/supabase-js";
 import { AccountModal } from "@/components/auth/AccountModal";
+import {
+  clearContaCache,
+  readContaCache,
+  writeContaCache,
+} from "@/lib/conta-cache";
 import { getSupabaseBrowser } from "@/lib/supabase-browser";
 
 type AuthCtx = {
   ready: boolean;
+  /** Sessão resolvida E perfil Conta já consultado (ou sem sessão). */
+  profileReady: boolean;
   user: User | null;
   session: Session | null;
   accessToken: string | null;
@@ -33,16 +40,26 @@ const Ctx = createContext<AuthCtx | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [ready, setReady] = useState(false);
+  const [profileReady, setProfileReady] = useState(false);
   const [session, setSession] = useState<Session | null>(null);
   const [regNick, setRegNick] = useState("");
   const [accountOpen, setAccountOpen] = useState(false);
   const [preferredNick, setPreferredNick] = useState("");
 
+  const applyNick = useCallback((userId: string | undefined, nick: string) => {
+    const clean = nick.trim();
+    setRegNick(clean);
+    if (userId) writeContaCache(userId, clean);
+  }, []);
+
   const refreshProfile = useCallback(async () => {
     const sb = getSupabaseBrowser();
-    const token = (await sb?.auth.getSession())?.data.session?.access_token;
+    const current = (await sb?.auth.getSession())?.data.session;
+    const token = current?.access_token;
+    const uid = current?.user?.id;
     if (!token) {
       setRegNick("");
+      setProfileReady(true);
       return;
     }
     try {
@@ -50,28 +67,52 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         headers: { Authorization: `Bearer ${token}` },
         cache: "no-store",
       });
-      if (!res.ok) return;
+      if (!res.ok) {
+        // Mantém cache local se a API falhar — não zera o nick.
+        setProfileReady(true);
+        return;
+      }
       const data = (await res.json()) as { nick?: string };
-      setRegNick((data.nick || "").trim());
+      applyNick(uid, data.nick || "");
     } catch {
-      /* ignore */
+      /* mantém cache */
+    } finally {
+      setProfileReady(true);
     }
-  }, []);
+  }, [applyNick]);
 
   useEffect(() => {
     const sb = getSupabaseBrowser();
     if (!sb) {
       setReady(true);
+      setProfileReady(true);
       return;
     }
     let mounted = true;
     void sb.auth.getSession().then(({ data }) => {
       if (!mounted) return;
-      setSession(data.session);
+      const next = data.session;
+      setSession(next);
+      if (next?.user?.id) {
+        const cached = readContaCache(next.user.id);
+        if (cached) setRegNick(cached);
+      } else {
+        setRegNick("");
+        setProfileReady(true);
+      }
       setReady(true);
     });
     const { data: sub } = sb.auth.onAuthStateChange((_event, next) => {
       setSession(next);
+      if (!next) {
+        setRegNick("");
+        clearContaCache();
+        setProfileReady(true);
+      } else if (next.user?.id) {
+        const cached = readContaCache(next.user.id);
+        if (cached) setRegNick(cached);
+        setProfileReady(false);
+      }
     });
     return () => {
       mounted = false;
@@ -81,18 +122,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (!session?.access_token) {
-      setRegNick("");
+      if (ready) setProfileReady(true);
       return;
     }
+    setProfileReady(false);
     void refreshProfile();
-  }, [session?.access_token, refreshProfile]);
+  }, [session?.access_token, refreshProfile, ready]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
     const params = new URLSearchParams(window.location.search);
     if (params.get("conta") === "1") {
       setAccountOpen(true);
-      // Mantém path/query limpos (só tira conta=1), sem jogar pra "/".
       params.delete("conta");
       params.delete("auth");
       const qs = params.toString();
@@ -107,6 +148,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const closeAccount = useCallback(() => setAccountOpen(false), []);
+
+  const setRegNickLocal = useCallback(
+    (nick: string) => {
+      applyNick(session?.user?.id, nick);
+    },
+    [applyNick, session?.user?.id],
+  );
 
   const signInWithGoogle = useCallback(async () => {
     const sb = getSupabaseBrowser();
@@ -145,18 +193,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const sb = getSupabaseBrowser();
     await sb?.auth.signOut();
     setRegNick("");
+    clearContaCache();
   }, []);
 
   const value = useMemo<AuthCtx>(
     () => ({
       ready,
+      profileReady,
       user: session?.user ?? null,
       session,
       accessToken: session?.access_token ?? null,
       regNick,
       email: session?.user?.email || "",
       refreshProfile,
-      setRegNickLocal: setRegNick,
+      setRegNickLocal,
       signInWithGoogle,
       signOut,
       openAccount,
@@ -164,9 +214,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }),
     [
       ready,
+      profileReady,
       session,
       regNick,
       refreshProfile,
+      setRegNickLocal,
       signInWithGoogle,
       signOut,
       openAccount,
