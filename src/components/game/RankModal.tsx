@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useAuthOptional } from "@/components/auth/AuthProvider";
 import { Leaderboard } from "@/components/game/Leaderboard";
 import { ModalFrame } from "@/components/ui/ModalFrame";
@@ -26,8 +26,7 @@ const emptyBoard = (): BoardState => ({
 
 /**
  * Modal de ranking por modo.
- * Sempre busca Anônimos e Conta na API — não reaproveita o board
- * do jogo (que pode estar no track Conta quando o user está logado).
+ * Busca Anônimos e Conta na API (Conta não depende de login pra listar).
  */
 export function RankModal({
   open,
@@ -51,14 +50,13 @@ export function RankModal({
   mode?: GameModeId;
 }) {
   const auth = useAuthOptional();
-  const [track, setTrack] = useState<RankTrack>(
-    auth?.user && auth.regNick ? "reg" : "anon",
-  );
+  const [track, setTrack] = useState<RankTrack>("anon");
   const [boards, setBoards] = useState<Record<RankTrack, BoardState>>({
     anon: emptyBoard(),
     reg: emptyBoard(),
   });
   const [loading, setLoading] = useState(false);
+  const contaRetryRef = useRef(false);
 
   useEffect(() => {
     if (!open) return;
@@ -76,52 +74,133 @@ export function RankModal({
 
   useEffect(() => {
     if (!open) return;
-    // Prefer Conta se logado com nick; senão Anônimos
     setTrack(auth?.user && auth.regNick ? "reg" : "anon");
+    contaRetryRef.current = false;
   }, [open, auth?.user, auth?.regNick]);
+
+  const loadBoards = useCallback(async () => {
+    const anonWho = getPlayerName() || highlight || "";
+    const regWho = auth?.regNick || "";
+    const [anon, reg] = await Promise.all([
+      fetchModeLeaderboard(mode, anonWho, "anon"),
+      fetchModeLeaderboard(mode, regWho, "reg", auth?.accessToken),
+    ]);
+    return {
+      anon: {
+        entries: anon.entries,
+        global: anon.global,
+        myRank: anon.myRank && anon.myRank > 0 ? anon.myRank : null,
+        myScore: anon.myScore ?? null,
+        error: anon.error ?? null,
+      } satisfies BoardState,
+      reg: {
+        entries: reg.entries,
+        global: reg.global,
+        myRank: reg.myRank && reg.myRank > 0 ? reg.myRank : null,
+        myScore: reg.myScore ?? null,
+        error: reg.error ?? null,
+      } satisfies BoardState,
+    };
+  }, [mode, highlight, auth?.regNick, auth?.accessToken]);
 
   useEffect(() => {
     if (!open) return;
     let cancelled = false;
     setLoading(true);
-
-    const anonWho = getPlayerName() || highlight || "";
-    const regWho = auth?.regNick || "";
-
-    void Promise.all([
-      fetchModeLeaderboard(mode, anonWho, "anon"),
-      fetchModeLeaderboard(mode, regWho, "reg", auth?.accessToken),
-    ]).then(([anon, reg]) => {
-      if (cancelled) return;
-      setBoards({
-        anon: {
-          entries: anon.entries,
-          global: anon.global,
-          myRank: anon.myRank && anon.myRank > 0 ? anon.myRank : null,
-          myScore: anon.myScore ?? null,
-          error: anon.error ?? null,
-        },
-        reg: {
-          entries: reg.entries,
-          global: reg.global,
-          myRank: reg.myRank && reg.myRank > 0 ? reg.myRank : null,
-          myScore: reg.myScore ?? null,
-          error: reg.error ?? null,
-        },
+    void loadBoards()
+      .then((next) => {
+        if (cancelled) return;
+        setBoards(next);
+      })
+      .catch(() => {
+        if (cancelled) return;
+        setBoards({
+          anon: {
+            ...emptyBoard(),
+            error: "Não deu pra carregar o ranking.",
+          },
+          reg: {
+            ...emptyBoard(),
+            error: "Não deu pra carregar o placar Conta.",
+          },
+        });
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
       });
-      setLoading(false);
-    });
-
     return () => {
       cancelled = true;
     };
-  }, [open, mode, auth?.regNick, auth?.accessToken, highlight]);
+  }, [open, loadBoards]);
+
+  // Um retry ao abrir a aba Conta se a 1ª carga veio vazia (race/rede).
+  useEffect(() => {
+    if (!open || track !== "reg" || loading) return;
+    if (boards.reg.entries.length > 0 || boards.reg.error) return;
+    if (contaRetryRef.current) return;
+    contaRetryRef.current = true;
+    let cancelled = false;
+    setLoading(true);
+    void fetchModeLeaderboard(
+      mode,
+      auth?.regNick || "",
+      "reg",
+      auth?.accessToken,
+    )
+      .then((reg) => {
+        if (cancelled) return;
+        setBoards((prev) => ({
+          ...prev,
+          reg: {
+            entries: reg.entries,
+            global: reg.global,
+            myRank: reg.myRank && reg.myRank > 0 ? reg.myRank : null,
+            myScore: reg.myScore ?? null,
+            error:
+              reg.error ??
+              (reg.entries.length === 0
+                ? null
+                : prev.reg.error),
+          },
+        }));
+      })
+      .catch(() => {
+        if (cancelled) return;
+        setBoards((prev) => ({
+          ...prev,
+          reg: {
+            ...emptyBoard(),
+            error: "Não deu pra carregar o placar Conta.",
+          },
+        }));
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [
+    open,
+    track,
+    loading,
+    boards.reg.entries.length,
+    boards.reg.error,
+    mode,
+    auth?.regNick,
+    auth?.accessToken,
+  ]);
 
   if (!open) return null;
 
   const board = boards[track];
   const highlightName =
     track === "reg" ? auth?.regNick || "" : getPlayerName() || highlight || "";
+
+  const emptyHint =
+    track === "reg"
+      ? "Ninguém no placar Conta ainda neste modo. Entra com Google, escolhe apelido e pontua."
+      : "Ninguém no placar anônimo ainda. Achou o rastro? Entra na história.";
 
   return (
     <div
@@ -142,7 +221,9 @@ export function RankModal({
           highlight={highlightName}
           myRank={board.myRank}
           myScore={board.myScore}
-          error={loading ? "Carregando ranking…" : board.error}
+          error={board.error}
+          loading={loading}
+          emptyHint={emptyHint}
           shareText={shareText}
           shareMode={shareMode}
           track={track}

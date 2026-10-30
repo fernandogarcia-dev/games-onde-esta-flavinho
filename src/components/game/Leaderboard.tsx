@@ -60,6 +60,8 @@ export function Leaderboard({
   compact = false,
   full = false,
   error,
+  loading = false,
+  emptyHint,
   shareText,
   shareMode = "home",
   onViewFull,
@@ -77,6 +79,9 @@ export function Leaderboard({
   /** Show every returned entry instead of top-10 + you. */
   full?: boolean;
   error?: string | null;
+  loading?: boolean;
+  /** Mensagem quando a lista vem vazia (ex.: Conta sem ninguém). */
+  emptyHint?: string;
   shareText?: string;
   shareMode?: "home" | "mestre" | "rua" | "parca";
   onViewFull?: () => void;
@@ -143,17 +148,24 @@ export function Leaderboard({
         </div>
       ) : null}
 
-      {error ? (
-        <p className="mt-4 text-sm text-[var(--alert)]">{error}</p>
+      {loading && rows.length === 0 ? (
+        <p className="mt-4 min-h-[4.5rem] text-sm font-semibold text-[var(--muted)]">
+          Carregando ranking…
+        </p>
+      ) : error ? (
+        <p className="mt-4 min-h-[4.5rem] text-sm font-semibold text-[var(--alert)]">
+          {error}
+        </p>
       ) : rows.length === 0 ? (
-        <p className="mt-4 text-sm text-[var(--muted)]">
-          {global
-            ? "Ninguém no placar ainda. Achou o rastro? Entra na história."
-            : "Ranking offline — joga uma rodada quando a rede voltar."}
+        <p className="mt-4 min-h-[4.5rem] text-sm font-semibold text-[var(--muted)]">
+          {emptyHint ||
+            (global
+              ? "Ninguém no placar ainda. Achou o rastro? Entra na história."
+              : "Ranking offline — joga uma rodada quando a rede voltar.")}
         </p>
       ) : (
         <ol
-          className={`mt-4 space-y-2 ${full ? "max-h-[min(60vh,28rem)] overflow-y-auto pr-1" : ""}`}
+          className={`mt-4 space-y-2 ${full && rows.length > 6 ? "max-h-[min(50vh,24rem)] overflow-y-auto pr-1" : ""}`}
         >
           {rows.map((row) => {
             if (row.type === "gap") {
