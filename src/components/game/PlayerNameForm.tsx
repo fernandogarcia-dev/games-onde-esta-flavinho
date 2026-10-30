@@ -138,17 +138,10 @@ export function PlayerNameForm({
           disabled={busy}
           className="w-full rounded-xl border-2 border-[var(--ink)] bg-[var(--paper)] px-3 py-2.5 font-semibold text-[var(--ink)] outline-none focus:border-[var(--brand)] disabled:opacity-60"
         />
-        <Button
-          className="w-full"
-          onClick={onSubmit}
-          disabled={busy || value.trim().length < 2}
-        >
-          {busy ? "Entrando…" : "Entrar"}
-        </Button>
-        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+        <div className="flex flex-col gap-2 sm:flex-row">
           <Button
             variant="secondary"
-            className="w-full"
+            className="w-full sm:flex-1"
             disabled={busy}
             onClick={() => {
               if (value.trim().length >= 2) {
@@ -161,17 +154,13 @@ export function PlayerNameForm({
             Jogar anônimo
           </Button>
           <Button
-            variant="secondary"
-            className="w-full"
-            disabled={busy}
-            onClick={() => auth?.openAccount(value)}
+            className="w-full sm:flex-1"
+            onClick={onSubmit}
+            disabled={busy || value.trim().length < 2}
           >
-            Entrar na conta
+            {busy ? "Entrando…" : "Entrar"}
           </Button>
         </div>
-        <p className="text-[11px] text-[var(--muted)]">
-          Sem Conta: usa apelido anônimo ou joga sem nick (pontos não sobem).
-        </p>
       </div>
     </div>
   );
