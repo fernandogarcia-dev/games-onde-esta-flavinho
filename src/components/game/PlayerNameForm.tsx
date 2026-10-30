@@ -138,10 +138,10 @@ export function PlayerNameForm({
           disabled={busy}
           className="w-full rounded-xl border-2 border-[var(--ink)] bg-[var(--paper)] px-3 py-2.5 font-semibold text-[var(--ink)] outline-none focus:border-[var(--brand)] disabled:opacity-60"
         />
-        <div className="flex flex-col gap-2 sm:flex-row">
+        <div className="flex flex-row gap-2">
           <Button
             variant="secondary"
-            className="w-full sm:flex-1"
+            className="min-w-0 flex-1"
             disabled={busy}
             onClick={() => {
               if (value.trim().length >= 2) {
@@ -154,7 +154,7 @@ export function PlayerNameForm({
             Jogar anônimo
           </Button>
           <Button
-            className="w-full sm:flex-1"
+            className="min-w-0 flex-1"
             onClick={onSubmit}
             disabled={busy || value.trim().length < 2}
           >
