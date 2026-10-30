@@ -146,19 +146,19 @@ export function HomePlayerBar() {
 
           {!editing || loggedIn ? (
             <div className="flex shrink-0 gap-1.5">
-              {!loggedIn ? (
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  onClick={() => {
-                    setDraft(anonName);
-                    setEditing(true);
-                    setError(null);
-                  }}
-                >
-                  Nick
-                </Button>
-              ) : null}
+                {!loggedIn ? (
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    onClick={() => {
+                      setDraft(anonName);
+                      setEditing(true);
+                      setError(null);
+                    }}
+                  >
+                    Escolher Apelido
+                  </Button>
+                ) : null}
               <Button
                 size="sm"
                 onClick={() => openAccount(regNick || anonName)}
