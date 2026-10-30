@@ -163,7 +163,11 @@ export function HomePlayerBar() {
                 size="sm"
                 onClick={() => openAccount(regNick || anonName)}
               >
-                {loggedIn ? (regNick ? "Conta" : "Apelido") : "Entrar"}
+                {loggedIn
+                  ? regNick
+                    ? "Trocar Apelido"
+                    : "Escolher Apelido"
+                  : "Entrar"}
               </Button>
               {loggedIn ? (
                 <Button
