@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useAuthOptional } from "@/components/auth/AuthProvider";
 import { Button } from "@/components/ui/Button";
+import { peekContaNick } from "@/lib/conta-cache";
 import { sanitizeName } from "@/lib/ranking";
 
 type Props = {
@@ -17,6 +18,42 @@ type Props = {
   className?: string;
 };
 
+function ContaStatusCard({
+  nick,
+  className = "",
+  expired = false,
+}: {
+  nick: string;
+  className?: string;
+  expired?: boolean;
+}) {
+  const auth = useAuthOptional();
+  return (
+    <div
+      className={`rounded-2xl border-2 border-dashed border-[var(--ink)]/30 bg-white/80 px-4 py-3 text-left ${className}`}
+    >
+      <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[var(--brand)]">
+        Placar Conta
+      </p>
+      <p className="mt-1 text-sm font-semibold text-[var(--ink)]">
+        Jogando como{" "}
+        <strong className="font-[family-name:var(--font-display)] text-lg">
+          {nick}
+        </strong>
+        {expired
+          ? " — sessão caiu. Entra de novo com Google pra pontuar."
+          : " — pontos sobem no ranking Conta. Sem digitar de novo."}
+      </p>
+      <Button
+        className="mt-3 w-full sm:w-auto"
+        onClick={() => auth?.openAccount(nick)}
+      >
+        {expired ? "Continuar com Google" : "Abrir Conta"}
+      </Button>
+    </div>
+  );
+}
+
 /** Form anônimo: entra no placar Anônimos. */
 export function PlayerNameForm({
   value,
@@ -29,30 +66,24 @@ export function PlayerNameForm({
   className = "",
 }: Props) {
   const auth = useAuthOptional();
+  const cached = peekContaNick();
+  const contaNick = (auth?.regNick || cached).trim();
 
-  // Conta logada nunca deve ver este form — pai deveria ter escondido.
-  if (auth?.user) {
-    if (auth.regNick) {
-      return (
-        <div
-          className={`rounded-2xl border-2 border-dashed border-[var(--ink)]/30 bg-white/80 px-4 py-3 text-left ${className}`}
-        >
-          <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[var(--brand)]">
-            Placar Conta
-          </p>
-          <p className="mt-1 text-sm font-semibold text-[var(--ink)]">
-            Jogando como{" "}
-            <strong className="font-[family-name:var(--font-display)] text-lg">
-              {auth.regNick}
-            </strong>
-          </p>
-        </div>
-      );
-    }
+  // Conta (viva ou cache) nunca vê form anônimo.
+  if (auth?.user && contaNick) {
+    return <ContaStatusCard nick={contaNick} className={className} />;
+  }
+  if (auth?.user && !contaNick) {
+    return <ContaNickNeeded preferredNick={value} className={className} />;
+  }
+  if (!auth?.user && cached) {
     return (
-      <ContaNickNeeded preferredNick={value} className={className} />
+      <ContaStatusCard nick={cached} className={className} expired />
     );
   }
+
+  const showContaCta =
+    Boolean(error) && /já|existe|escolhido|Conta|Google/i.test(error || "");
 
   return (
     <div
@@ -79,21 +110,15 @@ export function PlayerNameForm({
         </p>
       ) : null}
       {error ? (
-        <p className="mt-2 text-sm font-semibold text-[var(--alert)]">
-          {error}
-          {/já|existe|escolhido/i.test(error) ? (
-            <>
-              {" "}
-              <button
-                type="button"
-                className="underline"
-                onClick={() => auth?.openAccount(value)}
-              >
-                Usar este nome na Conta (Google)
-              </button>
-            </>
-          ) : null}
-        </p>
+        <p className="mt-2 text-sm font-semibold text-[var(--alert)]">{error}</p>
+      ) : null}
+      {showContaCta ? (
+        <Button
+          className="mt-3 w-full"
+          onClick={() => auth?.openAccount(value)}
+        >
+          Entrar com Google (placar Conta)
+        </Button>
       ) : null}
       <div className="mt-3 flex flex-col gap-2 sm:flex-row">
         <input
@@ -166,8 +191,9 @@ export function ContaNickNeeded({
 /**
  * Bloco na landing do modo.
  * Logado + nick Conta → pronto pra jogar (sem digitar nada).
- * Logado sem nick → modal Conta (nunca form anônimo).
- * Deslogado → form anônimo.
+ * Cache Conta sem sessão → pede Google de novo (nunca form anônimo).
+ * Logado sem nick → modal Conta.
+ * Deslogado sem cache → form anônimo.
  */
 export function PlayerNameLanding({
   playerName,
@@ -179,10 +205,12 @@ export function PlayerNameLanding({
 }: LandingProps) {
   const auth = useAuthOptional();
   const loggedIn = Boolean(auth?.user);
-  const regNick = (auth?.regNick || "").trim();
-  const authPending = Boolean(auth && (!auth.ready || (loggedIn && !auth.profileReady)));
+  const cached = peekContaNick();
+  const regNick = (auth?.regNick || cached).trim();
+  const authPending = Boolean(
+    auth && (!auth.ready || (loggedIn && !auth.profileReady && !regNick)),
+  );
 
-  // Evita flash do form anônimo enquanto sessão/perfil Conta carregam.
   if (authPending) {
     return (
       <div
@@ -194,28 +222,18 @@ export function PlayerNameLanding({
 
   if (loggedIn && regNick) {
     return (
-      <div className="mt-5 rounded-2xl border-2 border-dashed border-[var(--ink)]/30 bg-white/80 px-4 py-3">
-        <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[var(--brand)]">
-          Placar Conta
-        </p>
-        <p className="mt-1 text-sm font-semibold text-[var(--ink)]">
-          Jogando como{" "}
-          <strong className="font-[family-name:var(--font-display)] text-lg">
-            {regNick}
-          </strong>
-          {" — "}pontos sobem no ranking Conta deste modo. Sem digitar de novo.
-        </p>
-        <p className="mt-1 text-xs text-[var(--muted)]">
-          Quer trocar?{" "}
-          <button
-            type="button"
-            className="font-bold text-[var(--brand)] underline"
-            onClick={() => auth?.openAccount(regNick)}
-          >
-            Abrir Conta
-          </button>
-          .
-        </p>
+      <div className="mt-5">
+        <ContaStatusCard nick={regNick} />
+      </div>
+    );
+  }
+
+  // Sessão caiu mas este aparelho já tinha Conta (ex.: Babalu) —
+  // NÃO manda pro form anônimo (lá o nick “já existe”).
+  if (!loggedIn && cached) {
+    return (
+      <div className="mt-5">
+        <ContaStatusCard nick={cached} expired />
       </div>
     );
   }
@@ -223,7 +241,7 @@ export function PlayerNameLanding({
   if (loggedIn && !regNick) {
     return (
       <div className="mt-5">
-        <ContaNickNeeded preferredNick={draft || playerName} />
+        <ContaNickNeeded preferredNick={draft || playerName || cached} />
       </div>
     );
   }

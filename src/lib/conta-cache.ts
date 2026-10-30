@@ -13,6 +13,25 @@ export function readContaCache(userId: string | null | undefined): string {
   }
 }
 
+/** Nick Conta cacheado neste aparelho (mesmo sem uid ainda hidratado). */
+export function peekContaNick(): string {
+  if (typeof window === "undefined") return "";
+  try {
+    return (localStorage.getItem(NICK_KEY) || "").trim();
+  } catch {
+    return "";
+  }
+}
+
+export function peekContaUid(): string {
+  if (typeof window === "undefined") return "";
+  try {
+    return (localStorage.getItem(UID_KEY) || "").trim();
+  } catch {
+    return "";
+  }
+}
+
 export function writeContaCache(userId: string, nick: string) {
   if (typeof window === "undefined" || !userId) return;
   try {

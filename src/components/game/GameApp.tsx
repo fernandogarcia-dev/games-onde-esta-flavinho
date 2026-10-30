@@ -230,9 +230,9 @@ export function GameApp({
   }
 
   async function saveLandingName() {
-    if (auth?.user) {
-      if (rankSubmit.isRegistered) return;
-      auth.openAccount(nameDraft || getPlayerName());
+    if (auth?.user || rankSubmit.isRegistered || auth?.regNick) {
+      if (rankSubmit.isRegistered || auth?.regNick) return;
+      auth?.openAccount(nameDraft || getPlayerName());
       return;
     }
     setSavingRank(true);
@@ -242,6 +242,9 @@ export function GameApp({
       if (!claimed.ok) {
         setNameFeedback(claimed.error);
         trackNameSubmit("mestre", { success: false });
+        if (claimed.useConta || claimed.suggestLogin) {
+          auth?.openAccount(claimed.takenName || nameDraft);
+        }
         return;
       }
       setPlayerNameState(claimed.name);

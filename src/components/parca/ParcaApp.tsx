@@ -249,9 +249,9 @@ export function ParcaApp({ onBack }: { onBack: () => void }) {
   }
 
   async function saveLandingName() {
-    if (auth?.user) {
-      if (rankSubmit.isRegistered) return;
-      auth.openAccount(nameDraft || getPlayerName());
+    if (auth?.user || rankSubmit.isRegistered || auth?.regNick) {
+      if (rankSubmit.isRegistered || auth?.regNick) return;
+      auth?.openAccount(nameDraft || getPlayerName());
       return;
     }
     setSavingRank(true);
@@ -259,6 +259,9 @@ export function ParcaApp({ onBack }: { onBack: () => void }) {
       const claimed = await claimNickname(nameDraft, board);
       if (!claimed.ok) {
         setNameFeedback(claimed.error);
+        if (claimed.useConta || claimed.suggestLogin) {
+          auth?.openAccount(claimed.takenName || nameDraft);
+        }
         return;
       }
       setPlayerNameState(claimed.name);

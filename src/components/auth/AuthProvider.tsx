@@ -13,6 +13,7 @@ import type { Session, User } from "@supabase/supabase-js";
 import { AccountModal } from "@/components/auth/AccountModal";
 import {
   clearContaCache,
+  peekContaNick,
   readContaCache,
   writeContaCache,
 } from "@/lib/conta-cache";
@@ -49,7 +50,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const applyNick = useCallback((userId: string | undefined, nick: string) => {
     const clean = nick.trim();
     setRegNick(clean);
-    if (userId) writeContaCache(userId, clean);
+    if (userId && clean) writeContaCache(userId, clean);
   }, []);
 
   const refreshProfile = useCallback(async () => {
@@ -58,7 +59,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const token = current?.access_token;
     const uid = current?.user?.id;
     if (!token) {
-      setRegNick("");
       setProfileReady(true);
       return;
     }
@@ -68,18 +68,41 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         cache: "no-store",
       });
       if (!res.ok) {
-        // Mantém cache local se a API falhar — não zera o nick.
+        // Mantém cache/local — não zera o nick por falha de rede.
         setProfileReady(true);
         return;
       }
       const data = (await res.json()) as { nick?: string };
-      applyNick(uid, data.nick || "");
+      const nick = (data.nick || "").trim();
+      if (nick) {
+        applyNick(uid, nick);
+      } else {
+        // Perfil sem nick: limpa só o state; mantém cache se existir até o user salvar.
+        setRegNick("");
+      }
     } catch {
       /* mantém cache */
     } finally {
       setProfileReady(true);
     }
   }, [applyNick]);
+
+  const hydrateSession = useCallback(async () => {
+    const sb = getSupabaseBrowser();
+    if (!sb) {
+      setReady(true);
+      setProfileReady(true);
+      return;
+    }
+    const { data } = await sb.auth.getSession();
+    const next = data.session;
+    setSession(next);
+    if (next?.user?.id) {
+      const cached = readContaCache(next.user.id) || peekContaNick();
+      if (cached) setRegNick(cached);
+    }
+    setReady(true);
+  }, []);
 
   useEffect(() => {
     const sb = getSupabaseBrowser();
@@ -89,28 +112,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return;
     }
     let mounted = true;
-    void sb.auth.getSession().then(({ data }) => {
+    void hydrateSession().then(() => {
       if (!mounted) return;
-      const next = data.session;
-      setSession(next);
-      if (next?.user?.id) {
-        const cached = readContaCache(next.user.id);
-        if (cached) setRegNick(cached);
-      } else {
-        setRegNick("");
-        setProfileReady(true);
-      }
-      setReady(true);
     });
     const { data: sub } = sb.auth.onAuthStateChange((_event, next) => {
       setSession(next);
       if (!next) {
-        setRegNick("");
-        clearContaCache();
+        // Sessão caiu: NÃO apaga cache do nick — pai reabre Google e continua.
         setProfileReady(true);
       } else if (next.user?.id) {
-        const cached = readContaCache(next.user.id);
-        if (cached) setRegNick(cached);
+        const cached = readContaCache(next.user.id) || peekContaNick();
+        if (cached) {
+          setRegNick(cached);
+          writeContaCache(next.user.id, cached);
+        }
         setProfileReady(false);
       }
     });
@@ -118,7 +133,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       mounted = false;
       sub.subscription.unsubscribe();
     };
-  }, []);
+  }, [hydrateSession]);
 
   useEffect(() => {
     if (!session?.access_token) {
@@ -128,6 +143,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setProfileReady(false);
     void refreshProfile();
   }, [session?.access_token, refreshProfile, ready]);
+
+  // Revalida sessão ao voltar pra aba — evita “pede Google de novo” falso.
+  useEffect(() => {
+    function onVis() {
+      if (document.visibilityState === "visible") {
+        void hydrateSession();
+      }
+    }
+    window.addEventListener("focus", onVis);
+    document.addEventListener("visibilitychange", onVis);
+    return () => {
+      window.removeEventListener("focus", onVis);
+      document.removeEventListener("visibilitychange", onVis);
+    };
+  }, [hydrateSession]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -165,7 +195,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       };
     }
     const origin = window.location.origin.replace(/\/$/, "");
-    // Volta pra página atual (modo) com modal Conta aberto — não manda pra home.
     const path = `${window.location.pathname || "/"}${window.location.search || ""}`;
     const basePath = path.split("#")[0] || "/";
     const sep = basePath.includes("?") ? "&" : "?";
@@ -196,6 +225,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     clearContaCache();
   }, []);
 
+  // Nick efetivo: state OU cache do aparelho (sessão caiu / ainda hidratando).
+  const effectiveNick = regNick || peekContaNick();
+
   const value = useMemo<AuthCtx>(
     () => ({
       ready,
@@ -203,7 +235,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       user: session?.user ?? null,
       session,
       accessToken: session?.access_token ?? null,
-      regNick,
+      regNick: effectiveNick,
       email: session?.user?.email || "",
       refreshProfile,
       setRegNickLocal,
@@ -216,7 +248,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       ready,
       profileReady,
       session,
-      regNick,
+      effectiveNick,
       refreshProfile,
       setRegNickLocal,
       signInWithGoogle,
@@ -232,7 +264,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       <AccountModal
         open={accountOpen}
         onClose={closeAccount}
-        preferredNick={preferredNick || regNick}
+        preferredNick={preferredNick || effectiveNick}
       />
     </Ctx.Provider>
   );

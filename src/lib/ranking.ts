@@ -1,6 +1,8 @@
+import { peekContaNick } from "@/lib/conta-cache";
 import { getDeviceKey } from "@/lib/device";
 import type { GameModeId } from "@/lib/modes";
 import type { RankTrack } from "@/lib/rank-track";
+import { getSupabaseBrowser } from "@/lib/supabase-browser";
 
 export type RankEntry = {
   name: string;
@@ -135,12 +137,36 @@ export async function claimNickname(
   board: RankEntry[] = [],
 ): Promise<
   | { ok: true; name: string }
-  | { ok: false; error: string; suggestLogin?: boolean; takenName?: string }
+  | {
+      ok: false;
+      error: string;
+      suggestLogin?: boolean;
+      takenName?: string;
+      /** Tem Conta neste aparelho — não misturar com anônimo. */
+      useConta?: boolean;
+    }
 > {
   const clean = sanitizeName(draft);
   if (!clean || clean.length < 2) {
     return { ok: false, error: "Apelido curto demais." };
   }
+
+  // Conta neste aparelho (sessão viva ou cache) → nunca reserva nick anônimo.
+  const cached = peekContaNick();
+  const session = (await getSupabaseBrowser()?.auth.getSession())?.data.session;
+  if (session?.user || cached) {
+    const nick = cached || clean;
+    return {
+      ok: false,
+      useConta: true,
+      suggestLogin: !session?.user,
+      takenName: nick,
+      error: session?.user
+        ? `Você já está na Conta${cached ? ` (${cached})` : ""}. Não precisa entrar no placar anônimo — é só jogar.`
+        : `Este aparelho tem Conta (${nick}). Entra de novo com Google — não use o placar anônimo.`,
+    };
+  }
+
   const alreadyMine = getPlayerName().toLowerCase() === clean.toLowerCase();
   if (!alreadyMine) {
     const check = await checkNameAvailable(clean, "anon");
