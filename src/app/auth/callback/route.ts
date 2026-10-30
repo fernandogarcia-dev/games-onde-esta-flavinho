@@ -22,9 +22,12 @@ export async function GET(request: Request) {
     requestOrigin.includes("localhost") || requestOrigin.includes("127.0.0.1");
   const origin = isLocal ? requestOrigin : site;
 
-  const next = nextRaw.startsWith("http")
-    ? nextRaw
-    : `${origin}${nextRaw.startsWith("/") ? nextRaw : `/${nextRaw}`}`;
+  // Só paths relativos no mesmo site (bloqueia open redirect).
+  const safePath =
+    nextRaw.startsWith("/") && !nextRaw.startsWith("//")
+      ? nextRaw
+      : "/?conta=1";
+  const next = `${origin}${safePath}`;
 
   const fail = `${origin}/?conta=1&auth=erro`;
 

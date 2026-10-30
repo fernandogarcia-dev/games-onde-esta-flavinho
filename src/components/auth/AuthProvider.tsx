@@ -92,7 +92,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const params = new URLSearchParams(window.location.search);
     if (params.get("conta") === "1") {
       setAccountOpen(true);
-      window.history.replaceState({}, "", window.location.pathname);
+      // Mantém path/query limpos (só tira conta=1), sem jogar pra "/".
+      params.delete("conta");
+      params.delete("auth");
+      const qs = params.toString();
+      const clean = `${window.location.pathname}${qs ? `?${qs}` : ""}`;
+      window.history.replaceState({}, "", clean);
     }
   }, []);
 
@@ -112,10 +117,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       };
     }
     const origin = window.location.origin.replace(/\/$/, "");
+    // Volta pra página atual (modo) com modal Conta aberto — não manda pra home.
+    const path = `${window.location.pathname || "/"}${window.location.search || ""}`;
+    const basePath = path.split("#")[0] || "/";
+    const sep = basePath.includes("?") ? "&" : "?";
+    const next = basePath.includes("conta=1")
+      ? basePath
+      : `${basePath}${sep}conta=1`;
     const { error } = await sb.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `${origin}/auth/callback?next=${encodeURIComponent("/?conta=1")}`,
+        redirectTo: `${origin}/auth/callback?next=${encodeURIComponent(next)}`,
         queryParams: { prompt: "select_account" },
       },
     });

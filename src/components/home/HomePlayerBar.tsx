@@ -25,10 +25,19 @@ export function HomePlayerBar() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const name = getPlayerName();
-    setAnonName(name);
-    setDraft(name);
-  }, []);
+    function syncAnon() {
+      const name = getPlayerName();
+      setAnonName(name);
+      setDraft((d) => (editing ? d : name));
+    }
+    syncAnon();
+    window.addEventListener("storage", syncAnon);
+    window.addEventListener("focus", syncAnon);
+    return () => {
+      window.removeEventListener("storage", syncAnon);
+      window.removeEventListener("focus", syncAnon);
+    };
+  }, [editing]);
 
   useEffect(() => {
     if (user) setEditing(false);
